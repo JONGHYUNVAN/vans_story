@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Van's Dev Blog
 
-## Getting Started
+개발 경험과 결과물을 담는 개인 기술 블로그입니다.
 
-First, run the development server:
+## 🚀 주요 기능
 
+- 타이핑 효과가 있는 인터랙티브한 홈페이지
+- 기술 스택 별 블로그 포스팅
+- 반응형 디자인
+
+## 🛠 기술 스택
+
+- **Frontend**: React, Next.js
+- **Styling**: Tailwind CSS
+- **Backend**: Spring Boot (예정)
+- **Deploy**: Vercel
+
+## 🏃‍♂️ 실행 방법
+
+1. 저장소 클론
+```bash
+git clone https://github.com/JONGHYUNVAN/vans_story.git
+```
+
+2. 의존성 설치
+```bash
+npm install
+# or
+yarn install
+```
+
+3. 개발 서버 실행
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. 브라우저에서 확인
+```
+http://localhost:3000
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📂 프로젝트 구조
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/          # 페이지 컴포넌트
+├── components/   # 재사용 가능한 컴포넌트
+├── hooks/        # 커스텀 훅
+└── styles/       # 스타일 파일
+```
 
-## Learn More
+## 📝 추가 예정 기능
 
-To learn more about Next.js, take a look at the following resources:
+- [ ] 블로그 포스팅 기능
+- [ ] 댓글 시스템
+- [ ] 검색 기능
+- [ ] 카테고리 분류
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📜 라이센스
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
-## Deploy on Vercel
+## 🤝 기여하기
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+이슈와 풀 리퀘스트는 언제나 환영합니다!
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 👨‍💻 제작자
+
+- John Van ([@JONGHYUNVAN](https://github.com/JONGHYUNVAN))

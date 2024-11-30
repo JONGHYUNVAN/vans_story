@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * 메인 콘텐츠 컴포넌트
  * - 블로그 소개와 기술 스택 정보를 표시
@@ -9,8 +11,22 @@ import { FaReact, FaLaptopCode } from "react-icons/fa";
 import { TbBrandNextjs } from "react-icons/tb";
 import { BiServer } from "react-icons/bi";
 import { SiSpringboot } from "react-icons/si";
+import { useTranslation } from '@/utils/i18n';
+import { useState, useEffect } from 'react';
+
 
 export default function MainContent() {
+  const { t, locale, changeLocale } = useTranslation(); 
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null; // 또는 로딩 상태를 보여줄 수 있습니다
+  }
+  
   // 기술 스택 정보 배열 - 아이콘과 이름 정의
   const techStacks = [
     { name: 'Frontend', icon: <FaLaptopCode className="text-blue-400" /> },
@@ -28,10 +44,19 @@ export default function MainContent() {
       {/* 메인 컨텐츠 컨테이너 */}
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-3xl mx-auto bg-gray-800 rounded-lg shadow-lg border border-gray-700 p-8">
+          {/* 언어 스위치 */}
+          <div className="absolute top-4 right-4 z-20">
+            <button 
+              onClick={() => changeLocale(locale === 'ko' ? 'en' : 'ko')}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+            >
+              {locale === 'ko' ? 'English' : '한국어'}
+            </button>
+        </div>
           {/* 섹션 제목 */}
           <div className="flex items-center gap-3 mb-8">
             <div className="w-8 h-[2px] bg-blue-400" />
-            <h2 className="text-2xl font-bold text-white">블로그 소개</h2>
+            <h2 className="text-2xl font-bold text-white">{t('home.blogIntro')}</h2>
           </div>
 
           {/* 소개 텍스트 영역 */}
@@ -39,13 +64,13 @@ export default function MainContent() {
             {/* 인사말 */}
             <p className="flex items-center gap-2">
               <span className="animate-wave inline-block origin-[70%_70%]">👋</span>
-              안녕하세요! 이 블로그는 Van 의 개발 이야기를 담을 겁니다.
+              {t('home.welcome')}
             </p>
             
             {/* 기술 스택 소개 */}
             <div className="pl-6 border-l-2 border-gray-600">
               <p className="mb-4">
-                프론트엔드 개발, 백엔드 개발, React, Next.js, Spring Boot 등 다양한 주제의 글을 작성할 예정입니다.
+                {t('home.techIntro')}
               </p>
               {/* 기술 스택 태그 목록 */}
               <div className="flex flex-wrap gap-2">
@@ -63,7 +88,7 @@ export default function MainContent() {
 
             {/* 마무리 메시지 */}
             <p className="text-right italic text-gray-400">
-              완성을 기대해 주세요! ✨
+              {t('home.expectation')}
             </p>
           </div>
         </div>

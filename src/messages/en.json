@@ -1,0 +1,14 @@
+{
+  "common": {
+    "login": "Login",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password"
+  },
+  "home": {
+    "welcome": "Hello! This blog will contain Van's development stories.",
+    "blogIntro": "Blog Introduction",
+    "techIntro": "I will write about various topics including Frontend Development, Backend Development, React, Next.js, Spring Boot, and more.",
+    "expectation": "Stay tuned! ✨"
+  }
+} 

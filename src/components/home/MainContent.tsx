@@ -44,15 +44,6 @@ export default function MainContent() {
       {/* 메인 컨텐츠 컨테이너 */}
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-3xl mx-auto bg-gray-800 rounded-lg shadow-lg border border-gray-700 p-8">
-          {/* 언어 스위치 */}
-          <div className="absolute top-4 right-4 z-20">
-            <button 
-              onClick={() => changeLocale(locale === 'ko' ? 'en' : 'ko')}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-            >
-              {locale === 'ko' ? 'English' : '한국어'}
-            </button>
-        </div>
           {/* 섹션 제목 */}
           <div className="flex items-center gap-3 mb-8">
             <div className="w-8 h-[2px] bg-blue-400" />

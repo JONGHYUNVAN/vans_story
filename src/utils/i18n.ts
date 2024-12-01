@@ -1,42 +1,28 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { setLocale } from '@/store/i18n/slice';
+import ko from '@/messages/ko.json';
+import en from '@/messages/en.json';
+
+const translations = { ko, en };
 
 export function useTranslation() {
-  const [locale, setLocale] = useState('ko');
-  const router = useRouter();
-  const [mounted, setMounted] = useState(false);
+  const dispatch = useAppDispatch();
+  const locale = useAppSelector((state) => state.i18n.locale);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const t = (key: string): string => {
-    if (!mounted) return key;
-
-    try {
-      const messages = require(`../messages/${locale}.json`);
-      const keys = key.split('.');
-      let value: any = messages;
-      
-      for (const k of keys) {
-        value = value[k];
-        if (!value) return key;
-      }
-      
-      return value;
-    } catch (error) {
-      console.error(`Translation error: ${error}`);
-      return key;
+  const t = (key: string) => {
+    const keys = key.split('.');
+    let current: any = translations[locale];
+    for (const k of keys) {
+      current = current?.[k];
     }
+    return current || key;
   };
 
-  return {
-    t,
-    locale,
-    changeLocale: (newLocale: string) => {
-      setLocale(newLocale);
-    },
+  const changeLocale = (newLocale: 'ko' | 'en') => {
+    dispatch(setLocale(newLocale));
   };
+
+  return { t, locale, changeLocale };
 }

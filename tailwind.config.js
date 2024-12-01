@@ -1,3 +1,5 @@
+const { fontFamily } = require('tailwindcss/defaultTheme')
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -18,6 +20,11 @@ module.exports = {
           '70%': { transform: 'rotate(0deg)' },
           '100%': { transform: 'rotate(0deg)' }
         }
+      },
+      fontFamily: {
+        sans: ['var(--font-noto-sans-kr)', 'var(--font-inter)', ...fontFamily.sans],
+        mono: ['var(--font-roboto-mono)', ...fontFamily.mono],
+        handwriting: ['var(--font-gamja)', 'var(--font-dancing)', 'cursive'],
       },
       animation: {
         wave: 'wave 1.5s infinite'

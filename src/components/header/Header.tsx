@@ -13,7 +13,7 @@ export default function Header() {
   const { t } = useTranslation();
 
   useEffect(() => {
-    setMenuText(t('Header.headerMenu', { name: '' }));
+    setMenuText(t('Header.headerMenu'));
   }, [t]);
 
   return (
@@ -22,7 +22,7 @@ export default function Header() {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* 헤더 보기 */}
+      {/* '헤더 보기' 글씨 */}
       <div className={`
         absolute top-0 left-0 w-full 
         flex items-center justify-center py-2
@@ -30,7 +30,7 @@ export default function Header() {
         transform transition-all duration-300
         ${isHovered ? 'opacity-0' : 'opacity-100'}
       `}>
-        <span className="text-lg font-bold text-white/70">{menuText}</span>
+        <span className="text-lg font-bold text-white/70 font-handwriting">{menuText}</span>
         <MdKeyboardArrowDown className="ml-2 w-5 h-5 text-white/70 animate-bounce" />
       </div>
 

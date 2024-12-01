@@ -1,4 +1,9 @@
 {
+  "Header": {
+    "headerMenu": "Hover to see menu",
+    "projects": "Projects",
+    "aboutVan": "About Van"
+  },
   "common": {
     "login": "Login",
     "logout": "Logout",
@@ -10,5 +15,11 @@
     "blogIntro": "Blog Introduction",
     "techIntro": "I will write about various topics including Frontend Development, Backend Development, React, Next.js, Spring Boot, and more.",
     "expectation": "Stay tuned! ✨"
+  },
+  "Auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "greeting": "Hello, {name}",
+    "logoutError": "Logout failed"
   }
 } 

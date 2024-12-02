@@ -3,7 +3,7 @@ import { inter, notoSansKr, robotoMono, gamjaFlower, dancingScript } from './fon
 import Header from "@/components/header/Header";
 import "./globals.css";
 import { StoreProviders } from "../store/providers";
-
+import LoginModal from "@/components/auth/LoginModal";
 export const metadata: Metadata = {
   title: "Vans Dev Blog",
   description: "프론트엔드 개발자 Vans의 기술 블로그입니다. React, TypeScript, Next.js 등 웹 개발 관련 경험과 지식을 공유합니다.",
@@ -28,6 +28,7 @@ export default function RootLayout({
       <body>
         <StoreProviders>
           <Header />
+          <LoginModal />
           {children}
         </StoreProviders>
       </body>

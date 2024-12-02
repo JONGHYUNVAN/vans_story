@@ -11,3 +11,83 @@
     --foreground-rgb: 255, 255, 255;
   }
 }
+
+/* 네온 텍스트 효과 */
+.neon-text {
+  color: #ffff00;
+  text-shadow:
+    0 0 5px #ffae42,
+    0 0 20px #ffae42,
+    0 0 40px #ffd700,
+    0 0 80px #ff8c00,
+    0 0 100px #ff4500;
+  animation: flicker 1.5s infinite alternate;
+}
+
+@keyframes flicker {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% {
+    text-shadow:
+      0 0 5px #ffae42,
+      0 0 10px #ffae42,
+      0 0 40px #ffd700,
+      0 0 80px #ff8c00,
+      0 0 100px #ff4500;
+  }
+  20%, 24%, 55% {
+    text-shadow: none;
+  }
+}
+
+/* 소셜 아이콘 회전 효과 */
+.social-icon {
+  transition: transform 0.2s ease-in-out;
+}
+
+.social-icon:hover {
+  transform: rotate(360deg);
+}
+
+.icoKakao:hover {
+  background-color: #FFD700;
+}
+
+.icoGoogle:hover {
+  background-color: #000000;
+}
+
+.icoKakao:hover,
+.icoGoogle:hover {
+  color: #fff;
+}
+
+/* 링크 밑줄 효과 */
+.link-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.link-underline::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 1px;
+  bottom: 0;
+  left: 50%;
+  background-color: currentColor;
+  transition: width 0.3s ease, left 0.3s ease;
+}
+
+.link-underline:hover::after {
+  width: 82%;
+  left: 9%;
+}
+
+.electric-border {
+  padding: 1vh 1vh;
+  background-color: rgba(106, 123, 252, 0.13);
+  border: 2px solid rgb(125, 140, 255);
+  color: white;
+  position: relative;
+  filter: blur(0px);
+  transition: all 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+}

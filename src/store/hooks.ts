@@ -1,5 +1,5 @@
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
-import type { RootState, AppDispatch } from './index';
+import type { RootState, AppDispatch } from './store';
 
 /**
  * 타입이 지정된 커스텀 디스패치 훅

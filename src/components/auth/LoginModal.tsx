@@ -7,6 +7,7 @@ import { RootState } from '@/store/store';
 import { useAppDispatch } from '@/store/hooks';
 import { closeLoginModal } from '@/store/modal/slice';
 import { authApi } from '@/store/auth/api';
+import { setUser } from '@/store/auth/slice';
 
 const LoginModal = () => {
   const dispatch = useAppDispatch();
@@ -25,8 +26,8 @@ const LoginModal = () => {
 
     try {
       const data = await authApi.login({ email, password });
-      console.log('로그인 성공:', data);
-      // 로그인 성공 후 추가 로직
+      dispatch(setUser(data.user));
+      dispatch(closeLoginModal());
     } catch (error) {
       console.error('로그인 실패:', error);
       setPasswordError('로그인에 실패했습니다. 이메일과 비밀번호를 확인하세요.');

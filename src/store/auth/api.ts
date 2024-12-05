@@ -9,7 +9,7 @@ export const authApi = {
    * 로그인
    */
   async login(credentials: { email: string; password: string }) {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${API_ROUTES.AUTH.LOGIN}`, {
+    const res = await fetch(`${API_ROUTES.AUTH.LOGIN}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(credentials),
@@ -26,7 +26,7 @@ export const authApi = {
    * 로그아웃
    */
   async logout() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${API_ROUTES.AUTH.LOGOUT}`, {
+    const res = await fetch(`${API_ROUTES.AUTH.LOGOUT}`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${tokenStorage.getToken()}`,
@@ -41,7 +41,7 @@ export const authApi = {
    * 토큰 갱신
    */
   async refresh() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${API_ROUTES.AUTH.REFRESH}`, {
+    const res = await fetch(`${API_ROUTES.AUTH.REFRESH}`, {
       method: 'POST',
       credentials: 'include',
     });

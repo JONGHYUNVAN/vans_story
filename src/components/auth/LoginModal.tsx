@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { useAppDispatch } from '@/store/hooks';
 import { closeLoginModal } from '@/store/modal/slice';
+import { authApi } from '@/store/auth/api';
 
 const LoginModal = () => {
   const dispatch = useAppDispatch();
@@ -13,9 +14,25 @@ const LoginModal = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [passwordError, setPasswordError] = useState('');
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    // 로그인 로직 추가
+    setIsSubmitting(true);
+    setPasswordError('');
+
+    const formData = new FormData(event.target as HTMLFormElement);
+    const email = formData.get('useremail') as string;
+    const password = formData.get('password') as string;
+
+    try {
+      const data = await authApi.login({ email, password });
+      console.log('로그인 성공:', data);
+      // 로그인 성공 후 추가 로직
+    } catch (error) {
+      console.error('로그인 실패:', error);
+      setPasswordError('로그인에 실패했습니다. 이메일과 비밀번호를 확인하세요.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleKakaoLogin = () => {

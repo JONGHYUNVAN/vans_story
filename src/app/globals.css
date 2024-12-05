@@ -85,9 +85,32 @@
 .electric-border {
   padding: 1vh 1vh;
   background-color: rgba(106, 123, 252, 0.13);
-  border: 2px solid rgb(125, 140, 255);
+  border: 2px solid rgb(0, 44, 176);
   color: white;
   position: relative;
   filter: blur(0px);
   transition: all 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.electric-border:hover {
+  box-shadow: 
+    0 0 5px rgb(41, 98, 255),
+    0 0 10px rgb(41, 98, 255),
+    0 0 20px rgb(0, 89, 255);
+  animation: borderFlicker 5s infinite alternate;
+}
+
+@keyframes borderFlicker {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% {
+    box-shadow: 
+      0 0 5px rgb(41, 98, 255),
+      0 0 10px rgb(41, 98, 255),
+      0 0 20px rgb(0, 89, 255);
+    border-color: rgb(41, 98, 255);
+  }
+  
+  20%, 24%, 55% {
+    box-shadow: none;
+    border-color: rgba(41, 98, 255, 0.3);
+  }
 }

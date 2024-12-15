@@ -17,7 +17,15 @@ const LoginModal = () => {
   const [passwordError, setPasswordError] = useState('');
   const { t } = useTranslation();   
   const isLoading = useSelector((state: RootState) => state.auth.isLoading);
-
+  /**
+   * 로그인 폼 제출 핸들러
+   * @param {React.FormEvent} event - 폼 제출 이벤트
+   * @returns {Promise<void>} - 비동기 작업
+   * @description 
+   * 사용자가 입력한 이메일과 비밀번호로 로그인 시도를 합니다.  
+   * 로그인 성공 시 환영 메시지를 표시하고 모달을 닫습니다.  
+   * 로그인 실패 시 에러 메시지를 표시합니다.
+   */
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     
@@ -61,8 +69,11 @@ const LoginModal = () => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+      {/* 모달의 외부 배경 */}
       <div className="electric-border rounded-xl">
+        {/* 모달의 내부 컨테이너 */}
         <div className="relative bg-[#191919] opacity-80 hover:opacity-95 transition-opacity duration-200 rounded-xl">
+          {/* 모달 닫기 버튼 */}
           <span 
             className="absolute top-2 right-2 text-white text-3xl cursor-pointer z-10" 
             onClick={() => handleCloseModal()}
@@ -70,9 +81,19 @@ const LoginModal = () => {
             &times;
           </span>
           <div className="flex items-center justify-center h-auto">
-            <Image src={`/login.webp`} alt={`login`} width={400} height={900} className="rounded-l-xl" style={{ width: 'auto', height: 'auto' }} />
+            {/* 로그인 이미지 */}
+            <Image 
+              src={`/login.webp`} 
+              alt={`login`} 
+              width={400} 
+              height={900} 
+              className="rounded-l-xl" 
+              style={{ width: 'auto', height: 'auto' }} 
+            />
             <div className="w-[400px] p-10 text-center">
+              {/* 환영 메시지 */}
               <h1 className="mt-5 text-white uppercase font-bold text-3xl neon-text" translate="no">Welcome !</h1>
+              {/* 로그인 폼 */}
               <form className="mt-10" onSubmit={handleSubmit}>
                 <input
                   type="text"
@@ -89,10 +110,12 @@ const LoginModal = () => {
                   autoComplete="current-password"
                 />
 
+                {/* 비밀번호 에러 메시지 */}
                 {passwordError && (
                   <p className="text-red-500 text-xl Nanum-Pen-Script mb-4 neon-text-red">{passwordError}</p>
                 )}
 
+                {/* 로그인 및 회원가입 안내 */}
                 <div className="flex mt-10 items-center justify-center my-5">
                   <div className="flex-grow border-t border-gray-600"></div>
                   {isLoading ? (
@@ -103,21 +126,45 @@ const LoginModal = () => {
                   <div className="flex-grow border-t border-gray-600"></div>
                 </div>
 
+                {/* 로그인 버튼 */}
                 <input
                   type="submit"
                   value="Login"
                   className="w-3/5 mx-auto p-3 mt-5 mb-3 border-2 border-[#2ecc71] text-white bg-transparent rounded-full cursor-pointer transition duration-300 hover:bg-[#2ecc71]"
                 />
               </form>
+              {/* 소셜 로그인 버튼들 */}
               <ul className="flex justify-center mt-6 space-x-14">
                 <li>
-                  <a href="#" onClick={handleKakaoLogin} className="flex items-center justify-center w-12 h-12 text-2xl text-white transition-transform duration-200 rounded-full social-icon icoKakao">
-                    <Image src="/kakao.webp" alt="Kakao" width={32} height={32} className="rounded-full" style={{ width: 'auto', height: 'auto' }} />
+                  <a 
+                    href="#" 
+                    onClick={handleKakaoLogin} 
+                    className="flex items-center justify-center w-12 h-12 text-2xl text-white transition-transform duration-200 rounded-full social-icon icoKakao"
+                  >
+                    <Image 
+                      src="/kakao.webp" 
+                      alt="Kakao" 
+                      width={32} 
+                      height={32} 
+                      className="rounded-full" 
+                      style={{ width: 'auto', height: 'auto' }} 
+                    />
                   </a>
                 </li>
                 <li>
-                  <a href="#" onClick={handleGoogleLogin} className="flex items-center justify-center w-12 h-12 text-2xl text-white transition-transform duration-200 rounded-full social-icon icoGoogle">
-                    <Image src="/google.webp" alt="Google" width={30} height={30} className="rounded-full" style={{ width: 30, height: 30 }} />
+                  <a 
+                    href="#" 
+                    onClick={handleGoogleLogin} 
+                    className="flex items-center justify-center w-12 h-12 text-2xl text-white transition-transform duration-200 rounded-full social-icon icoGoogle"
+                  >
+                    <Image 
+                      src="/google.webp" 
+                      alt="Google" 
+                      width={30} 
+                      height={30} 
+                      className="rounded-full" 
+                      style={{ width: 30, height: 30 }} 
+                    />
                   </a>
                 </li>
               </ul>

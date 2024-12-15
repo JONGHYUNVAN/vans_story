@@ -114,3 +114,9 @@
     border-color: rgba(41, 98, 255, 0.3);
   }
 }
+
+@keyframes twinkle {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}

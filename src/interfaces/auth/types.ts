@@ -3,20 +3,8 @@
  * @interface User
  */
 export interface User {
-  id: string;
   email: string;
-  name: string;
 }
-
-/**
- * 로그인 요청 시 필요한 인증 정보
- * @interface LoginCredentials
- */
-export interface LoginCredentials {
-  email: string;
-  password: string;
-}
-
 /**
  * 인증 관련 전역 상태 인터페이스
  * @interface AuthState

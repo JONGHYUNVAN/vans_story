@@ -41,7 +41,7 @@ export default function LanguageSelector() {
                 onClick={() => changeLocale(lang.code as 'ko' | 'en')}
                 className={`${
                   locale === lang.code ? 'font-medium bg-gray-100' : ''
-                } block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 flex items-center gap-2`}
+                } block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 items-center gap-2`}
               >
                 <span className={`fi fi-${lang.flag} w-4`} />
                 {lang.label}

@@ -2,7 +2,8 @@
   "Header": {
     "headerMenu": "Hover to see menu",
     "projects": "Projects",
-    "aboutVan": "About Van"
+    "aboutVan": "About Van",
+    "greeting": "Have a good day, {username}!"
   },
   "common": {
     "login": "Login",
@@ -16,10 +17,16 @@
     "techIntro": "I will write about various topics including Frontend Development, Backend Development, React, Next.js, Spring Boot, and more.",
     "expectation": "Stay tuned! ✨"
   },
-  "Auth": {
+  "auth": {
     "login": "Login",
-    "logout": "Logout",
-    "greeting": "Hello, {name}",
-    "logoutError": "Logout failed"
+    "logout": "Logged out successfully. See you again!",
+    "welcome": "Welcome, {username}!",
+    "logoutError": "Logout failed",
+    "loginError": {
+      "401": "Invalid email or password",
+      "404": "User not found",
+      "500": "Server error occurred",
+      "default": "An unknown error occurred"
+    }
   }
 } 

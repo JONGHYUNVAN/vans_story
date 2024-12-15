@@ -6,15 +6,21 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import LanguageSelector from './LanguageSelector';
 import AuthButtons from './AuthButtons';
 import { useTranslation } from '@/utils/i18n';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
+import { useDispatch } from 'react-redux';
+import { checkAuth } from '@/store/auth/slice';
 
 export default function Header() {
   const [isHovered, setIsHovered] = useState(false);
-  const [menuText, setMenuText] = useState('');
+  const {user,isAuthenticated} = useSelector((state: RootState) => state.auth);
   const { t } = useTranslation();
+  const menuText = t('Header.headerMenu');
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    setMenuText(t('Header.headerMenu'));
-  }, [t]);
+    dispatch(checkAuth());
+  }, [dispatch]);
 
   return (
     <header 
@@ -45,9 +51,19 @@ export default function Header() {
             href="/" 
             className="text-xl font-bold text-gray-800 hover:text-blue-600 transition-colors flex items-center gap-2"
           >
-  <img src="/favicon.ico" alt="logo" className="w-6 h-6" />
-  Van's Dev Blog
+            <img src="/favicon.ico" alt="logo" className="w-6 h-6" />
+            Van's Dev Blog
           </Link>
+          {/* 인사 문구 추가 */}
+          <div className="flex-grow text-center">
+            {isAuthenticated && ( 
+              <span className="text-gray-600 font-handwriting text-xl">
+                <span className="inline-block animate-[twinkle_2s_ease-in-out_infinite]">⭐</span>
+                {t('Header.greeting', { username: user?.email?.split('@')[0] })}
+                <span className="inline-block animate-[twinkle_2s_ease-in-out_infinite]">⭐</span>
+              </span>
+            )}
+          </div>
           
           <div className="flex items-center gap-6">
             <nav className="hidden md:flex items-center gap-6">

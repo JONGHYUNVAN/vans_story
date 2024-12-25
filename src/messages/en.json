@@ -28,5 +28,15 @@
       "500": "Server error occurred",
       "default": "An unknown error occurred"
     }
+  },
+  "signup_validation": {
+    "welcome": "Welcome! Shall we start the sign-up process?",
+    "enterEmail": "Please enter your email address",
+    "enterUsername": "Please choose your username",
+    "enterPassword": "Please create a secure password",
+    "emailError": "Please enter a valid email address",
+    "usernameError": "Username must be between 2-20 characters",
+    "passwordError": "Password must be at least 8 characters and include letters, numbers, and special characters",
+    "allGood": "Everything looks perfect! Ready to go! ✨"
   }
 } 

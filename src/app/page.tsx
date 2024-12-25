@@ -9,7 +9,7 @@ import TypewriterSection from '../components/home/TypewriterSection';
 export default function Home() {
   return (
     <>
-      <div className="h-[60vh] relative overflow-hidden">
+      <div className="h-[65vh] relative overflow-hidden">
         <BackgroundVideo />
         <div className="absolute inset-0 bg-black/30">
           <div className="container mx-auto px-4 h-full flex flex-col items-center justify-center gap-8">

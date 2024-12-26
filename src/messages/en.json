@@ -30,13 +30,17 @@
     }
   },
   "signup_validation": {
-    "welcome": "Welcome! Shall we start the sign-up process?",
-    "enterEmail": "Please enter your email address",
-    "enterUsername": "Please choose your username",
-    "enterPassword": "Please create a secure password",
+    "welcome": "Welcome! Shall we start signing up?",
+    "emailGuide": "Please enter your email address. Example) itworks@inmymachine.com",
+    "usernameGuide": "Username must be between 3 and 50 characters",
+    "passwordGuide": "Password must be at least 8 characters and include letters, numbers, and special characters",
     "emailError": "Please enter a valid email address",
-    "usernameError": "Username must be between 2-20 characters",
+    "usernameError": "Username must be between 3 and 50 characters",
     "passwordError": "Password must be at least 8 characters and include letters, numbers, and special characters",
-    "allGood": "Everything looks perfect! Ready to go! ✨"
+    "required": {
+      "email": "Email is required",
+      "username": "Username is required",
+      "password": "Password is required"
+    }
   }
 } 

@@ -25,12 +25,16 @@
   },
   "signup_validation": {
     "welcome": "환영합니다! 회원가입을 시작해볼까요?",
-    "enterEmail": "이메일 주소를 입력해주세요",
-    "enterUsername": "사용하실 닉네임을 입력해주세요",
-    "enterPassword": "안전한 비밀번호를 입력해주세요",
-    "emailError": "올바른 이메일 형식이 아닙니다",
-    "usernameError": "닉네임은 2-20자 사이여야 합니다",
-    "passwordError": "비밀번호는 8자 이상, 영문/숫자/특수문자를 포함해야 합니다",
-    "allGood": "모든 정보가 올바르게 입력되었습니다! ✨"
+    "emailGuide": "이메일 주소를 입력해주세요. 예시) itworks@inmymachine.com",
+    "usernameGuide": "사용자명은 3자 이상 50자 이하여야 합니다.",
+    "passwordGuide": "비밀번호는 8자 이상이며, 영문자, 숫자, 특수문자를 포함해야 합니다.",
+    "emailError": "올바른 이메일 형식이 아닙니다.",
+    "usernameError": "사용자명은 3자 이상 50자 이하여야 합니다.",
+    "passwordError": "비밀번호는 8자 이상이며, 영문자, 숫자, 특수문자를 포함해야 합니다.",
+    "required": {
+      "email": "이메일은 필수입니다",
+      "username": "사용자명은 필수입니다",
+      "password": "비밀번호는 필수입니다"
+    }
   }
 } 

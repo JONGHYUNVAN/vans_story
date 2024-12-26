@@ -8,42 +8,51 @@ import TypewriterComponent from 'typewriter-effect';
 export default function ValidationMessage() {
   const { watch, formState: { errors } } = useFormContext();
   const { t } = useTranslation();
+  const [focusedField, setFocusedField] = useState<string | null>(null);
   const [message, setMessage] = useState('');
-  const [prevMessage, setPrevMessage] = useState('');
-  
-  const email = watch('email');
-  const username = watch('username');
-  const password = watch('password');
 
   useEffect(() => {
-    let newMessage = '';
-    if (errors.email) {
-      newMessage = t('signup_validation.emailError');
-    } else if (errors.username) {
-      newMessage = t('signup_validation.usernameError');
-    } else if (errors.password) {
-      newMessage = t('signup_validation.passwordError');
-    } else if (!email && !username && !password) {
-      newMessage = t('signup_validation.welcome');
-    } else if (!email) {
-      newMessage = t('signup_validation.enterEmail');
-    } else if (!username) {
-      newMessage = t('signup_validation.enterUsername');
-    } else if (!password) {
-      newMessage = t('signup_validation.enterPassword');
-    } else {
-      newMessage = t('signup_validation.allGood');
+    if (focusedField === 'email') {
+      setMessage(t('signup_validation.emailGuide'));
+    } 
+    else if (focusedField === 'username') {
+      setMessage(t('signup_validation.usernameGuide'));
+    } 
+    else if (focusedField === 'password') {
+      setMessage(t('signup_validation.passwordGuide'));
+    } 
+    else {
+      setMessage(t('signup_validation.welcome'));
     }
+  }, [focusedField, errors, t]);
 
-    if (newMessage !== prevMessage) {
-      setMessage(newMessage);
-      setPrevMessage(newMessage);
-    }
-  }, [email, username, password, errors, t, prevMessage]);
+  useEffect(() => {
+    const handleFocus = (e: FocusEvent) => {
+      const target = e.target as HTMLInputElement;
+      setFocusedField(target.name);
+    };
+
+    const handleBlur = () => {
+      setFocusedField(null);
+    };
+
+    document.querySelectorAll('input').forEach(input => {
+      input.addEventListener('focus', handleFocus);
+      input.addEventListener('blur', handleBlur);
+    });
+
+    return () => {
+      document.querySelectorAll('input').forEach(input => {
+        input.removeEventListener('focus', handleFocus);
+        input.removeEventListener('blur', handleBlur);
+      });
+    };
+  }, []);
 
   return (
     <div className="text-center text-gray-700 text-2xl font-handwriting h-full flex items-center justify-center">
     <TypewriterComponent
+    key={message} 
     onInit={(typewriter) => {
         typewriter
         .typeString(message)     // 문자열 출력

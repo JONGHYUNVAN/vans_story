@@ -5,6 +5,7 @@
  * - 모바일 환경에서도 인라인 재생 지원
  * - 전체 화면을 커버하도록 설정
  */
+'use client';
 export default function BackgroundVideo() {
     return (
       <video

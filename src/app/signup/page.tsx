@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { FormProvider, useForm } from 'react-hook-form';
 import BackgroundVideo from './BackgroundVideo';
 import ValidationMessage from './ValidationMessage';
-import SignupForm from './SignupForm';
+import SignupForm from './SignupForm'; 
 
 export default function SignupPage() {
   const methods = useForm();

@@ -7,10 +7,10 @@ import { TextStyle as TextStyleExtension } from '@tiptap/extension-text-style'
 import Color from '@tiptap/extension-color'
 import FontFamily from '@tiptap/extension-font-family'
 import FontSize from '@tiptap/extension-font-size'
-import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
-import { lowlight } from 'lowlight/lib/core'
+import { common } from 'lowlight'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/atom-one-dark.css'
+import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
 
 const CODE_LANGUAGES = [
   { value: 'javascript', label: 'JavaScript' },
@@ -28,7 +28,7 @@ const CODE_LANGUAGES = [
 CODE_LANGUAGES.forEach(({ value }) => {
   const language = hljs.getLanguage(value);
   if (language) {
-    lowlight.registerLanguage(value, () => language);
+    hljs.registerLanguage(value, () => language);
   }
 });
 
@@ -68,9 +68,7 @@ export const EditorExtensions = [
   TextStyleExtension,
   Color,
   CodeBlockLowlight.configure({
-    lowlight,
-    HTMLAttributes: {
-      class: 'rounded-md bg-gray-800 p-4 text-white font-mono',
-    },
+    lowlight: common,
+    defaultLanguage: 'javascript',
   }),
 ]

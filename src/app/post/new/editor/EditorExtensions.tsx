@@ -3,7 +3,7 @@ import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
 import TextAlign from '@tiptap/extension-text-align'
 import Underline from '@tiptap/extension-underline'
-import TextStyle from '@tiptap/extension-text-style'
+import { TextStyle as TextStyleExtension } from '@tiptap/extension-text-style'
 import Color from '@tiptap/extension-color'
 import FontFamily from '@tiptap/extension-font-family'
 import FontSize from '@tiptap/extension-font-size'
@@ -65,7 +65,7 @@ export const EditorExtensions = [
     types: ['heading', 'paragraph'],
   }),
   Underline,
-  TextStyle,
+  TextStyleExtension,
   Color,
   CodeBlockLowlight.configure({
     lowlight,

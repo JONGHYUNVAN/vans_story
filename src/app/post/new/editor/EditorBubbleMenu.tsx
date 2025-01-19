@@ -15,7 +15,7 @@ export function EditorBubbleMenu({ editor }: EditorBubbleMenuProps) {
   return (
     <BubbleMenu
       editor={editor}
-      tippyOptions={{ duration: 100 }}
+      shouldShow={({ editor }) => editor.isActive('textStyle')}
       className="flex items-center bg-white shadow-lg border rounded-lg overflow-hidden"
     >
       <button

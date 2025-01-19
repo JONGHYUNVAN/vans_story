@@ -10,6 +10,8 @@ import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
 import StarterKit from '@tiptap/starter-kit'
 import java from 'highlight.js/lib/languages/java'
 import GapCursor from '@tiptap/extension-gapcursor';
+import { TextStyle } from '@tiptap/extension-text-style'
+import { Color } from '@tiptap/extension-color'
 
 import javascript from 'highlight.js/lib/languages/javascript'
 import typescript from 'highlight.js/lib/languages/typescript'
@@ -29,6 +31,7 @@ import json from 'highlight.js/lib/languages/json'
 import yaml from 'highlight.js/lib/languages/yaml'
 import bash from 'highlight.js/lib/languages/bash'
 import markdown from 'highlight.js/lib/languages/markdown'
+import { EditorExtensions } from './EditorExtensions'
 
 interface EditorProps {
   /** 초기 에디터 컨텐츠 */
@@ -67,26 +70,11 @@ lowlight.register('markdown', markdown)
  * @component
  */
 export function Editor({ initialContent = '', onChange, readonly = false }: EditorProps) {
-  const extensions = [
-    StarterKit.configure({
-      codeBlock: false,
-    }),
-    CodeBlockLowlight.configure({
-      lowlight,
-      defaultLanguage: 'javascript',
-    }),
-    FontSize.configure(),
-    FontFamily.configure(),
-  ]
-
   const editor = useEditor({
-    extensions: [
-      StarterKit,
-      GapCursor, 
-    ],
+    extensions: EditorExtensions,
     content: initialContent,
+    immediatelyRender:false,
     editable: !readonly,
-    immediatelyRender: false,
     onUpdate: ({ editor }) => {
       onChange?.(editor.getHTML())
     },

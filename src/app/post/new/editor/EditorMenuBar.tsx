@@ -142,9 +142,12 @@ export function EditorMenuBar() {
         {/* 폰트 크기 선택 */}
         <div className="relative">
           <select
-            value={editor?.getAttributes('textStyle').fontSize || '16'}
+            value={editor?.getAttributes('textStyle').fontSize?.replace('px', '') || '16'}
             onChange={(e) => {
-              editor?.chain().focus().setMark('textStyle', { fontSize: `${e.target.value}px` }).run();
+              editor?.chain()
+                .focus()
+                .setMark('textStyle', { fontSize: `${e.target.value}px` })
+                .run();
             }}
             className="h-9 px-2 rounded border border-gray-200 focus:outline-none"
           >
@@ -176,16 +179,32 @@ export function EditorMenuBar() {
       {/* 두 번째 줄 - 새로운 기능들 */}
       <div className="flex items-center gap-1 p-1">
         {/* 글자색 */}
-        <div className="relative flex items-center" title="글자색">
-          <div className="absolute left-1.5 pointer-events-none">
-            <span className="text-xs font-bold">A</span>
-            <Palette size={14} className="text-gray-500" />
+        <div className="relative flex items-center gap-1" title="글자색">
+          <div className="relative">
+            <div className="absolute left-1.5 pointer-events-none">
+              <span className="text-xs font-bold">A</span>
+              <Palette size={14} className="text-gray-500" />
+            </div>
+            <input
+              type="color"
+              onChange={(e) => editor.chain().focus().setColor(e.target.value).run()}
+              className="w-9 h-9 p-1 opacity-0 cursor-pointer"
+            />
           </div>
-          <input
-            type="color"
-            onChange={(e) => editor.chain().focus().setColor(e.target.value).run()}
-            className="w-9 h-9 p-1 opacity-0 cursor-pointer"
-          />
+          {/* 색상 팔레트 */}
+          <div className="grid grid-cols-7 gap-0.5">
+            {[
+              '#ffffff', '#fca5a5', '#fdba74', '#fde047', '#86efac', '#93c5fd', '#d8b4fe',
+              '#000000', '#dc2626', '#ea580c', '#ca8a04', '#16a34a', '#2563eb', '#9333ea',
+            ].map((color) => (
+              <button
+                key={color}
+                className="w-5 h-5 border hover:scale-110 transition-transform"
+                style={{ backgroundColor: color }}
+                onClick={() => editor.chain().focus().setColor(color).run()}
+              />
+            ))}
+          </div>
         </div>
 
         {/* 배경색 */}
@@ -195,7 +214,7 @@ export function EditorMenuBar() {
           </div>
           <input
             type="color"
-            onChange={(e) => editor.chain().focus().setColor(e.target.value).run()}
+            onChange={(e) => editor.chain().focus().setHighlight({ color: e.target.value }).run()}
             className="w-9 h-9 p-1 opacity-0 cursor-pointer"
           />
         </div>

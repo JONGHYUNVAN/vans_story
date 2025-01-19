@@ -1,6 +1,5 @@
 'use client'
 import { useEditor, EditorContent } from '@tiptap/react'
-import { EditorExtensions } from './EditorExtensions'
 import { EditorMenuBar } from './EditorMenuBar'
 import { EditorBubbleMenu } from './EditorBubbleMenu'
 import { EditorProvider } from './EditorContext'
@@ -10,8 +9,8 @@ import { common, createLowlight } from 'lowlight'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
 import StarterKit from '@tiptap/starter-kit'
 import java from 'highlight.js/lib/languages/java'
+import GapCursor from '@tiptap/extension-gapcursor';
 
-// 언어 import
 import javascript from 'highlight.js/lib/languages/javascript'
 import typescript from 'highlight.js/lib/languages/typescript'
 import python from 'highlight.js/lib/languages/python'
@@ -81,7 +80,10 @@ export function Editor({ initialContent = '', onChange, readonly = false }: Edit
   ]
 
   const editor = useEditor({
-    extensions: extensions,
+    extensions: [
+      StarterKit,
+      GapCursor, 
+    ],
     content: initialContent,
     editable: !readonly,
     immediatelyRender: false,

@@ -1,7 +1,9 @@
+'use client'
 import { useEditor, EditorContent } from '@tiptap/react'
 import { EditorExtensions } from './EditorExtensions'
 import { EditorMenuBar } from './EditorMenuBar'
 import { EditorBubbleMenu } from './EditorBubbleMenu'
+import { EditorProvider } from './EditorContext'
 
 interface EditorProps {
   /** 초기 에디터 컨텐츠 */
@@ -21,6 +23,7 @@ export function Editor({ initialContent = '', onChange, readonly = false }: Edit
     extensions: EditorExtensions,
     content: initialContent,
     editable: !readonly,
+    immediatelyRender: false,
     onUpdate: ({ editor }) => {
       onChange?.(editor.getHTML())
     },
@@ -29,10 +32,12 @@ export function Editor({ initialContent = '', onChange, readonly = false }: Edit
   if (!editor) return null
 
   return (
-    <div className="relative min-h-[500px] w-full border border-gray-200 rounded-lg">
-      <EditorMenuBar editor={editor} />
-      <EditorBubbleMenu editor={editor} />
-      <EditorContent editor={editor} className="prose max-w-none p-4" />
-    </div>
+    <EditorProvider value={editor}>
+      <div className="relative">
+        <EditorMenuBar />
+        <EditorBubbleMenu />
+        <EditorContent editor={editor} className="prose max-w-none p-4" />
+      </div>
+    </EditorProvider>
   )
 }

@@ -1,15 +1,13 @@
-import { BubbleMenu, Editor } from '@tiptap/react'
+'use client'
+import { BubbleMenu } from '@tiptap/react'
 import { Bold, Italic, Underline, Palette, Type } from 'lucide-react'
-
-interface EditorBubbleMenuProps {
-  editor: Editor
-}
-
+import { useEditorContext } from './EditorContext'
 /**
  * 텍스트 선택 시 나타나는 버블 메뉴 컴포넌트
  * @component
  */
-export function EditorBubbleMenu({ editor }: EditorBubbleMenuProps) {
+export function EditorBubbleMenu() {
+  const editor = useEditorContext()
   if (!editor) return null
 
   return (

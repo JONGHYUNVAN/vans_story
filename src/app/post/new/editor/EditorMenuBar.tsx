@@ -1,3 +1,6 @@
+'use client'
+import { BubbleMenu } from '@tiptap/react'
+import { useEditorContext } from './EditorContext'
 import { Editor } from '@tiptap/react'
 import { 
   Bold, Italic, Underline, Strikethrough, 
@@ -29,7 +32,8 @@ const CODE_LANGUAGES = [
  * 에디터 상단 메뉴바 컴포넌트
  * @component
  */
-export function EditorMenuBar({ editor }: EditorMenuBarProps) {
+export function EditorMenuBar() {
+  const editor = useEditorContext()
   if (!editor) return null
 
   return (

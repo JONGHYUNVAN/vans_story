@@ -1,16 +1,11 @@
 'use client'
-import { BubbleMenu } from '@tiptap/react'
 import { useEditorContext } from './EditorContext'
-import { Editor } from '@tiptap/react'
 import { 
   Bold, Italic, Underline, Strikethrough, 
   AlignLeft, AlignCenter, AlignRight, AlignJustify,
-  Palette, Type, Code, Square
+  Palette,  Code, 
 } from 'lucide-react'
 
-interface EditorMenuBarProps {
-  editor: Editor
-}
 
 const FONT_SIZES = [
   '12', '14', '16', '18', '20', '24', '28', '32', '36', '40'
@@ -147,8 +142,9 @@ export function EditorMenuBar() {
         {/* 폰트 크기 선택 */}
         <div className="relative">
           <select
+            value={editor?.getAttributes('textStyle').fontSize || '16'}
             onChange={(e) => {
-              editor.chain().focus().setFontSize(e.target.value + 'px').run()
+              editor?.chain().focus().setMark('textStyle', { fontSize: `${e.target.value}px` }).run();
             }}
             className="h-9 px-2 rounded border border-gray-200 focus:outline-none"
           >
@@ -163,8 +159,9 @@ export function EditorMenuBar() {
         {/* 폰트 선택 */}
         <div className="relative">
           <select
+            value={editor?.getAttributes('textStyle').fontFamily || 'Inter'}
             onChange={(e) => {
-              editor.chain().focus().setFontFamily(e.target.value).run()
+              editor?.chain().focus().setFontFamily(e.target.value).run();
             }}
             className="h-9 px-2 rounded border border-gray-200 focus:outline-none"
           >
@@ -233,17 +230,6 @@ export function EditorMenuBar() {
             </select>
           )}
         </div>
-
-        {/* 인라인 코드 */}
-        <button
-          onClick={() => editor.chain().focus().toggleCode().run()}
-          className={`p-2 rounded hover:bg-gray-100 transition-colors ${
-            editor.isActive('code') ? 'bg-gray-100' : ''
-          }`}
-          title="인라인 코드"
-        >
-          <Code size={18} className="rotate-90" />
-        </button>
       </div>
     </div>
   )

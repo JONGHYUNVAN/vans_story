@@ -1,6 +1,23 @@
+@import 'highlight.js/styles/vs2015.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* 코드블록 기본 스타일 */
+.ProseMirror pre {
+  background: #1e1e1e;
+  border-radius: 0.5rem;
+  color: #d4d4d4;
+  padding: 0.75rem 1rem;
+  margin: 0.5rem 0;
+}
+
+.ProseMirror code {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.9rem;
+}
 
 :root {
   --foreground-rgb: 0, 0, 0;

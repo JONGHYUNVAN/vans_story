@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint"
   },
-"dependencies": {
+  "dependencies": {
     "@headlessui/react": "^2.2.0",
     "@reduxjs/toolkit": "^2.4.0",
     "@tiptap/core": "^3.0.0-next.4",
@@ -28,8 +28,15 @@
     "@tiptap/pm": "^3.0.0-next.4",
     "@tiptap/react": "^3.0.0-next.4",
     "@tiptap/starter-kit": "^3.0.0-next.4",
+    "@types/js-cookie": "^3.0.6",
+    "axios": "^1.7.8",
+    "flag-icons": "^7.2.3",
+    "framer-motion": "^11.15.0",
     "highlight.js": "^11.11.1",
+    "js-cookie": "^3.0.5",
     "lowlight": "^2.9.0",
+    "lucide-react": "^0.471.1",
+    "next": "15.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.54.2",

@@ -142,7 +142,7 @@ export function EditorMenuBar() {
         {/* 폰트 크기 선택 */}
         <div className="relative">
           <select
-            value={editor?.getAttributes('textStyle').fontSize?.replace('px', '') || '16'}
+            value={editor?.getAttributes('textStyle').fontSize?.replace('px', '')}
             onChange={(e) => {
               editor?.chain()
                 .focus()
@@ -162,7 +162,7 @@ export function EditorMenuBar() {
         {/* 폰트 선택 */}
         <div className="relative">
           <select
-            value={editor?.getAttributes('textStyle').fontFamily || 'Inter'}
+            value={editor?.getAttributes('textStyle').fontFamily}
             onChange={(e) => {
               editor?.chain().focus().setFontFamily(e.target.value).run();
             }}
@@ -208,15 +208,32 @@ export function EditorMenuBar() {
         </div>
 
         {/* 배경색 */}
-        <div className="relative flex items-center" title="배경색">
-          <div className="absolute left-1.5 pointer-events-none">
-            <span className="text-xs font-bold bg-yellow-200 px-1">A</span>
+        <div className="relative flex items-center gap-1" title="배경색">
+          <div className="relative">
+            <div className="absolute left-1.5 pointer-events-none">
+              <span className="text-xs font-bold bg-yellow-200 px-1">A</span>
+            </div>
+            <input
+              type="color"
+              onChange={(e) => editor.chain().focus().setHighlight({ color: e.target.value }).run()}
+              className="w-9 h-9 p-1 opacity-0 cursor-pointer"
+            />
           </div>
-          <input
-            type="color"
-            onChange={(e) => editor.chain().focus().setHighlight({ color: e.target.value }).run()}
-            className="w-9 h-9 p-1 opacity-0 cursor-pointer"
-          />
+          {/* 형광펜 팔레트 */}
+          <div className="flex gap-0.5">
+            {[
+              '#ffcdd2', // 연한 빨강
+              '#fff9c4', // 연한 노랑
+              '#bbdefb', // 연한 파랑
+            ].map((color) => (
+              <button
+                key={color}
+                className="w-5 h-5 border hover:scale-110 transition-transform"
+                style={{ backgroundColor: color }}
+                onClick={() => editor.chain().focus().setHighlight({ color }).run()}
+              />
+            ))}
+          </div>
         </div>
 
         <div className="w-px h-6 bg-gray-200 mx-2" />

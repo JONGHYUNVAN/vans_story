@@ -61,9 +61,7 @@ export const EditorExtensions = [
   }),
   Underline,
   TextStyleExtension,
-  FontSize.configure({
-    types: ['textStyle']
-  }),
+  FontSize,
   FontFamily,
   Color,
   Highlight.configure({

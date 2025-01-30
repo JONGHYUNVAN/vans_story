@@ -1,6 +1,8 @@
 {
     "version": "0.1.0",
     "configurations": [
+    
+    
         {
             "name": "Next.js: Debug Server",
             "type": "node-terminal",

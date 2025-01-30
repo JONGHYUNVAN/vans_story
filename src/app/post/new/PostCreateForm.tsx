@@ -2,39 +2,85 @@
 
 import { useState } from 'react'
 import { Editor } from './editor/Editor'
+import { PostViewer } from './viewer/Viewer'
 
-interface PostCreateFormProps {
-  submitUrl: string
-}
+const themes = [
+  { value: 'spring', label: 'Spring' },
+  { value: 'nest', label: 'NestJS' },
+  { value: 'next', label: 'Next.js' },
+  { value: 'react', label: 'React' },
+]
 
-export function PostCreateForm({ submitUrl }: PostCreateFormProps) {
+type ViewMode = 'edit' | 'preview'
+
+export function PostCreateForm() {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
+  const [theme, setTheme] = useState('')
+  const [viewMode, setViewMode] = useState<ViewMode>('edit')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    await fetch(submitUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ title, content })
-    })
+    console.log(title, content, theme)
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit}>
       <input
         type="text"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="제목을 입력하세요"
-        className="w-full p-2 border rounded"
+        className="w-full p-2 border rounded text-black placeholder-black"
       />
-      <Editor
-        initialContent={content}
-        onChange={setContent}
-      />
+      <select
+        value={theme}
+        onChange={(e) => setTheme(e.target.value)}
+        className="w-full p-2 border rounded text-black border-t-0"
+      >
+        <option value="">테마를 선택하세요</option>
+        {themes.map((theme) => (
+          <option key={theme.value} value={theme.value}>
+            {theme.label}
+          </option>
+        ))}
+      </select>
+      <div className="mt-4">
+        <div className="border-b mb-4">
+          <div className="flex gap-1">
+            <button
+              type="button"
+              onClick={() => setViewMode('edit')}
+              className={`px-4 py-2 ${
+                viewMode === 'edit'
+                  ? 'border-b-2 border-blue-500 font-medium'
+                  : 'text-gray-500'
+              }`}
+            >
+              Edit
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('preview')}
+              className={`px-4 py-2 ${
+                viewMode === 'preview'
+                  ? 'border-b-2 border-blue-500 font-medium'
+                  : 'text-gray-500'
+              }`}
+            >
+              Preview
+            </button>
+          </div>
+        </div>
+        {viewMode === 'edit' ? (
+          <Editor
+            initialContent={content}
+            onChange={setContent}
+          />
+        ) : (
+          <PostViewer content={content} />
+        )}
+      </div>
     </form>
   )
 }

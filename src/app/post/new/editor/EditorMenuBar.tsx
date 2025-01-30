@@ -3,15 +3,17 @@ import { useEditorContext } from './EditorContext'
 import { 
   Bold, Italic, Underline, Strikethrough, 
   AlignLeft, AlignCenter, AlignRight, AlignJustify,
-  Palette,  Code, 
+  Palette, Code, List, ListOrdered, Table, Quote, 
+  Image, Smile
 } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import EmojiPicker from 'emoji-picker-react'
+import { koreanFonts } from '@/app/fonts/editor/kr';
+import { englishFonts } from '@/app/fonts/editor/en';
+import { codeFonts } from '@/app/fonts/editor/co';
+const FONT_SIZES = ['12', '14', '16', '18', '20', '24', '28', '32', '36', '40'];
 
-
-const FONT_SIZES = [
-  '12', '14', '16', '18', '20', '24', '28', '32', '36', '40'
-]
-
-const CODE_LANGUAGES = [
+const CODE_LANGUAGE = [
   { value: 'javascript', label: 'JavaScript' },
   { value: 'typescript', label: 'TypeScript' },
   { value: 'html', label: 'HTML' },
@@ -20,25 +22,131 @@ const CODE_LANGUAGES = [
   { value: 'java', label: 'Java' },
   { value: 'cpp', label: 'C++' },
   { value: 'rust', label: 'Rust' },
-  { value: 'sql', label: 'SQL' },
-]
+  { value: 'sql', label: 'SQL' }
+];
 
-/**
- * 에디터 상단 메뉴바 컴포넌트
- * @component
- */
+const FONTS_BY_LANGUAGE = {
+  ko: koreanFonts,
+  en: englishFonts,
+  co: codeFonts,
+};
+
 export function EditorMenuBar() {
-  const editor = useEditorContext()
-  if (!editor) return null
+  const editor = useEditorContext();
+  const [fontSize, setFontSize] = useState('12');
+  const [preset, setPreset] = useState('normal');
+  const [activeStates, setActiveStates] = useState({
+    bold: false,
+    italic: false,
+    underline: false,
+    strike: false
+  });
+  const [tableSize, setTableSize] = useState('');
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [inputLanguage, setInputLanguage] = useState<'ko' | 'en' | 'co' >('en');
+  const [selectedFont, setSelectedFont] = useState('ko');
+
+  useEffect(() => {
+    if (!editor) return;
+    
+    editor.commands.updateAttributes('textStyle', {
+      fontSize: `${fontSize}px`
+    });
+      
+    editor.chain()
+      .focus()
+      .setFontSize(`${fontSize}px`)
+      .run();
+  }, [fontSize, editor]);
+
+  useEffect(() => {
+    if (!editor) return;
+  
+    if (editor.isActive('textStyle')) {
+      editor.chain()
+        .focus()
+        .setFontFamily(selectedFont)
+        .run();
+    }
+  }, [selectedFont, editor]);
+
+  const handlePresetChange = (value: string) => {
+    const newSize = 
+        value === 'h1' ? '40'
+      : value === 'h2' ? '24'
+      : value === 'h3' ? '20'
+      : value === 'p1' ? '16'
+      : value === 'p2' ? '14'
+      : '12';  // p3의 경우
+
+    setPreset(value);
+    setFontSize(newSize);
+
+    // h1, h2, h3일 경우 bold 처리
+    if (value.startsWith('h')) {
+      editor?.chain()
+        .setMark('textStyle', { fontSize: `${newSize}px`, fontWeight: 'bold' })
+        .run();
+    } else {
+      editor?.chain()
+        .setMark('textStyle', { fontSize: `${newSize}px`, fontWeight: 'normal' })
+        .run();
+    }
+  };
+
+  useEffect(() => {
+    if (!editor) return;
+
+    const updateActiveStates = () => {
+      setActiveStates({
+        bold: editor.isActive('bold'),
+        italic: editor.isActive('italic'),
+        underline: editor.isActive('underline'),
+        strike: editor.isActive('strike')
+      });
+    };
+
+    editor.on('transaction', updateActiveStates);
+    editor.on('selectionUpdate', updateActiveStates);
+
+    return () => {
+      editor.off('transaction', updateActiveStates);
+      editor.off('selectionUpdate', updateActiveStates);
+    };
+  }, [activeStates]);
+  useEffect(() => {
+    const handleComposition = (e: CompositionEvent) => {
+      if (e.data) setInputLanguage('ko');
+    };
+
+    const handleInput = (e: Event) => {
+      if (editor?.isActive('codeBlock')) {
+        setInputLanguage('co');
+      }
+      else if (e instanceof InputEvent && e.data && /[a-zA-Z]/.test(e.data)) {
+        setInputLanguage('en');
+      }
+    };
+
+    document.addEventListener('compositionupdate', handleComposition);
+    document.addEventListener('input', handleInput);
+    
+    return () => {
+      document.removeEventListener('compositionupdate', handleComposition);
+      document.removeEventListener('input', handleInput);
+    };
+  }, [editor]);
+
+  if (!editor) return null;
 
   return (
     <div className="border-b border-gray-200 p-2 space-y-2">
-      {/* 첫 번째 줄 - 기존 기능들 */}
+      {/* 스타일 버튼들 */}
       <div className="flex items-center gap-1 p-1">
         <button
           onClick={() => editor.chain().focus().toggleBold().run()}
-          className={`p-2 rounded hover:bg-gray-100 transition-colors ${
-            editor.isActive('bold') ? 'bg-gray-100' : ''
+          className={`p-2 rounded hover:bg-gray-100 ${
+            activeStates.bold ? 'bg-gray-100' : ''
           }`}
           title="굵게 (Ctrl+B)"
         >
@@ -46,8 +154,8 @@ export function EditorMenuBar() {
         </button>
         <button
           onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={`p-2 rounded hover:bg-gray-100 transition-colors ${
-            editor.isActive('italic') ? 'bg-gray-100' : ''
+          className={`p-2 rounded hover:bg-gray-100 ${
+            activeStates.italic ? 'bg-gray-100' : ''
           }`}
           title="기울임 (Ctrl+I)"
         >
@@ -55,8 +163,8 @@ export function EditorMenuBar() {
         </button>
         <button
           onClick={() => editor.chain().focus().toggleUnderline().run()}
-          className={`p-2 rounded hover:bg-gray-100 transition-colors ${
-            editor.isActive('underline') ? 'bg-gray-100' : ''
+          className={`p-2 rounded hover:bg-gray-100 ${
+            activeStates.underline ? 'bg-gray-100' : ''
           }`}
           title="밑줄 (Ctrl+U)"
         >
@@ -64,20 +172,18 @@ export function EditorMenuBar() {
         </button>
         <button
           onClick={() => editor.chain().focus().toggleStrike().run()}
-          className={`p-2 rounded hover:bg-gray-100 transition-colors ${
-            editor.isActive('strike') ? 'bg-gray-100' : ''
+          className={`p-2 rounded hover:bg-gray-100 ${
+            activeStates.strike ? 'bg-gray-100' : ''
           }`}
           title="취소선"
         >
           <Strikethrough size={18} />
         </button>
 
-        <div className="w-px h-6 bg-gray-200 mx-2" />
-
-        {/* 정렬 그룹 */}
+        {/* 정렬 버튼 */}
         <button
           onClick={() => editor.chain().focus().setTextAlign('left').run()}
-          className={`p-2 rounded hover:bg-gray-100 transition-colors ${
+          className={`p-2 rounded hover:bg-gray-100 ${
             editor.isActive({ textAlign: 'left' }) ? 'bg-gray-100' : ''
           }`}
           title="왼쪽 정렬"
@@ -86,7 +192,7 @@ export function EditorMenuBar() {
         </button>
         <button
           onClick={() => editor.chain().focus().setTextAlign('center').run()}
-          className={`p-2 rounded hover:bg-gray-100 transition-colors ${
+          className={`p-2 rounded hover:bg-gray-100 ${
             editor.isActive({ textAlign: 'center' }) ? 'bg-gray-100' : ''
           }`}
           title="가운데 정렬"
@@ -95,7 +201,7 @@ export function EditorMenuBar() {
         </button>
         <button
           onClick={() => editor.chain().focus().setTextAlign('right').run()}
-          className={`p-2 rounded hover:bg-gray-100 transition-colors ${
+          className={`p-2 rounded hover:bg-gray-100 ${
             editor.isActive({ textAlign: 'right' }) ? 'bg-gray-100' : ''
           }`}
           title="오른쪽 정렬"
@@ -104,7 +210,7 @@ export function EditorMenuBar() {
         </button>
         <button
           onClick={() => editor.chain().focus().setTextAlign('justify').run()}
-          className={`p-2 rounded hover:bg-gray-100 transition-colors ${
+          className={`p-2 rounded hover:bg-gray-100 ${
             editor.isActive({ textAlign: 'justify' }) ? 'bg-gray-100' : ''
           }`}
           title="양쪽 정렬"
@@ -114,42 +220,27 @@ export function EditorMenuBar() {
 
         <div className="w-px h-6 bg-gray-200 mx-2" />
 
-        {/* 글자 크기 선택 */}
+        {/* 글자 크기 프리셋 */}
         <div className="relative">
           <select
-            onChange={(e) => {
-              const value = parseInt(e.target.value);
-              if (value === 0) {
-                editor.chain().focus().setParagraph().run();
-              } else {
-                editor.chain().focus().setHeading({ level: value as 1 | 2 | 3 | 4 | 5 | 6 }).run();
-              }
-            }}
-            className="h-9 px-2 rounded border border-gray-200 focus:outline-none"
-            value={
-              editor.isActive('heading', { level: 1 }) ? '1' :
-              editor.isActive('heading', { level: 2 }) ? '2' :
-              editor.isActive('heading', { level: 3 }) ? '3' : '0'
-            }
-          >
-            <option value="0">본문</option>
-            <option value="1">제목 1</option>
-            <option value="2">제목 2</option>
-            <option value="3">제목 3</option>
+            onChange={(e) => handlePresetChange(e.target.value)}
+            className="h-9 px-2 border border-gray-200 focus:outline-none rounded-b [&>option]:p-2"
+            value={preset}>
+            <option value="h1" style={{ fontSize: '40px', fontWeight: 'bold' }}>제목1</option>
+            <option value="h2" style={{ fontSize: '24px', fontWeight: 'bold' }}>제목2</option>
+            <option value="h3" style={{ fontSize: '20px', fontWeight: 'bold' }}>제목3</option>
+            <option value="p1" style={{ fontSize: '16px' }}>본문1</option>
+            <option value="p2" style={{ fontSize: '14px' }}>본문2</option>
+            <option value="p3" style={{ fontSize: '12px' }}>본문3</option>
           </select>
         </div>
 
         {/* 폰트 크기 선택 */}
         <div className="relative">
           <select
-            value={editor?.getAttributes('textStyle').fontSize?.replace('px', '')}
-            onChange={(e) => {
-              editor?.chain()
-                .focus()
-                .setMark('textStyle', { fontSize: `${e.target.value}px` })
-                .run();
-            }}
+            onChange={(e) => setFontSize(e.target.value)}
             className="h-9 px-2 rounded border border-gray-200 focus:outline-none"
+            value={fontSize}
           >
             {FONT_SIZES.map((size) => (
               <option key={size} value={size}>
@@ -162,21 +253,26 @@ export function EditorMenuBar() {
         {/* 폰트 선택 */}
         <div className="relative">
           <select
-            value={editor?.getAttributes('textStyle').fontFamily}
-            onChange={(e) => {
-              editor?.chain().focus().setFontFamily(e.target.value).run();
-            }}
+            value={selectedFont}
+            onChange={(e) => setSelectedFont(e.target.value)}
             className="h-9 px-2 rounded border border-gray-200 focus:outline-none"
           >
-            <option value="Inter">Inter</option>
-            <option value="Noto Sans KR">Noto Sans KR</option>
-            <option value="Roboto Mono">Roboto Mono</option>
-            <option value="Gamja Flower">Gamja Flower</option>
+            {editor.isActive('codeBlock') ? 
+            FONTS_BY_LANGUAGE['co'].map(font => (
+              <option key={font.value} value={font.value} style={{ fontFamily: font.value }}>
+                {font.label}
+              </option>
+            ))
+            :
+            FONTS_BY_LANGUAGE[inputLanguage].map(font => (
+              <option key={font.value} value={font.value} style={{ fontFamily: font.value }}>
+                {font.label}
+              </option>
+            ))}
           </select>
         </div>
       </div>
 
-      {/* 두 번째 줄 - 새로운 기능들 */}
       <div className="flex items-center gap-1 p-1">
         {/* 글자색 */}
         <div className="relative flex items-center gap-1" title="글자색">
@@ -191,7 +287,8 @@ export function EditorMenuBar() {
               className="w-9 h-9 p-1 opacity-0 cursor-pointer"
             />
           </div>
-          {/* 색상 팔레트 */}
+
+          {/* 글자색 팔레트 */}
           <div className="grid grid-cols-7 gap-0.5">
             {[
               '#ffffff', '#fca5a5', '#fdba74', '#fde047', '#86efac', '#93c5fd', '#d8b4fe',
@@ -219,6 +316,7 @@ export function EditorMenuBar() {
               className="w-9 h-9 p-1 opacity-0 cursor-pointer"
             />
           </div>
+          
           {/* 형광펜 팔레트 */}
           <div className="flex gap-0.5">
             {[
@@ -253,12 +351,19 @@ export function EditorMenuBar() {
           {editor.isActive('codeBlock') && (
             <select
               onChange={(e) => {
-                editor.chain().focus().setCodeBlock({ language: e.target.value }).run()
+                const preElement = document.querySelector('pre.hljs');
+                if (preElement) {
+                  preElement.className = `hljs language-${e.target.value} font-${selectedFont}`;
+                }
+                editor.chain()
+                  .focus()
+                  .setCodeBlock({ language: e.target.value })
+                  .run();
               }}
               className="h-9 px-2 rounded border border-gray-200 focus:outline-none text-sm"
               value={editor.getAttributes('codeBlock').language || 'javascript'}
             >
-              {CODE_LANGUAGES.map(({ value, label }) => (
+              {CODE_LANGUAGE.map(({ value, label }) => (
                 <option key={value} value={value}>
                   {label}
                 </option>
@@ -266,7 +371,137 @@ export function EditorMenuBar() {
             </select>
           )}
         </div>
+
+
+      {/* 리스트, 표, 인용구 등 */}
+      
+      <div className="flex items-center gap-1">
+        <button
+          onClick={() => {
+            console.log('Before toggle - bulletList active:', editor.isActive('bulletList'))
+            console.log('Current HTML:', editor.getHTML())
+            editor.chain().focus().toggleBulletList().run()
+            console.log('After toggle - bulletList active:', editor.isActive('bulletList'))
+            console.log('Updated HTML:', editor.getHTML())
+            console.log('Schema:', editor.schema)
+          }}
+          className={`p-1 hover:bg-gray-100 rounded ${
+            editor.isActive('bulletList') ? 'bg-gray-100' : ''
+          }`}
+          title="글머리 기호"
+        >
+          <List size={16} />
+        </button>
+        
+        <button
+          onClick={() => editor.chain().focus().toggleOrderedList().run()}
+          className={`p-2 rounded hover:bg-gray-100 ${
+            editor.isActive('orderedList') ? 'bg-gray-100' : ''
+          }`}
+          title="번호 매기기"
+        >
+          <ListOrdered size={18} />
+        </button>
+
+        <button
+          onClick={() => editor.chain().focus().toggleBlockquote().run()}
+          className={`p-2 rounded hover:bg-gray-100 ${
+            editor.isActive('blockquote') ? 'bg-gray-100' : ''
+          }`}
+          title="인용구"
+        >
+          <Quote size={18} />
+        </button>
+
+        <div className="relative group">
+          <button
+            className="p-2 rounded hover:bg-gray-100"
+            title="표 삽입"
+          >
+            <Table size={18} />
+          </button>
+          
+          {/* 표 크기 선택 그리드 */}
+          <div className="absolute hidden w-30 group-hover:block bg-white border rounded-lg p-2 shadow-lg z-50">
+            <div className="flex flex-col gap-0">
+              {[...Array(5)].map((_, row) => (
+                <div key={row} className="flex gap-0">
+                  {[...Array(5)].map((_, col) => (
+                    <button
+                      key={`${row}-${col}`}
+                      className="w-[20px] h-[20px] border-t border-l border-gray-300 last:border-r first:border-t [&:nth-child(n)]:border-b"
+                      onMouseEnter={(e) => {
+                        setTableSize(`${row + 1}x${col + 1}`);
+                        const buttons = e.currentTarget.parentElement?.parentElement?.getElementsByTagName('button');
+                        if (buttons) {
+                          for (let r = 0; r <= row; r++) {
+                            for (let c = 0; c <= col; c++) {
+                              const index = r * 5 + c;
+                              buttons[index].style.backgroundColor = '#93c5fd';
+                            }
+                          }
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        setTableSize('');
+                        const buttons = e.currentTarget.parentElement?.parentElement?.getElementsByTagName('button');
+                        if (buttons) {
+                          Array.from(buttons).forEach(button => {
+                            button.style.backgroundColor = '';
+                          });
+                        }
+                      }}
+                      onClick={() => editor.chain().focus().insertTable({
+                        rows: row + 1,
+                        cols: col + 1,
+                        withHeaderRow: true
+                      }).run()}
+                    />
+                  ))}
+                </div>
+              ))}
+            </div>
+            <div className="text-center text-xs mt-1 h-4 text-gray-500 font-medium">
+              {tableSize}
+            </div>
+          </div>
+        </div>
+
+        <button
+          onClick={() => {
+            const url = window.prompt('이미지 URL을 입력하세요:')
+            if (url) {
+              editor.chain().focus().setImage({ src: url }).run()
+            }
+          }}
+          className="p-2 rounded hover:bg-gray-100"
+          title="이미지 삽입"
+        >
+          <Image size={18} />
+        </button>
+
+        <div className="relative">
+          <button
+            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+            className="p-2 rounded hover:bg-gray-100"
+            title="이모티콘"
+          >
+            <Smile size={18} />
+          </button>
+          
+          {showEmojiPicker && (
+            <div className="absolute top-full left-0 z-50">
+              <EmojiPicker
+                onEmojiClick={(emojiData) => {
+                  editor.chain().focus().insertContent(emojiData.emoji).run();
+                  setShowEmojiPicker(false);
+                }}
+              />
+            </div>
+          )}
+        </div>
       </div>
+    </div>  
     </div>
   )
 }

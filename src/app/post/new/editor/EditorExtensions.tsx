@@ -19,7 +19,11 @@ import typescript from 'highlight.js/lib/languages/typescript'
 import xml from 'highlight.js/lib/languages/xml'
 import css from 'highlight.js/lib/languages/css'
 import kotlin from 'highlight.js/lib/languages/kotlin'
-import 'highlight.js/styles/vs2015.css'
+import BulletList from '@tiptap/extension-bullet-list'
+import OrderedList from '@tiptap/extension-ordered-list'
+import ListItem from '@tiptap/extension-list-item'
+import sql from 'highlight.js/lib/languages/sql';
+
 
 const lowlight = createLowlight()
 lowlight.register('js', js)
@@ -32,23 +36,23 @@ lowlight.register('python', python)
 lowlight.register('java', java)
 lowlight.register('kotlin', kotlin)
 lowlight.register('python', python)
+lowlight.register('sql', sql);
+
+
 
 export const EditorExtensions = [
+  // 기본적인 편집 기능들을 포함하는 확장 모음
   StarterKit.configure({
     codeBlock: false,
-    bulletList: {
-      keepMarks: true,
-      keepAttributes: false,
-    },
-    orderedList: {
-      keepMarks: true,
-      keepAttributes: false,
-    },
+    bulletList: false,
+    orderedList: false,
   }),
+  // 이미지 확장
   Image.configure({
     inline: true,
     allowBase64: true,
   }),
+  // 링크 확장
   Link.configure({
     openOnClick: false,
     HTMLAttributes: {
@@ -56,27 +60,48 @@ export const EditorExtensions = [
       target: '_blank',
     },
   }),
+  // 텍스트 정렬 확장
   TextAlign.configure({
     types: ['heading', 'paragraph'],
   }),
+  // 밑줄 확장
   Underline,
+  // 텍스트 스타일 확장
   TextStyleExtension,
+  // 폰트 크기 확장
   FontSize,
+  // 폰트 패밀리 확장
   FontFamily,
+  // 색상 확장
   Color,
+  // 하이라이트 확장
   Highlight.configure({
     multicolor: true,
   }),
-  CodeBlock.configure({
-    languageClassPrefix: 'language-',
+  // 코드 블록 확장
+  CodeBlock,
+  // 코드 블록 확장
+  CodeBlockLowlight.configure({
+    lowlight, // 하이라이트 설정
+  }),
+  // 리스트 확장
+  BulletList.configure({
+    keepMarks: true,
+    keepAttributes: false,
     HTMLAttributes: {
-      class: 'hljs',
+      class: 'list-disc ml-4',
     },
   }),
-  CodeBlockLowlight.configure({
-    lowlight,
+  OrderedList.configure({
+    keepMarks: true,
+    keepAttributes: false,
     HTMLAttributes: {
-      class: 'hljs',
+      class: 'list-decimal pl-4',
+    },
+  }),
+  ListItem.configure({
+    HTMLAttributes: {
+      class: 'my-1',
     },
   }),
 ]

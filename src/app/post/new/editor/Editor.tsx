@@ -3,16 +3,8 @@ import { useEditor, EditorContent } from '@tiptap/react'
 import { EditorMenuBar } from './EditorMenuBar'
 import { EditorBubbleMenu } from './EditorBubbleMenu'
 import { EditorProvider } from './EditorContext'
-import { FontSize } from '@tiptap/extension-font-size'
-import FontFamily from '@tiptap/extension-font-family'
 import { common, createLowlight } from 'lowlight'
-import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
-import StarterKit from '@tiptap/starter-kit'
 import java from 'highlight.js/lib/languages/java'
-import GapCursor from '@tiptap/extension-gapcursor';
-import { TextStyle } from '@tiptap/extension-text-style'
-import { Color } from '@tiptap/extension-color'
-
 import javascript from 'highlight.js/lib/languages/javascript'
 import typescript from 'highlight.js/lib/languages/typescript'
 import python from 'highlight.js/lib/languages/python'
@@ -32,6 +24,12 @@ import yaml from 'highlight.js/lib/languages/yaml'
 import bash from 'highlight.js/lib/languages/bash'
 import markdown from 'highlight.js/lib/languages/markdown'
 import { EditorExtensions } from './EditorExtensions'
+import Table from '@tiptap/extension-table'
+import TableRow from '@tiptap/extension-table-row'
+import TableCell from '@tiptap/extension-table-cell'
+import TableHeader from '@tiptap/extension-table-header'
+import BulletList from '@tiptap/extension-bullet-list'
+import ListItem from '@tiptap/extension-list-item'
 
 interface EditorProps {
   /** 초기 에디터 컨텐츠 */
@@ -66,14 +64,31 @@ lowlight.register('bash', bash)
 lowlight.register('markdown', markdown)
 
 /**
- * Tiptap 기반의 리치 텍스트 에디터 컴포넌트
+ * Tiptap 기반의 리치 텍스트 에디터
  * @component
  */
 export function Editor({ initialContent = '', onChange, readonly = false }: EditorProps) {
   const editor = useEditor({
-    extensions: EditorExtensions,
+    extensions: [
+      ...EditorExtensions,
+      Table.configure({
+        resizable: true,
+        handleWidth: 5,
+        cellMinWidth: 50,
+        lastColumnResizable: true,
+        allowTableNodeSelection: true,
+        HTMLAttributes: {
+          style: 'margin-left: auto; margin-right: auto;'  // 기본 스타일 설정
+        },
+      }),
+      TableRow,
+      TableCell,
+      TableHeader,
+      BulletList,
+      ListItem,
+    ],
     content: initialContent,
-    immediatelyRender:false,
+    immediatelyRender: false,
     editable: !readonly,
     onUpdate: ({ editor }) => {
       onChange?.(editor.getHTML())
@@ -87,7 +102,12 @@ export function Editor({ initialContent = '', onChange, readonly = false }: Edit
       <div className="relative">
         <EditorMenuBar />
         <EditorBubbleMenu />
-        <EditorContent editor={editor} className="prose max-w-none p-4" />
+        <div className="prose max-w-none">
+          <EditorContent 
+            editor={editor} 
+            className="min-h-[60vh] border border-gray-200 rounded-lg p-0 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent"
+          />
+        </div>
       </div>
     </EditorProvider>
   )

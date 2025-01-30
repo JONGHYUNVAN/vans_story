@@ -15,7 +15,7 @@ export default function CreatePostPage() {
   return (
       <div className="mt-20 max-w-4xl mx-auto p-4">
         <PostHeader />
-        <PostCreateForm submitUrl="/api/posts/create" />
+        <PostCreateForm/>
       </div>
   )
 }

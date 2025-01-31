@@ -24,12 +24,7 @@ import yaml from 'highlight.js/lib/languages/yaml'
 import bash from 'highlight.js/lib/languages/bash'
 import markdown from 'highlight.js/lib/languages/markdown'
 import { EditorExtensions } from './EditorExtensions'
-import Table from '@tiptap/extension-table'
-import TableRow from '@tiptap/extension-table-row'
-import TableCell from '@tiptap/extension-table-cell'
-import TableHeader from '@tiptap/extension-table-header'
-import BulletList from '@tiptap/extension-bullet-list'
-import ListItem from '@tiptap/extension-list-item'
+
 
 interface EditorProps {
   /** 초기 에디터 컨텐츠 */
@@ -40,53 +35,13 @@ interface EditorProps {
   readonly?: boolean
 }
 
-const lowlight = createLowlight(common)
-
-// 언어 등록
-lowlight.register('javascript', javascript)
-lowlight.register('typescript', typescript)
-lowlight.register('python', python)
-lowlight.register('java', java)
-lowlight.register('cpp', cpp)
-lowlight.register('csharp', csharp)
-lowlight.register('rust', rust)
-lowlight.register('go', go)
-lowlight.register('sql', sql)
-lowlight.register('ruby', ruby)
-lowlight.register('swift', swift)
-lowlight.register('kotlin', kotlin)
-lowlight.register('php', php)
-lowlight.register('html', html)
-lowlight.register('css', css)
-lowlight.register('json', json)
-lowlight.register('yaml', yaml)
-lowlight.register('bash', bash)
-lowlight.register('markdown', markdown)
-
 /**
  * Tiptap 기반의 리치 텍스트 에디터
  * @component
  */
 export function Editor({ initialContent = '', onChange, readonly = false }: EditorProps) {
   const editor = useEditor({
-    extensions: [
-      ...EditorExtensions,
-      Table.configure({
-        resizable: true,
-        handleWidth: 5,
-        cellMinWidth: 50,
-        lastColumnResizable: true,
-        allowTableNodeSelection: true,
-        HTMLAttributes: {
-          style: 'margin-left: auto; margin-right: auto;'  // 기본 스타일 설정
-        },
-      }),
-      TableRow,
-      TableCell,
-      TableHeader,
-      BulletList,
-      ListItem,
-    ],
+    extensions: EditorExtensions,
     content: initialContent,
     immediatelyRender: false,
     editable: !readonly,

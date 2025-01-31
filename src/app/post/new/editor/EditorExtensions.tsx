@@ -23,6 +23,21 @@ import BulletList from '@tiptap/extension-bullet-list'
 import OrderedList from '@tiptap/extension-ordered-list'
 import ListItem from '@tiptap/extension-list-item'
 import sql from 'highlight.js/lib/languages/sql';
+import Table from '@tiptap/extension-table'
+import TableRow from '@tiptap/extension-table-row'
+import TableCell from '@tiptap/extension-table-cell'
+import TableHeader from '@tiptap/extension-table-header'
+import cpp from 'highlight.js/lib/languages/cpp'
+import csharp from 'highlight.js/lib/languages/csharp'
+import rust from 'highlight.js/lib/languages/rust'
+import go from 'highlight.js/lib/languages/go'
+import ruby from 'highlight.js/lib/languages/ruby'
+import swift from 'highlight.js/lib/languages/swift'
+import php from 'highlight.js/lib/languages/php'
+import json from 'highlight.js/lib/languages/json'
+import yaml from 'highlight.js/lib/languages/yaml'
+import bash from 'highlight.js/lib/languages/bash'
+import markdown from 'highlight.js/lib/languages/markdown'
 
 
 const lowlight = createLowlight()
@@ -37,7 +52,17 @@ lowlight.register('java', java)
 lowlight.register('kotlin', kotlin)
 lowlight.register('python', python)
 lowlight.register('sql', sql);
-
+lowlight.register('cpp', cpp)
+lowlight.register('csharp', csharp)
+lowlight.register('rust', rust)
+lowlight.register('go', go)
+lowlight.register('ruby', ruby)
+lowlight.register('swift', swift)
+lowlight.register('php', php)
+lowlight.register('json', json)
+lowlight.register('yaml', yaml)
+lowlight.register('bash', bash)
+lowlight.register('markdown', markdown)
 
 
 export const EditorExtensions = [
@@ -104,4 +129,18 @@ export const EditorExtensions = [
       class: 'my-1',
     },
   }),
+  // Table 관련 확장 추가
+  Table.configure({
+    resizable: true,
+    handleWidth: 5,
+    cellMinWidth: 50,
+    lastColumnResizable: true,
+    allowTableNodeSelection: true,
+    HTMLAttributes: {
+      style: 'margin-left: auto; margin-right: auto;'
+    },
+  }),
+  TableRow,
+  TableCell,
+  TableHeader,
 ]

@@ -2,18 +2,7 @@
 import { BubbleMenu } from '@tiptap/react'
 import { Bold, Italic, Underline, Palette, Type } from 'lucide-react'
 import { useEditorContext } from './EditorContext'
-import {
-  Table,
-  RowsIcon,
-  ColumnsIcon,
-  Trash2,
-  AlignLeft,
-  AlignCenter,
-  AlignRight,
-  Merge,
-  Split
-} from 'lucide-react'
-
+import { Trash2 } from 'lucide-react'
 import { default as insert_up } from '../../../../../public/icons/insert_up.ico'
 import { default as insert_down } from '../../../../../public/icons/insert_down.ico'
 import { default as insert_left } from '../../../../../public/icons/insert_left.ico'

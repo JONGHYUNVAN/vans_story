@@ -21,11 +21,13 @@ export function PostCreateForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log(title, content, theme)
+    console.log('제목:', title)
+    console.log('테마:', theme)
+    console.log('내용:', content)
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form id="post-form" onSubmit={handleSubmit}>
       <input
         type="text"
         value={title}

@@ -71,6 +71,9 @@ export const EditorExtensions = [
     codeBlock: false,
     bulletList: false,
     orderedList: false,
+    link: false,
+    underline: false,
+    listItem: false,
   }),
   // 이미지 확장
   Image.configure({
@@ -104,8 +107,6 @@ export const EditorExtensions = [
     multicolor: true,
   }),
   // 코드 블록 확장
-  CodeBlock,
-  // 코드 블록 확장
   CodeBlockLowlight.configure({
     lowlight, // 하이라이트 설정
   }),
@@ -124,11 +125,7 @@ export const EditorExtensions = [
       class: 'list-decimal pl-4',
     },
   }),
-  ListItem.configure({
-    HTMLAttributes: {
-      class: 'my-1',
-    },
-  }),
+  ListItem,
   // Table 관련 확장 추가
   Table.configure({
     resizable: true,

@@ -1,10 +1,14 @@
 import Link from "next/link";
 
+interface PostHeaderProps {
+  onSubmit?: () => void;
+}
+
 /**
  * 게시글 관련 페이지들의 공통 헤더 컴포넌트
  * @component
  */
-export function PostHeader() {
+export function PostHeader({ onSubmit }: PostHeaderProps) {
   return (
     <div className="border-b border-gray-100/10 bg-black/80 backdrop-blur-md sticky top-0 z-50">
       <div className="container mx-auto px-4">
@@ -25,8 +29,9 @@ export function PostHeader() {
             </button>
             <button
               type="submit"
-              form="post-form" // 폼 ID와 연결
+              form="post-form"
               className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm transition-colors"
+              onClick={onSubmit}
             >
               발행하기
             </button>

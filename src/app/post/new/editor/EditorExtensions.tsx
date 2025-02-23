@@ -38,6 +38,7 @@ import json from 'highlight.js/lib/languages/json'
 import yaml from 'highlight.js/lib/languages/yaml'
 import bash from 'highlight.js/lib/languages/bash'
 import markdown from 'highlight.js/lib/languages/markdown'
+import Youtube from '@tiptap/extension-youtube'
 
 
 const lowlight = createLowlight()
@@ -140,4 +141,10 @@ export const EditorExtensions = [
   TableRow,
   TableCell,
   TableHeader,
+  // YouTube 확장 추가
+  Youtube.configure({
+    HTMLAttributes: {
+      class: 'w-full aspect-video',
+    },
+  }),
 ]

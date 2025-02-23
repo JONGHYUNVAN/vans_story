@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { useAppDispatch } from '@/store/hooks';
 import { closeLoginModal } from '@/store/modal/slice';
-import { authApi } from '@/store/auth/api';
+import { authApi } from '@/api/auth/authApi';
 import { loginFailure, loginStart, loginSuccess, loginFinish} from '@/store/auth/slice';
 import { useTranslation } from '@/utils/i18n';
 import { showWelcomeAlert } from '@/utils/alerts';

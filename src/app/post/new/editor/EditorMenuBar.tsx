@@ -4,13 +4,14 @@ import {
   Bold, Italic, Underline, Strikethrough, 
   AlignLeft, AlignCenter, AlignRight, AlignJustify,
   Palette, Code, List, ListOrdered, Table, Quote, 
-  Image, Smile
+  Image, Smile, Video
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import EmojiPicker from 'emoji-picker-react'
+import EmojiPicker, { EmojiStyle } from 'emoji-picker-react'
 import { koreanFonts } from '@/app/fonts/editor/kr';
 import { englishFonts } from '@/app/fonts/editor/en';
 import { codeFonts } from '@/app/fonts/editor/co';
+import { FaYoutube } from 'react-icons/fa'
 const FONT_SIZES = ['12', '14', '16', '18', '20', '24', '28', '32', '36', '40'];
 
 const CODE_LANGUAGE = [
@@ -486,12 +487,13 @@ export function EditorMenuBar() {
             className="p-2 rounded hover:bg-gray-100"
             title="이모티콘"
           >
-            <Smile size={18} />
+          <span style={{ fontSize: "18px" }}>😀</span>
           </button>
           
           {showEmojiPicker && (
             <div className="absolute top-full left-0 z-50">
               <EmojiPicker
+                emojiStyle={EmojiStyle.NATIVE}
                 onEmojiClick={(emojiData) => {
                   editor.chain().focus().insertContent(emojiData.emoji).run();
                   setShowEmojiPicker(false);
@@ -499,6 +501,21 @@ export function EditorMenuBar() {
               />
             </div>
           )}
+
+        <button
+          onClick={() => {
+            const url = window.prompt('YouTube URL을 입력하세요:')
+            if (url) {
+              editor.chain().focus().setYoutubeVideo({
+                src: url,
+              }).run()
+            }
+          }}
+          className="p-2 rounded hover:bg-gray-100"
+          title="YouTube 영상 삽입"
+          >
+          <FaYoutube size={18} className="text-red-600" />
+        </button>
         </div>
       </div>
     </div>  

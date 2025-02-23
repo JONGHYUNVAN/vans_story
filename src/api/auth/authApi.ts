@@ -1,6 +1,5 @@
-import { API_ROUTES } from '@/constants/api';
+import { API_URLS } from '@/api/constants/apiUrl';
 import { tokenStorage } from '@/utils/token';
-import { useTranslation } from '@/utils/i18n';
 
 /**
  * 인증 관련 API 함수들
@@ -15,7 +14,7 @@ export const authApi = {
    * @throws {Error} 로그인 실패 시 에러 발생
    */
   async login(credentials: { email: string; password: string }) {
-    const res = await fetch(`${API_ROUTES.AUTH.LOGIN}`, {
+    const res = await fetch(`${API_URLS.AUTH.LOGIN}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(credentials),
@@ -43,7 +42,7 @@ export const authApi = {
    * @throws {Error} 로그아웃 실패 시 에러 발생
    */
   async logout() {
-    const res = await fetch(`${API_ROUTES.AUTH.LOGOUT}`, {
+    const res = await fetch(`${API_URLS.AUTH.LOGOUT}`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${tokenStorage.getToken()}`,
@@ -61,7 +60,7 @@ export const authApi = {
    * @throws {Error} 토큰 갱신 실패 시 에러 발생
    */
   async refresh() {
-    const res = await fetch(`${API_ROUTES.AUTH.REFRESH}`, {
+    const res = await fetch(`${API_URLS.AUTH.REFRESH}`, {
       method: 'POST',
       credentials: 'include',
     });

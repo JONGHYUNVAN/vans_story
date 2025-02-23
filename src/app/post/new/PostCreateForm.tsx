@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Editor } from './editor/Editor'
-import { PostViewer } from './viewer/Viewer'
+import { Viewer } from '../viewer/Viewer'
 
 const themes = [
   { value: 'spring', label: 'Spring' },
@@ -80,7 +80,7 @@ export function PostCreateForm() {
             onChange={setContent}
           />
         ) : (
-          <PostViewer content={content} />
+          <Viewer content={content} />
         )}
       </div>
     </form>

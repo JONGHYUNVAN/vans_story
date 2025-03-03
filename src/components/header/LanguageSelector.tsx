@@ -13,7 +13,7 @@ const languages = [
 ];
 
 export default function LanguageSelector() {
-  const { locale, changeLocale } = useTranslation();
+  const { locale, changeLocale } = useTranslation('');
 
   const currentLanguage = languages.find(lang => lang.code === locale) || languages[0];
 

@@ -52,5 +52,16 @@
       "username": "Username is required",
       "password": "Password is required"
     }
+  },
+  "post": {
+    "views": "Views {count}",
+    "likes": "Likes {count}",
+    "sort": {
+      "latest": "Latest",
+      "oldest": "Oldest",
+      "views": "Most viewed",
+      "likes": "Most liked"
+    },
+    "by": "by. {author}"
   }
 } 

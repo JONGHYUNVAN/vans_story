@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { SiNextdotjs } from 'react-icons/si';
 import PostCard from '@/app/post/view/postcard/PostCard';
+import { useTranslation } from '@/utils/i18n';
 
 interface NextjsPost {
   id: string;
@@ -17,6 +18,8 @@ interface NextjsPost {
   likeCount: number;
   theme: string;
   category: string;
+  thumbnail: string;
+  language: string;
 }
 
 const MOCK_POSTS: NextjsPost[] = [
@@ -32,7 +35,9 @@ const MOCK_POSTS: NextjsPost[] = [
     viewCount: 120,
     likeCount: 15,
     theme: 'frontend',
-    category: 'nextjs'
+    category: 'nextjs',
+    thumbnail: '',
+    language: 'ko'
   },
   {
     id: '2',
@@ -42,18 +47,21 @@ const MOCK_POSTS: NextjsPost[] = [
     author: 'Vans',
     createdAt: '2024-03-19',
     updatedAt: '2024-03-19',
-    tags: ['RSC', 'Performance', 'Optimization'],
+    tags: ['Next.js', 'React', 'Server Components'],
     viewCount: 85,
     likeCount: 10,
     theme: 'frontend',
-    category: 'nextjs'
+    category: 'nextjs',
+    thumbnail: '',
+    language: 'ko'
   }
 ];
 
 export default function NextjsListPage() {
-  const [posts] = useState<NextjsPost[]>(MOCK_POSTS);
-  const [sortOption, setSortOption] = useState<string>('latest');
-  const [visiblePosts, setVisiblePosts] = useState<number>(4); // 초기 표시 포스트 수
+  const { t } = useTranslation();
+  const [posts, setPosts] = useState<NextjsPost[]>(MOCK_POSTS);
+  const [sortOption, setSortOption] = useState('latest');
+  const [visiblePosts, setVisiblePosts] = useState(10);
 
   // 브라우저 창 크기 변경 시 표시할 포스트 수를 조정
   useEffect(() => {
@@ -113,12 +121,12 @@ export default function NextjsListPage() {
             <select
               value={sortOption}
               onChange={(e) => setSortOption(e.target.value)}
-              className="w-36 px-3 py-2 bg-[#1a1a1a] text-white border border-[#333333] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#333333]"
+              className="text-center w-36 py-2 bg-[#000000] text-white border border-[#333333] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#333333]"
             >
-              <option value="latest">최신순</option>
-              <option value="oldest">오래된순</option>
-              <option value="views">조회수순</option>
-              <option value="likes">좋아요순</option>
+              <option value="latest">{t('post.sort.latest')}</option>
+              <option value="oldest">{t('post.sort.oldest')}</option>
+              <option value="views">{t('post.sort.views')}</option>
+              <option value="likes">{t('post.sort.likes')}</option>
             </select>
           </div>
 
@@ -138,8 +146,8 @@ export default function NextjsListPage() {
                   author: post.author
                 }}
                 renderBadge={() => (
-                  <span className="flex items-center justify-center w-8 h-8 rounded-full bg-black">
-                    <SiNextdotjs className="w-4 h-4 text-white" />
+                  <span className="flex items-center justify-center w-10 h-8 rounded-full bg-black">
+                    <SiNextdotjs className="w-7 h-7 text-white" />
                   </span>
                 )}
               />

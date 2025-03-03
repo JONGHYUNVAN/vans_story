@@ -52,5 +52,16 @@
       "username": "사용자명은 필수입니다",
       "password": "비밀번호는 필수입니다"
     }
+  },
+  "post": {
+    "views": "조회 {count}",
+    "likes": "좋아요 {count}",
+    "sort": {
+      "latest": "최신순",
+      "oldest": "오래된순",
+      "views": "조회수순",
+      "likes": "좋아요순"
+    },
+    "by": "by. {author}"
   }
 } 

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import React from 'react';
+import { useTranslation } from '@/utils/i18n';
 
 interface BasePost {
   id: string;
@@ -23,10 +24,10 @@ export default function PostCard<T extends BasePost>({
   post, 
   renderBadge 
 }: PostCardProps<T>) {
+  const { t } = useTranslation();
   const [isHovered, setIsHovered] = useState(false);
   const [showDescription, setShowDescription] = useState(false);
   const [currentText, setCurrentText] = useState('');
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [contentHeight, setContentHeight] = useState<number>(0);
   const [dividerVisible, setDividerVisible] = useState(false);
   const [bottomDividerVisible, setBottomDividerVisible] = useState(false);
@@ -87,7 +88,6 @@ export default function PostCard<T extends BasePost>({
         const typingInterval = setInterval(() => {
           if (i <= description.length) {
             setCurrentText(description.substring(0, i));
-            setCurrentIndex(i);
             i++;
           } else {
             clearInterval(typingInterval);
@@ -111,7 +111,6 @@ export default function PostCard<T extends BasePost>({
       setDividerVisible(false);
       setShowDescription(false);
       setCurrentText('');
-      setCurrentIndex(0);
       setBottomDividerVisible(false);
     }
 
@@ -159,14 +158,14 @@ export default function PostCard<T extends BasePost>({
         </h2>
         <div className="flex items-center gap-3">
           {post.author && (
-            <span className="text-xs text-zinc-500">by. {post.author}</span>
+            <span className="text-xs text-zinc-500">{t('post.by', { author: post.author })}</span>
           )}
           {renderBadge && renderBadge(post)}
         </div>
       </div>
       
       {post.topic && (
-        <p className="text-xs text-zinc-500 mb-4 -mt-1">{post.topic}</p>
+        <p className="text-xs text-zinc-500 -mt-1">{post.topic}</p>
       )}
       
       {/* 가로 구분선 - 중앙에서 확장 */}
@@ -186,12 +185,12 @@ export default function PostCard<T extends BasePost>({
       {/* Description container with enhanced slide down effect */}
       <div 
         ref={descContainerRef}
-        className="relative overflow-hidden mt-2"
+        className="relative overflow-hidden mt-2 mb-2"
         style={{
           height: isHovered ? `${contentHeight}px` : '0px',
           opacity: isHovered ? 1 : 0,
           transition: `height ${slideAnimationDuration}ms cubic-bezier(0.16, 1, 0.3, 1), opacity ${slideAnimationDuration * 0.8}ms ease-in-out`,
-          transformOrigin: 'top'
+          transformOrigin: 'top',
         }}
       >
         <div 
@@ -211,7 +210,7 @@ export default function PostCard<T extends BasePost>({
                 <div className="relative w-24 h-24 rounded-md overflow-hidden flex-shrink-0">
                   <img
                     src={post.thumbnail || '/next.webp'}
-                    alt="썸네일"
+                    alt="thumbnail"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     onError={(e) => {
                       // 이미지 로드 실패 시 기본 이미지로 대체
@@ -225,31 +224,31 @@ export default function PostCard<T extends BasePost>({
                   <div className="leading-snug">
                     {renderTextWithLineBreaks()}
                   </div>
-                  
-                  {/* 하단 구분선 - 중앙에서 확장 */}
-                  <div className="relative h-[1px] my-2 overflow-hidden">
+                </div>
+              </div>
+            </div>
+          )}
+           {/* 하단 구분선 - 중앙에서 확장 */}
+           <div className="relative h-[1px] my-2 overflow-hidden">
                     <div 
                       className="absolute inset-0 mx-auto bg-gradient-to-r from-transparent via-zinc-500 to-transparent"
                       style={{
                         transform: bottomDividerVisible ? 'scaleX(1)' : 'scaleX(0)',
                         transformOrigin: 'center',
                         opacity: bottomDividerVisible ? 0.6 : 0,
-                        transition: `transform 200ms cubic-bezier(0.4, 0.0, 0.2, 1), opacity 150ms ease-in-out`,
-                        height: '1px'
+                        transition: `transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 100ms ease-in-out`,
+                        height: '1px',
+                        width: '100%'
                       }}
                     />
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+          </div>
         </div>
       </div>
       
       <div className="flex items-center justify-between text-xs text-zinc-500">
         <div className="flex items-center gap-4">
-          <span>조회 {post.viewCount}</span>
-          <span>좋아요 {post.likeCount}</span>
+          <span>{t('post.views', { count: post.viewCount })}</span>
+          <span>{t('post.likes', { count: post.likeCount })}</span>
         </div>
         <div className="flex items-center gap-2">
           {post.tags.map(tag => (

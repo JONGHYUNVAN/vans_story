@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .writing-vertical {
+    writing-mode: vertical-lr;
+    text-orientation: upright;
+    letter-spacing: 1em;
+  }
+}
+
+@keyframes bounce-right {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(25%);
+  }
+}
 
 /* 코드블록 기본 스타일 */
 .ProseMirror pre {

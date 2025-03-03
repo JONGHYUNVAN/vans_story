@@ -5,6 +5,16 @@
     "aboutVan": "About Van",
     "greeting": "Have a good day, {username}!"
   },
+  "Sidebar": {
+    "sidebarMenu": "View Sidebar Menu"
+  },
+  "Next": {
+    "layouts": "Layouts",
+    "nestedLayouts": "Nested Layouts",
+    "groupedLayouts": "Grouped Layouts",
+    "parallelRoutes": "Parallel Routes",
+    "nestedLayoutsDesc": "A way to share UI across multiple pages in your application."
+  },
   "common": {
     "login": "Login",
     "logout": "Logout",

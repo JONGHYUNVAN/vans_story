@@ -1,15 +1,23 @@
 import { ViewPostHeader } from '../ViewPostHeader';
 import { ViewPostContent } from '../ViewPostContent';
-import { postAPI } from '@/api/post/postApi';
+import { API_URLS } from '@/api/constants/apiUrl';
+import { Post } from '@/interfaces/post/types';
 
-// PageProps 타입 정의
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
+async function getPost(id: string): Promise<Post> {
+  const response = await fetch(`${API_URLS.POST.GET}/${id}`);
+  if (!response.ok) {
+    throw new Error(`게시글 조회 실패, ${response.status}`);
+  }
+  return response.json();
+}
+
 export default async function ViewPostPage({ params }: PageProps) {
   const { id } = await params;
-  const post = await postAPI.getPost(Number(id));
+  const post = await getPost(id);
 
   return (
     <div className="max-w-screen-lg mx-auto">

@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { useAppDispatch } from '@/store/hooks';
@@ -17,6 +17,18 @@ const LoginModal = () => {
   const [passwordError, setPasswordError] = useState('');
   const { t } = useTranslation();   
   const isLoading = useSelector((state: RootState) => state.auth.isLoading);
+  const [saveEmail, setSaveEmail] = useState(false);
+  const [email, setEmail] = useState('');
+
+  // 저장된 이메일 불러오기
+  useEffect(() => {
+    const savedEmail = localStorage.getItem('savedEmail');
+    if (savedEmail) {
+      setEmail(savedEmail);
+      setSaveEmail(true);
+    }
+  }, []);
+
   /**
    * 로그인 폼 제출 핸들러
    * @param {React.FormEvent} event - 폼 제출 이벤트
@@ -30,13 +42,21 @@ const LoginModal = () => {
     event.preventDefault();
     
     const formData = new FormData(event.target as HTMLFormElement);
-    const email = formData.get('useremail') as string;
+    const email = formData.get('email') as string;
     const password = formData.get('password') as string;
     
     try {
         dispatch(loginStart());
         await authApi.login({ email, password });
         dispatch(loginSuccess({ email }));
+
+        // 이메일 저장 처리
+        if (saveEmail) {
+          localStorage.setItem('savedEmail', email);
+        } else {
+          localStorage.removeItem('savedEmail');
+        }
+
         const title = t('auth.welcome', { username: email.split('@')[0] }); 
         setPasswordError('');
         showWelcomeAlert(title);
@@ -94,13 +114,23 @@ const LoginModal = () => {
               {/* 환영 메시지 */}
               <h1 className="mt-5 text-white uppercase font-bold text-3xl neon-text" translate="no">Welcome !</h1>
               {/* 로그인 폼 */}
-              <form className="mt-10" onSubmit={handleSubmit}>
+              <form 
+                name="login-form"
+                className="mt-10" 
+                onSubmit={handleSubmit} 
+                autoComplete="on"
+              >
                 <input
-                  type="text"
-                  name="useremail"
+                  type="email"
+                  name="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  inputMode="email"
                   placeholder="User Email"
                   className="block w-3/5 mx-auto mt-5 mb-5 p-3 border-2 border-[#3498db] text-white bg-transparent rounded-full text-center outline-none transition-all duration-200 focus:w-[300px] focus:border-[#2ecc71]"
                   autoComplete="username"
+                  spellCheck="false"
+                  autoCapitalize="off"
                 />
                 <input
                   type="password"
@@ -109,6 +139,41 @@ const LoginModal = () => {
                   className="block w-3/5 mx-auto mt-5 mb-5 p-3 border-2 border-[#3498db] text-white bg-transparent rounded-full text-center outline-none transition-all duration-200 focus:w-[300px] focus:border-[#2ecc71]"
                   autoComplete="current-password"
                 />
+
+                {/* 아이디 저장 체크박스 */}
+                <div className="flex items-center justify-center mb-4 group">
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      id="saveEmail"
+                      checked={saveEmail}
+                      onChange={(e) => setSaveEmail(e.target.checked)}
+                      className="peer sr-only" // 원래 체크박스는 숨김
+                    />
+                    <div 
+                      onClick={() => setSaveEmail(!saveEmail)}
+                      className="w-5 h-5 border-2 border-[#3498db] rounded-md 
+                      transition-all duration-200 
+                      peer-checked:border-[#2ecc71] peer-checked:bg-[#2ecc71]/20
+                      peer-checked:shadow-[0_0_10px_#2ecc71] 
+                      peer-focus:ring-2 peer-focus:ring-[#2ecc71]/50
+                      cursor-pointer
+                      after:content-[''] after:block after:opacity-0
+                      after:w-2 after:h-3 after:border-r-2 after:border-b-2
+                      after:border-white after:rotate-45 after:absolute
+                      after:top-1/2 after:left-1/2 after:-translate-y-[70%] after:-translate-x-1/2
+                      peer-checked:after:opacity-100 after:transition-opacity"
+                    ></div>
+                  </div>
+                  <label 
+                    htmlFor="saveEmail" 
+                    className="ml-2 text-sm text-gray-400 cursor-pointer select-none 
+                      group-hover:text-gray-300 transition-colors
+                      group-hover:text-shadow-[0_0_10px_#3498db]"
+                  >
+                    Remember Email
+                  </label>
+                </div>
 
                 {/* 비밀번호 에러 메시지 */}
                 {passwordError && (

@@ -11,7 +11,7 @@ import { showLogoutAlert } from '@/utils/alerts';
 
 export default function AuthButtons() {
   const dispatch = useAppDispatch();
-  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const { t } = useTranslation();
 
   const handleLogout = async () => {
@@ -33,7 +33,7 @@ export default function AuthButtons() {
             onClick={handleLogout}
             className="text-gray-600 hover:text-red-600 transition-colors"
           >
-            로그아웃
+            {t('common.logout')}
           </button>
         </div>
       ) : (
@@ -41,7 +41,7 @@ export default function AuthButtons() {
           onClick={() => dispatch(openLoginModal())}
           className="text-gray-600 hover:text-blue-600 transition-colors"
         >
-          로그인
+          {t('common.login')}
         </button>
       )}
     </>

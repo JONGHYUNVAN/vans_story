@@ -5,6 +5,22 @@
     "aboutVan": "Van 소개",
     "greeting": "좋은 하루 보내세요, {username}님!"
   },
+  "Sidebar": {
+    "sidebarMenu": "사이드바 메뉴 보기"
+  },
+  "Next": {
+    "layouts": "레이아웃",
+    "nestedLayouts": "중첩 레이아웃",
+    "groupedLayouts": "그룹 레이아웃",
+    "parallelRoutes": "병렬 라우트",
+    "nestedLayoutsDesc": "여러 페이지에서 공통으로 사용되는 UI를 공유하는 방법입니다."
+  },
+  "common": {
+    "login": "로그인",
+    "logout": "로그아웃",
+    "email": "이메일",
+    "password": "비밀번호"
+  },
   "home": {
     "welcome": "안녕하세요! 이 블로그는 Van 의 개발 이야기를 담을 겁니다.",
     "blogIntro": "블로그 소개",

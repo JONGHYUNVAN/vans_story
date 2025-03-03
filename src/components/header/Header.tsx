@@ -24,13 +24,13 @@ export default function Header() {
 
   return (
     <header 
-      className="fixed top-0 left-0 w-full z-50 transition-all duration-300 ease-in-out"
+      className={`fixed top-0 left-0 w-full ${isHovered ? 'z-[50]' : 'z-[10]'} transition-all duration-300 ease-in-out`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* '헤더 보기' 글씨 */}
       <div className={`
-        absolute top-0 left-0 w-full 
+        absolute top-0 left-0 w-full z-10
         flex items-center justify-center py-2
         bg-transparent backdrop-blur-sm
         transform transition-all duration-300
@@ -42,7 +42,7 @@ export default function Header() {
 
       {/* 전체 헤더 */}
       <div className={`
-        w-full bg-white/80 backdrop-blur-md border-b shadow-sm
+        w-full bg-white/80 backdrop-blur-md border-b shadow-sm z-[30]
         transform transition-all duration-300
         ${isHovered ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}
       `}>

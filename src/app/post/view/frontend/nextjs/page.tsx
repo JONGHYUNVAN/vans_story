@@ -1,0 +1,152 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { SiNextdotjs } from 'react-icons/si';
+import PostCard from '@/components/post/PostCard';
+
+interface NextjsPost {
+  id: string;
+  title: string;
+  topic: string;
+  description: string;
+  author: string;
+  createdAt: string;
+  updatedAt: string;
+  tags: string[];
+  viewCount: number;
+  likeCount: number;
+  theme: string;
+  category: string;
+}
+
+const MOCK_POSTS: NextjsPost[] = [
+  {
+    id: '1',
+    title: 'Next.js 13 시작하기',
+    topic: 'App Router',
+    description: 'Next.js 13의 새로운 기능과 App Router에 대해 알아봅니다. Next.js 13은 기존의 Pages Router에서 App Router로의 전환을 통해 더 유연하고 직관적인 라우팅 구조를 제공합니다. 이 게시물에서는 App Router의 동작 방식, 인터셉팅 라우트, 병렬 라우트, 레이아웃, 서버 컴포넌트와의 통합 등 주요 기능들을 실제 예제와 함께 소개하며 실전에서 활용할 수 있는 방법을 다룹니다.',
+    author: 'Vans',
+    createdAt: '2024-03-20',
+    updatedAt: '2024-03-20',
+    tags: ['Next.js', 'React', 'App Router'],
+    viewCount: 120,
+    likeCount: 15,
+    theme: 'frontend',
+    category: 'nextjs'
+  },
+  {
+    id: '2',
+    title: 'Next.js에서 서버 컴포넌트 활용하기',
+    topic: 'React Server Components',
+    description: 'React Server Components를 사용하여 성능을 최적화하는 방법을 설명합니다. 서버 컴포넌트는 클라이언트에 JavaScript 번들을 전송하지 않고 서버에서 렌더링하여 네트워크 요청 및 클라이언트 부하를 줄여줍니다. 이를 통해 초기 로딩 성능이 향상되고 보안이 강화됩니다. Next.js에서 서버 컴포넌트와 클라이언트 컴포넌트를 적절히 조합하는 전략과 데이터 가져오기, 상태 관리, 캐싱 기법 등 실용적인 패턴을 소개합니다.',
+    author: 'Vans',
+    createdAt: '2024-03-19',
+    updatedAt: '2024-03-19',
+    tags: ['RSC', 'Performance', 'Optimization'],
+    viewCount: 85,
+    likeCount: 10,
+    theme: 'frontend',
+    category: 'nextjs'
+  }
+];
+
+export default function NextjsListPage() {
+  const [posts] = useState<NextjsPost[]>(MOCK_POSTS);
+  const [sortOption, setSortOption] = useState<string>('latest');
+  const [visiblePosts, setVisiblePosts] = useState<number>(4); // 초기 표시 포스트 수
+
+  // 브라우저 창 크기 변경 시 표시할 포스트 수를 조정
+  useEffect(() => {
+    const handleResize = () => {
+      const height = window.innerHeight;
+      // 브라우저 높이에 따라 포스트 수 조절
+      if (height < 800) {
+        setVisiblePosts(3);
+      } else if (height < 1000) {
+        setVisiblePosts(4);
+      } else if (height < 1200) {
+        setVisiblePosts(5);
+      } else {
+        setVisiblePosts(6);
+      }
+    };
+
+    // 초기 로드 시 실행
+    handleResize();
+
+    // 리사이즈 이벤트 리스너 등록
+    window.addEventListener('resize', handleResize);
+    
+    // 컴포넌트 언마운트 시 이벤트 리스너 제거
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // 정렬 옵션에 따라 포스트 정렬
+  const sortedPosts = [...posts].sort((a, b) => {
+    switch (sortOption) {
+      case 'latest':
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      case 'oldest':
+        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      case 'views':
+        return b.viewCount - a.viewCount;
+      case 'likes':
+        return b.likeCount - a.likeCount;
+      default:
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    }
+  });
+
+  // 필요한 수만큼 포스트 표시
+  const postsToShow = sortedPosts.slice(0, visiblePosts);
+
+  return (
+    <div className="min-h-screen bg-[#0a0a0a] relative">
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
+      <div className="relative">
+        <div className="mx-auto max-w-5xl px-6 py-12 bg-[#000000] min-h-screen border-x border-[#333333]">
+          <div className="flex items-center justify-between mb-8 pb-8 border-b border-[#333333]">
+            <div className="flex items-center gap-3">
+              <SiNextdotjs className="w-8 h-8 text-white" />
+              <h1 className="text-2xl font-semibold text-white">Next.js</h1>
+            </div>
+            <select
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
+              className="w-36 px-3 py-2 bg-[#1a1a1a] text-white border border-[#333333] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#333333]"
+            >
+              <option value="latest">최신순</option>
+              <option value="oldest">오래된순</option>
+              <option value="views">조회수순</option>
+              <option value="likes">좋아요순</option>
+            </select>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6">
+            {postsToShow.map(post => (
+              <PostCard
+                key={post.id}
+                post={{
+                  id: post.id,
+                  title: post.title,
+                  description: post.description,
+                  createdAt: post.createdAt,
+                  tags: post.tags,
+                  viewCount: post.viewCount,
+                  likeCount: post.likeCount,
+                  topic: post.topic,
+                  author: post.author
+                }}
+                renderBadge={() => (
+                  <span className="flex items-center justify-center w-8 h-8 rounded-full bg-black">
+                    <SiNextdotjs className="w-4 h-4 text-white" />
+                  </span>
+                )}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+} 

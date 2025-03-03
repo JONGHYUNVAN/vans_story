@@ -1,14 +1,20 @@
 import Link from "next/link";
 
 interface PostHeaderProps {
-  onSubmit?: () => void;
+  postData?: {
+    title: string;
+    content: string;
+    theme: string;
+  };
+  onSubmit: (e: React.FormEvent) => Promise<void>;
+  onTempSave: () => void;
 }
 
 /**
  * 게시글 관련 페이지들의 공통 헤더 컴포넌트
  * @component
  */
-export function PostHeader({ onSubmit }: PostHeaderProps) {
+export function PostHeader({ postData, onSubmit, onTempSave }: PostHeaderProps) {
   return (
     <div className="border-b border-gray-100/10 bg-black/80 backdrop-blur-md sticky top-0 z-50">
       <div className="container mx-auto px-4">
@@ -21,9 +27,7 @@ export function PostHeader({ onSubmit }: PostHeaderProps) {
             <button
               type="button"
               className="px-4 py-2 text-sm text-gray-300 hover:text-white transition-colors"
-              onClick={() => {
-                // 임시저장 로직
-              }}
+              onClick={onTempSave}
             >
               임시저장
             </button>
@@ -31,9 +35,8 @@ export function PostHeader({ onSubmit }: PostHeaderProps) {
               type="submit"
               form="post-form"
               className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm transition-colors"
-              onClick={onSubmit}
             >
-              발행하기
+              등록
             </button>
           </div>
         </div>

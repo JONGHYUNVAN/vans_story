@@ -12,7 +12,7 @@ import { showLogoutAlert } from '@/utils/alerts';
 export default function AuthButtons() {
   const dispatch = useAppDispatch();
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
-  const { t } = useTranslation();
+  const { t } = useTranslation('');
 
   const handleLogout = async () => {
     try {

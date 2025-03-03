@@ -15,7 +15,7 @@ const LoginModal = () => {
   const dispatch = useAppDispatch();
   const isOpen = useSelector((state: RootState) => state.modal.isLoginModalOpen);
   const [passwordError, setPasswordError] = useState('');
-  const { t } = useTranslation();   
+  const { t } = useTranslation('');   
   const isLoading = useSelector((state: RootState) => state.auth.isLoading);
   const [saveEmail, setSaveEmail] = useState(false);
   const [email, setEmail] = useState('');

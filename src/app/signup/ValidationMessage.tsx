@@ -24,7 +24,7 @@ import TypewriterComponent from 'typewriter-effect';
  */
 export default function ValidationMessage() {
   const { watch } = useFormContext();
-  const { t } = useTranslation();
+  const { t } = useTranslation('');
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [message, setMessage] = useState('');
 

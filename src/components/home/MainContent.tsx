@@ -16,7 +16,7 @@ import { useState, useEffect } from 'react';
 
 
 export default function MainContent() {
-  const { t } = useTranslation(); 
+  const { t } = useTranslation(''); 
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {

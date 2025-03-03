@@ -6,7 +6,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useTranslation } from '@/utils/i18n';
 
 export default function SignupForm() {
-  const { t } = useTranslation();
+  const { t } = useTranslation('');
   const [focusedField, setFocusedField] = useState<string | null>(null);
   
   const methods = useForm({

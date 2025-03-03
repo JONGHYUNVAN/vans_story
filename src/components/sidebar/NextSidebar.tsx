@@ -8,7 +8,7 @@ import { useTranslation } from '@/utils/i18n';
 
 export default function NextSidebar() {
   const pathname = usePathname();
-  const { t } = useTranslation();
+  const { t } = useTranslation('');
   const [isOpen, setIsOpen] = useState(false); // 기본적으로 닫혀있음
   const [isSmallScreen, setIsSmallScreen] = useState(true); // 기본값을 true로 설정하여 초기에 hover 동작 활성화
   

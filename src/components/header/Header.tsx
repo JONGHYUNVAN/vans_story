@@ -34,7 +34,7 @@ export default function Header() {
         flex items-center justify-center py-2
         bg-transparent backdrop-blur-sm
         transform transition-all duration-300
-        ${isHovered ? 'opacity-0' : 'opacity-100'}
+        ${isHovered ? 'opacity-0 pointer-events-none' : 'opacity-100'}
       `}>
         <span className="text-lg font-bold text-white/70 font-handwriting">{menuText}</span>
         <MdKeyboardArrowDown className="ml-2 w-5 h-5 text-white/70 animate-bounce" />
@@ -42,9 +42,9 @@ export default function Header() {
 
       {/* 전체 헤더 */}
       <div className={`
-        w-full bg-white/80 backdrop-blur-md border-b shadow-sm z-[30]
+        w-full bg-white/80 backdrop-blur-md border-b shadow-sm 
         transform transition-all duration-300
-        ${isHovered ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}
+        ${isHovered ? 'translate-y-0 opacity-100 pointer-events-auto' : '-translate-y-full opacity-0 pointer-events-none'}
       `}>
         <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
           <Link 

@@ -405,3 +405,32 @@ p + .ProseMirror table {
   border-radius: 6px;
   overflow: auto;
 }
+
+@keyframes slideDown {
+  from {
+    max-height: 0;
+    opacity: 0;
+  }
+  to {
+    max-height: 20vh;
+    opacity: 1;
+  }
+}
+
+@keyframes typewriting {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes typingCursor {
+  from, to {
+    border-right-color: transparent;
+  }
+  50% {
+    border-right-color: rgba(255, 255, 255, 0.5);
+  }
+}

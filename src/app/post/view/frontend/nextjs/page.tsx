@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { SiNextdotjs } from 'react-icons/si';
-import PostCard from '@/components/post/PostCard';
+import PostCard from '@/app/post/view/postcard/PostCard';
 
 interface NextjsPost {
   id: string;
@@ -24,7 +24,7 @@ const MOCK_POSTS: NextjsPost[] = [
     id: '1',
     title: 'Next.js 13 시작하기',
     topic: 'App Router',
-    description: 'Next.js 13의 새로운 기능과 App Router에 대해 알아봅니다. Next.js 13은 기존의 Pages Router에서 App Router로의 전환을 통해 더 유연하고 직관적인 라우팅 구조를 제공합니다. 이 게시물에서는 App Router의 동작 방식, 인터셉팅 라우트, 병렬 라우트, 레이아웃, 서버 컴포넌트와의 통합 등 주요 기능들을 실제 예제와 함께 소개하며 실전에서 활용할 수 있는 방법을 다룹니다.',
+    description: 'Next.js 13의 새로운 기능과 App Router에 대해 알아봅니다.\nNext.js 13은 기존의 Pages Router에서 App Router로의 전환을 통해 더 유연하고 직관적인 라우팅 구조를 제공합니다.\n이 게시물에서는 App Router의 동작 방식, 인터셉팅 라우트, 병렬 라우트, 레이아웃, 서버 컴포넌트와의 통합 등 주요 기능들을 실제 예제와 함께 소개하며 실전에서 활용할 수 있는 방법을 다룹니다.',
     author: 'Vans',
     createdAt: '2024-03-20',
     updatedAt: '2024-03-20',
@@ -38,7 +38,7 @@ const MOCK_POSTS: NextjsPost[] = [
     id: '2',
     title: 'Next.js에서 서버 컴포넌트 활용하기',
     topic: 'React Server Components',
-    description: 'React Server Components를 사용하여 성능을 최적화하는 방법을 설명합니다. 서버 컴포넌트는 클라이언트에 JavaScript 번들을 전송하지 않고 서버에서 렌더링하여 네트워크 요청 및 클라이언트 부하를 줄여줍니다. 이를 통해 초기 로딩 성능이 향상되고 보안이 강화됩니다. Next.js에서 서버 컴포넌트와 클라이언트 컴포넌트를 적절히 조합하는 전략과 데이터 가져오기, 상태 관리, 캐싱 기법 등 실용적인 패턴을 소개합니다.',
+    description: 'React Server Components를 사용하여 성능을 최적화하는 방법을 설명합니다.\n서버 컴포넌트는 클라이언트에 JavaScript 번들을 전송하지 않고 서버에서 렌더링하여 네트워크 요청 및 클라이언트 부하를 줄여줍니다. 이를 통해 초기 로딩 성능이 향상되고 보안이 강화됩니다.\n\nNext.js에서 서버 컴포넌트와 클라이언트 컴포넌트를 적절히 조합하는 전략과 데이터 가져오기, 상태 관리, 캐싱 기법 등 실용적인 패턴을 소개합니다.',
     author: 'Vans',
     createdAt: '2024-03-19',
     updatedAt: '2024-03-19',
@@ -101,7 +101,7 @@ export default function NextjsListPage() {
   const postsToShow = sortedPosts.slice(0, visiblePosts);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] relative">
+    <div className="left-auto min-h-screen bg-[#0a0a0a] relative">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
       <div className="relative">
         <div className="mx-auto max-w-5xl px-6 py-12 bg-[#000000] min-h-screen border-x border-[#333333]">

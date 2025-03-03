@@ -5,6 +5,7 @@ import "./globals.css";
 import { StoreProviders } from "../store/providers";
 import LoginModal from "@/components/auth/LoginModal";
 import Sidebar from "@/components/sidebar/Sidebar";
+
 export const metadata: Metadata = {
   title: "Vans Dev Blog",
   description: "개발자 Vans의 블로그입니다. 개발 관련 경험과 지식을 공유합니다.",
@@ -26,16 +27,11 @@ export default function RootLayout({
       ${gamjaFlower.variable}
       ${dancingScript.variable}
     `}>
-      <body>
+      <body className="relative">
         <StoreProviders>
           <Header />
           <Sidebar />
-          <main className="
-            lg:pl-64 
-            transition-all 
-            duration-300 
-            ease-in-out
-          ">
+          <main className="transition-all duration-300 ml-0 lg:ml-64">
             <LoginModal />
             {children}
           </main>

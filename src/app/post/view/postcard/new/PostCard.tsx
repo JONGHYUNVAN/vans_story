@@ -1,30 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
-import React from 'react';
 import { useTranslation } from '@/utils/i18n';
-
-interface BasePost {
-  id: string;
-  title: string;
-  description: string;
-  createdAt: string;
-  tags: string[];
-  viewCount: number;
-  likeCount: number;
-  topic?: string;
-  author?: string;
-  thumbnail?: string; // 썸네일 이미지 URL (옵션)
-}
-
-interface PostCardProps<T extends BasePost> {
-  post: T;
-  renderBadge?: (post: T) => React.ReactNode;
-}
+import { BasePost } from '../BasePost';
+import { PostCardProps } from '../PostCardProps';
 
 export default function PostCard<T extends BasePost>({ 
   post, 
   renderBadge 
 }: PostCardProps<T>) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('');
   const [isHovered, setIsHovered] = useState(false);
   const [showDescription, setShowDescription] = useState(false);
   const [currentText, setCurrentText] = useState('');
@@ -133,7 +116,7 @@ export default function PostCard<T extends BasePost>({
             {/* 커서는 마지막 줄에만 표시하고, 타이핑이 끝나도 계속 표시 */}
             {index === lastLineIndex && (
               <span
-                className="inline-block border-r-2 border-white/50 h-4 ml-[1px]"
+                className="inline-block border-r-2 border-black h-4 ml-[1px]"
                 style={{ 
                   display: 'inline-block', // 항상 표시
                   animation: 'typingCursor 0.75s step-end infinite'
@@ -148,30 +131,30 @@ export default function PostCard<T extends BasePost>({
 
   return (
     <article 
-      className="group relative rounded-lg border border-transparent bg-gradient-to-b from-zinc-900 to-zinc-900/80 p-6 backdrop-blur-md hover:border-zinc-700/50"
+      className="group relative rounded-lg bg-white text-black border border-black hover:shadow-lg p-6"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="flex items-center justify-between mb-1">
-        <h2 className="text-lg font-medium text-zinc-200 group-hover:text-white transition-colors">
+        <h2 className="text-lg font-medium text-gray-900 group-hover:text-black transition-colors">
           {post.title}
         </h2>
         <div className="flex items-center gap-3">
           {post.author && (
-            <span className="text-xs text-zinc-500">{t('post.by', { author: post.author })}</span>
+            <span className="text-xs text-gray-600">{t('post.by', { author: post.author })}</span>
           )}
           {renderBadge && renderBadge(post)}
         </div>
       </div>
       
       {post.topic && (
-        <p className="text-xs text-zinc-500 -mt-1">{post.topic}</p>
+        <p className="text-xs text-gray-600 -mt-1">{post.topic}</p>
       )}
       
       {/* 가로 구분선 - 중앙에서 확장 */}
       <div className="relative h-[1px] my-2 overflow-hidden">
         <div 
-          className="absolute inset-0 mx-auto bg-gradient-to-r from-transparent via-zinc-500 to-transparent"
+          className="absolute inset-0 mx-auto bg-gradient-to-r from-transparent via-gray-400 to-transparent"
           style={{
             transform: dividerVisible ? 'scaleX(1)' : 'scaleX(0)',
             transformOrigin: 'center',
@@ -204,10 +187,10 @@ export default function PostCard<T extends BasePost>({
         >
           {/* Description with typewriting effect and thumbnail */}
           {(isHovered || showDescription) && (
-            <div className="text-zinc-400 text-sm mb-4 w-full">
+            <div className="text-gray-700 text-sm mb-4 w-full">
               <div className="flex items-start gap-4">
                 {/* 썸네일 이미지 */}
-                <div className="relative w-24 h-24 rounded-md overflow-hidden flex-shrink-0">
+                <div className="relative w-24 h-24 rounded-md overflow-hidden flex-shrink-0 border border-gray-200">
                   <img
                     src={post.thumbnail || '/next.webp'}
                     alt="thumbnail"
@@ -231,7 +214,7 @@ export default function PostCard<T extends BasePost>({
            {/* 하단 구분선 - 중앙에서 확장 */}
            <div className="relative h-[1px] my-2 overflow-hidden">
                     <div 
-                      className="absolute inset-0 mx-auto bg-gradient-to-r from-transparent via-zinc-500 to-transparent"
+                      className="absolute inset-0 mx-auto bg-gradient-to-r from-transparent via-gray-400 to-transparent"
                       style={{
                         transform: bottomDividerVisible ? 'scaleX(1)' : 'scaleX(0)',
                         transformOrigin: 'center',
@@ -245,7 +228,7 @@ export default function PostCard<T extends BasePost>({
         </div>
       </div>
       
-      <div className="flex items-center justify-between text-xs text-zinc-500">
+      <div className="flex items-center justify-between text-xs text-gray-600">
         <div className="flex items-center gap-4">
           <span>{t('post.views', { count: post.viewCount })}</span>
           <span>{t('post.likes', { count: post.likeCount })}</span>
@@ -254,7 +237,7 @@ export default function PostCard<T extends BasePost>({
           {post.tags.map(tag => (
             <span 
               key={tag}
-              className="px-2 py-1 bg-zinc-800/50 text-zinc-400 rounded-full text-xs"
+              className="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs border border-gray-200"
             >
               {tag}
             </span>

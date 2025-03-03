@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { SiNextdotjs } from 'react-icons/si';
-import PostCard from '@/app/post/view/postcard/PostCard';
+import PostCard from '@/app/post/view/postcard/nextjs/PostCard';
 import { useTranslation } from '@/utils/i18n';
 
 interface NextjsPost {
@@ -58,7 +58,7 @@ const MOCK_POSTS: NextjsPost[] = [
 ];
 
 export default function NextjsListPage() {
-  const { t } = useTranslation();
+  const { t } = useTranslation('post');
   const [posts, setPosts] = useState<NextjsPost[]>(MOCK_POSTS);
   const [sortOption, setSortOption] = useState('latest');
   const [visiblePosts, setVisiblePosts] = useState(10);
@@ -109,49 +109,51 @@ export default function NextjsListPage() {
   const postsToShow = sortedPosts.slice(0, visiblePosts);
 
   return (
-    <div className="left-auto min-h-screen bg-[#0a0a0a] relative">
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
-      <div className="relative">
-        <div className="mx-auto max-w-5xl px-6 py-12 bg-[#000000] min-h-screen border-x border-[#333333]">
-          <div className="flex items-center justify-between mb-8 pb-8 border-b border-[#333333]">
-            <div className="flex items-center gap-3">
-              <SiNextdotjs className="w-8 h-8 text-white" />
-              <h1 className="text-2xl font-semibold text-white">Next.js</h1>
+    <div  className="transition-all duration-300 ml-0 lg:ml-64">
+      <div className="left-auto min-h-screen bg-[#0a0a0a] relative">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
+        <div className="relative">
+          <div className="mx-auto max-w-5xl px-6 py-12 bg-[#000000] min-h-screen border-x border-[#333333]">
+            <div className="flex items-center justify-between mb-8 pb-8 border-b border-[#333333]">
+              <div className="flex items-center gap-3">
+                <SiNextdotjs className="w-8 h-8 text-white" />
+                <h1 className="text-2xl font-semibold text-white">Next.js</h1>
+              </div>
+              <select
+                value={sortOption}
+                onChange={(e) => setSortOption(e.target.value)}
+                className="text-center w-36 py-2 bg-[#000000] text-white border border-[#333333] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#333333]"
+              >
+                <option value="latest">{t('post.sort.latest')}</option>
+                <option value="oldest">{t('post.sort.oldest')}</option>
+                <option value="views">{t('post.sort.views')}</option>
+                <option value="likes">{t('post.sort.likes')}</option>
+              </select>
             </div>
-            <select
-              value={sortOption}
-              onChange={(e) => setSortOption(e.target.value)}
-              className="text-center w-36 py-2 bg-[#000000] text-white border border-[#333333] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#333333]"
-            >
-              <option value="latest">{t('post.sort.latest')}</option>
-              <option value="oldest">{t('post.sort.oldest')}</option>
-              <option value="views">{t('post.sort.views')}</option>
-              <option value="likes">{t('post.sort.likes')}</option>
-            </select>
-          </div>
 
-          <div className="grid grid-cols-1 gap-6">
-            {postsToShow.map(post => (
-              <PostCard
-                key={post.id}
-                post={{
-                  id: post.id,
-                  title: post.title,
-                  description: post.description,
-                  createdAt: post.createdAt,
-                  tags: post.tags,
-                  viewCount: post.viewCount,
-                  likeCount: post.likeCount,
-                  topic: post.topic,
-                  author: post.author
-                }}
-                renderBadge={() => (
-                  <span className="flex items-center justify-center w-10 h-8 rounded-full bg-black">
-                    <SiNextdotjs className="w-7 h-7 text-white" />
-                  </span>
-                )}
-              />
-            ))}
+            <div className="grid grid-cols-1 gap-6">
+              {postsToShow.map(post => (
+                <PostCard
+                  key={post.id}
+                  post={{
+                    id: post.id,
+                    title: post.title,
+                    description: post.description,
+                    createdAt: post.createdAt,
+                    tags: post.tags,
+                    viewCount: post.viewCount,
+                    likeCount: post.likeCount,
+                    topic: post.topic,
+                    author: post.author
+                  }}
+                  renderBadge={() => (
+                    <span className="flex items-center justify-center w-10 h-8 rounded-full bg-black">
+                      <SiNextdotjs className="w-7 h-7 text-white" />
+                    </span>
+                  )}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>

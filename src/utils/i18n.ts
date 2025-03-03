@@ -25,7 +25,7 @@ interface TranslationParams {
  * - locale: 현재 언어 설정
  * - changeLocale: 언어를 변경하는 함수
  */
-export function useTranslation() {
+export function useTranslation(p0: string) {
   const dispatch = useAppDispatch();
   const locale = useAppSelector((state) => state.i18n.locale);
 

@@ -31,7 +31,7 @@ export default function RootLayout({
         <StoreProviders>
           <Header />
           <Sidebar />
-          <main className="transition-all duration-300 ml-0 lg:ml-64">
+          <main>
             <LoginModal />
             {children}
           </main>

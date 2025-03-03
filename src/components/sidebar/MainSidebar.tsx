@@ -10,12 +10,12 @@ import { categories } from './categories';
 export default function MainSidebar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const { t } = useTranslation();
+  const { t } = useTranslation('');
   const menuText = t('Sidebar.sidebarMenu');
   
   return (
     <div 
-      className="w-64 h-full"
+      className={`${isOpen ? 'w-64' : 'w-16'} h-full transition-all duration-300`}
       onMouseEnter={() => setIsOpen(true)}
       onMouseLeave={() => setIsOpen(false)}
     >
@@ -23,16 +23,16 @@ export default function MainSidebar() {
       <div className={`
         absolute left-0 top-0 h-full w-16
         flex items-center justify-center
-        bg-black/30 backdrop-blur-sm rounded-r-lg
+        bg-transparent backdrop-blur-sm rounded-r-lg
         transform transition-all duration-300 ease-in-out
         ${isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}
       `}>
         <div className="flex flex-col items-center gap-2">
-          <span className="ml-2 text-lg font-bold text-white/70 font-handwriting writing-vertical">
+          <span className="ml-2 text-lg font-bold text-gray-300 font-handwriting writing-vertical">
             {menuText}
           </span>
         </div>
-        <MdKeyboardArrowRight className="w-5 h-5 text-white/70 animate-[bounce-right_1s_infinite]" />
+        <MdKeyboardArrowRight className="w-5 h-5 text-gray-300 animate-[bounce-right_1s_infinite]" />
       </div>
 
       {/* 사이드바 본체 - 마우스가 올라갔을 때 보이는 부분 */}

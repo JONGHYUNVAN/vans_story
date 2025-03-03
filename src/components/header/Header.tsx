@@ -14,7 +14,7 @@ import { checkAuth } from '@/store/auth/slice';
 export default function Header() {
   const [isHovered, setIsHovered] = useState(false);
   const {user,isAuthenticated} = useSelector((state: RootState) => state.auth);
-  const { t } = useTranslation();
+  const { t } = useTranslation('');
   const menuText = t('Header.headerMenu');
   const dispatch = useDispatch();
 
@@ -36,8 +36,8 @@ export default function Header() {
         transform transition-all duration-300
         ${isHovered ? 'opacity-0 pointer-events-none' : 'opacity-100'}
       `}>
-        <span className="text-lg font-bold text-white/70 font-handwriting">{menuText}</span>
-        <MdKeyboardArrowDown className="ml-2 w-5 h-5 text-white/70 animate-bounce" />
+        <span className="text-lg font-bold text-gray-300 font-handwriting">{menuText}</span>
+        <MdKeyboardArrowDown className="ml-2 w-5 h-5 text-gray-300 animate-bounce" />
       </div>
 
       {/* 전체 헤더 */}

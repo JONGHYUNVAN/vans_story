@@ -62,11 +62,14 @@ export default function NextjsListPage() {
   const [posts, setPosts] = useState<NextjsPost[]>(MOCK_POSTS);
   const [sortOption, setSortOption] = useState('latest');
   const [visiblePosts, setVisiblePosts] = useState(10);
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 0);
 
   // 브라우저 창 크기 변경 시 표시할 포스트 수를 조정
   useEffect(() => {
     const handleResize = () => {
       const height = window.innerHeight;
+      setWindowWidth(window.innerWidth);
+      
       // 브라우저 높이에 따라 포스트 수 조절
       if (height < 800) {
         setVisiblePosts(3);
@@ -109,7 +112,7 @@ export default function NextjsListPage() {
   const postsToShow = sortedPosts.slice(0, visiblePosts);
 
   return (
-    <div  className="transition-all duration-300 ml-0 lg:ml-64">
+    <div className={`transition-all duration-300 ${windowWidth > 1280 && windowWidth < 1536 ? 'ml-0 lg:ml-64' : ''}`}>
       <div className="left-auto min-h-screen bg-[#0a0a0a] relative">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
         <div className="relative">

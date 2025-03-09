@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 import { API_URLS } from '@/api/constants/apiUrl'
 import { THEMES, getCategoriesByTheme } from '@/constants/themes'
 import { useTranslation } from '@/utils/i18n'
-import PostCard from '../view/postcard/new/PostCard'
+import PostCard from '../view/common/postcard/new/PostCard'
 
 type ViewMode = 'edit' | 'preview'
 

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { SiNextdotjs } from 'react-icons/si';
-import PostCard from '@/app/post/view/postcard/nextjs/PostCard';
+import PostCard from '@/app/post/view/common/postcard/nextjs/PostCard';
 import { useTranslation } from '@/utils/i18n';
 
 interface NextjsPost {

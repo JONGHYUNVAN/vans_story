@@ -1,5 +1,5 @@
-import { ViewPostHeader } from '../ViewPostHeader';
-import { ViewPostContent } from '../ViewPostContent';
+import { ViewPostHeader } from '../common/ViewPostHeader';
+import { ViewPostContent } from '../common/ViewPostContent';
 import { API_URLS } from '@/api/constants/apiUrl';
 import { Post } from '@/interfaces/post/types';
 

@@ -8,5 +8,6 @@ export interface BasePost {
   likeCount: number;
   topic?: string;
   author?: string;
-  thumbnail?: string;
-} 
+  theme?: string;
+  thumbnail?: string; // 썸네일 이미지 URL (옵션)
+}

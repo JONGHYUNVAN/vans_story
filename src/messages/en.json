@@ -73,6 +73,81 @@
       }
     }
   },
+  "Spring": {
+    "categories": {
+      "gettingStarted": {
+        "title": "Getting Started",
+        "items": {
+          "installation": {
+            "title": "Installation & Setup",
+            "description": "Learn how to install and configure your Spring Framework project.",
+            "path": "/post/view/spring/installation",
+            "icon": "SiSpring",
+            "color": "#6DB33F"
+          },
+          "projectStructure": {
+            "title": "Project Structure",
+            "description": "Understand the basic structure and role of each directory in a Spring Framework project.",
+            "path": "/post/view/spring/project-structure",
+            "icon": "SiSpring",
+            "color": "#6DB33F"
+          },
+          "firstApp": {
+            "title": "Creating Your First App",
+            "description": "Learn the basic concepts by building a simple Spring Framework application.",
+            "path": "/post/view/spring/first-app",
+            "icon": "SiSpring",
+            "color": "#6DB33F"
+          }
+        }
+      },
+      "core": {
+        "title": "Core Concepts",
+        "items": {
+          "ioc": {
+            "title": "IoC & DI",
+            "description": "Learn about Inversion of Control (IoC) and Dependency Injection (DI).",
+            "path": "/post/view/spring/ioc-di",
+            "icon": "SiSpring",
+            "color": "#6DB33F"
+          },
+          "aop": {
+            "title": "AOP",
+            "description": "Understand Aspect-Oriented Programming (AOP) and its usage in Spring.",
+            "path": "/post/view/spring/aop",
+            "icon": "SiSpring",
+            "color": "#6DB33F"
+          },
+          "mvc": {
+            "title": "MVC Pattern",
+            "description": "Learn about Spring MVC architecture and web application development.",
+            "path": "/post/view/spring/mvc",
+            "icon": "SiSpring",
+            "color": "#6DB33F"
+          }
+        }
+      },
+      "data": {
+        "title": "Data Access",
+        "items": {
+          "jpa": {
+            "title": "Spring Data JPA",
+            "description": "Learn how to access databases using JPA.",
+            "path": "/post/view/spring/data-jpa",
+            "icon": "SiSpring",
+            "color": "#6DB33F"
+          },
+          "jdbc": {
+            "title": "JDBC & Transaction",
+            "description": "Learn about JDBC and transaction management.",
+            "path": "/post/view/spring/jdbc-transaction",
+            "icon": "SiSpring",
+            "color": "#6DB33F"
+          }
+        }
+      }
+    }
+  },
   "common": {
     "login": "Login",
     "logout": "Logout",

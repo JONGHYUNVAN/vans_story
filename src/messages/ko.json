@@ -13,7 +13,65 @@
     "nestedLayouts": "중첩 레이아웃",
     "groupedLayouts": "그룹 레이아웃",
     "parallelRoutes": "병렬 라우트",
-    "nestedLayoutsDesc": "여러 페이지에서 공통으로 사용되는 UI를 공유하는 방법입니다."
+    "nestedLayoutsDesc": "여러 페이지에서 공통으로 사용되는 UI를 공유하는 방법입니다.",
+    "categories": {
+      "gettingStarted": {
+        "title": "시작하기",
+        "items": {
+          "installation": {
+            "title": "설치 및 설정",
+            "description": "Next.js 프로젝트 설치 및 기본 설정 방법을 알아봅니다.",
+            "path": "/post/view/nextjs/installation",
+            "icon": "SiNextdotjs",
+            "color": "#000000"
+          },
+          "projectStructure": {
+            "title": "프로젝트 구조",
+            "description": "Next.js 프로젝트의 기본 구조와 각 디렉토리의 역할을 이해합니다.",
+            "path": "/post/view/nextjs/project-structure",
+            "icon": "SiNextdotjs",
+            "color": "#000000"
+          },
+          "firstApp": {
+            "title": "첫 번째 앱 만들기",
+            "description": "간단한 Next.js 애플리케이션을 만들어보며 기본 개념을 학습합니다.",
+            "path": "/post/view/nextjs/first-app",
+            "icon": "SiNextdotjs",
+            "color": "#000000"
+          }
+        }
+      }
+    }
+  },
+  "Nest": {
+    "categories": {
+      "gettingStarted": {
+        "title": "시작하기",
+        "items": {
+          "installation": {
+            "title": "설치 및 설정",
+            "description": "Nest.js 프로젝트 설치 및 기본 설정 방법을 알아봅니다.",
+            "path": "/post/view/nestjs/installation",
+            "icon": "SiNestjs",
+            "color": "#E0234E"
+          },
+          "projectStructure": {
+            "title": "프로젝트 구조",
+            "description": "Nest.js 프로젝트의 기본 구조와 각 디렉토리의 역할을 이해합니다.",
+            "path": "/post/view/nestjs/project-structure",
+            "icon": "SiNestjs",
+            "color": "#E0234E"
+          },
+          "firstApp": {
+            "title": "첫 번째 앱 만들기",
+            "description": "간단한 Nest.js 애플리케이션을 만들어보며 기본 개념을 학습합니다.",
+            "path": "/post/view/nestjs/first-app",
+            "icon": "SiNestjs",
+            "color": "#E0234E"
+          }
+        }
+      }
+    }
   },
   "common": {
     "login": "로그인",

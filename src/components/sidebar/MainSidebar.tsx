@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { useTranslation } from '@/utils/i18n';
-import { categories } from './categories';
+import { main_categories } from './categories';
 
 export default function MainSidebar() {
   const pathname = usePathname();
@@ -56,7 +56,7 @@ export default function MainSidebar() {
         </div>
 
         <nav className="p-6 space-y-8 overflow-y-auto max-h-[calc(100vh-80px)]">
-          {Object.entries(categories).map(([category, items]) => (
+          {Object.entries(main_categories).map(([category, items]) => (
             <div key={category} className="space-y-4">
               <h2 className="text-xl font-bold text-gray-800 border-b pb-2">
                 {category}

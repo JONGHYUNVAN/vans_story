@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { SiNextdotjs } from 'react-icons/si';
-import PostCard from '@/app/post/view/postcard/nextjs/PostCard';
+import { SiNestjs } from 'react-icons/si';
+import PostCard from '@/app/post/view/postcard/nestjs/PostCard';
 import { useTranslation } from '@/utils/i18n';
 
-interface NextjsPost {
+interface NestjsPost {
   id: string;
   title: string;
   topic: string;
@@ -22,44 +22,44 @@ interface NextjsPost {
   language: string;
 }
 
-const MOCK_POSTS: NextjsPost[] = [
+const MOCK_POSTS: NestjsPost[] = [
   {
     id: '1',
-    title: 'Next.js 13 시작하기',
-    topic: 'App Router',
-    description: 'Next.js 13의 새로운 기능과 App Router에 대해 알아봅니다.\nNext.js 13은 기존의 Pages Router에서 App Router로의 전환을 통해 더 유연하고 직관적인 라우팅 구조를 제공합니다.\n이 게시물에서는 App Router의 동작 방식, 인터셉팅 라우트, 병렬 라우트, 레이아웃, 서버 컴포넌트와의 통합 등 주요 기능들을 실제 예제와 함께 소개하며 실전에서 활용할 수 있는 방법을 다룹니다.',
+    title: 'Nest.js 시작하기',
+    topic: 'Controllers & Providers',
+    description: 'Nest.js의 기본 구조와 핵심 개념에 대해 알아봅니다.\nNest.js는 효율적이고 확장 가능한 Node.js 서버 애플리케이션을 구축하기 위한 프레임워크입니다.\n이 게시물에서는 Controllers, Providers, Modules, Dependency Injection 등 Nest.js의 핵심 개념을 실제 예제와 함께 소개하며 실전에서 활용할 수 있는 방법을 다룹니다.',
     author: 'Vans',
     createdAt: '2024-03-20',
     updatedAt: '2024-03-20',
-    tags: ['Next.js', 'React', 'App Router'],
-    viewCount: 120,
-    likeCount: 15,
-    theme: 'frontend',
-    category: 'nextjs',
+    tags: ['Nest.js', 'Node.js', 'TypeScript'],
+    viewCount: 98,
+    likeCount: 12,
+    theme: 'backend',
+    category: 'nestjs',
     thumbnail: '',
     language: 'ko'
   },
   {
     id: '2',
-    title: 'Next.js에서 서버 컴포넌트 활용하기',
-    topic: 'React Server Components',
-    description: 'React Server Components를 사용하여 성능을 최적화하는 방법을 설명합니다.\n서버 컴포넌트는 클라이언트에 JavaScript 번들을 전송하지 않고 서버에서 렌더링하여 네트워크 요청 및 클라이언트 부하를 줄여줍니다. 이를 통해 초기 로딩 성능이 향상되고 보안이 강화됩니다.\n\nNext.js에서 서버 컴포넌트와 클라이언트 컴포넌트를 적절히 조합하는 전략과 데이터 가져오기, 상태 관리, 캐싱 기법 등 실용적인 패턴을 소개합니다.',
+    title: 'Nest.js에서 데이터베이스 연동하기',
+    topic: 'TypeORM & Repository Pattern',
+    description: 'Nest.js에서 TypeORM을 사용하여 효율적으로 데이터베이스를 관리하는 방법을 설명합니다.\nTypeORM은 TypeScript와 JavaScript를 위한 ORM 라이브러리로, Nest.js와의 통합이 매우 좋습니다.\n\n이 게시물에서는 엔티티 설계, 관계 설정, 레포지토리 패턴 활용, 마이그레이션 관리 등 실무에서 필요한 데이터베이스 관리 기법을 살펴봅니다.',
     author: 'Vans',
     createdAt: '2024-03-19',
     updatedAt: '2024-03-19',
-    tags: ['Next.js', 'React', 'Server Components'],
-    viewCount: 85,
-    likeCount: 10,
-    theme: 'frontend',
-    category: 'nextjs',
+    tags: ['Nest.js', 'TypeORM', 'Database'],
+    viewCount: 76,
+    likeCount: 8,
+    theme: 'backend',
+    category: 'nestjs',
     thumbnail: '',
     language: 'ko'
   }
 ];
 
-export default function NextjsListPage() {
+export default function NestjsListPage() {
   const { t } = useTranslation('post');
-  const [posts, setPosts] = useState<NextjsPost[]>(MOCK_POSTS);
+  const [posts, setPosts] = useState<NestjsPost[]>(MOCK_POSTS);
   const [sortOption, setSortOption] = useState('latest');
   const [visiblePosts, setVisiblePosts] = useState(10);
   const [windowWidth, setWindowWidth] = useState(0);
@@ -112,14 +112,25 @@ export default function NextjsListPage() {
 
   return (
     <div className={`transition-all duration-300 ${shouldApplyMargin ? 'ml-0 lg:ml-64' : ''}`}>
-      <div className="left-auto min-h-screen bg-[#0a0a0a] relative">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
+      <div className="left-auto min-h-screen relative">
+        {/* 배경 비디오 */}
+        <div className="fixed inset-0 -z-10 bg-[#0a0a0a]">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover opacity-50"
+          >
+            <source src="/nestjs_background.webm" type="video/webm" />
+          </video>
+        </div>
         <div className="relative">
-          <div className="mx-auto max-w-5xl px-6 py-12 bg-[#000000] min-h-screen border-x border-[#333333]">
+          <div className="mx-auto max-w-5xl px-6 py-12">
             <div className="flex items-center justify-between mb-8 pb-8 border-b border-[#333333]">
               <div className="flex items-center gap-3">
-                <SiNextdotjs className="w-8 h-8 text-white" />
-                <h1 className="text-2xl font-semibold text-white">Next.js</h1>
+                <SiNestjs className="w-8 h-8 text-[#E0234E]" />
+                <h1 className="text-2xl font-semibold text-white">Nest.js</h1>
               </div>
               <select
                 value={sortOption}
@@ -149,8 +160,8 @@ export default function NextjsListPage() {
                     author: post.author
                   }}
                   renderBadge={() => (
-                    <span className="flex items-center justify-center w-10 h-8 rounded-full bg-black">
-                      <SiNextdotjs className="w-7 h-7 text-white" />
+                    <span className="flex items-center justify-center w-10 h-8 rounded-full bg-black/50">
+                      <SiNestjs className="w-7 h-7 text-[#E0234E]" />
                     </span>
                   )}
                 />

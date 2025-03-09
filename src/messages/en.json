@@ -3,7 +3,7 @@
     "headerMenu": "Hover to see menu",
     "projects": "Projects",
     "aboutVan": "About Van",
-    "greeting": "Have a good day, {username}!"
+    "greeting": "Have a great day, {username}!"
   },
   "Sidebar": {
     "sidebarMenu": "View Sidebar Menu"
@@ -13,7 +13,65 @@
     "nestedLayouts": "Nested Layouts",
     "groupedLayouts": "Grouped Layouts",
     "parallelRoutes": "Parallel Routes",
-    "nestedLayoutsDesc": "A way to share UI across multiple pages in your application."
+    "nestedLayoutsDesc": "A way to share UI across multiple pages in your application.",
+    "categories": {
+      "gettingStarted": {
+        "title": "Getting Started",
+        "items": {
+          "installation": {
+            "title": "Installation & Setup",
+            "description": "Learn how to install and configure your Next.js project.",
+            "path": "/post/view/nextjs/installation",
+            "icon": "SiNextdotjs",
+            "color": "#000000"
+          },
+          "projectStructure": {
+            "title": "Project Structure",
+            "description": "Understand the basic structure and role of each directory in a Next.js project.",
+            "path": "/post/view/nextjs/project-structure",
+            "icon": "SiNextdotjs",
+            "color": "#000000"
+          },
+          "firstApp": {
+            "title": "Creating Your First App",
+            "description": "Learn the basic concepts by building a simple Next.js application.",
+            "path": "/post/view/nextjs/first-app",
+            "icon": "SiNextdotjs",
+            "color": "#000000"
+          }
+        }
+      }
+    }
+  },
+  "Nest": {
+    "categories": {
+      "gettingStarted": {
+        "title": "Getting Started",
+        "items": {
+          "installation": {
+            "title": "Installation & Setup",
+            "description": "Learn how to install and configure your Nest.js project.",
+            "path": "/post/view/nestjs/installation",
+            "icon": "SiNestjs",
+            "color": "#E0234E"
+          },
+          "projectStructure": {
+            "title": "Project Structure",
+            "description": "Understand the basic structure and role of each directory in a Nest.js project.",
+            "path": "/post/view/nestjs/project-structure",
+            "icon": "SiNestjs",
+            "color": "#E0234E"
+          },
+          "firstApp": {
+            "title": "Creating Your First App",
+            "description": "Learn the basic concepts by building a simple Nest.js application.",
+            "path": "/post/view/nestjs/first-app",
+            "icon": "SiNestjs",
+            "color": "#E0234E"
+          }
+        }
+      }
+    }
   },
   "common": {
     "login": "Login",
@@ -24,29 +82,29 @@
   "home": {
     "welcome": "Hello! This blog will contain Van's development stories.",
     "blogIntro": "Blog Introduction",
-    "techIntro": "I will write about various topics including Frontend Development, Backend Development, React, Next.js, Spring Boot, and more.",
+    "techIntro": "I will write about various topics including Frontend Development, Backend Development, React, Next.js, Spring Boot, etc.",
     "expectation": "Stay tuned! ✨"
   },
   "auth": {
     "login": "Login",
-    "logout": "Logged out successfully. See you again!",
+    "logout": "Logged out. See you again!",
     "welcome": "Welcome, {username}!",
     "logoutError": "Logout failed",
     "loginError": {
       "401": "Invalid email or password",
       "404": "User not found",
       "500": "Server error occurred",
-      "default": "An unknown error occurred"
+      "default": "Unknown error occurred"
     }
   },
   "signup_validation": {
-    "welcome": "Welcome! Shall we start signing up?",
+    "welcome": "Welcome! Let's start signing up.",
     "emailGuide": "Please enter your email address. Example) itworks@inmymachine.com",
-    "usernameGuide": "Username must be between 3 and 50 characters",
-    "passwordGuide": "Password must be at least 8 characters and include letters, numbers, and special characters",
-    "emailError": "Please enter a valid email address",
-    "usernameError": "Username must be between 3 and 50 characters",
-    "passwordError": "Password must be at least 8 characters and include letters, numbers, and special characters",
+    "usernameGuide": "Username must be between 3 and 50 characters.",
+    "passwordGuide": "Password must be at least 8 characters and include letters, numbers, and special characters.",
+    "emailError": "Invalid email format.",
+    "usernameError": "Username must be between 3 and 50 characters.",
+    "passwordError": "Password must be at least 8 characters and include letters, numbers, and special characters.",
     "required": {
       "email": "Email is required",
       "username": "Username is required",
@@ -54,8 +112,8 @@
     }
   },
   "post": {
-    "views": "Views {count}",
-    "likes": "Likes {count}",
+    "views": "{count} views",
+    "likes": "{count} likes",
     "sort": {
       "latest": "Latest",
       "oldest": "Oldest",
@@ -73,15 +131,16 @@
       "selectCategory": "Select category",
       "inputThumbnail": "Enter thumbnail URL",
       "inputLanguage": "Enter language",
+      "selectLanguage": "Select language",
       "edit": "Edit",
       "preview": "Preview",
       "submit": "Submit",
-      "tempSave": "Save Draft",
+      "tempSave": "Save as draft",
       "validation": "Please fill in all required fields.",
-      "tempSaveSuccess": "Draft saved successfully.",
-      "tempSaveError": "Failed to load draft data.",
-      "submitSuccess": "Post has been published successfully.",
-      "submitError": "Error occurred while submitting the post."
+      "tempSaveSuccess": "Saved as draft.",
+      "tempSaveError": "Failed to load draft data",
+      "submitSuccess": "Post has been published.",
+      "submitError": "An error occurred while publishing the post."
     }
   }
 } 

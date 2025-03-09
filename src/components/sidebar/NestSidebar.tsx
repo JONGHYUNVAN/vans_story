@@ -1,18 +1,18 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState, useEffect } from 'react';
-import { MdKeyboardArrowRight } from "react-icons/md";
+import { SiNestjs } from 'react-icons/si';
+import { MdKeyboardArrowRight } from 'react-icons/md';
 import { useTranslation } from '@/utils/i18n';
-import { SiNextdotjs } from "react-icons/si";
 
-export default function NextSidebar() {
-  const pathname = usePathname();
+export default function NestSidebar() {
   const { t } = useTranslation('');
   const [isOpen, setIsOpen] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(true);
-  
+  const pathname = usePathname();
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const checkScreenSize = () => {
@@ -29,13 +29,13 @@ export default function NextSidebar() {
 
   const getIcon = (iconName: string) => {
     switch (iconName) {
-      case 'SiNextdotjs':
-        return SiNextdotjs;
+      case 'SiNestjs':
+        return SiNestjs;
       default:
-        return SiNextdotjs;
+        return SiNestjs;
     }
   };
-  
+
   return (
     <div 
       className="w-64 h-full"
@@ -56,7 +56,7 @@ export default function NextSidebar() {
       `}>
         <div className="flex flex-col items-center gap-2">
           <span className="ml-2 text-lg font-bold text-white/70 font-handwriting writing-vertical">
-            Next.js
+            Nest.js
           </span>
         </div>
         <MdKeyboardArrowRight className="w-5 h-5 text-white/70 animate-[bounce-right_1s_infinite]" />
@@ -74,16 +74,16 @@ export default function NextSidebar() {
       `}>
         <div className="p-4 border-b border-[#333333] backdrop-blur-sm bg-black/30">
           <Link 
-            href="/post/view/nextjs" 
+            href="/post/view/nestjs" 
             className="flex items-center gap-2 text-xl font-bold text-white/90 hover:text-white transition-colors duration-300"
           >
-            <SiNextdotjs className="w-8 h-8 transition-transform duration-300 group-hover:scale-105" />
-            Next.js
+            <SiNestjs className="w-8 h-8 text-[#E0234E] transition-transform duration-300 group-hover:scale-105" />
+            Nest.js
           </Link>
         </div>
 
         <nav className="px-3 py-4 overflow-y-auto max-h-[calc(100vh-80px)]">
-          {Object.entries(t('Next.categories')).map(([categoryKey, category]: [string, any]) => (
+          {Object.entries(t('Nest.categories')).map(([categoryKey, category]: [string, any]) => (
             <div key={categoryKey} className="mb-8">
               <h2 className="mb-4 px-4 text-sm font-semibold tracking-wide text-[#666666] uppercase">
                 {category.title}

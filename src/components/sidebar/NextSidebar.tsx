@@ -100,7 +100,7 @@ export default function NextSidebar() {
                         }`}
                       >
                         <span className="transition-colors duration-300 group-hover:text-white flex items-center gap-2">
-                          <Icon className="w-4 h-4" style={{ color: item.color }} />
+                          <Icon className="w-4 h-4 p-[1px] bg-white rounded-full" style={{ color: item.color }} />
                           {item.title}
                         </span>
                       </Link>

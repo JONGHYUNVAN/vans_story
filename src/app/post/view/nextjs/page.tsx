@@ -115,22 +115,38 @@ export default function NextjsListPage() {
       <div className="left-auto min-h-screen bg-[#0a0a0a] relative">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
         <div className="relative">
-          <div className="mx-auto max-w-5xl px-6 py-12 bg-[#000000] min-h-screen border-x border-[#333333]">
-            <div className="flex items-center justify-between mb-8 pb-8 border-b border-[#333333]">
-              <div className="flex items-center gap-3">
-                <SiNextdotjs className="w-8 h-8 text-white" />
-                <h1 className="text-2xl font-semibold text-white">Next.js</h1>
-              </div>
-              <select
-                value={sortOption}
-                onChange={(e) => setSortOption(e.target.value)}
-                className="text-center w-36 py-2 bg-[#000000] text-white border border-[#333333] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#333333]"
+          <div className="mx-auto max-w-5xl px-6 py-12 min-h-screen border-x border-[#333333] relative">
+            {/* 배경 비디오 */}
+            <div className="absolute inset-0">
+              <div className="absolute inset-0 bg-black/80" />
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover opacity-30"
               >
-                <option value="latest">{t('post.sort.latest')}</option>
-                <option value="oldest">{t('post.sort.oldest')}</option>
-                <option value="views">{t('post.sort.views')}</option>
-                <option value="likes">{t('post.sort.likes')}</option>
-              </select>
+                <source src="/nextjs_background.webm" type="video/webm" />
+              </video>
+            </div>
+
+            <div className="relative mb-8 pb-8 border-b border-[#333333]">
+              <div className="flex items-center justify-between relative z-10">
+                <div className="flex items-center gap-3">
+                  <SiNextdotjs className="w-8 h-8 text-white" />
+                  <h1 className="text-2xl font-semibold text-white">Next.js</h1>
+                </div>
+                <select
+                  value={sortOption}
+                  onChange={(e) => setSortOption(e.target.value)}
+                  className="text-center w-36 py-2 bg-black/50 backdrop-blur-sm text-white border border-[#333333] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#333333]"
+                >
+                  <option value="latest">{t('post.sort.latest')}</option>
+                  <option value="oldest">{t('post.sort.oldest')}</option>
+                  <option value="views">{t('post.sort.views')}</option>
+                  <option value="likes">{t('post.sort.likes')}</option>
+                </select>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 gap-6">

@@ -6,17 +6,22 @@ import { Viewer } from '../viewer/Viewer'
 import { PostHeader } from './PostHeader'
 import { useRouter } from 'next/navigation'
 import { API_URLS } from '@/api/constants/apiUrl'
-import { THEMES, CATEGORIES, getCategoriesByTheme } from '@/constants/themes'
+import { THEMES, getCategoriesByTheme } from '@/constants/themes'
 import { useTranslation } from '@/utils/i18n'
-import  PostCard from '../view/postcard/new/PostCard'
+import PostCard from '../view/postcard/new/PostCard'
 
 type ViewMode = 'edit' | 'preview'
 
-// 언어 옵션 배열 추가
+// 언어 옵션 배열
 const LANGUAGES = [
   { value: 'ko', label: '한국어' },
   { value: 'en', label: 'English' }
 ]
+
+interface Category {
+  value: string;
+  label: string;
+}
 
 export function PostCreateForm() {
   const router = useRouter()
@@ -32,23 +37,25 @@ export function PostCreateForm() {
   const [thumbnail, setThumbnail] = useState('')
   const [language, setLanguage] = useState('')
   const [viewMode, setViewMode] = useState<ViewMode>('edit')
-  const [availableCategories, setAvailableCategories] = useState([] as typeof CATEGORIES)
+  const [availableCategories, setAvailableCategories] = useState<Category[]>([])
 
-  // 컴포넌트 마운트 시 기본 테마 확인
+  // 컴포넌트 마운트 시 기본 테마의 카테고리 설정
   useEffect(() => {
     if (!theme || theme === '') {
       setTheme('next')
     }
+    const categories = getCategoriesByTheme(theme)
+    setAvailableCategories(categories)
   }, [])
 
   // 테마가 변경될 때 해당 테마에 맞는 카테고리 목록 업데이트
   useEffect(() => {
     if (theme) {
-      const filteredCategories = getCategoriesByTheme(theme)
-      setAvailableCategories(filteredCategories)
+      const categories = getCategoriesByTheme(theme)
+      setAvailableCategories(categories)
       
       // 기존 선택된 카테고리가 새 테마에 없으면 초기화
-      if (!filteredCategories.some(c => c.value === category)) {
+      if (!categories.some(c => c.value === category)) {
         setCategory('')
       }
     } else {

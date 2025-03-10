@@ -9,15 +9,17 @@
     "sidebarMenu": "사이드바 메뉴 보기"
   },
   "Next": {
-    "layouts": "레이아웃",
-    "nestedLayouts": "중첩 레이아웃",
-    "groupedLayouts": "그룹 레이아웃",
-    "parallelRoutes": "병렬 라우트",
-    "nestedLayoutsDesc": "여러 페이지에서 공통으로 사용되는 UI를 공유하는 방법입니다.",
     "categories": {
       "gettingStarted": {
         "title": "시작하기",
         "items": {
+          "intro": {
+            "title": "Why Next?",
+            "description": "Next.js의 장점과 특징을 알아봅니다.",
+            "path": "/post/view/nextjs/intro",
+            "icon": "SiNextdotjs",
+            "color": "#000000"
+          },
           "installation": {
             "title": "설치 및 설정",
             "description": "Next.js 프로젝트 설치 및 기본 설정 방법을 알아봅니다.",
@@ -216,6 +218,19 @@
       "tempSaveError": "임시저장 데이터 로드 실패",
       "submitSuccess": "게시글이 등록되었습니다.",
       "submitError": "게시글 등록 중 오류가 발생했습니다."
+    }
+  },
+  "error": {
+    "404": {
+      "title": "페이지를 찾을 수 없습니다",
+      "description": "요청하신 페이지가 존재하지 않거나 다른 위치로 이동되었습니다. URL을 확인하시거나 아래 버튼을 눌러 홈으로 이동해주세요.",
+      "redirecting": "{count}초 후 홈으로 자동 이동합니다...",
+      "goHome": "홈으로 이동"
+    },
+    "unexpected": {
+      "title": "예상치 못한 오류가 발생했습니다",
+      "description": "서비스 이용 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.",
+      "retry": "다시 시도하기"
     }
   }
 } 

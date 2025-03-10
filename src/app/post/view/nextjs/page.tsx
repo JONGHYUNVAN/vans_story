@@ -1,37 +1,26 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { SiNextdotjs } from 'react-icons/si';
-import PostCard from '@/app/post/view/common/postcard/nextjs/PostCard';
+import PostCard from '../common/postcard/nextjs/PostCard';
 import { useTranslation } from '@/utils/i18n';
+import { FrameworkPost } from '@/types/FrameworkPost';
+import { sortPosts } from '@/utils/sortPosts';
+import { useSidebarMargin } from '@/hooks/useSidebarMargin';
 
-interface NextjsPost {
-  id: string;
-  title: string;
-  topic: string;
-  description: string;
-  author: string;
-  createdAt: string;
-  updatedAt: string;
-  tags: string[];
-  viewCount: number;
-  likeCount: number;
-  theme: string;
-  category: string;
-  thumbnail: string;
-  language: string;
-}
+// NextjsPost 타입을 FrameworkPost를 확장하는 타입으로 정의
+type NextjsPost = FrameworkPost;
 
 const MOCK_POSTS: NextjsPost[] = [
   {
     id: '1',
-    title: 'Next.js 13 시작하기',
-    topic: 'App Router',
-    description: 'Next.js 13의 새로운 기능과 App Router에 대해 알아봅니다.\nNext.js 13은 기존의 Pages Router에서 App Router로의 전환을 통해 더 유연하고 직관적인 라우팅 구조를 제공합니다.\n이 게시물에서는 App Router의 동작 방식, 인터셉팅 라우트, 병렬 라우트, 레이아웃, 서버 컴포넌트와의 통합 등 주요 기능들을 실제 예제와 함께 소개하며 실전에서 활용할 수 있는 방법을 다룹니다.',
+    title: 'Next.js 시작하기',
+    topic: '기초',
+    description: 'Next.js의 핵심 개념과 기본 구조를 알아봅니다.\nNext.js는 React 기반의 풀스택 웹 프레임워크로, 서버 사이드 렌더링, 정적 사이트 생성 등 다양한 렌더링 방식을 제공합니다.\n이 게시물에서는 Next.js의 특징과 기본 구조, 라우팅 시스템을 예제와 함께 소개합니다.',
     author: 'Vans',
     createdAt: '2024-03-20',
     updatedAt: '2024-03-20',
-    tags: ['Next.js', 'React', 'App Router'],
+    tags: ['Next.js', 'React', 'Frontend'],
     viewCount: 120,
     likeCount: 15,
     theme: 'frontend',
@@ -41,14 +30,14 @@ const MOCK_POSTS: NextjsPost[] = [
   },
   {
     id: '2',
-    title: 'Next.js에서 서버 컴포넌트 활용하기',
-    topic: 'React Server Components',
-    description: 'React Server Components를 사용하여 성능을 최적화하는 방법을 설명합니다.\n서버 컴포넌트는 클라이언트에 JavaScript 번들을 전송하지 않고 서버에서 렌더링하여 네트워크 요청 및 클라이언트 부하를 줄여줍니다. 이를 통해 초기 로딩 성능이 향상되고 보안이 강화됩니다.\n\nNext.js에서 서버 컴포넌트와 클라이언트 컴포넌트를 적절히 조합하는 전략과 데이터 가져오기, 상태 관리, 캐싱 기법 등 실용적인 패턴을 소개합니다.',
+    title: 'Next.js의 App Router와 Pages Router 비교',
+    topic: '라우팅',
+    description: 'Next.js의 새로운 App Router와 기존 Pages Router의 차이점을 알아봅니다.\nNext.js 13에서 도입된 App Router는 더 강력한 기능과 간편한 사용성을 제공합니다.\n\n이 게시물에서는 두 라우팅 시스템의 구조적 차이와 장단점을 비교하고, 마이그레이션 전략을 제시합니다.',
     author: 'Vans',
     createdAt: '2024-03-19',
     updatedAt: '2024-03-19',
-    tags: ['Next.js', 'React', 'Server Components'],
-    viewCount: 85,
+    tags: ['Next.js', 'App Router', 'React'],
+    viewCount: 95,
     likeCount: 10,
     theme: 'frontend',
     category: 'nextjs',
@@ -62,58 +51,27 @@ export default function NextjsListPage() {
   const [posts, setPosts] = useState<NextjsPost[]>(MOCK_POSTS);
   const [sortOption, setSortOption] = useState('latest');
   const [visiblePosts, setVisiblePosts] = useState(10);
-  const [windowWidth, setWindowWidth] = useState(0);
-  const [shouldApplyMargin, setShouldApplyMargin] = useState(false);
+  
+  // 커스텀 훅을 사용하여 윈도우 너비와, 마진 적용 여부 관리
+  const { windowWidth, shouldApplyMargin } = useSidebarMargin();
 
-  useEffect(() => {
-    // 초기 창 너비 설정
-    setWindowWidth(window.innerWidth);
-    
-    // 마진 적용 여부 결정
-    const checkMargin = () => {
-      const width = window.innerWidth;
-      setShouldApplyMargin(width > 1280 && width < 1536);
-    };
-    
-    // 초기 마진 체크
-    checkMargin();
-    
-    // 리사이즈 이벤트 핸들러
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-      checkMargin();
-    };
-    
-    // 이벤트 리스너 등록
-    window.addEventListener('resize', handleResize);
-    
-    // 클린업 함수
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // 정렬 옵션에 따라 포스트 정렬
-  const sortedPosts = [...posts].sort((a, b) => {
-    switch (sortOption) {
-      case 'latest':
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      case 'oldest':
-        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-      case 'views':
-        return b.viewCount - a.viewCount;
-      case 'likes':
-        return b.likeCount - a.likeCount;
-      default:
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    }
-  });
-
-  // 필요한 수만큼 포스트 표시
+  // 정렬 유틸리티 함수를 사용하여 정렬
+  const sortedPosts = sortPosts(posts, sortOption);
   const postsToShow = sortedPosts.slice(0, visiblePosts);
 
   return (
     <div className={`transition-all duration-300 ${shouldApplyMargin ? 'ml-0 lg:ml-64' : ''}`}>
-      <div className="left-auto min-h-screen bg-[#0a0a0a] relative">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
+      <div className="left-auto min-h-screen bg-black relative overflow-hidden">
+        {/* 그리드 배경 */}
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: 'radial-gradient(#80808015 1px, transparent 1px), radial-gradient(#80808015 1px, transparent 1px)',
+            backgroundSize: '20px 20px',
+            backgroundPosition: '0 0, 10px 10px'
+          }}
+        />
+        
         <div className="relative">
           <div className="mx-auto max-w-5xl px-6 py-12 min-h-screen border-x border-[#333333] relative">
             {/* 배경 비디오 */}
@@ -133,7 +91,7 @@ export default function NextjsListPage() {
             <div className="relative mb-8 pb-8 border-b border-[#333333]">
               <div className="flex items-center justify-between relative z-10">
                 <div className="flex items-center gap-3">
-                  <SiNextdotjs className="w-8 h-8 text-white" />
+                  <SiNextdotjs className="w-8 h-8" />
                   <h1 className="text-2xl font-semibold text-white">Next.js</h1>
                 </div>
                 <select
@@ -153,20 +111,10 @@ export default function NextjsListPage() {
               {postsToShow.map(post => (
                 <PostCard
                   key={post.id}
-                  post={{
-                    id: post.id,
-                    title: post.title,
-                    description: post.description,
-                    createdAt: post.createdAt,
-                    tags: post.tags,
-                    viewCount: post.viewCount,
-                    likeCount: post.likeCount,
-                    topic: post.topic,
-                    author: post.author
-                  }}
+                  post={post}
                   renderBadge={() => (
-                    <span className="flex items-center justify-center w-10 h-8 rounded-full bg-black">
-                      <SiNextdotjs className="w-7 h-7 text-white" />
+                    <span className="flex items-center justify-center w-10 h-8 rounded-full bg-black/50">
+                      <SiNextdotjs className="w-7 h-7" />
                     </span>
                   )}
                 />

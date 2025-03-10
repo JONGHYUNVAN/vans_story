@@ -1,26 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { SiSpring } from 'react-icons/si';
 import PostCard from '@/app/post/view/postcard/spring/PostCard';
 import { useTranslation } from '@/utils/i18n';
+import { FrameworkPost } from '@/types/FrameworkPost';
+import { sortPosts } from '@/utils/sortPosts';
+import { useSidebarMargin } from '@/hooks/useSidebarMargin';
 
-interface SpringPost {
-  id: string;
-  title: string;
-  topic: string;
-  description: string;
-  author: string;
-  createdAt: string;
-  updatedAt: string;
-  tags: string[];
-  viewCount: number;
-  likeCount: number;
-  theme: string;
-  category: string;
-  thumbnail: string;
-  language: string;
-}
+// SpringPost 타입을 FrameworkPost를 확장하는 타입으로 정의
+type SpringPost = FrameworkPost;
 
 const MOCK_POSTS: SpringPost[] = [
   {
@@ -62,50 +51,19 @@ export default function SpringListPage() {
   const [posts, setPosts] = useState<SpringPost[]>(MOCK_POSTS);
   const [sortOption, setSortOption] = useState('latest');
   const [visiblePosts, setVisiblePosts] = useState(10);
-  const [windowWidth, setWindowWidth] = useState(0);
-  const [shouldApplyMargin, setShouldApplyMargin] = useState(false);
+  
+  // 커스텀 훅을 사용하여 윈도우 너비와, 마진 적용 여부 관리
+  const { windowWidth, shouldApplyMargin } = useSidebarMargin();
 
-  useEffect(() => {
-    setWindowWidth(window.innerWidth);
-    
-    const checkMargin = () => {
-      const width = window.innerWidth;
-      setShouldApplyMargin(width > 1280 && width < 1536);
-    };
-    
-    checkMargin();
-    
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-      checkMargin();
-    };
-    
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  const sortedPosts = [...posts].sort((a, b) => {
-    switch (sortOption) {
-      case 'latest':
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      case 'oldest':
-        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-      case 'views':
-        return b.viewCount - a.viewCount;
-      case 'likes':
-        return b.likeCount - a.likeCount;
-      default:
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    }
-  });
-
+  // 정렬 유틸리티 함수를 사용하여 정렬
+  const sortedPosts = sortPosts(posts, sortOption);
   const postsToShow = sortedPosts.slice(0, visiblePosts);
 
   return (
     <div className={`transition-all duration-300 ${shouldApplyMargin ? 'ml-0 lg:ml-64' : ''}`}>
-      <div className="left-auto min-h-screen bg-[#264336] relative overflow-hidden">
+      <div className="left-auto min-h-screen bg-[#0c1511] relative overflow-hidden">
         {/* 배경 레이어 */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#2f3b22] to-[#0a100d] z-0"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-[#101b17] to-[#0a100d] z-0"></div>
         
         {/* Spring 로고 패턴 */}
         <div className="absolute inset-0 opacity-[0.03] z-[1]" style={{
@@ -127,7 +85,7 @@ export default function SpringListPage() {
         
         <div className="relative z-[2]">
           <div className="mx-auto max-w-5xl px-6 py-12 min-h-screen border-x border-slate-700/30 relative">
-            {/* 콘텐츠 영역 배경 비디오 */}
+            {/* 배경 비디오 */}
             <div className="absolute inset-0">
               <div className="absolute inset-0 bg-black/80" />
               <video

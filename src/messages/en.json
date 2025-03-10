@@ -9,6 +9,7 @@
     "sidebarMenu": "View Sidebar Menu"
   },
   "Next": {
+    "intro": "Why Next?",
     "layouts": "Layouts",
     "nestedLayouts": "Nested Layouts",
     "groupedLayouts": "Grouped Layouts",
@@ -216,6 +217,19 @@
       "tempSaveError": "Failed to load draft data",
       "submitSuccess": "Post has been published.",
       "submitError": "An error occurred while publishing the post."
+    }
+  },
+  "error": {
+    "404": {
+      "title": "Page Not Found",
+      "description": "The page you're looking for doesn't exist or has been moved. Please check the URL or click the button below to go to the homepage.",
+      "redirecting": "Redirecting to homepage in {count} seconds...",
+      "goHome": "Go to Homepage"
+    },
+    "unexpected": {
+      "title": "Unexpected Error",
+      "description": "Something went wrong while using the service. Please try again later.",
+      "retry": "Try Again"
     }
   }
 } 

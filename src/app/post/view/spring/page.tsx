@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { SiSpring } from 'react-icons/si';
-import PostCard from '@/app/post/view/postcard/spring/PostCard';
+import PostCard from '../common/postcard/spring/PostCard';
 import { useTranslation } from '@/utils/i18n';
 import { FrameworkPost } from '@/types/FrameworkPost';
 import { sortPosts } from '@/utils/sortPosts';

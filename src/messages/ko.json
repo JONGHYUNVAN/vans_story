@@ -149,7 +149,24 @@
         }
       }
     }
+  },  
+  "MariaDB": {
+    "categories": {
+      "gettingStarted": {
+        "title": "시작하기",
+        "items": {
+          "installation": {
+            "title": "설치 및 설정",
+            "description": "MariaDB 프로젝트 설치 및 기본 설정 방법을 알아봅니다.",
+            "path": "/post/view/mariadb/installation",
+            "icon": "SiMariadb",
+            "color": "#4285F4"  
+          }
+        }
+      }
+    }
   },
+  
   "common": {
     "login": "로그인",
     "logout": "로그아웃",

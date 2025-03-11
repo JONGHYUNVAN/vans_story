@@ -149,6 +149,22 @@
       }
     }
   },
+  "MariaDB": {
+    "categories": {
+      "gettingStarted": {
+        "title": "Getting Started",
+        "items": {
+          "installation": {
+            "title": "Installation & Setup",
+            "description": "Learn how to install and configure your MariaDB project.",
+            "path": "/post/view/mariadb/installation",
+            "icon": "SiMariadb",
+            "color": "#4285F4"
+          }
+        }
+      }
+    }
+  },
   "common": {
     "login": "Login",
     "logout": "Logout",

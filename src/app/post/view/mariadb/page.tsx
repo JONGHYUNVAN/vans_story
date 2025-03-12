@@ -63,31 +63,13 @@ export default function MariaDBListPage() {
     <div className={`transition-all duration-300 ${shouldApplyMargin ? 'ml-0 lg:ml-64' : ''}`}>
       <div className="left-auto min-h-screen bg-[#0c1511] relative overflow-hidden">
         {/* 배경 레이어 */}
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#1A2024]/90 to-[#2A3034]/90" />
-          
-          {/* 배경 레이어 */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#1A2024] to-[#212A2E] z-0"></div>
-          
-          {/* MariaDB 로고 패턴 */}
-          <div className="absolute inset-0 opacity-[0.08] z-[1]" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 10C67.1712 10 81 23.8288 81 41C81 58.1712 67.1712 72 50 72C32.8288 72 19 58.1712 19 41C19 23.8288 32.8288 10 50 10ZM50 20C38.402 20 29 29.402 29 41C29 52.598 38.402 62 50 62C61.598 62 71 52.598 71 41C71 29.402 61.598 20 50 20ZM25 80H75C77.7614 80 80 82.2386 80 85C80 87.7614 77.7614 90 75 90H25C22.2386 90 20 87.7614 20 85C20 82.2386 22.2386 80 25 80Z' fill='%23FFFFFF'/%3E%3C/svg%3E")`,
-            backgroundSize: '70px 70px'
-          }} />
-          
-          {/* 움직이는 그라데이션 효과 */}
-          <div className="absolute inset-0 z-[1]">
-            <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-radial from-[#3A404408] via-transparent to-transparent animate-spin-slow" style={{ animationDuration: '15s' }} />
-            <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-gradient-radial from-[#3A404405] via-transparent to-transparent animate-spin-slow" style={{ animationDuration: '20s', animationDirection: 'reverse' }} />
-          </div>
-          
-          {/* 글로우 효과 */}
-          <div className="absolute inset-0 z-[1]">
-            <div className="absolute top-1/4 left-1/4 w-1/2 h-1/2 bg-[#3A404405] blur-[100px] animate-pulse" style={{ animationDuration: '4s' }} />
-            <div className="absolute bottom-1/4 right-1/4 w-1/2 h-1/2 bg-[#3A404403] blur-[120px] animate-pulse" style={{ animationDuration: '6s' }} />
-          </div>
-        </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-[#1A2024] to-[#212A2E] z-0"></div>
         
+        {/* MariaDB ER 다이어그램 패턴 */}
+        <div className="absolute inset-0 opacity-[0.15] z-[1]" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%2300A1CB' stroke-width='1.5'%3E%3Ccircle cx='15' cy='15' r='6' /%3E%3Ccircle cx='65' cy='15' r='6' /%3E%3Ccircle cx='15' cy='65' r='6' /%3E%3Ccircle cx='65' cy='65' r='6' /%3E%3Cpath d='M22 15 L58 15' stroke-dasharray='3,3' /%3E%3Cpath d='M15 22 L15 58' stroke-dasharray='3,3' /%3E%3Cpath d='M22 65 L58 65' stroke-dasharray='3,3' /%3E%3Cpath d='M65 22 L65 58' stroke-dasharray='3,3' /%3E%3Crect x='35' y='35' width='10' height='10' stroke='%2300A1CB' fill='%2300A1CB' fill-opacity='0.2' /%3E%3C/g%3E%3C/svg%3E")`,
+          backgroundSize: '80px 80px'
+        }} />
         <div className="relative z-[2]">
         <div className="mx-auto max-w-5xl px-6 py-12 min-h-screen border-x border-slate-700/30 relative">
             {/* 배경 비디오 */}

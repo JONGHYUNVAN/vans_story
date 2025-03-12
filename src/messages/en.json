@@ -165,6 +165,55 @@
       }
     }
   },
+  "MongoDB": {
+    "categories": {
+      "gettingStarted": {
+        "title": "Getting Started",
+        "items": {
+          "installation": {
+            "title": "Installation & Setup",
+            "description": "Learn how to install and configure MongoDB.",
+            "path": "/post/view/mongodb/installation",
+            "icon": "SiMongodb",
+            "color": "#2A3034"
+          },
+          "basicConcepts": {
+            "title": "Basic Concepts",
+            "description": "Understand the fundamental concepts of MongoDB including collections, documents, and BSON.",
+            "path": "/post/view/mongodb/basic-concepts",
+            "icon": "SiMongodb",
+            "color": "#2A3034"
+          },
+          "crud": {
+            "title": "CRUD Operations",
+            "description": "Learn how to Create, Read, Update, and Delete data in MongoDB.",
+            "path": "/post/view/mongodb/crud",
+            "icon": "SiMongodb",
+            "color": "#2A3034"
+          }
+        }
+      },
+      "advanced": {
+        "title": "Advanced Features",
+        "items": {
+          "aggregation": {
+            "title": "Aggregation Framework",
+            "description": "Utilize MongoDB's powerful data processing tool for complex analytics and transformations.",
+            "path": "/post/view/mongodb/aggregation",
+            "icon": "SiMongodb",
+            "color": "#2A3034"
+          },
+          "indexing": {
+            "title": "Indexing & Optimization",
+            "description": "Learn indexing strategies to optimize query performance in MongoDB.",
+            "path": "/post/view/mongodb/indexing",
+            "icon": "SiMongodb",
+            "color": "#2A3034"
+          }
+        }
+      }
+    }
+  },
   "common": {
     "login": "Login",
     "logout": "Logout",

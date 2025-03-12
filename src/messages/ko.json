@@ -166,6 +166,55 @@
       }
     }
   },
+  "MongoDB": {
+    "categories": {
+      "gettingStarted": {
+        "title": "시작하기",
+        "items": {
+          "installation": {
+            "title": "설치 및 설정",
+            "description": "MongoDB 설치 및 기본 설정 방법을 알아봅니다.",
+            "path": "/post/view/mongodb/installation",
+            "icon": "SiMongodb",
+            "color": "#2A3034"
+          },
+          "basicConcepts": {
+            "title": "기본 개념",
+            "description": "MongoDB의 컬렉션, 문서, BSON 등 기본 개념을 이해합니다.",
+            "path": "/post/view/mongodb/basic-concepts",
+            "icon": "SiMongodb",
+            "color": "#2A3034"
+          },
+          "crud": {
+            "title": "CRUD 작업",
+            "description": "MongoDB에서 데이터 생성, 조회, 수정, 삭제 방법을 알아봅니다.",
+            "path": "/post/view/mongodb/crud",
+            "icon": "SiMongodb",
+            "color": "#2A3034"
+          }
+        }
+      },
+      "advanced": {
+        "title": "고급 기능",
+        "items": {
+          "aggregation": {
+            "title": "애그리게이션 프레임워크",
+            "description": "MongoDB의 강력한 데이터 처리 도구인 애그리게이션 파이프라인을 활용합니다.",
+            "path": "/post/view/mongodb/aggregation",
+            "icon": "SiMongodb",
+            "color": "#2A3034"
+          },
+          "indexing": {
+            "title": "인덱싱 및 최적화",
+            "description": "MongoDB 쿼리 성능 최적화를 위한 인덱스 전략을 알아봅니다.",
+            "path": "/post/view/mongodb/indexing",
+            "icon": "SiMongodb",
+            "color": "#2A3034"
+          }
+        }
+      }
+    }
+  },
   
   "common": {
     "login": "로그인",

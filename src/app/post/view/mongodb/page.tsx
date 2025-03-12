@@ -61,40 +61,41 @@ export default function MongoDBListPage() {
 
   return (
     <div className={`transition-all duration-300 ${shouldApplyMargin ? 'ml-0 lg:ml-64' : ''}`}>
-      <div className="left-auto min-h-screen bg-[#0c1511] relative overflow-hidden">
+      <div className="left-auto min-h-screen bg-[#2c1d12] relative overflow-hidden">
         {/* 배경 레이어 */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#1A2024] to-[#212A2E] z-0"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-[#ba8448] to-[#8b5e2f] z-0"></div>
         
         {/* MongoDB 로고 패턴 */}
-        <div className="absolute inset-0 opacity-[0.03] z-[1]" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M15.9.087l.854 1.604c.192.296.4.558.645.802.715.715 1.394 1.464 2.004 2.266 1.447 1.9 2.423 4.01 3.12 6.292.418 1.394.645 2.824.662 4.27.07 4.323-1.412 8.035-4.4 11.12-.488.488-1.01.94-1.57 1.342-.296 0-.436-.227-.558-.436-.227-.383-.366-.802-.436-1.222-.174-.978-.314-1.974-.314-2.968 0-.314.07-.628.027-.94-.09-.706-.44-1.318-.98-1.82-.82-.766-1.9-.98-2.934-.57-.52.2-1.02.436-1.494.7-.315.174-.54.383-.834.366-.37-.006-.62-.296-.796-.575-.81-1.322-1.02-2.7-1.004-4.142.012-.94.314-1.796.664-2.645.836-2.022 2.08-3.784 3.743-5.18C12.46 6.782 13.67 6.15 15.065 6.15c.313 0 .627.727.94.122z' fill='%232A3034'/%3E%3C/svg%3E")`,
+        <div className="absolute inset-0 opacity-[0.15] z-[1]" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M15.9.087l.854 1.604c.192.296.4.558.645.802.715.715 1.394 1.464 2.004 2.266 1.447 1.9 2.423 4.01 3.12 6.292.418 1.394.645 2.824.662 4.27.07 4.323-1.412 8.035-4.4 11.12-.488.488-1.01.94-1.57 1.342-.296 0-.436-.227-.558-.436-.227-.383-.366-.802-.436-1.222-.174-.978-.314-1.974-.314-2.968 0-.314.07-.628.027-.94-.09-.706-.44-1.318-.98-1.82-.82-.766-1.9-.98-2.934-.57-.52.2-1.02.436-1.494.7-.315.174-.54.383-.834.366-.37-.006-.62-.296-.796-.575-.81-1.322-1.02-2.7-1.004-4.142.012-.94.314-1.796.664-2.645.836-2.022 2.08-3.784 3.743-5.18C12.46 6.782 13.67 6.15 15.065 6.15c.313 0 .627.727.94.122z' fill='%23f0d8a8'/%3E%3C/svg%3E")`,
           backgroundSize: '60px 60px'
         }} />
-        
-        {/* 움직이는 그라데이션 효과 */}
-        <div className="absolute inset-0 z-[1]">
-          <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-radial from-[#3A404410] via-transparent to-transparent animate-spin-slow" style={{ animationDuration: '15s' }} />
-          <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-gradient-radial from-[#3A404408] via-transparent to-transparent animate-spin-slow" style={{ animationDuration: '20s', animationDirection: 'reverse' }} />
-        </div>
-        
-        {/* 글로우 효과 */}
-        <div className="absolute inset-0 z-[1]">
-          <div className="absolute top-1/4 left-1/4 w-1/2 h-1/2 bg-[#3A404408] blur-[100px] animate-pulse" style={{ animationDuration: '4s' }} />
-          <div className="absolute bottom-1/4 right-1/4 w-1/2 h-1/2 bg-[#3A404405] blur-[120px] animate-pulse" style={{ animationDuration: '6s' }} />
-        </div>
-        
+                
         <div className="relative z-[2]">
-          <div className="mx-auto max-w-5xl px-6 py-12 min-h-screen border-x border-[#3A4044]/30 relative">
-            <div className="relative mb-8 pb-8 border-b border-[#3A4044]/30">
+          <div className="mx-auto max-w-5xl px-6 py-12 min-h-screen border-x border-[#A67C52]/30 relative">
+          {/* 배경 비디오 */}
+          <div className="absolute inset-0">
+              <div className="absolute inset-0 bg-black/70" />
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover opacity-30"
+              >
+                <source src="/mongodb_background.webm" type="video/webm" />
+              </video>
+            </div>
+            <div className="relative mb-8 pb-8 border-b border-[#A67C52]/30">
               <div className="flex items-center justify-between relative z-10">
                 <div className="flex items-center gap-3">
-                  <SiMongodb className="w-8 h-8 text-[#2A3034]" />
+                  <SiMongodb className="w-8 h-8 text-[#C19A6B]" />
                   <h1 className="text-2xl font-semibold text-white">MongoDB</h1>
                 </div>
                 <select
                   value={sortOption}
                   onChange={(e) => setSortOption(e.target.value)}
-                  className="text-center w-36 py-2 bg-[#1A2024]/70 backdrop-blur-sm text-white border border-[#3A4044]/30 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#3A4044]"
+                  className="text-center w-36 py-2 bg-[#3a2617]/80 backdrop-blur-sm text-white border border-[#A67C52]/40 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C19A6B]"
                 >
                   <option value="latest">{t('post.sort.latest')}</option>
                   <option value="oldest">{t('post.sort.oldest')}</option>
@@ -110,7 +111,7 @@ export default function MongoDBListPage() {
                   key={post.id}
                   post={post}
                   renderBadge={() => (
-                    <span className="flex items-center justify-center w-10 h-8 rounded-full bg-gradient-to-br from-[#1A2024] to-[#2A3034]">
+                    <span className="flex items-center justify-center w-10 h-8 rounded-full bg-gradient-to-br from-[#e5bc7a] to-[#f0d8a8]">
                       <SiMongodb className="w-5 h-5 text-white" />
                     </span>
                   )}

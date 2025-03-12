@@ -133,34 +133,34 @@ export default function PostCard<T extends BasePost>({
 
   return (
     <article 
-      className="group relative rounded-lg bg-black text-white hover:shadow-lg hover:shadow-green-900/20 p-6"
+      className="group relative rounded-lg bg-gradient-to-br from-[#2c1d12] to-[#3a2617] text-white hover:shadow-lg hover:shadow-[#8B6226]/30 p-6 border border-[#A67C52]/20"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="flex items-center justify-between mb-1">
-        <h2 className="text-lg font-medium text-white group-hover:text-white transition-colors">
+        <h2 className="text-lg font-medium text-white group-hover:text-[#E6C8A0] transition-colors">
           {post.title}
         </h2>
         <div className="flex items-center gap-3">
           {post.author && (
-            <span className="text-xs text-gray-400">{t('post.by', { author: post.author })}</span>
+            <span className="text-xs text-[#D2B48C]">{t('post.by', { author: post.author })}</span>
           )}
           {renderBadge && renderBadge(post)}
         </div>
       </div>
       
       {post.topic && (
-        <p className="text-xs text-gray-400 -mt-1">{post.topic}</p>
+        <p className="text-xs text-[#D2B48C] -mt-1">{post.topic}</p>
       )}
       
       {/* 가로 구분선 - 중앙에서 확장 */}
       <div className="relative h-[1px] my-2 overflow-hidden">
         <div 
-          className="absolute inset-0 mx-auto bg-gradient-to-r from-transparent via-gray-500 to-transparent"
+          className="absolute inset-0 mx-auto bg-gradient-to-r from-transparent via-[#C19A6B] to-transparent"
           style={{
             transform: dividerVisible ? 'scaleX(1)' : 'scaleX(0)',
             transformOrigin: 'center',
-            opacity: dividerVisible ? 0.6 : 0,
+            opacity: dividerVisible ? 0.8 : 0,
             transition: `transform 700ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 500ms ease-in-out`,
             height: '1px'
           }}
@@ -189,10 +189,10 @@ export default function PostCard<T extends BasePost>({
         >
           {/* Description with typewriting effect and thumbnail */}
           {(isHovered || showDescription) && (
-            <div className="text-gray-300 text-sm mb-4 w-full">
+            <div className="text-[#F5DEB3] text-sm mb-4 w-full">
               <div className="flex items-start gap-4">
                 {/* 썸네일 이미지 */}
-                <div className="relative w-24 h-24 rounded-md overflow-hidden flex-shrink-0">
+                <div className="relative w-24 h-24 rounded-md overflow-hidden flex-shrink-0 border border-[#A67C52]/30">
                   <img
                     src={post.thumbnail || '/mongodb.webp'}
                     alt="thumbnail"
@@ -216,11 +216,11 @@ export default function PostCard<T extends BasePost>({
            {/* 하단 구분선 - 중앙에서 확장 */}
            <div className="relative h-[1px] my-2 overflow-hidden">
                     <div 
-                      className="absolute inset-0 mx-auto bg-gradient-to-r from-transparent via-gray-500 to-transparent"
+                      className="absolute inset-0 mx-auto bg-gradient-to-r from-transparent via-[#C19A6B] to-transparent"
                       style={{
                         transform: bottomDividerVisible ? 'scaleX(1)' : 'scaleX(0)',
                         transformOrigin: 'center',
-                        opacity: bottomDividerVisible ? 0.6 : 0,
+                        opacity: bottomDividerVisible ? 0.8 : 0,
                         transition: `transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 100ms ease-in-out`,
                         height: '1px',
                         width: '100%'
@@ -230,7 +230,7 @@ export default function PostCard<T extends BasePost>({
         </div>
       </div>
       
-      <div className="flex items-center justify-between text-xs text-gray-400">
+      <div className="flex items-center justify-between text-xs text-[#D2B48C]">
         <div className="flex items-center gap-4">
           <span>{t('post.views', { count: post.viewCount })}</span>
           <span>{t('post.likes', { count: post.likeCount })}</span>
@@ -239,7 +239,7 @@ export default function PostCard<T extends BasePost>({
           {post.tags && post.tags.map(tag => (
             <span 
               key={tag}
-              className="px-2 py-1 bg-zinc-800 text-gray-300 rounded-full text-xs"
+              className="px-2 py-1 bg-[#3a2617] text-[#E6C8A0] rounded-full text-xs border border-[#A67C52]/30"
             >
               {tag}
             </span>

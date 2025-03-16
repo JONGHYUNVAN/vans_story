@@ -81,7 +81,7 @@ export default function MongoDBListPage() {
                 loop
                 muted
                 playsInline
-                className="w-full h-full object-cover opacity-30"
+                className="w-full h-full object-cover opacity-75"
               >
                 <source src="/mongodb_background.webm" type="video/webm" />
               </video>

@@ -8,6 +8,128 @@
   "Sidebar": {
     "sidebarMenu": "View Sidebar Menu"
   },
+  "Algorithm": {
+    "categories": {
+      "basics": {
+        "title": "Algorithm Basics",
+        "items": {
+          "introduction": {
+            "title": "Introduction to Algorithms",
+            "description": "Learn about the basic concepts and importance of algorithms.",
+            "path": "/post/view/algorithm/introduction",
+            "icon": "RiCodeBoxLine",
+            "color": "#6B7280"
+          },
+          "complexity": {
+            "title": "Time & Space Complexity",
+            "description": "Learn how to measure the efficiency of algorithms.",
+            "path": "/post/view/algorithm/complexity",
+            "icon": "TbClockHour4",
+            "color": "#6B7280"
+          },
+          "dataStructures": {
+            "title": "Data Structures Basics",
+            "description": "Learn about the basic data structures for algorithms.",
+            "path": "/post/view/algorithm/data-structures",
+            "icon": "FaLayerGroup",
+            "color": "#6B7280"
+          }
+        }
+      },
+      "sorting": {
+        "title": "Sorting Algorithms",
+        "items": {
+          "bubbleSort": {
+            "title": "Bubble Sort",
+            "description": "Understand a simple but inefficient sorting algorithm.",
+            "path": "/post/view/algorithm/bubble-sort",
+            "icon": "TbArrowsSort",
+            "color": "#6B7280"
+          },
+          "selectionSort": {
+            "title": "Selection Sort",
+            "description": "Learn about an algorithm that sorts by selecting the minimum value.",
+            "path": "/post/view/algorithm/selection-sort",
+            "icon": "TbArrowsSort",
+            "color": "#6B7280"
+          },
+          "quickSort": {
+            "title": "Quick Sort",
+            "description": "Study an efficient sorting algorithm using the divide and conquer strategy.",
+            "path": "/post/view/algorithm/quick-sort",
+            "icon": "TbArrowsSort",
+            "color": "#6B7280"
+          },
+          "mergeSort": {
+            "title": "Merge Sort",
+            "description": "Learn about a sorting algorithm with stable and predictable performance.",
+            "path": "/post/view/algorithm/merge-sort",
+            "icon": "TbArrowsSort",
+            "color": "#6B7280"
+          }
+        }
+      },
+      "graphAlgorithms": {
+        "title": "Graph Algorithms",
+        "items": {
+          "graphBasics": {
+            "title": "Graph Basics",
+            "description": "Learn about the concepts and representation methods of graphs.",
+            "path": "/post/view/algorithm/graph-basics",
+            "icon": "TbGraph",
+            "color": "#6B7280"
+          },
+          "bfs": {
+            "title": "Breadth First Search (BFS)",
+            "description": "Learn how to traverse a graph using breadth first search.",
+            "path": "/post/view/algorithm/bfs",
+            "icon": "TbGraph",
+            "color": "#6B7280"
+          },
+          "dfs": {
+            "title": "Depth First Search (DFS)",
+            "description": "Learn how to traverse a graph using depth first search.",
+            "path": "/post/view/algorithm/dfs",
+            "icon": "TbGraph",
+            "color": "#6B7280"
+          },
+          "dijkstra": {
+            "title": "Dijkstra's Algorithm",
+            "description": "Learn about an algorithm for finding the shortest path.",
+            "path": "/post/view/algorithm/dijkstra",
+            "icon": "TbRouteSquare2",
+            "color": "#6B7280"
+          }
+        }
+      },
+      "dynamicProgramming": {
+        "title": "Dynamic Programming",
+        "items": {
+          "dpBasics": {
+            "title": "Dynamic Programming Basics",
+            "description": "Learn about memoization and tabulation techniques.",
+            "path": "/post/view/algorithm/dp-basics",
+            "icon": "TbBinaryTree",
+            "color": "#6B7280"
+          },
+          "fibonacciDP": {
+            "title": "Fibonacci Sequence",
+            "description": "Solve the Fibonacci sequence problem using dynamic programming.",
+            "path": "/post/view/algorithm/fibonacci-dp",
+            "icon": "TbBinaryTree",
+            "color": "#6B7280"
+          },
+          "knapsackProblem": {
+            "title": "Knapsack Problem",
+            "description": "Solve the classic knapsack problem using dynamic programming.",
+            "path": "/post/view/algorithm/knapsack",
+            "icon": "TbBinaryTree",
+            "color": "#6B7280"
+          }
+        }
+      }
+    }
+  },
   "Next": {
     "intro": "Why Next?",
     "layouts": "Layouts",
@@ -19,6 +141,13 @@
       "gettingStarted": {
         "title": "Getting Started",
         "items": {
+          "whyNext": {
+            "title": "Why Next?",
+            "description": "Learn why Next.js is a great choice for your next project.",
+            "path": "/post/view/nextjs/why-next",
+            "icon": "SiNextdotjs",
+            "color": "#000000"
+          },
           "installation": {
             "title": "Installation & Setup",
             "description": "Learn how to install and configure your Next.js project.",
@@ -49,6 +178,13 @@
       "gettingStarted": {
         "title": "Getting Started",
         "items": {
+          "whyNest": {
+            "title": "Why Nest?",
+            "description": "Learn why Nest.js is a great choice for your next project.",
+            "path": "/post/view/nestjs/why-nest",
+            "icon": "SiNestjs",
+            "color": "#E0234E"
+          },
           "installation": {
             "title": "Installation & Setup",
             "description": "Learn how to install and configure your Nest.js project.",
@@ -79,6 +215,13 @@
       "gettingStarted": {
         "title": "Getting Started",
         "items": {
+          "whySpring": {
+            "title": "Why Spring?",
+            "description": "Learn why Spring is a great choice for your next project.",
+            "path": "/post/view/spring/why-spring",
+            "icon": "SiSpring",
+            "color": "#6DB33F"
+          },
           "installation": {
             "title": "Installation & Setup",
             "description": "Learn how to install and configure your Spring Framework project.",
@@ -152,6 +295,13 @@
   "MariaDB": {
     "categories": {
       "gettingStarted": {
+        "whyMariaDB": {
+          "title": "Why MariaDB?",
+          "description": "Learn why MariaDB is a great choice for your next project.",
+          "path": "/post/view/mariadb/why-mariadb",
+          "icon": "SiMariadb",
+          "color": "#4285F4"
+        },
         "title": "Getting Started",
         "items": {
           "installation": {
@@ -170,26 +320,33 @@
       "gettingStarted": {
         "title": "Getting Started",
         "items": {
+          "whyMongoDB": {
+            "title": "Why MongoDB?",
+            "description": "Learn why MongoDB is a great choice for your next project.",
+            "path": "/post/view/mongodb/why-mongodb",
+            "icon": "SiMongodb",
+            "color": "#e5bc7a"
+          },
           "installation": {
             "title": "Installation & Setup",
             "description": "Learn how to install and configure MongoDB.",
             "path": "/post/view/mongodb/installation",
             "icon": "SiMongodb",
-            "color": "#2A3034"
+            "color": "#e5bc7a"
           },
           "basicConcepts": {
             "title": "Basic Concepts",
             "description": "Understand the fundamental concepts of MongoDB including collections, documents, and BSON.",
             "path": "/post/view/mongodb/basic-concepts",
             "icon": "SiMongodb",
-            "color": "#2A3034"
+            "color": "#e5bc7a"
           },
           "crud": {
             "title": "CRUD Operations",
             "description": "Learn how to Create, Read, Update, and Delete data in MongoDB.",
             "path": "/post/view/mongodb/crud",
             "icon": "SiMongodb",
-            "color": "#2A3034"
+            "color": "#e5bc7a"
           }
         }
       },
@@ -201,14 +358,14 @@
             "description": "Utilize MongoDB's powerful data processing tool for complex analytics and transformations.",
             "path": "/post/view/mongodb/aggregation",
             "icon": "SiMongodb",
-            "color": "#2A3034"
+            "color": "#e5bc7a"
           },
           "indexing": {
             "title": "Indexing & Optimization",
             "description": "Learn indexing strategies to optimize query performance in MongoDB.",
             "path": "/post/view/mongodb/indexing",
             "icon": "SiMongodb",
-            "color": "#2A3034"
+            "color": "#e5bc7a"
           }
         }
       }

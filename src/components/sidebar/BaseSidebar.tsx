@@ -83,20 +83,23 @@ export default function BaseSidebar({
         if (isSmallScreen) setIsOpen(false);
       }}
     >
-      {/* 작은 화면에서만 보이는 미리보기 버튼 */}
+      {/* 작은 화면에서만 보이는 미니 사이드바 */}
       <div className={`
         absolute left-0 top-0 h-full w-16
         flex items-center justify-center
         ${previewButtonBgClasses} rounded-r-lg
         transform transition-all duration-300 ease-in-out border-r ${borderClasses}
-        ${!isSmallScreen || isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}
+        ${!isSmallScreen || isOpen ? 'opacity-0 pointer-events-none' : 'opacity-90'}
       `}>
         <div className="flex flex-col items-center gap-2">
-          <span className="ml-2 text-lg font-bold text-white/70 font-handwriting writing-vertical">
+          <div className="text-center mb-2">
+            <FrameworkIcon className={`w-8 h-8 mb-1 mx-auto`} style={{ color: frameworkColor }} />
+          </div>
+          <span className="text-base font-bold text-gray-800 font-handwriting text-center">
             {frameworkName}
           </span>
         </div>
-        <MdKeyboardArrowRight className="w-5 h-5 text-white/70 animate-[bounce-right_1s_infinite]" />
+        <MdKeyboardArrowRight className="w-5 h-5 text-gray-800 animate-[bounce-right_1s_infinite] absolute right-1" />
       </div>
 
       {/* 사이드바 본체 */}
@@ -115,9 +118,9 @@ export default function BaseSidebar({
         <div className={`p-4 border-b ${borderClasses} ${headerBgClasses} ${backgroundLayerRenderer ? 'relative z-10' : ''}`}>
           <Link 
             href={frameworkPath}
-            className={`flex items-center gap-2 text-xl font-bold text-white/90 ${headerHoverTextClass} transition-colors duration-300`}
+            className={`flex items-center gap-2 text-xl font-bold text-gray-800 transition-colors duration-300 ${headerHoverTextClass}`}
           >
-            <FrameworkIcon className={`w-8 h-8 text-[${frameworkColor}] ${logoAnimation}`} />
+            <FrameworkIcon className={`w-8 h-8 ${logoAnimation}`} style={{ color: frameworkColor }} />
             {frameworkName}
           </Link>
         </div>

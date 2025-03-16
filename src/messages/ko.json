@@ -8,6 +8,128 @@
   "Sidebar": {
     "sidebarMenu": "사이드바 메뉴 보기"
   },
+  "Algorithm": {
+    "categories": {
+      "basics": {
+        "title": "알고리즘 기초",
+        "items": {
+          "introduction": {
+            "title": "알고리즘 소개",
+            "description": "알고리즘의 기본 개념과 중요성에 대해 알아봅니다.",
+            "path": "/post/view/algorithm/introduction",
+            "icon": "RiCodeBoxLine",
+            "color": "#6B7280"
+          },
+          "complexity": {
+            "title": "시간 및 공간 복잡도",
+            "description": "알고리즘의 효율성을 측정하는 방법을 배웁니다.",
+            "path": "/post/view/algorithm/complexity",
+            "icon": "TbClockHour4",
+            "color": "#6B7280"
+          },
+          "dataStructures": {
+            "title": "자료구조 기초",
+            "description": "알고리즘을 위한 기본 자료구조를 학습합니다.",
+            "path": "/post/view/algorithm/data-structures",
+            "icon": "FaLayerGroup",
+            "color": "#6B7280"
+          }
+        }
+      },
+      "sorting": {
+        "title": "정렬 알고리즘",
+        "items": {
+          "bubbleSort": {
+            "title": "버블 정렬",
+            "description": "단순하지만 비효율적인 정렬 알고리즘을 이해합니다.",
+            "path": "/post/view/algorithm/bubble-sort",
+            "icon": "TbArrowsSort",
+            "color": "#6B7280"
+          },
+          "selectionSort": {
+            "title": "선택 정렬",
+            "description": "최솟값을 선택하여 정렬하는 알고리즘을 배웁니다.",
+            "path": "/post/view/algorithm/selection-sort",
+            "icon": "TbArrowsSort",
+            "color": "#6B7280"
+          },
+          "quickSort": {
+            "title": "퀵 정렬",
+            "description": "분할 정복 전략을 사용한 효율적인 정렬 알고리즘을 학습합니다.",
+            "path": "/post/view/algorithm/quick-sort",
+            "icon": "TbArrowsSort",
+            "color": "#6B7280"
+          },
+          "mergeSort": {
+            "title": "병합 정렬",
+            "description": "안정적이고 예측 가능한 성능의 정렬 알고리즘을 배웁니다.",
+            "path": "/post/view/algorithm/merge-sort",
+            "icon": "TbArrowsSort",
+            "color": "#6B7280"
+          }
+        }
+      },
+      "graphAlgorithms": {
+        "title": "그래프 알고리즘",
+        "items": {
+          "graphBasics": {
+            "title": "그래프 기초",
+            "description": "그래프의 개념과 표현 방법에 대해 학습합니다.",
+            "path": "/post/view/algorithm/graph-basics",
+            "icon": "TbGraph",
+            "color": "#6B7280"
+          },
+          "bfs": {
+            "title": "너비 우선 탐색(BFS)",
+            "description": "너비 우선 탐색을 통한 그래프 순회 방법을 배웁니다.",
+            "path": "/post/view/algorithm/bfs",
+            "icon": "TbGraph",
+            "color": "#6B7280"
+          },
+          "dfs": {
+            "title": "깊이 우선 탐색(DFS)",
+            "description": "깊이 우선 탐색을 통한 그래프 순회 방법을 배웁니다.",
+            "path": "/post/view/algorithm/dfs",
+            "icon": "TbGraph",
+            "color": "#6B7280"
+          },
+          "dijkstra": {
+            "title": "다익스트라 알고리즘",
+            "description": "최단 경로를 찾는 알고리즘을 학습합니다.",
+            "path": "/post/view/algorithm/dijkstra",
+            "icon": "TbRouteSquare2",
+            "color": "#6B7280"
+          }
+        }
+      },
+      "dynamicProgramming": {
+        "title": "동적 프로그래밍",
+        "items": {
+          "dpBasics": {
+            "title": "동적 프로그래밍 기초",
+            "description": "메모이제이션과 타뷸레이션 기법에 대해 학습합니다.",
+            "path": "/post/view/algorithm/dp-basics",
+            "icon": "TbBinaryTree",
+            "color": "#6B7280"
+          },
+          "fibonacciDP": {
+            "title": "피보나치 수열",
+            "description": "동적 프로그래밍으로 피보나치 수열 문제를 해결합니다.",
+            "path": "/post/view/algorithm/fibonacci-dp",
+            "icon": "TbBinaryTree",
+            "color": "#6B7280"
+          },
+          "knapsackProblem": {
+            "title": "배낭 문제",
+            "description": "클래식한 DP 문제인 배낭 문제를 해결합니다.",
+            "path": "/post/view/algorithm/knapsack",
+            "icon": "TbBinaryTree",
+            "color": "#6B7280"
+          }
+        }
+      }
+    }
+  },
   "Next": {
     "categories": {
       "gettingStarted": {
@@ -50,6 +172,13 @@
       "gettingStarted": {
         "title": "시작하기",
         "items": {
+          "whyNest": {
+            "title": "Why Nest?",
+            "description": "Nest.js의 장점과 특징을 알아봅니다.",
+            "path": "/post/view/nestjs/why-nest",
+            "icon": "SiNestjs",
+            "color": "#E0234E"
+          },
           "installation": {
             "title": "설치 및 설정",
             "description": "Nest.js 프로젝트 설치 및 기본 설정 방법을 알아봅니다.",
@@ -80,6 +209,13 @@
       "gettingStarted": {
         "title": "시작하기",
         "items": {
+          "whySpring": {
+            "title": "Why Spring?",
+            "description": "Spring Framework의 장점과 특징을 알아봅니다.",
+            "path": "/post/view/spring/why-spring",
+            "icon": "SiSpring",
+            "color": "#6DB33F"
+          },
           "installation": {
             "title": "설치 및 설정",
             "description": "Spring Framework 프로젝트 설치 및 기본 설정 방법을 알아봅니다.",
@@ -155,6 +291,13 @@
       "gettingStarted": {
         "title": "시작하기",
         "items": {
+          "whyMariaDB": {
+            "title": "Why MariaDB?",
+            "description": "MariaDB의 장점과 특징을 알아봅니다.",
+            "path": "/post/view/mariadb/why-mariadb",
+            "icon": "SiMariadb",
+            "color": "#4285F4"
+          },
           "installation": {
             "title": "설치 및 설정",
             "description": "MariaDB 프로젝트 설치 및 기본 설정 방법을 알아봅니다.",
@@ -171,26 +314,33 @@
       "gettingStarted": {
         "title": "시작하기",
         "items": {
+          "whyMongoDB": {
+            "title": "Why MongoDB?",
+            "description": "MongoDB의 장점과 특징을 알아봅니다.",
+            "path": "/post/view/mongodb/why-mongodb",
+            "icon": "SiMongodb",
+            "color": "#e5bc7a"
+          },
           "installation": {
             "title": "설치 및 설정",
             "description": "MongoDB 설치 및 기본 설정 방법을 알아봅니다.",
             "path": "/post/view/mongodb/installation",
             "icon": "SiMongodb",
-            "color": "#2A3034"
+            "color": "#e5bc7a"
           },
           "basicConcepts": {
             "title": "기본 개념",
             "description": "MongoDB의 컬렉션, 문서, BSON 등 기본 개념을 이해합니다.",
             "path": "/post/view/mongodb/basic-concepts",
             "icon": "SiMongodb",
-            "color": "#2A3034"
+            "color": "#e5bc7a"
           },
           "crud": {
             "title": "CRUD 작업",
             "description": "MongoDB에서 데이터 생성, 조회, 수정, 삭제 방법을 알아봅니다.",
             "path": "/post/view/mongodb/crud",
             "icon": "SiMongodb",
-            "color": "#2A3034"
+            "color": "#e5bc7a"
           }
         }
       },
@@ -202,14 +352,14 @@
             "description": "MongoDB의 강력한 데이터 처리 도구인 애그리게이션 파이프라인을 활용합니다.",
             "path": "/post/view/mongodb/aggregation",
             "icon": "SiMongodb",
-            "color": "#2A3034"
+            "color": "#e5bc7a"
           },
           "indexing": {
             "title": "인덱싱 및 최적화",
             "description": "MongoDB 쿼리 성능 최적화를 위한 인덱스 전략을 알아봅니다.",
             "path": "/post/view/mongodb/indexing",
             "icon": "SiMongodb",
-            "color": "#2A3034"
+            "color": "#e5bc7a"
           }
         }
       }

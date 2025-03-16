@@ -7,6 +7,7 @@ import NestSidebar from './NestSidebar';
 import SpringSidebar from './SpringSidebar';
 import MariaDBSidebar from './MariaDBSidebar';
 import MongoDBSidebar from './MongoDBSidebar';
+import AlgorithmSidebar from './AlgorithmSidebar';
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -15,6 +16,7 @@ export default function Sidebar() {
   const isSpringPage = pathname.startsWith('/post/view/spring');
   const isMariaPage = pathname.startsWith('/post/view/mariadb');
   const isMongoPage = pathname.startsWith('/post/view/mongodb');
+  const isAlgorithmPage = pathname.startsWith('/post/view/algorithm');
 
   return (
     <aside className="fixed left-0 top-0 h-full z-[30] overflow-hidden">
@@ -23,6 +25,7 @@ export default function Sidebar() {
         : isSpringPage ? <SpringSidebar />
         : isMariaPage ? <MariaDBSidebar />
         : isMongoPage ? <MongoDBSidebar />
+        : isAlgorithmPage ? <AlgorithmSidebar />
         : <MainSidebar />}
     </aside>
   );

@@ -18,8 +18,10 @@ import TableHeader from '@tiptap/extension-table-header'
 import Youtube from '@tiptap/extension-youtube'
 import TextAlign from '@tiptap/extension-text-align'
 import Blockquote from '@tiptap/extension-blockquote'
+import java from 'highlight.js/lib/languages/java'
 
 const lowlight = createLowlight(common)
+lowlight.register('java', java)
 
 export function Viewer({ content }: { content: string }) {
   const editor = useEditor({
@@ -38,6 +40,10 @@ export function Viewer({ content }: { content: string }) {
       TableHeader,
       CodeBlockLowlight.configure({
         lowlight,
+        defaultLanguage: 'java',
+        HTMLAttributes: {
+          class: 'not-prose relative bg-[#1E1E1E] text-white rounded-lg p-4 my-4',
+        },
       }),
       Youtube.configure({
         HTMLAttributes: {
@@ -53,6 +59,11 @@ export function Viewer({ content }: { content: string }) {
     content,
     editable: false,
     immediatelyRender: false,
+    editorProps: {
+      attributes: {
+        class: 'prose prose-gray max-w-none prose-pre:p-0 prose-pre:bg-transparent',
+      },
+    },
   })
 
   useEffect(() => {
@@ -66,7 +77,7 @@ export function Viewer({ content }: { content: string }) {
       container.querySelectorAll('pre').forEach(pre => {
         const button = document.createElement('button')
         button.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>'
-        button.className = 'absolute top-2 right-2 p-2 bg-gray-700 rounded hover:bg-gray-600'
+        button.className = 'absolute top-2 right-2 p-2 bg-gray-700 rounded hover:bg-gray-600 text-white'
         button.onclick = () => {
           navigator.clipboard.writeText(pre.textContent || '')
         }
@@ -74,11 +85,20 @@ export function Viewer({ content }: { content: string }) {
         pre.appendChild(button)
       })
 
+      // 코드 블록 언어 표시
+      container.querySelectorAll('pre > code').forEach(code => {
+        const language = code.getAttribute('class')?.split('-')[1] || 'text'
+        const langLabel = document.createElement('div')
+        langLabel.textContent = language
+        langLabel.className = 'absolute top-2 left-4 text-xs text-gray-400'
+        code.parentElement?.appendChild(langLabel)
+      })
+
       // 인용구
       container.querySelectorAll('blockquote').forEach(quote => {
         const button = document.createElement('button')
         button.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>'
-        button.className = 'absolute top-2 right-2 p-2 bg-gray-700 rounded hover:bg-gray-600 opacity-0 transition-opacity group-hover:opacity-100'
+        button.className = 'absolute top-2 right-2 p-2 bg-gray-700 rounded hover:bg-gray-600 opacity-0 transition-opacity group-hover:opacity-100 text-white'
         button.onclick = () => {
           navigator.clipboard.writeText(quote.textContent || '')
         }
@@ -91,7 +111,7 @@ export function Viewer({ content }: { content: string }) {
       container.querySelectorAll('table').forEach(table => {
         const button = document.createElement('button')
         button.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>'
-        button.className = 'absolute top-2 right-2 p-2 bg-gray-700 rounded hover:bg-gray-600 opacity-0 transition-opacity group-hover:opacity-100'
+        button.className = 'absolute top-2 right-2 p-2 bg-gray-700 rounded hover:bg-gray-600 opacity-0 transition-opacity group-hover:opacity-100 text-white'
         button.onclick = () => {
           const text = Array.from(table.rows).map(row => 
             Array.from(row.cells).map(cell => cell.textContent).join('\t')
@@ -115,8 +135,20 @@ export function Viewer({ content }: { content: string }) {
   }, [editor])
 
   return (
-    <div className="prose max-w-none">
+    <div className="prose prose-gray max-w-none [&_pre]:!bg-[#1E1E1E] [&_pre]:!text-white [&_pre]:!rounded-lg [&_pre]:!p-4 [&_pre]:!my-4 [&_pre_code]:!text-sm [&_pre_code]:!font-mono">
       <EditorContent editor={editor} />
+      <style jsx global>{`
+        .hljs-keyword { color: #569CD6; }
+        .hljs-type { color: #4EC9B0; }
+        .hljs-string { color: #CE9178; }
+        .hljs-number { color: #B5CEA8; }
+        .hljs-comment { color: #6A9955; }
+        .hljs-class { color: #4EC9B0; }
+        .hljs-function { color: #DCDCAA; }
+        .hljs-variable { color: #9CDCFE; }
+        .hljs-operator { color: #D4D4D4; }
+        .hljs-punctuation { color: #D4D4D4; }
+      `}</style>
     </div>
   )
 }

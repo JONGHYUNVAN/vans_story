@@ -5,6 +5,7 @@ export interface Post {
     topic: string;
     content: string;
     author: string;
+    authorEmail: string;
     createdAt: string;
     updatedAt: string;
     viewCount: number;

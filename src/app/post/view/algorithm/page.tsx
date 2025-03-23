@@ -3,7 +3,7 @@ import AlgorithmList from './AlgorithmList';
 
 async function getPosts() {
   const response = await fetch(`${API_URLS.POST.LIST}?theme=algorithm&page=1&limit=10`, {
-    cache: 'no-store'
+    next: { revalidate: 0 }
   });
 
   if (!response.ok) {

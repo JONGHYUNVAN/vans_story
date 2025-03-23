@@ -46,40 +46,6 @@ export default async function AlgorithmDetailPage({ params }: PageProps) {
           backgroundSize: '80px 80px'
         }} />
       </div>
-      
-      {/* 알고리즘 연결 그래프 효과 */}
-      <div className="absolute inset-0 z-[1] overflow-hidden opacity-5">
-        <svg width="100%" height="100%" className="absolute top-0 left-0" viewBox="0 0 1000 1000">
-          <g stroke="#777777" fill="none" strokeWidth="0.5">
-            <circle cx="100" cy="200" r="5" fill="#777777" />
-            <circle cx="300" cy="100" r="5" fill="#777777" />
-            <circle cx="500" cy="150" r="5" fill="#777777" />
-            <circle cx="700" cy="100" r="5" fill="#777777" />
-            <circle cx="900" cy="200" r="5" fill="#777777" />
-            <circle cx="200" cy="400" r="5" fill="#777777" />
-            <circle cx="400" cy="500" r="5" fill="#777777" />
-            <circle cx="600" cy="450" r="5" fill="#777777" />
-            <circle cx="800" cy="400" r="5" fill="#777777" />
-            <circle cx="100" cy="800" r="5" fill="#777777" />
-            <circle cx="300" cy="700" r="5" fill="#777777" />
-            <circle cx="500" cy="750" r="5" fill="#777777" />
-            <circle cx="700" cy="850" r="5" fill="#777777" />
-            <circle cx="900" cy="900" r="5" fill="#777777" />
-            
-            <path d="M 100 200 L 300 100 L 500 150 L 700 100 L 900 200" />
-            <path d="M 100 200 L 200 400 L 400 500 L 600 450 L 800 400 L 900 200" />
-            <path d="M 200 400 L 100 800 L 300 700 L 500 750 L 700 850 L 900 900" />
-            <path d="M 100 800 L 300 700 L 300 100" />
-            <path d="M 500 150 L 500 750" />
-            <path d="M 700 100 L 700 850" />
-            <path d="M 300 700 L 200 400" />
-            <path d="M 500 750 L 400 500" />
-            <path d="M 700 850 L 600 450" />
-            <path d="M 900 900 L 800 400" />
-          </g>
-        </svg>
-      </div>
-      
       <div className="relative z-[2]">
         <div className="mx-auto max-w-5xl px-6 py-12 min-h-screen border-x border-black relative">
           {/* 배경 */}

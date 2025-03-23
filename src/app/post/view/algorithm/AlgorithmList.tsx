@@ -12,7 +12,11 @@ interface Post extends FrameworkPost {
   _id: string;
 }
 
-export default function AlgorithmList({ posts }: { posts: Post[] }) {
+interface Props {
+  posts: Post[];
+}
+
+export default function AlgorithmList({ posts }: Props) {
   const { t } = useTranslation('post');
   const sortedPosts = sortPosts(posts, 'latest');
 

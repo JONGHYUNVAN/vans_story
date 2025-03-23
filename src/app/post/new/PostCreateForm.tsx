@@ -9,6 +9,7 @@ import { API_URLS } from '@/api/constants/apiUrl'
 import { THEMES, getCategoriesByTheme } from '@/constants/themes'
 import { useTranslation } from '@/utils/i18n'
 import PostCard from '../view/common/postcard/new/PostCard'
+import { tokenStorage } from '@/utils/token'
 
 type ViewMode = 'edit' | 'preview'
 
@@ -31,7 +32,6 @@ export function PostCreateForm() {
   const [theme, setTheme] = useState('next')
   const [topic, setTopic] = useState('')
   const [description, setDescription] = useState('')
-  const [author, setAuthor] = useState('')
   const [tags, setTags] = useState<string[]>([])
   const [category, setCategory] = useState('')
   const [thumbnail, setThumbnail] = useState('')
@@ -67,16 +67,22 @@ export function PostCreateForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!title || !content || !theme || !topic || !description || !author || !category || !language) {
+    if (!title || !content || !theme || !topic || !description || !category || !language) {
       alert(t('post.create.validation'))
       return
     }
 
     try {
+      const token = tokenStorage.getToken()
+      if (!token) {
+        throw new Error('로그인이 필요합니다.')
+      }
+
       const response = await fetch(API_URLS.POST.CREATE, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           title,
@@ -84,7 +90,6 @@ export function PostCreateForm() {
           theme,
           topic,
           description,
-          author,
           tags,
           category,
           thumbnail,
@@ -92,30 +97,39 @@ export function PostCreateForm() {
         })
       })
 
+      let data;
+      try {
+        data = await response.json();
+      } catch (e) {
+        throw new Error('서버 응답을 처리할 수 없습니다.');
+      }
+
       if (!response.ok) {
-        throw new Error(t('post.create.submitError'))
+        throw new Error(data?.message || t('post.create.submitError'))
+      }
+
+      if (!data?._id) {
+        throw new Error('게시글 ID를 받지 못했습니다.')
       }
 
       // 임시저장 데이터 삭제
       localStorage.removeItem('temp_post')
       
-      const data = await response.json()
-      router.push(`/post/${data.id}`)
+      router.push(`/post/view/${theme}/${data._id}`)
     } catch (error) {
       console.error('Error submitting post:', error)
-      alert(t('post.create.submitError'))
+      alert(error instanceof Error ? error.message : t('post.create.submitError'))
     }
   }
 
   const handleTempSave = () => {
-    if (title || content || theme || topic || description || author || tags.length > 0 || category || thumbnail || language) {
+    if (title || content || theme || topic || description || tags.length > 0 || category || thumbnail || language) {
       localStorage.setItem('temp_post', JSON.stringify({
         title,
         content,
         theme,
         topic,
         description,
-        author,
         tags,
         category,
         thumbnail,
@@ -136,7 +150,6 @@ export function PostCreateForm() {
         setTheme(postData.theme || '')
         setTopic(postData.topic || '')
         setDescription(postData.description || '')
-        setAuthor(postData.author || '')
         setTags(postData.tags || [])
         setCategory(postData.category || '')
         setThumbnail(postData.thumbnail || '')
@@ -265,7 +278,6 @@ export function PostCreateForm() {
               viewCount: 0,
               likeCount: 0,
               topic: topic || t('post.create.inputTopic'),
-              author: author || t('post.create.inputAuthor'),
               thumbnail: thumbnail,
               theme: theme
             }}

@@ -1,6 +1,10 @@
 import { API_URLS } from '@/api/constants/apiUrl';
 import AlgorithmList from '../../AlgorithmList';
 
+interface PageProps {
+  params: Promise<{ category: string }>;
+}
+
 async function getPosts(category: string) {
   const response = await fetch(`${API_URLS.POST.LIST}?theme=algorithm&category=${category}&page=1&limit=10`, {
     cache: 'no-store'
@@ -14,7 +18,8 @@ async function getPosts(category: string) {
   return data.data || [];
 }
 
-export default async function Page({ params }: { params: { category: string } }) {
-  const posts = await getPosts(params.category);
+export default async function Page({ params }: PageProps) {
+  const { category } = await params;
+  const posts = await getPosts(category);
   return <AlgorithmList posts={posts} />;
 } 

@@ -16,21 +16,21 @@
           "introduction": {
             "title": "Introduction to Algorithms",
             "description": "Learn about the basic concepts and importance of algorithms.",
-            "path": "/post/view/algorithm/introduction",
+            "path": "/post/view/algorithm/category/introduction",
             "icon": "RiCodeBoxLine",
             "color": "#6B7280"
           },
           "complexity": {
             "title": "Time & Space Complexity",
             "description": "Learn how to measure the efficiency of algorithms.",
-            "path": "/post/view/algorithm/complexity",
+            "path": "/post/view/algorithm/category/complexity",
             "icon": "TbClockHour4",
             "color": "#6B7280"
           },
           "dataStructures": {
             "title": "Data Structures Basics",
             "description": "Learn about the basic data structures for algorithms.",
-            "path": "/post/view/algorithm/data-structures",
+            "path": "/post/view/algorithm/category/data-structures",
             "icon": "FaLayerGroup",
             "color": "#6B7280"
           }
@@ -42,28 +42,28 @@
           "bubbleSort": {
             "title": "Bubble Sort",
             "description": "Understand a simple but inefficient sorting algorithm.",
-            "path": "/post/view/algorithm/bubble-sort",
+            "path": "/post/view/algorithm/category/bubble-sort",
             "icon": "TbArrowsSort",
             "color": "#6B7280"
           },
           "selectionSort": {
             "title": "Selection Sort",
             "description": "Learn about an algorithm that sorts by selecting the minimum value.",
-            "path": "/post/view/algorithm/selection-sort",
+            "path": "/post/view/algorithm/category/selection-sort",
             "icon": "TbArrowsSort",
             "color": "#6B7280"
           },
           "quickSort": {
             "title": "Quick Sort",
             "description": "Study an efficient sorting algorithm using the divide and conquer strategy.",
-            "path": "/post/view/algorithm/quick-sort",
+            "path": "/post/view/algorithm/category/quick-sort",
             "icon": "TbArrowsSort",
             "color": "#6B7280"
           },
           "mergeSort": {
             "title": "Merge Sort",
             "description": "Learn about a sorting algorithm with stable and predictable performance.",
-            "path": "/post/view/algorithm/merge-sort",
+            "path": "/post/view/algorithm/category/merge-sort",
             "icon": "TbArrowsSort",
             "color": "#6B7280"
           }
@@ -75,28 +75,28 @@
           "graphBasics": {
             "title": "Graph Basics",
             "description": "Learn about the concepts and representation methods of graphs.",
-            "path": "/post/view/algorithm/graph-basics",
+            "path": "/post/view/algorithm/category/graph-basics",
             "icon": "TbGraph",
             "color": "#6B7280"
           },
           "bfs": {
             "title": "Breadth First Search (BFS)",
             "description": "Learn how to traverse a graph using breadth first search.",
-            "path": "/post/view/algorithm/bfs",
+            "path": "/post/view/algorithm/category/bfs",
             "icon": "TbGraph",
             "color": "#6B7280"
           },
           "dfs": {
             "title": "Depth First Search (DFS)",
             "description": "Learn how to traverse a graph using depth first search.",
-            "path": "/post/view/algorithm/dfs",
+            "path": "/post/view/algorithm/category/dfs",
             "icon": "TbGraph",
             "color": "#6B7280"
           },
           "dijkstra": {
             "title": "Dijkstra's Algorithm",
             "description": "Learn about an algorithm for finding the shortest path.",
-            "path": "/post/view/algorithm/dijkstra",
+            "path": "/post/view/algorithm/category/dijkstra",
             "icon": "TbRouteSquare2",
             "color": "#6B7280"
           }
@@ -108,21 +108,21 @@
           "dpBasics": {
             "title": "Dynamic Programming Basics",
             "description": "Learn about memoization and tabulation techniques.",
-            "path": "/post/view/algorithm/dp-basics",
+            "path": "/post/view/algorithm/category/dp-basics",
             "icon": "TbBinaryTree",
             "color": "#6B7280"
           },
           "fibonacciDP": {
             "title": "Fibonacci Sequence",
             "description": "Solve the Fibonacci sequence problem using dynamic programming.",
-            "path": "/post/view/algorithm/fibonacci-dp",
+            "path": "/post/view/algorithm/category/fibonacci-dp",
             "icon": "TbBinaryTree",
             "color": "#6B7280"
           },
           "knapsackProblem": {
             "title": "Knapsack Problem",
             "description": "Solve the classic knapsack problem using dynamic programming.",
-            "path": "/post/view/algorithm/knapsack",
+            "path": "/post/view/algorithm/category/knapsack",
             "icon": "TbBinaryTree",
             "color": "#6B7280"
           }
@@ -144,28 +144,28 @@
           "whyNext": {
             "title": "Why Next?",
             "description": "Learn why Next.js is a great choice for your next project.",
-            "path": "/post/view/nextjs/why-next",
+            "path": "/post/view/nextjs/category/why-next",
             "icon": "SiNextdotjs",
             "color": "#000000"
           },
           "installation": {
             "title": "Installation & Setup",
             "description": "Learn how to install and configure your Next.js project.",
-            "path": "/post/view/nextjs/installation",
+            "path": "/post/view/nextjs/category/installation",
             "icon": "SiNextdotjs",
             "color": "#000000"
           },
           "projectStructure": {
             "title": "Project Structure",
             "description": "Understand the basic structure and role of each directory in a Next.js project.",
-            "path": "/post/view/nextjs/project-structure",
+            "path": "/post/view/nextjs/category/project-structure",
             "icon": "SiNextdotjs",
             "color": "#000000"
           },
           "firstApp": {
             "title": "Creating Your First App",
             "description": "Learn the basic concepts by building a simple Next.js application.",
-            "path": "/post/view/nextjs/first-app",
+            "path": "/post/view/nextjs/category/first-app",
             "icon": "SiNextdotjs",
             "color": "#000000"
           }
@@ -181,28 +181,28 @@
           "whyNest": {
             "title": "Why Nest?",
             "description": "Learn why Nest.js is a great choice for your next project.",
-            "path": "/post/view/nestjs/why-nest",
+            "path": "/post/view/nestjs/category/why-nest",
             "icon": "SiNestjs",
             "color": "#E0234E"
           },
           "installation": {
             "title": "Installation & Setup",
             "description": "Learn how to install and configure your Nest.js project.",
-            "path": "/post/view/nestjs/installation",
+            "path": "/post/view/nestjs/category/installation",
             "icon": "SiNestjs",
             "color": "#E0234E"
           },
           "projectStructure": {
             "title": "Project Structure",
             "description": "Understand the basic structure and role of each directory in a Nest.js project.",
-            "path": "/post/view/nestjs/project-structure",
+            "path": "/post/view/nestjs/category/project-structure",
             "icon": "SiNestjs",
             "color": "#E0234E"
           },
           "firstApp": {
             "title": "Creating Your First App",
             "description": "Learn the basic concepts by building a simple Nest.js application.",
-            "path": "/post/view/nestjs/first-app",
+            "path": "/post/view/nestjs/category/first-app",
             "icon": "SiNestjs",
             "color": "#E0234E"
           }
@@ -218,28 +218,28 @@
           "whySpring": {
             "title": "Why Spring?",
             "description": "Learn why Spring is a great choice for your next project.",
-            "path": "/post/view/spring/why-spring",
+            "path": "/post/view/spring/category/why-spring",
             "icon": "SiSpring",
             "color": "#6DB33F"
           },
           "installation": {
             "title": "Installation & Setup",
             "description": "Learn how to install and configure your Spring Framework project.",
-            "path": "/post/view/spring/installation",
+            "path": "/post/view/spring/category/installation",
             "icon": "SiSpring",
             "color": "#6DB33F"
           },
           "projectStructure": {
             "title": "Project Structure",
             "description": "Understand the basic structure and role of each directory in a Spring Framework project.",
-            "path": "/post/view/spring/project-structure",
+            "path": "/post/view/spring/category/project-structure",
             "icon": "SiSpring",
             "color": "#6DB33F"
           },
           "firstApp": {
             "title": "Creating Your First App",
             "description": "Learn the basic concepts by building a simple Spring Framework application.",
-            "path": "/post/view/spring/first-app",
+            "path": "/post/view/spring/category/first-app",
             "icon": "SiSpring",
             "color": "#6DB33F"
           }
@@ -251,21 +251,21 @@
           "ioc": {
             "title": "IoC & DI",
             "description": "Learn about Inversion of Control (IoC) and Dependency Injection (DI).",
-            "path": "/post/view/spring/ioc-di",
+            "path": "/post/view/spring/category/ioc-di",
             "icon": "SiSpring",
             "color": "#6DB33F"
           },
           "aop": {
             "title": "AOP",
             "description": "Understand Aspect-Oriented Programming (AOP) and its usage in Spring.",
-            "path": "/post/view/spring/aop",
+            "path": "/post/view/spring/category/aop",
             "icon": "SiSpring",
             "color": "#6DB33F"
           },
           "mvc": {
             "title": "MVC Pattern",
             "description": "Learn about Spring MVC architecture and web application development.",
-            "path": "/post/view/spring/mvc",
+            "path": "/post/view/spring/category/mvc",
             "icon": "SiSpring",
             "color": "#6DB33F"
           }
@@ -277,14 +277,14 @@
           "jpa": {
             "title": "Spring Data JPA",
             "description": "Learn how to access databases using JPA.",
-            "path": "/post/view/spring/data-jpa",
+            "path": "/post/view/spring/category/data-jpa",
             "icon": "SiSpring",
             "color": "#6DB33F"
           },
           "jdbc": {
             "title": "JDBC & Transaction",
             "description": "Learn about JDBC and transaction management.",
-            "path": "/post/view/spring/jdbc-transaction",
+            "path": "/post/view/spring/category/jdbc-transaction",
             "icon": "SiSpring",
             "color": "#6DB33F"
           }
@@ -298,7 +298,7 @@
         "whyMariaDB": {
           "title": "Why MariaDB?",
           "description": "Learn why MariaDB is a great choice for your next project.",
-          "path": "/post/view/mariadb/why-mariadb",
+          "path": "/post/view/mariadb/category/why-mariadb",
           "icon": "SiMariadb",
           "color": "#4285F4"
         },
@@ -307,7 +307,7 @@
           "installation": {
             "title": "Installation & Setup",
             "description": "Learn how to install and configure your MariaDB project.",
-            "path": "/post/view/mariadb/installation",
+            "path": "/post/view/mariadb/category/installation",
             "icon": "SiMariadb",
             "color": "#4285F4"
           }
@@ -323,28 +323,28 @@
           "whyMongoDB": {
             "title": "Why MongoDB?",
             "description": "Learn why MongoDB is a great choice for your next project.",
-            "path": "/post/view/mongodb/why-mongodb",
+            "path": "/post/view/mongodb/category/why-mongodb",
             "icon": "SiMongodb",
             "color": "#e5bc7a"
           },
           "installation": {
             "title": "Installation & Setup",
             "description": "Learn how to install and configure MongoDB.",
-            "path": "/post/view/mongodb/installation",
+            "path": "/post/view/mongodb/category/installation",
             "icon": "SiMongodb",
             "color": "#e5bc7a"
           },
           "basicConcepts": {
             "title": "Basic Concepts",
             "description": "Understand the fundamental concepts of MongoDB including collections, documents, and BSON.",
-            "path": "/post/view/mongodb/basic-concepts",
+            "path": "/post/view/mongodb/category/basic-concepts",
             "icon": "SiMongodb",
             "color": "#e5bc7a"
           },
           "crud": {
             "title": "CRUD Operations",
             "description": "Learn how to Create, Read, Update, and Delete data in MongoDB.",
-            "path": "/post/view/mongodb/crud",
+            "path": "/post/view/mongodb/category/crud",
             "icon": "SiMongodb",
             "color": "#e5bc7a"
           }
@@ -356,14 +356,14 @@
           "aggregation": {
             "title": "Aggregation Framework",
             "description": "Utilize MongoDB's powerful data processing tool for complex analytics and transformations.",
-            "path": "/post/view/mongodb/aggregation",
+            "path": "/post/view/mongodb/category/aggregation",
             "icon": "SiMongodb",
             "color": "#e5bc7a"
           },
           "indexing": {
             "title": "Indexing & Optimization",
             "description": "Learn indexing strategies to optimize query performance in MongoDB.",
-            "path": "/post/view/mongodb/indexing",
+            "path": "/post/view/mongodb/category/indexing",
             "icon": "SiMongodb",
             "color": "#e5bc7a"
           }

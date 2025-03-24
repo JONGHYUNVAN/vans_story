@@ -1,9 +1,10 @@
 import { API_URLS } from '@/api/constants/apiUrl';
 import AlgorithmList from './AlgorithmList';
+import AlgorithmLayout from './AlgorithmLayout';
 
 async function getPosts() {
   const response = await fetch(`${API_URLS.POST.LIST}?theme=algorithm&page=1&limit=10`, {
-    cache: 'no-store'
+    next: { revalidate: 0 }
   });
 
   if (!response.ok) {
@@ -16,5 +17,9 @@ async function getPosts() {
 
 export default async function Page() {
   const posts = await getPosts();
-  return <AlgorithmList posts={posts} />;
+  return (
+    <AlgorithmLayout title="Algorithm">
+      <AlgorithmList posts={posts} />
+    </AlgorithmLayout>
+  );
 } 

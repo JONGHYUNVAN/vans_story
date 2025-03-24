@@ -10,6 +10,9 @@ import { THEMES, getCategoriesByTheme } from '@/constants/themes'
 import { useTranslation } from '@/utils/i18n'
 import PostCard from '../view/common/postcard/new/PostCard'
 import { tokenStorage } from '@/utils/token'
+import AlgorithmLayout from '../view/algorithm/AlgorithmLayout'
+import { PostFormInputs } from './components/PostFormInputs'
+import { useCategories } from '@/hooks/useCategories'
 
 type ViewMode = 'edit' | 'preview'
 
@@ -22,52 +25,53 @@ const LANGUAGES = [
 interface Category {
   value: string;
   label: string;
+  description?: string;
 }
 
 export function PostCreateForm() {
   const router = useRouter()
   const { t } = useTranslation('')
+  
+  // 기본 상태 관리
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
-  const [theme, setTheme] = useState('next')
+  const [theme, setTheme] = useState('algorithm')
   const [topic, setTopic] = useState('')
   const [description, setDescription] = useState('')
   const [tags, setTags] = useState<string[]>([])
-  const [category, setCategory] = useState('')
   const [thumbnail, setThumbnail] = useState('')
-  const [language, setLanguage] = useState('')
+  const [language, setLanguage] = useState('ko')
   const [viewMode, setViewMode] = useState<ViewMode>('edit')
-  const [availableCategories, setAvailableCategories] = useState<Category[]>([])
 
-  // 컴포넌트 마운트 시 기본 테마의 카테고리 설정
-  useEffect(() => {
-    if (!theme || theme === '') {
-      setTheme('next')
-    }
-    const categories = getCategoriesByTheme(theme)
-    setAvailableCategories(categories)
-  }, [])
+  // 카테고리 관리 훅 사용
+  const { categories, selectedCategory, setSelectedCategory } = useCategories(theme, language)
 
-  // 테마가 변경될 때 해당 테마에 맞는 카테고리 목록 업데이트
+  // 임시저장 데이터 로드
   useEffect(() => {
-    if (theme) {
-      const categories = getCategoriesByTheme(theme)
-      setAvailableCategories(categories)
-      
-      // 기존 선택된 카테고리가 새 테마에 없으면 초기화
-      if (!categories.some(c => c.value === category)) {
-        setCategory('')
+    const savedPost = localStorage.getItem('temp_post')
+    if (savedPost) {
+      try {
+        const postData = JSON.parse(savedPost)
+        setTitle(postData.title || '')
+        setContent(postData.content || '')
+        setTheme(postData.theme || 'algorithm')
+        setTopic(postData.topic || '')
+        setDescription(postData.description || '')
+        setTags(postData.tags || [])
+        setSelectedCategory(postData.category || '')
+        setThumbnail(postData.thumbnail || '')
+        setLanguage(postData.language || 'ko')
+      } catch (error) {
+        console.error(t('post.create.tempSaveError'), error)
       }
-    } else {
-      setAvailableCategories([])
-      setCategory('')
     }
-  }, [theme, category])
+  }, [t])
 
+  // 게시글 제출 처리
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!title || !content || !theme || !topic || !description || !category || !language) {
+    if (!title || !content || !theme || !topic || !description || !selectedCategory || !language) {
       alert(t('post.create.validation'))
       return
     }
@@ -91,19 +95,13 @@ export function PostCreateForm() {
           topic,
           description,
           tags,
-          category,
+          category: selectedCategory,
           thumbnail,
           language
         })
       })
 
-      let data;
-      try {
-        data = await response.json();
-      } catch (e) {
-        throw new Error('서버 응답을 처리할 수 없습니다.');
-      }
-
+      const data = await response.json()
       if (!response.ok) {
         throw new Error(data?.message || t('post.create.submitError'))
       }
@@ -112,9 +110,7 @@ export function PostCreateForm() {
         throw new Error('게시글 ID를 받지 못했습니다.')
       }
 
-      // 임시저장 데이터 삭제
       localStorage.removeItem('temp_post')
-      
       router.push(`/post/view/${theme}/${data._id}`)
     } catch (error) {
       console.error('Error submitting post:', error)
@@ -122,8 +118,9 @@ export function PostCreateForm() {
     }
   }
 
+  // 임시저장 처리
   const handleTempSave = () => {
-    if (title || content || theme || topic || description || tags.length > 0 || category || thumbnail || language) {
+    if (title || content || theme || topic || description || tags.length > 0 || selectedCategory || thumbnail || language) {
       localStorage.setItem('temp_post', JSON.stringify({
         title,
         content,
@@ -131,34 +128,13 @@ export function PostCreateForm() {
         topic,
         description,
         tags,
-        category,
+        category: selectedCategory,
         thumbnail,
         language
       }))
       alert(t('post.create.tempSaveSuccess'))
     }
   }
-
-  // 페이지 로드 시 임시저장 데이터 확인
-  useEffect(() => {
-    const savedPost = localStorage.getItem('temp_post')
-    if (savedPost) {
-      try {
-        const postData = JSON.parse(savedPost)
-        setTitle(postData.title || '')
-        setContent(postData.content || '')
-        setTheme(postData.theme || '')
-        setTopic(postData.topic || '')
-        setDescription(postData.description || '')
-        setTags(postData.tags || [])
-        setCategory(postData.category || '')
-        setThumbnail(postData.thumbnail || '')
-        setLanguage(postData.language || '')
-      } catch (error) {
-        console.error(t('post.create.tempSaveError'), error)
-      }
-    }
-  }, [t])
 
   return (
     <>
@@ -170,7 +146,7 @@ export function PostCreateForm() {
           topic,
           description,
           tags,
-          category,
+          category: selectedCategory,
           thumbnail,
           language
         }}
@@ -196,70 +172,26 @@ export function PostCreateForm() {
       </div>
 
       {viewMode === 'edit' ? (
-        <form id="post-form" onSubmit={handleSubmit}>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder={t('post.create.inputTitle')}
-            className="w-full p-2 border rounded text-black placeholder-black text-center"
+        <form id="post-form" onSubmit={handleSubmit} className="space-y-4">
+          <PostFormInputs
+            title={title}
+            setTitle={setTitle}
+            topic={topic}
+            setTopic={setTopic}
+            description={description}
+            setDescription={setDescription}
+            theme={theme}
+            setTheme={setTheme}
+            language={language}
+            setLanguage={setLanguage}
+            category={selectedCategory}
+            setCategory={setSelectedCategory}
+            thumbnail={thumbnail}
+            setThumbnail={setThumbnail}
+            tags={tags}
+            setTags={setTags}
+            availableCategories={categories}
           />
-          <input
-            type="text"
-            value={topic}
-            onChange={(e) => setTopic(e.target.value)}
-            placeholder={t('post.create.inputTopic')}
-            className="w-full p-2 border rounded text-black placeholder-black mt-2 text-center"
-          />
-          <input
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder={t('post.create.inputDescription')}
-            className="w-full p-2 border rounded text-black placeholder-black mt-2 text-center "
-          />
-
-          <select
-            value={theme}
-            onChange={(e) => setTheme(e.target.value)}
-            className="w-full p-2 border rounded text-black mt-2 text-center"
-          >
-            <option value="">{t('post.create.selectTheme')}</option>
-            {THEMES.map((theme) => (
-              <option key={theme.value} value={theme.value}>{theme.label}</option>
-            ))}
-          </select>
-
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="w-full p-2 border rounded text-black mt-2 text-center"
-            disabled={availableCategories.length === 0}
-          >
-            <option value="">{t('post.create.selectCategory')}</option>
-            {availableCategories.map((cat) => (
-              <option key={cat.value} value={cat.value}>{cat.label}</option>
-            ))}
-          </select>
-
-          <input
-            type="text"
-            value={thumbnail}
-            onChange={(e) => setThumbnail(e.target.value)}
-            placeholder={t('post.create.inputThumbnail')}
-            className="w-full p-2 border rounded text-black placeholder-black mt-2 text-center"
-          />
-          
-          <select
-            value={language}
-            onChange={(e) => setLanguage(e.target.value)}
-            className="w-full p-2 border rounded text-black mt-2 text-center"
-          >
-            <option value="">{t('post.create.selectLanguage')}</option>
-            {LANGUAGES.map((lang) => (
-              <option key={lang.value} value={lang.value}>{lang.label}</option>
-            ))}
-          </select>
           
           <Editor
             initialContent={content}
@@ -267,7 +199,7 @@ export function PostCreateForm() {
           />
         </form>
       ) : (
-        <div className="mt-2">
+        <div className="mt-2 flex flex-col gap-4">
           <PostCard 
             post={{
               id: 'preview',
@@ -282,18 +214,24 @@ export function PostCreateForm() {
               theme: theme
             }}
           />
-          <div className="mt-4 p-2 border rounded">
-            <Viewer content={content} />
-          </div>
+          {theme === 'algorithm' ? (
+            <div className="w-full">
+              <AlgorithmLayout 
+                title={title || t('post.create.inputTitle')}
+                isPreview={true}
+              >
+                <div className="prose prose-gray max-w-none">
+                  <Viewer content={content} />
+                </div>
+              </AlgorithmLayout>
+            </div>
+          ) : (
+            <div className="mt-4 p-2 border rounded">
+              <Viewer content={content} />
+            </div>
+          )}
         </div>
       )}
-      <input
-        type="text"
-        value={tags.join(', ')}
-        onChange={(e) => setTags(e.target.value.split(',').map(tag => tag.trim()))}
-        placeholder={t('post.create.inputTags')}
-        className="w-full p-2 border rounded text-black placeholder-black mt-2"
-      />
     </>
   )
 }

@@ -8,7 +8,8 @@ export interface ThemeOption {
 export interface CategoryOption {
   value: string
   label: string
-  themeValue: string
+  description?: string
+  path?: string
 }
 
 export const THEMES: ThemeOption[] = [
@@ -26,16 +27,35 @@ export const THEMES: ThemeOption[] = [
   { value: 'algorithm', label: 'Algorithm' }
 ];
 
-// main_categories에서 테마별 카테고리 정보 추출
-export const getCategoriesByTheme = (theme: string) => {
-  for (const [category, items] of Object.entries(main_categories)) {
-    const matchingItem = items.find(item => item.path.includes(`/post/view/${theme}`));
-    if (matchingItem) {
-      return [{
-        value: category.toLowerCase(),
-        label: category
-      }];
+// 번역 데이터에서 테마별 카테고리 정보 추출
+export const getCategoriesByTheme = (theme: string, language: string = 'ko') => {
+  try {
+    // 동적으로 번역 데이터 가져오기
+    const messages = require(`@/messages/${language}.json`);
+    const themeData = messages[theme.charAt(0).toUpperCase() + theme.slice(1)];
+    
+    if (!themeData?.categories) {
+      return [];
     }
+
+    // 모든 카테고리의 items를 하나의 배열로 변환
+    const categories: CategoryOption[] = [];
+    Object.entries(themeData.categories).forEach(([categoryKey, category]: [string, any]) => {
+      if (category.items) {
+        Object.entries(category.items).forEach(([itemKey, item]: [string, any]) => {
+          categories.push({
+            value: itemKey,
+            label: item.title,
+            description: item.description,
+            path: item.path
+          });
+        });
+      }
+    });
+
+    return categories;
+  } catch (error) {
+    console.error('카테고리 정보를 가져오는데 실패했습니다:', error);
+    return [];
   }
-  return [];
 };

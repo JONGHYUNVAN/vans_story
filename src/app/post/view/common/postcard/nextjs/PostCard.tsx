@@ -1,3 +1,4 @@
+'use client';
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from '@/utils/i18n';
 import { BasePost } from '../BasePost';
@@ -192,7 +193,7 @@ export default function PostCard<T extends BasePost>({
                 {/* 썸네일 이미지 */}
                 <div className="relative w-24 h-24 rounded-md overflow-hidden flex-shrink-0">
                   <img
-                    src={post.thumbnail || '/next.webp'}
+                    src={post.thumbnail || '/nextjs.webp'}
                     alt="thumbnail"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     onError={(e) => {

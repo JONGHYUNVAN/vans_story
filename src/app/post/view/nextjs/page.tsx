@@ -6,7 +6,7 @@ import PostCard from '../common/postcard/nextjs/PostCard';
 import { useTranslation } from '@/utils/i18n';
 import { FrameworkPost } from '@/types/FrameworkPost';
 import { sortPosts } from '@/utils/sortPosts';
-import { useSidebarMargin } from '@/hooks/useSidebarMargin';
+import NextjsLayout from './NextjsLayout';
 
 // NextjsPost 타입을 FrameworkPost를 확장하는 타입으로 정의
 type NextjsPost = FrameworkPost;
@@ -51,78 +51,39 @@ export default function NextjsListPage() {
   const [posts, setPosts] = useState<NextjsPost[]>(MOCK_POSTS);
   const [sortOption, setSortOption] = useState('latest');
   const [visiblePosts, setVisiblePosts] = useState(10);
-  
-  // 커스텀 훅을 사용하여 윈도우 너비와, 마진 적용 여부 관리
-  const { windowWidth, shouldApplyMargin } = useSidebarMargin();
 
   // 정렬 유틸리티 함수를 사용하여 정렬
   const sortedPosts = sortPosts(posts, sortOption);
   const postsToShow = sortedPosts.slice(0, visiblePosts);
 
   return (
-    <div className={`transition-all duration-300 ${shouldApplyMargin ? 'ml-0 lg:ml-64' : ''}`}>
-      <div className="left-auto min-h-screen bg-black relative overflow-hidden">
-        {/* 그리드 배경 */}
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: 'radial-gradient(#80808015 1px, transparent 1px), radial-gradient(#80808015 1px, transparent 1px)',
-            backgroundSize: '20px 20px',
-            backgroundPosition: '0 0, 10px 10px'
-          }}
-        />
-        
-        <div className="relative">
-          <div className="mx-auto max-w-5xl px-6 py-12 min-h-screen border-x border-[#333333] relative">
-            {/* 배경 비디오 */}
-            <div className="absolute inset-0">
-              <div className="absolute inset-0 bg-black/80" />
-              <video
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover opacity-30"
-              >
-                <source src="/nextjs_background.webm" type="video/webm" />
-              </video>
-            </div>
-
-            <div className="relative mb-8 pb-8 border-b border-[#333333]">
-              <div className="flex items-center justify-between relative z-10">
-                <div className="flex items-center gap-3">
-                  <SiNextdotjs className="w-8 h-8" />
-                  <h1 className="text-2xl font-semibold text-white">Next.js</h1>
-                </div>
-                <select
-                  value={sortOption}
-                  onChange={(e) => setSortOption(e.target.value)}
-                  className="text-center w-36 py-2 bg-black/50 backdrop-blur-sm text-white border border-[#333333] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#333333]"
-                >
-                  <option value="latest">{t('post.sort.latest')}</option>
-                  <option value="oldest">{t('post.sort.oldest')}</option>
-                  <option value="views">{t('post.sort.views')}</option>
-                  <option value="likes">{t('post.sort.likes')}</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 gap-6">
-              {postsToShow.map(post => (
-                <PostCard
-                  key={post.id}
-                  post={post}
-                  renderBadge={() => (
-                    <span className="flex items-center justify-center w-10 h-8 rounded-full bg-black/50">
-                      <SiNextdotjs className="w-7 h-7" />
-                    </span>
-                  )}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
+    <NextjsLayout title="Next.js">
+      <div className="flex justify-end mb-8">
+        <select
+          value={sortOption}
+          onChange={(e) => setSortOption(e.target.value)}
+          className="text-center w-36 py-2 bg-black/50 backdrop-blur-sm text-white border border-[#333333] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#333333]"
+        >
+          <option value="latest">{t('post.sort.latest')}</option>
+          <option value="oldest">{t('post.sort.oldest')}</option>
+          <option value="views">{t('post.sort.views')}</option>
+          <option value="likes">{t('post.sort.likes')}</option>
+        </select>
       </div>
-    </div>
+
+      <div className="grid grid-cols-1 gap-6">
+        {postsToShow.map(post => (
+          <PostCard
+            key={post.id}
+            post={post}
+            renderBadge={() => (
+              <span className="flex items-center justify-center w-10 h-8 rounded-full bg-black/50">
+                <SiNextdotjs className="w-7 h-7" />
+              </span>
+            )}
+          />
+        ))}
+      </div>
+    </NextjsLayout>
   );
 } 

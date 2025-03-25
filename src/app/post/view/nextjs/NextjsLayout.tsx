@@ -9,7 +9,6 @@ interface NextjsLayoutProps {
 }
 
 export default function NextjsLayout({ children, title }: NextjsLayoutProps) {
-  const { shouldApplyMargin } = useSidebarMargin();
 
   return (
     <div className={`transition-all duration-300`}>

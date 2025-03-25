@@ -13,6 +13,7 @@ import NextjsPostCard from '../view/common/postcard/nextjs/PostCard'
 import NestjsPostCard from '../view/common/postcard/nestjs/PostCard'
 import MariadbPostCard from '../view/common/postcard/mariadb/PostCard'
 import MongodbPostCard from '../view/common/postcard/mongodb/PostCard'
+import SpringPostCard from '../view/common/postcard/spring/PostCard'
 import { tokenStorage } from '@/utils/token'
 import AlgorithmLayout from '../view/algorithm/AlgorithmLayout'
 import { PostFormInputs } from './components/PostFormInputs'
@@ -21,6 +22,7 @@ import NextjsLayout from '../view/nextjs/NextjsLayout'
 import NestjsLayout from '../view/nestjs/NestjsLayout'
 import MariadbLayout from '../view/mariadb/MariadbLayout'
 import MongodbLayout from '../view/mongodb/MongodbLayout'
+import SpringLayout from '../view/spring/SpringLayout'
 import { SiNextdotjs } from 'react-icons/si'
 import { FrameworkPost } from '@/types/FrameworkPost'
 
@@ -323,6 +325,26 @@ export function PostCreateForm() {
                   } as FrameworkPost}
                 />
               )}
+              {theme === 'spring' && (
+                <SpringPostCard
+                  post={{
+                    id: 'preview',
+                    title,
+                    description,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    tags,
+                    viewCount: 0,
+                    likeCount: 0,
+                    topic,
+                    author: '미리보기',
+                    theme,
+                    category: selectedCategory,
+                    thumbnail,
+                    language
+                  } as FrameworkPost}
+                />
+              )}
 
               {isViewerMounted && (
                 <div className="mt-8">
@@ -361,7 +383,14 @@ export function PostCreateForm() {
                       </div>
                     </MongodbLayout>
                   )}
-                  {!['algorithm', 'nextjs', 'nestjs', 'mariadb', 'mongodb'].includes(theme) && (
+                  {theme === 'spring' && (
+                    <SpringLayout title={title} isPreview>
+                      <div className="prose dark:prose-invert max-w-none">
+                        <Viewer content={content} />
+                      </div>
+                    </SpringLayout>
+                  )}
+                  {!['algorithm', 'nextjs', 'nestjs', 'mariadb', 'mongodb', 'spring'].includes(theme) && (
                     <div className="prose dark:prose-invert max-w-none">
                       <h1>{title}</h1>
                       <Viewer content={content} />

@@ -53,8 +53,8 @@ export default function MariaDBListPage() {
   const [sortOption, setSortOption] = useState('latest');
   const [visiblePosts, setVisiblePosts] = useState(10);
   
-  // 커스텀 훅을 사용하여 윈도우 너비와, 마진 적용 여부 관리
-  const { windowWidth, shouldApplyMargin } = useSidebarMargin();
+  // 커스텀 훅을 사용하여 마진 적용 여부 관리
+  const { shouldApplyMargin } = useSidebarMargin();
 
   // 정렬 유틸리티 함수를 사용하여 정렬
   const sortedPosts = sortPosts(posts, sortOption);

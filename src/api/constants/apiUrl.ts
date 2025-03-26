@@ -8,5 +8,6 @@ export const API_URLS = {
     GET: `${process.env.POST_API_URL}/posts`,
     LIST: `${process.env.POST_API_URL}/posts`,
     CREATE: `${process.env.NEXT_PUBLIC_POST_API_URL}/posts`,
+    UPDATE: `${process.env.NEXT_PUBLIC_POST_API_URL}/posts`,
   }
 } as const; 

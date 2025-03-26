@@ -1,6 +1,14 @@
 'use client'
 
-export function ViewPostHeader() {
+import { useRouter } from 'next/navigation'
+
+interface ViewPostHeaderProps {
+  postId: string
+}
+
+export function ViewPostHeader({ postId }: ViewPostHeaderProps) {
+  const router = useRouter()
+
   return (
     <div className="border-b border-gray-100/10 bg-black/80 backdrop-blur-md sticky top-0 z-50">
       <div className="container mx-auto px-4">
@@ -14,7 +22,7 @@ export function ViewPostHeader() {
               type="button"
               className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm transition-colors"
               onClick={() => {
-                // 수정 페이지로 이동 로직
+                router.push(`/post/edit/${postId}`)
               }}
             >
               수정하기

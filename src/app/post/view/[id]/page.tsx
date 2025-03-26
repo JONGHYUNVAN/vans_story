@@ -21,7 +21,7 @@ export default async function ViewPostPage({ params }: PageProps) {
 
   return (
     <div className="max-w-screen-lg mx-auto">
-      <ViewPostHeader />
+      <ViewPostHeader postId={id} />
       <ViewPostContent post={post} />
     </div>
   );

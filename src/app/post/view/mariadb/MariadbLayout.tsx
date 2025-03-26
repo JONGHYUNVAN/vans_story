@@ -9,7 +9,7 @@ interface MariadbLayoutProps {
 }
 
 export default function MariadbLayout({ children, title, isPreview = false }: MariadbLayoutProps) {
-  const { shouldApplyMargin } = isPreview ? { shouldApplyMargin: false } : useSidebarMargin();
+  const { shouldApplyMargin = false } = isPreview ? { shouldApplyMargin: false } : useSidebarMargin();
 
   return (
     <div className={`transition-all duration-300 ${!isPreview && shouldApplyMargin ? 'ml-0 lg:ml-64' : ''}`}>

@@ -7,6 +7,7 @@ import { useTranslation } from '@/utils/i18n';
 import { FrameworkPost } from '@/types/FrameworkPost';
 import { sortPosts } from '@/utils/sortPosts';
 import NextjsLayout from './NextjsLayout';
+import { SidebarWrapper } from '../common/SidebarWrapper';
 
 // NextjsPost 타입을 FrameworkPost를 확장하는 타입으로 정의
 type NextjsPost = FrameworkPost;
@@ -57,9 +58,10 @@ export default function NextjsListPage() {
   const postsToShow = sortedPosts.slice(0, visiblePosts);
 
   return (
-    <NextjsLayout title="Next.js">
-      <div className="flex justify-end mb-8">
-        <select
+    <SidebarWrapper>
+      <NextjsLayout title="Next.js">
+        <div className="flex justify-end mb-8">
+          <select
           value={sortOption}
           onChange={(e) => setSortOption(e.target.value)}
           className="text-center w-36 py-2 bg-black/50 backdrop-blur-sm text-white border border-[#333333] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#333333]"
@@ -85,5 +87,6 @@ export default function NextjsListPage() {
         ))}
       </div>
     </NextjsLayout>
+    </SidebarWrapper>
   );
 } 

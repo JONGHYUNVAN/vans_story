@@ -2,6 +2,7 @@ import { API_URLS } from '@/api/constants/apiUrl';
 import { Viewer } from '@/app/post/viewer/Viewer';
 import { Post } from '@/interfaces/post/types';
 import NextjsLayout from '../NextjsLayout';
+import { SidebarWrapper } from '../../common/SidebarWrapper';
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -30,34 +31,36 @@ export default async function ViewNextjsPostPage({ params }: PageProps) {
   }
 
   return (
-    <NextjsLayout title={post.title}>
-      <div className="space-y-6 text-white">
-        <div className="flex items-center justify-between text-sm">
-          <div className="flex items-center gap-4">
-            <span>작성자: {post.author}</span>
-            <span>주제: {post.topic}</span>
+    <SidebarWrapper>
+      <NextjsLayout title={post.title}>
+        <div className="space-y-6 text-white">
+          <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center gap-4">
+              <span>작성자: {post.author}</span>
+              <span>주제: {post.topic}</span>
+            </div>
+            <div className="flex items-center gap-4">
+              <span>조회수: {post.viewCount}</span>
+              <span>좋아요: {post.likeCount}</span>
+            </div>
           </div>
-          <div className="flex items-center gap-4">
-            <span>조회수: {post.viewCount}</span>
-            <span>좋아요: {post.likeCount}</span>
+
+          <div className="prose prose-invert max-w-none">
+            <Viewer content={post.content} />
+          </div>
+
+          <div className="flex items-center gap-2">
+            {post.tags && post.tags.length > 0 && post.tags.map((tag: string) => (
+              <span 
+                key={tag} 
+                className="px-2 py-1 bg-[#1a1a1a] text-gray-300 rounded-full text-xs"
+              >
+                {tag}
+              </span>
+            ))}
           </div>
         </div>
-
-        <div className="prose prose-invert max-w-none">
-          <Viewer content={post.content} />
-        </div>
-
-        <div className="flex items-center gap-2">
-          {post.tags && post.tags.length > 0 && post.tags.map((tag: string) => (
-            <span 
-              key={tag} 
-              className="px-2 py-1 bg-[#1a1a1a] text-gray-300 rounded-full text-xs"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-      </div>
-    </NextjsLayout>
+      </NextjsLayout>
+    </SidebarWrapper>
   );
 } 

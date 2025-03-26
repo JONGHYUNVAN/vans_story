@@ -3,17 +3,17 @@ import { useState, useEffect } from 'react';
 
 /**
  * 화면 크기에 따라 사이드바 마진을 계산하는 커스텀 훅
- * @returns sidebarMargin: 사이드바 마진 클래스 문자열
+ * @returns shouldApplyMargin: 사이드바 마진을 적용해야 하는지 여부
  */
 export function useSidebarMargin() {
-  const [sidebarMargin, setSidebarMargin] = useState('');
+  const [shouldApplyMargin, setShouldApplyMargin] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
     
     const checkMargin = () => {
       const width = window.innerWidth;
-      setSidebarMargin(width > 1280 && width < 1536 ? 'ml-64' : '');
+      setShouldApplyMargin(width > 1280 && width < 1536);
     };
     
     checkMargin();
@@ -26,5 +26,5 @@ export function useSidebarMargin() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  return { sidebarMargin };
+  return { shouldApplyMargin };
 } 

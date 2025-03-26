@@ -31,6 +31,7 @@ export function EditorBubbleMenu() {
       <BubbleMenu
         editor={editor}
         shouldShow={({ editor, state }) => {
+          if (!editor || !editor.view || !editor.view.dom) return false
           const { selection } = state
           return !selection.empty
         }}

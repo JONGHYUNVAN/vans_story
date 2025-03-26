@@ -2,6 +2,7 @@ import { API_URLS } from '@/api/constants/apiUrl';
 import { Viewer } from '@/app/post/viewer/Viewer';
 import { Post } from '@/interfaces/post/types';
 import AlgorithmLayout from '../AlgorithmLayout';
+import { SidebarWrapper } from '../../common/SidebarWrapper';
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -35,11 +36,13 @@ export default async function AlgorithmDetailPage({ params }: PageProps) {
   }
 
   return (
+    <SidebarWrapper>
     <AlgorithmLayout title={post.title}>
       {/* 본문 */}
       <div className="prose prose-gray max-w-none">
         <Viewer content={post.content} />
       </div>
     </AlgorithmLayout>
+    </SidebarWrapper>
   );
 } 

@@ -2,7 +2,7 @@ import { API_URLS } from '@/api/constants/apiUrl';
 import { Viewer } from '@/app/post/viewer/Viewer';
 import { Post } from '@/interfaces/post/types';
 import SpringLayout from '../SpringLayout';
-
+import { SidebarWrapper } from '../../common/SidebarWrapper';
 interface PageProps {
   params: Promise<{ id: string }>;
 }
@@ -35,11 +35,13 @@ export default async function SpringDetailPage({ params }: PageProps) {
   }
 
   return (
+    <SidebarWrapper>
     <SpringLayout title={post.title}>
       {/* 본문 */}
       <div className="prose prose-invert prose-slate max-w-none">
         <Viewer content={post.content} />
       </div>
     </SpringLayout>
+    </SidebarWrapper>
   );
 } 

@@ -384,7 +384,7 @@ export function PostCreateForm() {
                     </MongodbLayout>
                   )}
                   {theme === 'spring' && (
-                    <SpringLayout title={title} isPreview>
+                    <SpringLayout title={title}>
                       <div className="prose dark:prose-invert max-w-none">
                         <Viewer content={content} />
                       </div>

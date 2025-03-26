@@ -1,7 +1,7 @@
 import { API_URLS } from '@/api/constants/apiUrl';
 import AlgorithmList from '../../AlgorithmList';
 import AlgorithmLayout from '../../AlgorithmLayout';
-
+import { SidebarWrapper } from '../../../common/SidebarWrapper';
 interface PageProps {
   params: Promise<{ category: string }>;
 }
@@ -26,8 +26,10 @@ export default async function Page({ params }: PageProps) {
   const categoryTitle = category.charAt(0).toUpperCase() + category.slice(1);
   
   return (
+    <SidebarWrapper>
     <AlgorithmLayout title={`Algorithm - ${categoryTitle}`}>
       <AlgorithmList posts={posts} />
     </AlgorithmLayout>
+    </SidebarWrapper>
   );
 } 

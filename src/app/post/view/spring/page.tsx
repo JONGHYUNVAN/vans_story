@@ -1,6 +1,7 @@
 import { API_URLS } from '@/api/constants/apiUrl';
 import SpringList from './SpringList';
 import SpringLayout from './SpringLayout';
+import { SidebarWrapper } from '../common/SidebarWrapper';
 
 async function getPosts() {
   const response = await fetch(`${API_URLS.POST.LIST}?theme=spring&page=1&limit=10`, {
@@ -12,14 +13,20 @@ async function getPosts() {
   }
 
   const data = await response.json();
-  return data.data || [];
+  return (data.data || []).map((post: any) => ({
+    ...post,
+    id: post._id
+  }));
 }
 
 export default async function Page() {
   const posts = await getPosts();
+  
   return (
-    <SpringLayout title="Spring">
-      <SpringList posts={posts} />
-    </SpringLayout>
+    <SidebarWrapper>
+      <SpringLayout title="Spring">
+        <SpringList posts={posts} />
+      </SpringLayout>
+    </SidebarWrapper>
   );
 } 

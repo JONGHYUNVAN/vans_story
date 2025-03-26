@@ -7,15 +7,11 @@ import { FrameworkPost } from '@/types/FrameworkPost';
 import { sortPosts } from '@/utils/sortPosts';
 import Link from 'next/link';
 
-interface Post extends FrameworkPost {
-  _id: string;
+interface SpringListProps {
+  posts: FrameworkPost[];
 }
 
-interface Props {
-  posts: Post[];
-}
-
-export default function SpringList({ posts }: Props) {
+export default function SpringList({ posts }: SpringListProps) {
   const { t } = useTranslation('post');
   const sortedPosts = sortPosts(posts, 'latest');
 
@@ -23,8 +19,8 @@ export default function SpringList({ posts }: Props) {
     <div className="grid grid-cols-1 gap-6">
       {sortedPosts.map(post => (
         <Link 
-          key={post._id}
-          href={`/post/view/spring/${post._id}`}
+          key={post.id}
+          href={`/post/view/spring/${post.id}`}
           className="block transition-transform hover:-translate-y-1"
         >
           <PostCard

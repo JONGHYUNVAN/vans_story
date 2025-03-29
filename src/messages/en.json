@@ -130,7 +130,7 @@
       }
     }
   },
-  "Next": {
+  "Nextjs": {
     "intro": "Why Next?",
     "layouts": "Layouts",
     "nestedLayouts": "Nested Layouts",
@@ -144,7 +144,7 @@
           "whyNext": {
             "title": "Why Next?",
             "description": "Learn why Next.js is a great choice for your next project.",
-            "path": "/post/view/nextjs/category/why-next",
+            "path": "/post/view/nextjs/category/introduction",
             "icon": "SiNextdotjs",
             "color": "#000000"
           },
@@ -173,7 +173,7 @@
       }
     }
   },
-  "Nest": {
+  "Nestjs": {
     "categories": {
       "gettingStarted": {
         "title": "Getting Started",

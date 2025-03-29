@@ -4,6 +4,7 @@ import { EditorMenuBar } from './EditorMenuBar'
 import { EditorBubbleMenu } from './EditorBubbleMenu'
 import { EditorProvider } from './EditorContext'
 import { EditorExtensions } from './EditorExtensions'
+import { useEffect } from 'react'
 
 
 interface EditorProps {
@@ -29,6 +30,13 @@ export function Editor({ initialContent = '', onChange, readonly = false }: Edit
       onChange?.(editor.getHTML())
     },
   })
+
+  // content가 변경될 때 에디터 내용 업데이트
+  useEffect(() => {
+    if (editor && initialContent !== editor.getHTML()) {
+      editor.commands.setContent(initialContent)
+    }
+  }, [editor, initialContent])
 
   if (!editor) return null
 

@@ -25,6 +25,7 @@ import MongodbLayout from '../view/mongodb/MongodbLayout'
 import SpringLayout from '../view/spring/SpringLayout'
 import { SiNextdotjs } from 'react-icons/si'
 import { FrameworkPost } from '@/types/FrameworkPost'
+import { PostPreview } from '../common/PostPreview'
 
 type ViewMode = 'edit' | 'preview'
 
@@ -98,8 +99,17 @@ export function PostCreateForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!title || !content || !theme || !topic || !description || !selectedCategory || !language) {
-      alert(t('post.create.validation'))
+    const missingFields = []
+    if (!title) missingFields.push('제목')
+    if (!content) missingFields.push('내용')
+    if (!theme) missingFields.push('테마')
+    if (!topic) missingFields.push('주제')
+    if (!description) missingFields.push('설명')
+    if (!selectedCategory) missingFields.push('카테고리')
+    if (!language) missingFields.push('언어')
+
+    if (missingFields.length > 0) {
+      alert(`다음 항목을 입력해주세요:\n${missingFields.join(', ')}`)
       return
     }
 
@@ -166,241 +176,84 @@ export function PostCreateForm() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#111111] py-12">
       <div className="container mx-auto max-w-5xl px-4">
-        <div className="bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#333333] rounded-lg p-8">
-          <PostHeader 
-            postData={{
-              title,
-              content,
-              theme,
-              topic,
-              description,
-              tags,
-              category: selectedCategory,
-              thumbnail,
-              language
-            }}
-            onSubmit={handleSubmit}
-            onTempSave={handleTempSave}
-          />
-          
-          <div className="mt-2 border dark:border-[#333333] rounded flex">
-            <button
-              type="button"
-              className={`py-2 px-4 ${viewMode === 'edit' ? 'bg-gray-200 dark:bg-[#333333]' : ''}`}
-              onClick={() => setViewMode('edit')}
-            >
-              {t('post.create.edit')}
-            </button>
-            <button
-              type="button"
-              className={`py-2 px-4 ${viewMode === 'preview' ? 'bg-gray-200 dark:bg-[#333333]' : ''}`}
-              onClick={() => setViewMode('preview')}
-            >
-              {t('post.create.preview')}
-            </button>
-          </div>
+        <form id="post-form" onSubmit={handleSubmit}>
+          <div className="bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#333333] rounded-lg p-8">
+            <PostHeader 
+              postData={{
+                title,
+                content,
+                theme,
+                topic,
+                description,
+                tags,
+                category: selectedCategory,
+                thumbnail,
+                language
+              }}
+              onSubmit={handleSubmit}
+              onTempSave={handleTempSave}
+            />
+            
+            <div className="mt-2 border dark:border-[#333333] rounded flex">
+              <button
+                type="button"
+                className={`py-2 px-4 ${viewMode === 'edit' ? 'bg-gray-200 dark:bg-[#333333]' : ''}`}
+                onClick={() => setViewMode('edit')}
+              >
+                {t('post.create.edit')}
+              </button>
+              <button
+                type="button"
+                className={`py-2 px-4 ${viewMode === 'preview' ? 'bg-gray-200 dark:bg-[#333333]' : ''}`}
+                onClick={() => setViewMode('preview')}
+              >
+                {t('post.create.preview')}
+              </button>
+            </div>
 
-          {viewMode === 'edit' ? (
-            <div className="space-y-6">
-              <PostFormInputs
+            {viewMode === 'edit' ? (
+              <div className="space-y-6">
+                <PostFormInputs
+                  title={title}
+                  setTitle={setTitle}
+                  topic={topic}
+                  setTopic={setTopic}
+                  description={description}
+                  setDescription={setDescription}
+                  theme={theme}
+                  setTheme={setTheme}
+                  language={language}
+                  setLanguage={setLanguage}
+                  category={selectedCategory}
+                  setCategory={setSelectedCategory}
+                  thumbnail={thumbnail}
+                  setThumbnail={setThumbnail}
+                  tags={tags}
+                  setTags={setTags}
+                  availableCategories={categories}
+                />
+                <Editor
+                  initialContent={content}
+                  onChange={setContent}
+                />
+              </div>
+            ) : (
+              <PostPreview
+                id="preview"
                 title={title}
-                setTitle={setTitle}
-                topic={topic}
-                setTopic={setTopic}
-                description={description}
-                setDescription={setDescription}
+                content={content}
                 theme={theme}
-                setTheme={setTheme}
-                language={language}
-                setLanguage={setLanguage}
-                category={selectedCategory}
-                setCategory={setSelectedCategory}
-                thumbnail={thumbnail}
-                setThumbnail={setThumbnail}
+                topic={topic}
+                description={description}
                 tags={tags}
-                setTags={setTags}
-                availableCategories={categories}
+                category={selectedCategory}
+                thumbnail={thumbnail}
+                language={language}
+                isViewerMounted={isViewerMounted}
               />
-              <Editor initialContent={content} onChange={setContent} />
-            </div>
-          ) : (
-            <div className="mt-4 space-y-8">
-              {theme === 'algorithm' && (
-                <AlgorithmPostCard
-                  post={{
-                    id: 'preview',
-                    title,
-                    description,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                    tags,
-                    viewCount: 0,
-                    likeCount: 0,
-                    topic,
-                    author: '미리보기',
-                    theme,
-                    category: selectedCategory,
-                    thumbnail,
-                    language
-                  } as FrameworkPost}
-                />
-              )}
-              {theme === 'next' && (
-                <NextjsPostCard
-                  post={{
-                    id: 'preview',
-                    title,
-                    description,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                    tags,
-                    viewCount: 0,
-                    likeCount: 0,
-                    topic,
-                    author: '미리보기',
-                    theme,
-                    category: selectedCategory,
-                    thumbnail,
-                    language
-                  } as FrameworkPost}
-                />
-              )}
-              {theme === 'nest' && (
-                <NestjsPostCard
-                  post={{
-                    id: 'preview',
-                    title,
-                    description,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                    tags,
-                    viewCount: 0,
-                    likeCount: 0,
-                    topic,
-                    author: '미리보기',
-                    theme,
-                    category: selectedCategory,
-                    thumbnail,
-                    language
-                  } as FrameworkPost}
-                />
-              )}
-              {theme === 'mariadb' && (
-                <MariadbPostCard
-                  post={{
-                    id: 'preview',
-                    title,
-                    description,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                    tags,
-                    viewCount: 0,
-                    likeCount: 0,
-                    topic,
-                    author: '미리보기',
-                    theme,
-                    category: selectedCategory,
-                    thumbnail,
-                    language
-                  } as FrameworkPost}
-                />
-              )}
-              {theme === 'mongodb' && (
-                <MongodbPostCard
-                  post={{
-                    id: 'preview',
-                    title,
-                    description,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                    tags,
-                    viewCount: 0,
-                    likeCount: 0,
-                    topic,
-                    author: '미리보기',
-                    theme,
-                    category: selectedCategory,
-                    thumbnail,
-                    language
-                  } as FrameworkPost}
-                />
-              )}
-              {theme === 'spring' && (
-                <SpringPostCard
-                  post={{
-                    id: 'preview',
-                    title,
-                    description,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                    tags,
-                    viewCount: 0,
-                    likeCount: 0,
-                    topic,
-                    author: '미리보기',
-                    theme,
-                    category: selectedCategory,
-                    thumbnail,
-                    language
-                  } as FrameworkPost}
-                />
-              )}
-
-              {isViewerMounted && (
-                <div className="mt-8">
-                  {theme === 'algorithm' && (
-                    <AlgorithmLayout title={title} isPreview>
-                      <div className="prose dark:prose-invert max-w-none">
-                        <Viewer content={content} />
-                      </div>
-                    </AlgorithmLayout>
-                  )}
-                  {theme === 'next' && (
-                    <NextjsLayout title={title} isPreview>
-                      <div className="prose dark:prose-invert max-w-none">
-                        <Viewer content={content} />
-                      </div>
-                    </NextjsLayout>
-                  )}
-                  {theme === 'nest' && (
-                    <NestjsLayout title={title} isPreview>
-                      <div className="prose dark:prose-invert max-w-none">
-                        <Viewer content={content} />
-                      </div>
-                    </NestjsLayout>
-                  )}
-                  {theme === 'mariadb' && (
-                    <MariadbLayout title={title} isPreview>
-                      <div className="prose dark:prose-invert max-w-none">
-                        <Viewer content={content} />
-                      </div>
-                    </MariadbLayout>
-                  )}
-                  {theme === 'mongodb' && (
-                    <MongodbLayout title={title} isPreview>
-                      <div className="prose dark:prose-invert max-w-none">
-                        <Viewer content={content} />
-                      </div>
-                    </MongodbLayout>
-                  )}
-                  {theme === 'spring' && (
-                    <SpringLayout title={title}>
-                      <div className="prose dark:prose-invert max-w-none">
-                        <Viewer content={content} />
-                      </div>
-                    </SpringLayout>
-                  )}
-                  {!['algorithm', 'nextjs', 'nestjs', 'mariadb', 'mongodb', 'spring'].includes(theme) && (
-                    <div className="prose dark:prose-invert max-w-none">
-                      <h1>{title}</h1>
-                      <Viewer content={content} />
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        </form>
       </div>
     </div>
   )

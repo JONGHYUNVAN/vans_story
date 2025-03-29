@@ -13,8 +13,8 @@ export interface CategoryOption {
 }
 
 export const THEMES: ThemeOption[] = [
-  { value: 'next', label: 'Next.js' },
-  { value: 'nest', label: 'Nest.js' },
+  { value: 'nextjs', label: 'Next.js' },
+  { value: 'nestjs', label: 'Nest.js' },
   { value: 'spring', label: 'Spring' },
   { value: 'mariadb', label: 'MariaDB' },
   { value: 'mongodb', label: 'MongoDB' },

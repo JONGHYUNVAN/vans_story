@@ -12,7 +12,7 @@ export default function NextSidebar() {
 
   return (
     <BaseSidebar
-      frameworkName="Next"
+      frameworkName="Nextjs"
       frameworkIcon={SiNextdotjs}
       frameworkColor="#000000"
       frameworkPath="/post/view/nextjs"

@@ -38,6 +38,7 @@ export function EditorBubbleMenu() {
         className="flex items-center bg-white shadow-lg border rounded-lg overflow-hidden"
       >
         <button
+          type="button"
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={`p-1.5 hover:bg-gray-100 transition-colors ${
             editor.isActive('bold') ? 'bg-gray-100' : ''
@@ -46,6 +47,7 @@ export function EditorBubbleMenu() {
           <Bold size={14} />
         </button>
         <button
+          type="button"
           onClick={() => editor.chain().focus().toggleItalic().run()}
           className={`p-1.5 hover:bg-gray-100 transition-colors ${
             editor.isActive('italic') ? 'bg-gray-100' : ''
@@ -54,6 +56,7 @@ export function EditorBubbleMenu() {
           <Italic size={14} />
         </button>
         <button
+          type="button"
           onClick={() => editor.chain().focus().toggleUnderline().run()}
           className={`p-1.5 hover:bg-gray-100 transition-colors ${
             editor.isActive('underline') ? 'bg-gray-100' : ''
@@ -102,6 +105,7 @@ export function EditorBubbleMenu() {
         className="flex items-center gap-1 p-1 rounded-lg bg-white border shadow-lg"
       >
         <button
+          type="button"
           onClick={() => editor.chain().focus().addRowBefore().run()}
           className="p-1 hover:bg-gray-100 rounded"
           title="위에 행 추가"
@@ -110,6 +114,7 @@ export function EditorBubbleMenu() {
         </button>
         
         <button
+          type="button"
           onClick={() => editor.chain().focus().addRowAfter().run()}
           className="p-1 hover:bg-gray-100 rounded"
           title="아래에 행 추가"
@@ -118,6 +123,7 @@ export function EditorBubbleMenu() {
         </button>
 
         <button
+          type="button"
           onClick={() => editor.chain().focus().addColumnBefore().run()}
           className="p-1 hover:bg-gray-100 rounded"
           title="왼쪽에 열 추가"
@@ -126,6 +132,7 @@ export function EditorBubbleMenu() {
         </button>
 
         <button
+          type="button"
           onClick={() => editor.chain().focus().addColumnAfter().run()}
           className="p-1 hover:bg-gray-100 rounded"
           title="오른쪽에 열 추가"
@@ -136,6 +143,7 @@ export function EditorBubbleMenu() {
         <div className="w-px h-4 bg-gray-200 mx-1" />
 
         <button
+          type="button"
           onClick={() => editor.chain().focus().deleteRow().run()}
           className="p-1 hover:bg-gray-100 rounded"
           title="행 삭제"
@@ -144,6 +152,7 @@ export function EditorBubbleMenu() {
         </button>
 
         <button
+          type="button"
           onClick={() => editor.chain().focus().deleteColumn().run()}
           className="p-1 hover:bg-gray-100 rounded"
           title="열 삭제"
@@ -152,6 +161,7 @@ export function EditorBubbleMenu() {
         </button>
 
         <button
+          type="button"
           onClick={() => editor.chain().focus().deleteTable().run()}
           className="p-1 hover:bg-gray-100 rounded"
           title="표 삭제"
@@ -162,6 +172,7 @@ export function EditorBubbleMenu() {
         <div className="w-px h-4 bg-gray-200 mx-1" />
 
         <button
+          type="button"
           onClick={() => editor.chain().focus().mergeCells().run()}
           className="p-1 hover:bg-gray-100 rounded"
           title="셀 병합"
@@ -170,6 +181,7 @@ export function EditorBubbleMenu() {
         </button>
 
         <button
+          type="button"
           onClick={() => editor.chain().focus().splitCell().run()}
           className="p-1 hover:bg-gray-100 rounded"
           title="셀 분할"
@@ -178,6 +190,7 @@ export function EditorBubbleMenu() {
         </button>
 
         <button
+          type="button"
           onClick={() => {
             const dom = editor.view.dom.querySelector('table')
             if (dom) {
@@ -193,6 +206,7 @@ export function EditorBubbleMenu() {
         </button>
 
         <button
+          type="button"
           onClick={() => {
             const dom = editor.view.dom.querySelector('table')
             if (dom) {
@@ -208,6 +222,7 @@ export function EditorBubbleMenu() {
         </button>
 
         <button
+          type="button"
           onClick={() => {
             const dom = editor.view.dom.querySelector('table')
             if (dom) {

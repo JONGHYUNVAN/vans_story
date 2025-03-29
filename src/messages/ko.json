@@ -137,7 +137,7 @@
       }
     }
   },
-  "Next": {
+  "Nextjs": {
     "categories": {
       "gettingStarted": {
         "title": "시작하기",
@@ -145,7 +145,7 @@
           "intro": {
             "title": "Why Next?",
             "description": "Next.js의 장점과 특징을 알아봅니다.",
-            "path": "/post/view/nextjs/category/intro",
+            "path": "/post/view/nextjs/category/introduction",
             "icon": "SiNextdotjs",
             "color": "#000000"
           },
@@ -174,7 +174,7 @@
       }
     }
   },
-  "Nest": {
+  "Nestjs": {
     "categories": {
       "gettingStarted": {
         "title": "시작하기",

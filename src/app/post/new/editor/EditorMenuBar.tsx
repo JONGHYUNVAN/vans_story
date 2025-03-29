@@ -145,6 +145,7 @@ export function EditorMenuBar() {
       {/* 스타일 버튼들 */}
       <div className="flex items-center gap-1 p-1">
         <button
+          type="button"
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={`p-2 rounded hover:bg-gray-100 ${
             activeStates.bold ? 'bg-gray-100' : ''
@@ -154,6 +155,7 @@ export function EditorMenuBar() {
           <Bold size={18} />
         </button>
         <button
+          type="button"
           onClick={() => editor.chain().focus().toggleItalic().run()}
           className={`p-2 rounded hover:bg-gray-100 ${
             activeStates.italic ? 'bg-gray-100' : ''
@@ -163,6 +165,7 @@ export function EditorMenuBar() {
           <Italic size={18} />
         </button>
         <button
+          type="button"
           onClick={() => editor.chain().focus().toggleUnderline().run()}
           className={`p-2 rounded hover:bg-gray-100 ${
             activeStates.underline ? 'bg-gray-100' : ''
@@ -172,6 +175,7 @@ export function EditorMenuBar() {
           <Underline size={18} />
         </button>
         <button
+          type="button"
           onClick={() => editor.chain().focus().toggleStrike().run()}
           className={`p-2 rounded hover:bg-gray-100 ${
             activeStates.strike ? 'bg-gray-100' : ''
@@ -183,6 +187,7 @@ export function EditorMenuBar() {
 
         {/* 정렬 버튼 */}
         <button
+          type="button"
           onClick={() => editor.chain().focus().setTextAlign('left').run()}
           className={`p-2 rounded hover:bg-gray-100 ${
             editor.isActive({ textAlign: 'left' }) ? 'bg-gray-100' : ''
@@ -192,6 +197,7 @@ export function EditorMenuBar() {
           <AlignLeft size={18} />
         </button>
         <button
+          type="button"
           onClick={() => editor.chain().focus().setTextAlign('center').run()}
           className={`p-2 rounded hover:bg-gray-100 ${
             editor.isActive({ textAlign: 'center' }) ? 'bg-gray-100' : ''
@@ -201,6 +207,7 @@ export function EditorMenuBar() {
           <AlignCenter size={18} />
         </button>
         <button
+          type="button"
           onClick={() => editor.chain().focus().setTextAlign('right').run()}
           className={`p-2 rounded hover:bg-gray-100 ${
             editor.isActive({ textAlign: 'right' }) ? 'bg-gray-100' : ''
@@ -210,6 +217,7 @@ export function EditorMenuBar() {
           <AlignRight size={18} />
         </button>
         <button
+          type="button"
           onClick={() => editor.chain().focus().setTextAlign('justify').run()}
           className={`p-2 rounded hover:bg-gray-100 ${
             editor.isActive({ textAlign: 'justify' }) ? 'bg-gray-100' : ''
@@ -340,6 +348,7 @@ export function EditorMenuBar() {
         {/* 코드 블록 */}
         <div className="flex items-center gap-1">
           <button
+            type="button"
             onClick={() => editor.chain().focus().toggleCodeBlock().run()}
             className={`p-2 rounded hover:bg-gray-100 transition-colors ${
               editor.isActive('codeBlock') ? 'bg-gray-100' : ''
@@ -378,6 +387,7 @@ export function EditorMenuBar() {
       
       <div className="flex items-center gap-1">
         <button
+          type="button"
           onClick={() => {
             console.log('Before toggle - bulletList active:', editor.isActive('bulletList'))
             console.log('Current HTML:', editor.getHTML())
@@ -395,6 +405,7 @@ export function EditorMenuBar() {
         </button>
         
         <button
+          type="button"
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           className={`p-2 rounded hover:bg-gray-100 ${
             editor.isActive('orderedList') ? 'bg-gray-100' : ''
@@ -405,6 +416,7 @@ export function EditorMenuBar() {
         </button>
 
         <button
+          type="button"
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
           className={`p-2 rounded hover:bg-gray-100 ${
             editor.isActive('blockquote') ? 'bg-gray-100' : ''
@@ -416,6 +428,7 @@ export function EditorMenuBar() {
 
         <div className="relative group">
           <button
+            type="button"
             className="p-2 rounded hover:bg-gray-100"
             title="표 삽입"
           >
@@ -469,6 +482,7 @@ export function EditorMenuBar() {
         </div>
 
         <button
+          type="button"
           onClick={() => {
             const url = window.prompt('이미지 URL을 입력하세요:')
             if (url) {
@@ -483,6 +497,7 @@ export function EditorMenuBar() {
 
         <div className="relative">
           <button
+            type="button"
             onClick={() => setShowEmojiPicker(!showEmojiPicker)}
             className="p-2 rounded hover:bg-gray-100"
             title="이모티콘"
@@ -503,6 +518,7 @@ export function EditorMenuBar() {
           )}
 
         <button
+          type="button"
           onClick={() => {
             const url = window.prompt('YouTube URL을 입력하세요:')
             if (url) {

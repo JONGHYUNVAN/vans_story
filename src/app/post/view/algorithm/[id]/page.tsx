@@ -37,12 +37,12 @@ export default async function AlgorithmDetailPage({ params }: PageProps) {
 
   return (
     <SidebarWrapper>
-    <AlgorithmLayout title={post.title}>
-      {/* 본문 */}
-      <div className="prose prose-gray max-w-none">
-        <Viewer content={post.content} />
-      </div>
-    </AlgorithmLayout>
+      <AlgorithmLayout title={post.title}>
+        {/* 본문 */}
+        <div className="prose prose-gray max-w-none">
+          <Viewer content={post.content} />
+        </div>
+      </AlgorithmLayout>
     </SidebarWrapper>
   );
 } 

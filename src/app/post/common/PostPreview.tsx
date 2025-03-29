@@ -1,0 +1,130 @@
+import { FrameworkPost } from '@/types/FrameworkPost'
+import { Viewer } from '../viewer/Viewer'
+import AlgorithmPostCard from '../view/common/postcard/algorithm/PostCard'
+import NextjsPostCard from '../view/common/postcard/nextjs/PostCard'
+import NestjsPostCard from '../view/common/postcard/nestjs/PostCard'
+import MariadbPostCard from '../view/common/postcard/mariadb/PostCard'
+import MongodbPostCard from '../view/common/postcard/mongodb/PostCard'
+import SpringPostCard from '../view/common/postcard/spring/PostCard'
+import AlgorithmLayout from '../view/algorithm/AlgorithmLayout'
+import NextjsLayout from '../view/nextjs/NextjsLayout'
+import NestjsLayout from '../view/nestjs/NestjsLayout'
+import MariadbLayout from '../view/mariadb/MariadbLayout'
+import MongodbLayout from '../view/mongodb/MongodbLayout'
+import SpringLayout from '../view/spring/SpringLayout'
+
+interface PostPreviewProps {
+  id: string
+  title: string
+  content: string
+  theme: string
+  topic: string
+  description: string
+  tags: string[]
+  category: string
+  thumbnail: string
+  language: string
+  isViewerMounted?: boolean
+}
+
+export function PostPreview({
+  id,
+  title,
+  content,
+  theme,
+  topic,
+  description,
+  tags,
+  category,
+  thumbnail,
+  language,
+  isViewerMounted = true
+}: PostPreviewProps) {
+  const postData: FrameworkPost = {
+    id,
+    title,
+    description,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    tags,
+    viewCount: 0,
+    likeCount: 0,
+    topic,
+    author: '미리보기',
+    theme,
+    category,
+    thumbnail,
+    language
+  }
+
+  return (
+    <div className="mt-4 space-y-8">
+      {theme === 'algorithm' && (
+        <>
+          <AlgorithmPostCard post={postData} />
+          <AlgorithmLayout title={title} isPreview>
+            <div className="prose max-w-none text-white">
+              {isViewerMounted && <Viewer content={content} />}
+            </div>
+          </AlgorithmLayout>
+        </>
+      )}
+      {theme === 'nextjs' && (
+        <>
+          <NextjsPostCard post={postData} />
+          <NextjsLayout title={title} isPreview>
+            <div className="prose max-w-none text-white">
+              {isViewerMounted && <Viewer content={content} />}
+            </div>
+          </NextjsLayout>
+        </>
+      )}
+      {theme === 'nestjs' && (
+        <>
+          <NestjsPostCard post={postData} />
+          <NestjsLayout title={title} isPreview>
+            <div className="prose max-w-none text-white">
+              {isViewerMounted && <Viewer content={content} />}
+            </div>
+          </NestjsLayout>
+        </>
+      )}
+      {theme === 'mariadb' && (
+        <>
+          <MariadbPostCard post={postData} />
+          <MariadbLayout title={title} isPreview>
+            <div className="prose max-w-none text-white">
+              {isViewerMounted && <Viewer content={content} />}
+            </div>
+          </MariadbLayout>
+        </>
+      )}
+      {theme === 'mongodb' && (
+        <>
+          <MongodbPostCard post={postData} />
+          <MongodbLayout title={title} isPreview>
+            <div className="prose max-w-none text-white">
+              {isViewerMounted && <Viewer content={content} />}
+            </div>
+          </MongodbLayout>
+        </>
+      )}
+      {theme === 'spring' && (
+        <>
+          <SpringPostCard post={postData} />
+          <SpringLayout title={title} isPreview>
+            <div className="prose max-w-none text-white">
+              {isViewerMounted && <Viewer content={content} />}
+            </div>
+          </SpringLayout>
+        </>
+      )}
+      {!['algorithm', 'nextjs', 'nestjs', 'mariadb', 'mongodb', 'spring'].includes(theme) && (
+        <div className="prose max-w-none text-white">
+          <h1>{title}</h1>
+          {isViewerMounted && <Viewer content={content} />}
+        </div>
+      )}
+    </div>
+  )
+} 

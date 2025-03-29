@@ -1,13 +1,11 @@
 import { PostEditForm } from './PostEditForm'
 
-interface PageProps {
-  params: any
-}
-
-export default async function EditPostPage({ params }: PageProps) {
+export default async function EditPostPage({ params }: { params: { id: string } }) {
+  const postId = await params.id;
+  
   return (
     <div className="max-w-screen-lg mx-auto z-50">
-      <PostEditForm postId={params.id} />
+      <PostEditForm postId={postId} />
     </div>
   )
 } 

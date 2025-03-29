@@ -2,28 +2,15 @@
 
 import { useState, useEffect } from 'react'
 import { Editor } from '../../new/editor/Editor'
-import { Viewer } from '../../viewer/Viewer'
 import { PostHeader } from '../../new/PostHeader'
 import { useRouter } from 'next/navigation'
 import { API_URLS } from '@/api/constants/apiUrl'
-import { THEMES, getCategoriesByTheme } from '@/constants/themes'
 import { useTranslation } from '@/utils/i18n'
-import AlgorithmPostCard from '../../view/common/postcard/algorithm/PostCard'
-import NextjsPostCard from '../../view/common/postcard/nextjs/PostCard'
-import NestjsPostCard from '../../view/common/postcard/nestjs/PostCard'
-import MariadbPostCard from '../../view/common/postcard/mariadb/PostCard'
-import MongodbPostCard from '../../view/common/postcard/mongodb/PostCard'
-import SpringPostCard from '../../view/common/postcard/spring/PostCard'
 import { tokenStorage } from '@/utils/token'
-import AlgorithmLayout from '../../view/algorithm/AlgorithmLayout'
 import { PostFormInputs } from '../../new/components/PostFormInputs'
 import { useCategories } from '@/hooks/useCategories'
-import NextjsLayout from '../../view/nextjs/NextjsLayout'
-import NestjsLayout from '../../view/nestjs/NestjsLayout'
-import MariadbLayout from '../../view/mariadb/MariadbLayout'
-import MongodbLayout from '../../view/mongodb/MongodbLayout'
-import SpringLayout from '../../view/spring/SpringLayout'
-import { FrameworkPost } from '@/types/FrameworkPost'
+
+import { PostPreview } from '../../common/PostPreview'
 
 type ViewMode = 'edit' | 'preview'
 
@@ -54,7 +41,6 @@ export function PostEditForm({ postId }: PostEditFormProps) {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        alert(postId)
         const response = await fetch(`${API_URLS.POST.UPDATE}/${postId}`)
         if (!response.ok) {
           throw new Error('게시글을 불러오는데 실패했습니다.')
@@ -72,7 +58,7 @@ export function PostEditForm({ postId }: PostEditFormProps) {
         setLanguage(postData.language || 'ko')
       } catch (error) {
         console.error('Error fetching post:', error)
-        alert('게시글을 불러오는데 실패했습니다.2')
+        alert('게시글을 불러오는데 실패했습니다.')
       }
     }
 
@@ -81,16 +67,31 @@ export function PostEditForm({ postId }: PostEditFormProps) {
     }
   }, [postId, router, setSelectedCategory])
 
+  // viewMode 변경 시에만 isViewerMounted 상태 관리
   useEffect(() => {
     if (viewMode === 'preview') {
       const timer = setTimeout(() => {
         setIsViewerMounted(true)
       }, 100)
-      return () => clearTimeout(timer)
+      return () => {
+        clearTimeout(timer)
+        setIsViewerMounted(false)
+      }
     } else {
       setIsViewerMounted(false)
     }
   }, [viewMode])
+
+  // 테마 변경 시 isViewerMounted 상태 초기화
+  useEffect(() => {
+    if (viewMode === 'preview') {
+      setIsViewerMounted(false)
+      const timer = setTimeout(() => {
+        setIsViewerMounted(true)
+      }, 100)
+      return () => clearTimeout(timer)
+    }
+  }, [theme])
 
   // 게시글 수정 처리
   const handleSubmit = async (e: React.FormEvent) => {
@@ -157,10 +158,10 @@ export function PostEditForm({ postId }: PostEditFormProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#111111] py-12">
+    <div className="min-h-screen bg-gray-50 py-12">
       <div className="container mx-auto max-w-5xl px-4">
         <form id="post-form" onSubmit={handleSubmit}>
-          <div className="bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#333333] rounded-lg p-8">
+          <div className="bg-white border border-gray-200 rounded-lg p-8">
             <PostHeader 
               postData={{
                 title,
@@ -177,17 +178,17 @@ export function PostEditForm({ postId }: PostEditFormProps) {
               onTempSave={handleTempSave}
             />
             
-            <div className="mt-2 border dark:border-[#333333] rounded flex">
+            <div className="mt-2 border rounded flex">
               <button
                 type="button"
-                className={`py-2 px-4 ${viewMode === 'edit' ? 'bg-gray-200 dark:bg-[#333333]' : ''}`}
+                className={`py-2 px-4 ${viewMode === 'edit' ? 'bg-gray-200' : ''}`}
                 onClick={() => setViewMode('edit')}
               >
                 {t('post.create.edit')}
               </button>
               <button
                 type="button"
-                className={`py-2 px-4 ${viewMode === 'preview' ? 'bg-gray-200 dark:bg-[#333333]' : ''}`}
+                className={`py-2 px-4 ${viewMode === 'preview' ? 'bg-gray-200' : ''}`}
                 onClick={() => setViewMode('preview')}
               >
                 {t('post.create.preview')}
@@ -218,174 +219,20 @@ export function PostEditForm({ postId }: PostEditFormProps) {
                 <Editor initialContent={content} onChange={setContent} />
               </div>
             ) : (
-              <div className="mt-8">
-                {theme === 'algorithm' && (
-                  <AlgorithmPostCard
-                    post={{
-                      id: postId,
-                      title,
-                      description,
-                      createdAt: new Date().toISOString(),
-                      updatedAt: new Date().toISOString(),
-                      tags,
-                      viewCount: 0,
-                      likeCount: 0,
-                      topic,
-                      author: '미리보기',
-                      theme,
-                      category: selectedCategory,
-                      thumbnail,
-                      language
-                    } as FrameworkPost}
-                  />
-                )}
-                {theme === 'nextjs' && (
-                  <NextjsPostCard
-                    post={{
-                      id: postId,
-                      title,
-                      description,
-                      createdAt: new Date().toISOString(),
-                      updatedAt: new Date().toISOString(),
-                      tags,
-                      viewCount: 0,
-                      likeCount: 0,
-                      topic,
-                      author: '미리보기',
-                      theme,
-                      category: selectedCategory,
-                      thumbnail,
-                      language
-                    } as FrameworkPost}
-                  />
-                )}
-                {theme === 'nestjs' && (
-                  <NestjsPostCard
-                    post={{
-                      id: postId,
-                      title,
-                      description,
-                      createdAt: new Date().toISOString(),
-                      updatedAt: new Date().toISOString(),
-                      tags,
-                      viewCount: 0,
-                      likeCount: 0,
-                      topic,
-                      author: '미리보기',
-                      theme,
-                      category: selectedCategory,
-                      thumbnail,
-                      language
-                    } as FrameworkPost}
-                  />
-                )}
-                {theme === 'mariadb' && (
-                  <MariadbPostCard
-                    post={{
-                      id: postId,
-                      title,
-                      description,
-                      createdAt: new Date().toISOString(),
-                      updatedAt: new Date().toISOString(),
-                      tags,
-                      viewCount: 0,
-                      likeCount: 0,
-                      topic,
-                      author: '미리보기',
-                      theme,
-                      category: selectedCategory,
-                      thumbnail,
-                      language
-                    } as FrameworkPost}
-                  />
-                )}
-                {theme === 'mongodb' && (
-                  <MongodbPostCard
-                    post={{
-                      id: postId,
-                      title,
-                      description,
-                      createdAt: new Date().toISOString(),
-                      updatedAt: new Date().toISOString(),
-                      tags,
-                      viewCount: 0,
-                      likeCount: 0,
-                      topic,
-                      author: '미리보기',
-                      theme,
-                      category: selectedCategory,
-                      thumbnail,
-                      language
-                    } as FrameworkPost}
-                  />
-                )}
-                {theme === 'spring' && (
-                  <SpringPostCard
-                    post={{
-                      id: postId,
-                      title,
-                      description,
-                      createdAt: new Date().toISOString(),
-                      updatedAt: new Date().toISOString(),
-                      tags,
-                      viewCount: 0,
-                      likeCount: 0,
-                      topic,
-                      author: '미리보기',
-                      theme,
-                      category: selectedCategory,
-                      thumbnail,
-                      language
-                    } as FrameworkPost}
-                  />
-                )}
-
-                {isViewerMounted && (
-                  <div className="mt-8">
-                    {theme === 'algorithm' && (
-                      <AlgorithmLayout title={title} isPreview>
-                        <div className="prose dark:prose-invert max-w-none">
-                          <Viewer content={content} />
-                        </div>
-                      </AlgorithmLayout>
-                    )}
-                    {theme === 'nextjs' && (
-                      <NextjsLayout title={title} isPreview>
-                        <div className="prose dark:prose-invert max-w-none">
-                          <Viewer content={content} />
-                        </div>
-                      </NextjsLayout>
-                    )}
-                    {theme === 'nestjs' && (
-                      <NestjsLayout title={title} isPreview>
-                        <div className="prose dark:prose-invert max-w-none">
-                          <Viewer content={content} />
-                        </div>
-                      </NestjsLayout>
-                    )}
-                    {theme === 'mariadb' && (
-                      <MariadbLayout title={title} isPreview>
-                        <div className="prose dark:prose-invert max-w-none">
-                          <Viewer content={content} />
-                        </div>
-                      </MariadbLayout>
-                    )}
-                    {theme === 'mongodb' && (
-                      <MongodbLayout title={title} isPreview>
-                        <div className="prose dark:prose-invert max-w-none">
-                          <Viewer content={content} />
-                        </div>
-                      </MongodbLayout>
-                    )}
-                    {theme === 'spring' && (
-                      <SpringLayout title={title}>
-                        <div className="prose dark:prose-invert max-w-none">
-                          <Viewer content={content} />
-                        </div>
-                      </SpringLayout>
-                    )}
-                  </div>
-                )}
+              <div className="bg-black -mx-8 -mb-8 mt-4 p-8">
+                <PostPreview
+                  id={postId}
+                  title={title}
+                  content={content}
+                  theme={theme}
+                  topic={topic}
+                  description={description}
+                  tags={tags}
+                  category={selectedCategory}
+                  thumbnail={thumbnail}
+                  language={language}
+                  isViewerMounted={isViewerMounted}
+                />
               </div>
             )}
           </div>

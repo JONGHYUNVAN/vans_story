@@ -1,3 +1,5 @@
+'use client';
+
 import { SiNextdotjs } from 'react-icons/si';
 import { ReactNode } from 'react';
 import { useSidebarMargin } from '@/hooks/useSidebarMargin';
@@ -8,7 +10,8 @@ interface NextjsLayoutProps {
   isPreview?: boolean;
 }
 
-export default function NextjsLayout({ children, title }: NextjsLayoutProps) {
+export default function NextjsLayout({ children, title, isPreview = false }: NextjsLayoutProps) {
+  const { shouldApplyMargin = false } = isPreview ? { shouldApplyMargin: false } : useSidebarMargin();
 
   return (
     <div className={`transition-all duration-300`}>
@@ -22,22 +25,22 @@ export default function NextjsLayout({ children, title }: NextjsLayoutProps) {
             backgroundPosition: '0 0, 10px 10px'
           }}
         />
-        
+
         <div className="relative">
           <div className="mx-auto max-w-5xl px-6 py-12 min-h-screen border-x border-[#333333] relative">
             {/* 배경 비디오 */}
             <div className="absolute inset-0">
               <div className="absolute inset-0 bg-black/80" />
               <video
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover opacity-30"
-                >
-                  <source src="/nextjs_background.webm" type="video/webm" />
-                </video>
-              </div>
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover opacity-30"
+              >
+                <source src="/nextjs_background.webm" type="video/webm" />
+              </video>
+            </div>
 
             {title && (
               <div className="relative mb-8 pb-8 border-b border-[#333333]">

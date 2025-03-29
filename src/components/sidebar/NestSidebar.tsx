@@ -7,7 +7,7 @@ import { IconType } from 'react-icons';
 export default function NestSidebar() {
   return (
     <BaseSidebar
-      frameworkName="Nest"
+      frameworkName="Nestjs"
       frameworkIcon={SiNestjs}
       frameworkColor="#E0234E"
       frameworkPath="/post/view/nestjs"

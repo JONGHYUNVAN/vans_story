@@ -14,7 +14,6 @@ async function getPost(id: string): Promise<Post> {
     throw new Error(`게시글 조회 실패, ${response.status}`);
   }
   const data = await response.json();
-  console.log('전체 서버 응답 데이터:', data);
   return {
     ...data,
     topic: data.topic || data.theme || '-',

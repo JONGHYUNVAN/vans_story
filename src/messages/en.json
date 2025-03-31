@@ -181,7 +181,7 @@
           "whyNest": {
             "title": "Why Nest?",
             "description": "Learn why Nest.js is a great choice for your next project.",
-            "path": "/post/view/nestjs/category/why-nest",
+            "path": "/post/view/nestjs/category/introduction",
             "icon": "SiNestjs",
             "color": "#E0234E"
           },

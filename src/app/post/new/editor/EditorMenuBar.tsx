@@ -389,12 +389,7 @@ export function EditorMenuBar() {
         <button
           type="button"
           onClick={() => {
-            console.log('Before toggle - bulletList active:', editor.isActive('bulletList'))
-            console.log('Current HTML:', editor.getHTML())
             editor.chain().focus().toggleBulletList().run()
-            console.log('After toggle - bulletList active:', editor.isActive('bulletList'))
-            console.log('Updated HTML:', editor.getHTML())
-            console.log('Schema:', editor.schema)
           }}
           className={`p-1 hover:bg-gray-100 rounded ${
             editor.isActive('bulletList') ? 'bg-gray-100' : ''

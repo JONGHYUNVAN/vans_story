@@ -5,7 +5,7 @@ import { PostCardProps } from '../PostCardProps';
 
 export default function PostCard<T extends BasePost>({ 
   post, 
-  renderBadge 
+  renderBadge
 }: PostCardProps<T>) {
   const { t } = useTranslation('');
   const [isHovered, setIsHovered] = useState(false);

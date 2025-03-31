@@ -182,7 +182,7 @@
           "whyNest": {
             "title": "Why Nest?",
             "description": "Nest.js의 장점과 특징을 알아봅니다.",
-            "path": "/post/view/nestjs/category/why-nest",
+            "path": "/post/view/nestjs/category/introduction",
             "icon": "SiNestjs",
             "color": "#E0234E"
           },

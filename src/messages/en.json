@@ -218,7 +218,7 @@
           "whySpring": {
             "title": "Why Spring?",
             "description": "Learn why Spring is a great choice for your next project.",
-            "path": "/post/view/spring/category/why-spring",
+            "path": "/post/view/spring/category/introduction",
             "icon": "SiSpring",
             "color": "#6DB33F"
           },

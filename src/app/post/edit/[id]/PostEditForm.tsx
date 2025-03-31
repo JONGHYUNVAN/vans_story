@@ -25,7 +25,7 @@ export function PostEditForm({ postId }: PostEditFormProps) {
   // 기본 상태 관리
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
-  const [theme, setTheme] = useState('nextjs')
+  const [theme, setTheme] = useState('spring')
   const [topic, setTopic] = useState('')
   const [description, setDescription] = useState('')
   const [tags, setTags] = useState<string[]>([])
@@ -49,11 +49,11 @@ export function PostEditForm({ postId }: PostEditFormProps) {
         const postData = await response.json()
         setTitle(postData.title || '')
         setContent(postData.content || '')
-        setTheme(postData.theme || 'nextjs')
+        setTheme(postData.theme || 'spring')
         setTopic(postData.topic || '')
         setDescription(postData.description || '')
         setTags(postData.tags || [])
-        setSelectedCategory(postData.category || '')
+        setSelectedCategory(postData.category || 'introduction')
         setThumbnail(postData.thumbnail || '')
         setLanguage(postData.language || 'ko')
       } catch (error) {
@@ -94,9 +94,7 @@ export function PostEditForm({ postId }: PostEditFormProps) {
   }, [theme])
 
   // 게시글 수정 처리
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
+  const handleSubmit = async () => {
     if (!title || !content || !theme || !topic || !description || !selectedCategory || !language) {
       alert(t('post.create.validation'))
       return
@@ -159,84 +157,80 @@ export function PostEditForm({ postId }: PostEditFormProps) {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
-      <div className="container mx-auto max-w-5xl px-4">
-        <form id="post-form" onSubmit={handleSubmit}>
-          <div className="bg-white border border-gray-200 rounded-lg p-8">
-            <PostHeader 
-              postData={{
-                title,
-                content,
-                theme,
-                topic,
-                description,
-                tags,
-                category: selectedCategory,
-                thumbnail,
-                language
-              }}
-              onSubmit={handleSubmit}
-              onTempSave={handleTempSave}
-            />
-            
-            <div className="mt-2 border rounded flex">
-              <button
-                type="button"
-                className={`py-2 px-4 ${viewMode === 'edit' ? 'bg-gray-200' : ''}`}
-                onClick={() => setViewMode('edit')}
-              >
-                {t('post.create.edit')}
-              </button>
-              <button
-                type="button"
-                className={`py-2 px-4 ${viewMode === 'preview' ? 'bg-gray-200' : ''}`}
-                onClick={() => setViewMode('preview')}
-              >
-                {t('post.create.preview')}
-              </button>
-            </div>
+      <div className="bg-white border border-gray-200 rounded-lg p-8">
+        <PostHeader 
+          postData={{
+            title,
+            content,
+            theme,
+            topic,
+            description,
+            tags,
+            category: selectedCategory,
+            thumbnail,
+            language
+          }}
+          onSubmit={handleSubmit}
+          onTempSave={handleTempSave}
+        />
+        
+        <div className="mt-2 border rounded flex">
+          <button
+            type="button"
+            className={`py-2 px-4 ${viewMode === 'edit' ? 'bg-gray-200' : ''}`}
+            onClick={() => setViewMode('edit')}
+          >
+            {t('post.create.edit')}
+          </button>
+          <button
+            type="button"
+            className={`py-2 px-4 ${viewMode === 'preview' ? 'bg-gray-200' : ''}`}
+            onClick={() => setViewMode('preview')}
+          >
+            {t('post.create.preview')}
+          </button>
+        </div>
 
-            {viewMode === 'edit' ? (
-              <div className="space-y-6">
-                <PostFormInputs
-                  title={title}
-                  setTitle={setTitle}
-                  topic={topic}
-                  setTopic={setTopic}
-                  description={description}
-                  setDescription={setDescription}
-                  theme={theme}
-                  setTheme={setTheme}
-                  language={language}
-                  setLanguage={setLanguage}
-                  category={selectedCategory}
-                  setCategory={setSelectedCategory}
-                  thumbnail={thumbnail}
-                  setThumbnail={setThumbnail}
-                  tags={tags}
-                  setTags={setTags}
-                  availableCategories={categories}
-                />
-                <Editor initialContent={content} onChange={setContent} />
-              </div>
-            ) : (
-              <div className="bg-black -mx-8 -mb-8 mt-4 p-8">
-                <PostPreview
-                  id={postId}
-                  title={title}
-                  content={content}
-                  theme={theme}
-                  topic={topic}
-                  description={description}
-                  tags={tags}
-                  category={selectedCategory}
-                  thumbnail={thumbnail}
-                  language={language}
-                  isViewerMounted={isViewerMounted}
-                />
-              </div>
-            )}
+        {viewMode === 'edit' ? (
+          <div className="space-y-6">
+            <PostFormInputs
+              title={title}
+              setTitle={setTitle}
+              topic={topic}
+              setTopic={setTopic}
+              description={description}
+              setDescription={setDescription}
+              theme={theme}
+              setTheme={setTheme}
+              language={language}
+              setLanguage={setLanguage}
+              category={selectedCategory}
+              setCategory={setSelectedCategory}
+              thumbnail={thumbnail}
+              setThumbnail={setThumbnail}
+              tags={tags}
+              setTags={setTags}
+              availableCategories={categories}
+            />
+            <Editor initialContent={content} onChange={setContent} />
           </div>
-        </form>
+        ) : (
+          <div className="bg-black -mx-8 -mb-8 mt-4 p-8">
+            <PostPreview
+              id={postId}
+              title={title}
+              content={content}
+              theme={theme}
+              topic={topic}
+              description={description}
+              tags={tags}
+              category={selectedCategory}
+              thumbnail={thumbnail}
+              language={language}
+              isViewerMounted={isViewerMounted}
+            />
+          </div>
+        )}
       </div>
     </div>
   )

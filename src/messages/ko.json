@@ -142,7 +142,7 @@
       "gettingStarted": {
         "title": "시작하기",
         "items": {
-          "intro": {
+          "introduction": {
             "title": "Why Next?",
             "description": "Next.js의 장점과 특징을 알아봅니다.",
             "path": "/post/view/nextjs/category/introduction",
@@ -179,7 +179,7 @@
       "gettingStarted": {
         "title": "시작하기",
         "items": {
-          "whyNest": {
+          "introduction": {
             "title": "Why Nest?",
             "description": "Nest.js의 장점과 특징을 알아봅니다.",
             "path": "/post/view/nestjs/category/introduction",
@@ -216,10 +216,10 @@
       "gettingStarted": {
         "title": "시작하기",
         "items": {
-          "whySpring": {
+          "introduction": {
             "title": "Why Spring?",
             "description": "Spring Framework의 장점과 특징을 알아봅니다.",
-            "path": "/post/view/spring/category/why-spring",
+            "path": "/post/view/spring/category/introduction",
             "icon": "SiSpring",
             "color": "#6DB33F"
           },

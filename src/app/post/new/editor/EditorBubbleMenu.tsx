@@ -96,6 +96,32 @@ export function EditorBubbleMenu() {
             ))}
           </select>
         </div>
+
+        {/* 폰트 패밀리 */}
+        <div className="relative">
+          <select
+            value={editor?.getAttributes('textStyle').fontFamily || 'inherit'}
+            onChange={(e) => {
+              editor?.chain()
+                .focus()
+                .setFontFamily(e.target.value)
+                .run();
+            }}
+            className="h-8 px-2 rounded border border-gray-200 focus:outline-none text-sm"
+          >
+            <option value="inherit">기본</option>
+            <option value="Gamja Flower, cursive">감자꽃</option>
+            <option value="Arial, sans-serif">Arial</option>
+            <option value="Times New Roman, serif">Times New Roman</option>
+            <option value="Courier New, monospace">Courier New</option>
+            <option value="Georgia, serif">Georgia</option>
+            <option value="Verdana, sans-serif">Verdana</option>
+            <option value="Tahoma, sans-serif">Tahoma</option>
+            <option value="Trebuchet MS, sans-serif">Trebuchet MS</option>
+            <option value="Impact, sans-serif">Impact</option>
+            <option value="Comic Sans MS, cursive">Comic Sans MS</option>
+          </select>
+        </div>
       </BubbleMenu>
 
       {/* 표 버블 메뉴 */}

@@ -121,136 +121,134 @@ export default function PostCard<T extends BasePost>({
   };
 
   return (
-    <Link href={`/post/view/spring/${post.id}`} className="block">
-      <article 
-        className="group relative rounded-lg bg-[#0c1511] text-white hover:shadow-lg hover:shadow-[#6DB33F]/10 p-6 border border-slate-700/40"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        {/* 배경 레이어 */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#101b13] to-[#0a100d] z-0 rounded-lg"></div>
-        
-        {/* 배경 효과 */}
-        <div className="absolute inset-0 opacity-5 bg-[url('/spring-pattern.png')] bg-repeat rounded-lg z-0" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#6DB33F]/5 to-transparent opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-lg z-0" />
-        
-        <div className="relative z-10">
-          <div className="flex items-center justify-between mb-1">
-            <h2 className="text-lg font-medium text-white group-hover:text-[#9DE67E]/80 transition-colors duration-300">
-              {post.title}
-            </h2>
-            <div className="flex items-center gap-3">
-              {post.author && (
-                <span className="text-xs text-gray-300">{t('post.by', { author: post.author })}</span>
-              )}
-              {renderBadge && renderBadge(post)}
-            </div>
+    <article 
+      className="group relative rounded-lg bg-[#0c1511] text-white hover:shadow-lg hover:shadow-[#6DB33F]/10 p-6 border border-slate-700/40"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* 배경 레이어 */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#101b13] to-[#0a100d] z-0 rounded-lg"></div>
+      
+      {/* 배경 효과 */}
+      <div className="absolute inset-0 opacity-5 bg-[url('/spring-pattern.png')] bg-repeat rounded-lg z-0" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#6DB33F]/5 to-transparent opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-lg z-0" />
+      
+      <div className="relative z-10">
+        <div className="flex items-center justify-between mb-1">
+          <h2 className="text-lg font-medium text-white group-hover:text-[#9DE67E]/80 transition-colors duration-300">
+            {post.title}
+          </h2>
+          <div className="flex items-center gap-3">
+            {post.author && (
+              <span className="text-xs text-gray-300">{t('post.by', { author: post.author })}</span>
+            )}
+            {renderBadge && renderBadge(post)}
           </div>
-          
-          {post.topic && (
-            <p className="text-xs text-[#9DE67E]/60 -mt-1">{post.topic}</p>
-          )}
-          
-          {/* 가로 구분선 - 중앙에서 확장 */}
-          <div className="relative h-[1px] my-2 overflow-hidden">
-            <div 
-              className="absolute inset-0 mx-auto bg-gradient-to-r from-transparent via-[#6DB33F]/30 to-transparent"
-              style={{
-                transform: dividerVisible ? 'scaleX(1)' : 'scaleX(0)',
-                transformOrigin: 'center',
-                opacity: dividerVisible ? 0.4 : 0,
-                transition: `transform 700ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 500ms ease-in-out`,
-                height: '1px'
-              }}
-            />
-          </div>
-          
-          {/* Description container with enhanced slide down effect */}
+        </div>
+        
+        {post.topic && (
+          <p className="text-xs text-[#9DE67E]/60 -mt-1">{post.topic}</p>
+        )}
+        
+        {/* 가로 구분선 - 중앙에서 확장 */}
+        <div className="relative h-[1px] my-2 overflow-hidden">
           <div 
-            ref={descContainerRef}
-            className="relative overflow-hidden mt-2 mb-2"
+            className="absolute inset-0 mx-auto bg-gradient-to-r from-transparent via-[#6DB33F]/30 to-transparent"
             style={{
-              height: isHovered ? `${contentHeight}px` : '0px',
+              transform: dividerVisible ? 'scaleX(1)' : 'scaleX(0)',
+              transformOrigin: 'center',
+              opacity: dividerVisible ? 0.4 : 0,
+              transition: `transform 700ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 500ms ease-in-out`,
+              height: '1px'
+            }}
+          />
+        </div>
+        
+        {/* Description container with enhanced slide down effect */}
+        <div 
+          ref={descContainerRef}
+          className="relative overflow-hidden mt-2 mb-2"
+          style={{
+            height: isHovered ? `${contentHeight}px` : '0px',
+            opacity: isHovered ? 1 : 0,
+            transition: `height ${slideAnimationDuration}ms cubic-bezier(0.16, 1, 0.3, 1), opacity ${slideAnimationDuration * 0.8}ms ease-in-out`,
+            transformOrigin: 'top',
+          }}
+        >
+          <div 
+            ref={contentRef}
+            className="w-full"
+            style={{
+              transform: isHovered ? 'translateY(0)' : 'translateY(-20px)',
               opacity: isHovered ? 1 : 0,
-              transition: `height ${slideAnimationDuration}ms cubic-bezier(0.16, 1, 0.3, 1), opacity ${slideAnimationDuration * 0.8}ms ease-in-out`,
-              transformOrigin: 'top',
+              transition: `transform ${slideAnimationDuration}ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity ${slideAnimationDuration}ms ease-in-out`
             }}
           >
-            <div 
-              ref={contentRef}
-              className="w-full"
-              style={{
-                transform: isHovered ? 'translateY(0)' : 'translateY(-20px)',
-                opacity: isHovered ? 1 : 0,
-                transition: `transform ${slideAnimationDuration}ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity ${slideAnimationDuration}ms ease-in-out`
-              }}
-            >
-              {/* Description with typewriting effect and thumbnail */}
-              {(isHovered || showDescription) && (
-                <div className="text-gray-200 text-sm mb-4 w-full">
-                  <div className="flex items-start gap-4">
-                    {/* 썸네일 이미지 */}
-                    <div className="relative w-24 h-24 rounded-md overflow-hidden flex-shrink-0 border border-slate-700/60">
-                      <img
-                        src={post.thumbnail || '/spring.webp'}
-                        alt="thumbnail"
-                        className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = '/spring.webp';
-                        }}
-                      />
-                    </div>
-                    
-                    {/* 텍스트 내용 */}
-                    <div className="flex-1">
-                      <div className="leading-snug mt-2">
-                        {renderTextWithLineBreaks()}
-                      </div>
+            {/* Description with typewriting effect and thumbnail */}
+            {(isHovered || showDescription) && (
+              <div className="text-gray-200 text-sm mb-4 w-full">
+                <div className="flex items-start gap-4">
+                  {/* 썸네일 이미지 */}
+                  <div className="relative w-24 h-24 rounded-md overflow-hidden flex-shrink-0 border border-slate-700/60">
+                    <img
+                      src={post.thumbnail || '/spring.webp'}
+                      alt="thumbnail"
+                      className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = '/spring.webp';
+                      }}
+                    />
+                  </div>
+                  
+                  {/* 텍스트 내용 */}
+                  <div className="flex-1">
+                    <div className="leading-snug mt-2">
+                      {renderTextWithLineBreaks()}
                     </div>
                   </div>
                 </div>
-              )}
-              {/* 하단 구분선 - 중앙에서 확장 */}
-              <div className="relative h-[1px] my-2 overflow-hidden">
-                <div 
-                  className="absolute inset-0 mx-auto bg-gradient-to-r from-transparent via-[#6DB33F]/30 to-transparent"
-                  style={{
-                    transform: bottomDividerVisible ? 'scaleX(1)' : 'scaleX(0)',
-                    transformOrigin: 'center',
-                    opacity: bottomDividerVisible ? 0.3 : 0,
-                    transition: `transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 100ms ease-in-out`,
-                    height: '1px',
-                    width: '100%'
-                  }}
-                />
               </div>
-            </div>
-          </div>
-          
-          <div className="flex items-center justify-between text-xs text-gray-300">
-            <div className="flex items-center gap-4">
-              <span className="flex items-center gap-1">
-                <AiOutlineEye className="w-4 h-4 text-[#6DB33F]/60" />
-                {post.viewCount}
-              </span>
-              <span className="flex items-center gap-1">
-                <AiOutlineLike className="w-4 h-4 text-[#6DB33F]/60" />
-                {post.likeCount}
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              {post.tags && post.tags.map((tag: string) => (
-                <span 
-                  key={tag}
-                  className="px-2 py-1 bg-slate-800/70 text-gray-300 rounded-full text-xs border border-slate-700/40"
-                >
-                  {tag}
-                </span>
-              ))}
+            )}
+            {/* 하단 구분선 - 중앙에서 확장 */}
+            <div className="relative h-[1px] my-2 overflow-hidden">
+              <div 
+                className="absolute inset-0 mx-auto bg-gradient-to-r from-transparent via-[#6DB33F]/30 to-transparent"
+                style={{
+                  transform: bottomDividerVisible ? 'scaleX(1)' : 'scaleX(0)',
+                  transformOrigin: 'center',
+                  opacity: bottomDividerVisible ? 0.3 : 0,
+                  transition: `transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 100ms ease-in-out`,
+                  height: '1px',
+                  width: '100%'
+                }}
+              />
             </div>
           </div>
         </div>
-      </article>
-    </Link>
+        
+        <div className="flex items-center justify-between text-xs text-gray-300">
+          <div className="flex items-center gap-4">
+            <span className="flex items-center gap-1">
+              <AiOutlineEye className="w-4 h-4 text-[#6DB33F]/60" />
+              {post.viewCount}
+            </span>
+            <span className="flex items-center gap-1">
+              <AiOutlineLike className="w-4 h-4 text-[#6DB33F]/60" />
+              {post.likeCount}
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            {post.tags && post.tags.map((tag: string) => (
+              <span 
+                key={tag}
+                className="px-2 py-1 bg-slate-800/70 text-gray-300 rounded-full text-xs border border-slate-700/40"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </article>
   );
 }

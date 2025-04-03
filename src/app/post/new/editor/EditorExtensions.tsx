@@ -104,19 +104,6 @@ export const EditorExtensions = [
   // 폰트 패밀리 확장
   FontFamily.configure({
     types: ['textStyle'],
-    fontFamilies: [
-      { name: '기본', value: 'inherit' },
-      { name: '감자꽃', value: 'Gamja Flower, cursive' },
-      { name: 'Arial', value: 'Arial, sans-serif' },
-      { name: 'Times New Roman', value: 'Times New Roman, serif' },
-      { name: 'Courier New', value: 'Courier New, monospace' },
-      { name: 'Georgia', value: 'Georgia, serif' },
-      { name: 'Verdana', value: 'Verdana, sans-serif' },
-      { name: 'Tahoma', value: 'Tahoma, sans-serif' },
-      { name: 'Trebuchet MS', value: 'Trebuchet MS, sans-serif' },
-      { name: 'Impact', value: 'Impact, sans-serif' },
-      { name: 'Comic Sans MS', value: 'Comic Sans MS, cursive' },
-    ],
   }),
   // 색상 확장
   Color,

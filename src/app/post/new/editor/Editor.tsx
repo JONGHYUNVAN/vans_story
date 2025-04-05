@@ -44,13 +44,13 @@ export function Editor({ initialContent = '', onChange, readonly = false }: Edit
     <EditorProvider value={editor}>
       <div className="relative">
         <EditorMenuBar />
-        <EditorBubbleMenu />
         <div className="prose max-w-none">
           <EditorContent 
             editor={editor} 
-            className="min-h-[60vh] border border-gray-200 rounded-lg p-0 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent"
+            className="min-h-[60vh] border border-gray-200 rounded-lg p-4 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent"
           />
         </div>
+        <EditorBubbleMenu />
       </div>
     </EditorProvider>
   )

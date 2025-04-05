@@ -1,3 +1,5 @@
+'use client';
+
 import { SiMariadb } from 'react-icons/si';
 import { ReactNode } from 'react';
 import { useSidebarMargin } from '@/hooks/useSidebarMargin';

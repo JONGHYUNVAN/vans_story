@@ -27,14 +27,32 @@ export const THEMES: ThemeOption[] = [
   { value: 'algorithm', label: 'Algorithm' }
 ];
 
+// 테마 이름 매핑
+const THEME_NAME_MAPPING: { [key: string]: string } = {
+  'nextjs': 'Nextjs',
+  'nestjs': 'Nestjs',
+  'spring': 'Spring',
+  'mariadb': 'MariaDB',
+  'mongodb': 'MongoDB',
+  'docker': 'Docker',
+  'jwt': 'JWT',
+  'jest': 'Jest',
+  'cypress': 'Cypress',
+  'junit5': 'JUnit5',
+  'git': 'Git',
+  'algorithm': 'Algorithm'
+};
+
 // 번역 데이터에서 테마별 카테고리 정보 추출
 export const getCategoriesByTheme = (theme: string, language: string = 'ko') => {
   try {
     // 동적으로 번역 데이터 가져오기
     const messages = require(`@/messages/${language}.json`);
-    const themeData = messages[theme.charAt(0).toUpperCase() + theme.slice(1)];
+    const themeName = THEME_NAME_MAPPING[theme] || theme.charAt(0).toUpperCase() + theme.slice(1);
+    const themeData = messages[themeName];
     
     if (!themeData?.categories) {
+      console.warn(`No categories found for theme: ${themeName}`);
       return [];
     }
 

@@ -295,21 +295,54 @@
   "MariaDB": {
     "categories": {
       "gettingStarted": {
-        "whyMariaDB": {
-          "title": "Why MariaDB?",
-          "description": "Learn why MariaDB is a great choice for your next project.",
-          "path": "/post/view/mariadb/category/why-mariadb",
-          "icon": "SiMariadb",
-          "color": "#4285F4"
-        },
         "title": "Getting Started",
         "items": {
+          "introduction": {
+            "title": "Why MariaDB?",
+            "description": "Learn about MariaDB's features and differences from MySQL.",
+            "path": "/post/view/mariadb/category/introduction",
+            "icon": "SiMariadb",
+            "color": "#003545"
+          },
           "installation": {
-            "title": "Installation & Setup",
-            "description": "Learn how to install and configure your MariaDB project.",
+            "title": "Installation and Setup",
+            "description": "Learn how to install and configure MariaDB.",
             "path": "/post/view/mariadb/category/installation",
             "icon": "SiMariadb",
-            "color": "#4285F4"
+            "color": "#003545"
+          },
+          "basicCommands": {
+            "title": "Basic Commands",
+            "description": "Learn the basic SQL commands in MariaDB.",
+            "path": "/post/view/mariadb/category/basic-commands",
+            "icon": "SiMariadb",
+            "color": "#003545"
+          }
+        }
+      },
+      "advanced": {
+        "title": "Advanced Features",
+        "items": {
+          "optimization": {
+            "title": "Performance Optimization",
+            "description": "Learn how to optimize MariaDB's performance.",
+            "path": "/post/view/mariadb/category/optimization",
+            "icon": "SiMariadb",
+            "color": "#003545"
+          },
+          "replication": {
+            "title": "Replication Setup",
+            "description": "Learn how to set up and manage MariaDB replication.",
+            "path": "/post/view/mariadb/category/replication",
+            "icon": "SiMariadb",
+            "color": "#003545"
+          },
+          "security": {
+            "title": "Security Configuration",
+            "description": "Learn about MariaDB security settings and user management.",
+            "path": "/post/view/mariadb/category/security",
+            "icon": "SiMariadb",
+            "color": "#003545"
           }
         }
       }

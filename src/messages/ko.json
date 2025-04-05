@@ -298,19 +298,52 @@
       "gettingStarted": {
         "title": "시작하기",
         "items": {
-          "whyMariaDB": {
+          "introduction": {
             "title": "Why MariaDB?",
             "description": "MariaDB의 장점과 특징을 알아봅니다.",
-            "path": "/post/view/mariadb/category/why-mariadb",
+            "path": "/post/view/mariadb/category/introduction",
             "icon": "SiMariadb",
-            "color": "#4285F4"
+            "color": "#003545"
           },
           "installation": {
             "title": "설치 및 설정",
-            "description": "MariaDB 프로젝트 설치 및 기본 설정 방법을 알아봅니다.",
+            "description": "MariaDB 설치 및 기본 설정 방법을 알아봅니다.",
             "path": "/post/view/mariadb/category/installation",
             "icon": "SiMariadb",
-            "color": "#4285F4"  
+            "color": "#003545"
+          },
+          "basicCommands": {
+            "title": "기본 명령어",
+            "description": "MariaDB의 기본적인 SQL 명령어를 학습합니다.",
+            "path": "/post/view/mariadb/category/basic-commands",
+            "icon": "SiMariadb",
+            "color": "#003545"
+          }
+        }
+      },
+      "advanced": {
+        "title": "고급 기능",
+        "items": {
+          "optimization": {
+            "title": "성능 최적화",
+            "description": "MariaDB의 성능을 최적화하는 방법을 학습합니다.",
+            "path": "/post/view/mariadb/category/optimization",
+            "icon": "SiMariadb",
+            "color": "#003545"
+          },
+          "replication": {
+            "title": "복제 설정",
+            "description": "MariaDB의 복제 기능을 설정하고 관리하는 방법을 배웁니다.",
+            "path": "/post/view/mariadb/category/replication",
+            "icon": "SiMariadb",
+            "color": "#003545"
+          },
+          "security": {
+            "title": "보안 설정",
+            "description": "MariaDB의 보안 설정과 사용자 관리 방법을 학습합니다.",
+            "path": "/post/view/mariadb/category/security",
+            "icon": "SiMariadb",
+            "color": "#003545"
           }
         }
       }

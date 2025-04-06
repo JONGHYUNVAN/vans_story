@@ -1,6 +1,7 @@
+'use client';
+
 import { SiMongodb } from 'react-icons/si';
 import { ReactNode } from 'react';
-import { useSidebarMargin } from '@/hooks/useSidebarMargin';
 
 interface MongodbLayoutProps {
   children: ReactNode;
@@ -9,10 +10,7 @@ interface MongodbLayoutProps {
 }
 
 export default function MongodbLayout({ children, title, isPreview = false }: MongodbLayoutProps) {
-  const { shouldApplyMargin } = isPreview ? { shouldApplyMargin: false } : useSidebarMargin();
-
   return (
-    <div className={`transition-all duration-300 ${!isPreview && shouldApplyMargin ? 'ml-0 lg:ml-64' : ''}`}>
       <div className="left-auto min-h-screen bg-[#2c1d12] relative overflow-hidden">
         {/* 배경 레이어 */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#ba8448] to-[#8b5e2f] z-0"></div>
@@ -56,6 +54,5 @@ export default function MongodbLayout({ children, title, isPreview = false }: Mo
           </div>
         </div>
       </div>
-    </div>
   );
 } 

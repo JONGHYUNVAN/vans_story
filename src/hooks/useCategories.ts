@@ -8,9 +8,9 @@ export interface Category {
   path?: string;
 }
 
-export function useCategories(theme: string, language: string) {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState('');
+export function useCategories(theme: string, language: string = 'ko') {
+  const [categories, setCategories] = useState<CategoryOption[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<CategoryOption | null>(null);
 
   useEffect(() => {
     if (theme && language) {
@@ -23,7 +23,7 @@ export function useCategories(theme: string, language: string) {
       }
     } else {
       setCategories([]);
-      setSelectedCategory('');
+      setSelectedCategory(null);
     }
   }, [theme, language]);
 

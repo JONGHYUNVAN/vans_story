@@ -354,10 +354,10 @@
       "gettingStarted": {
         "title": "시작하기",
         "items": {
-          "whyMongoDB": {
+          "introduction": {
             "title": "Why MongoDB?",
             "description": "MongoDB의 장점과 특징을 알아봅니다.",
-            "path": "/post/view/mongodb/category/why-mongodb",
+            "path": "/post/view/mongodb/category/introduction",
             "icon": "SiMongodb",
             "color": "#e5bc7a"
           },

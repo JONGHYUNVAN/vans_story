@@ -353,10 +353,10 @@
       "gettingStarted": {
         "title": "Getting Started",
         "items": {
-          "whyMongoDB": {
+          "introduction": {
             "title": "Why MongoDB?",
             "description": "Learn why MongoDB is a great choice for your next project.",
-            "path": "/post/view/mongodb/category/why-mongodb",
+            "path": "/post/view/mongodb/category/introduction",
             "icon": "SiMongodb",
             "color": "#e5bc7a"
           },

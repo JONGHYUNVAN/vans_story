@@ -1,6 +1,5 @@
 import { useTranslation } from '@/utils/i18n';
-import { THEMES } from '@/constants/themes';
-import { Category } from '@/hooks/useCategories';
+import { THEMES, CategoryOption } from '@/constants/themes';
 
 // 언어 옵션 배열
 const LANGUAGES = [
@@ -19,13 +18,13 @@ interface PostFormInputsProps {
   setTheme: (value: string) => void;
   language: string;
   setLanguage: (value: string) => void;
-  category: string;
-  setCategory: (value: string) => void;
+  category: CategoryOption | null;
+  setCategory: (value: CategoryOption | null) => void;
   thumbnail: string;
   setThumbnail: (value: string) => void;
   tags: string[];
   setTags: (value: string[]) => void;
-  availableCategories: Category[];
+  availableCategories: CategoryOption[];
 }
 
 export function PostFormInputs({
@@ -96,8 +95,11 @@ export function PostFormInputs({
       </select>
 
       <select
-        value={category}
-        onChange={(e) => setCategory(e.target.value)}
+        value={category?.value || ''}
+        onChange={(e) => {
+          const selected = availableCategories.find(c => c.value === e.target.value);
+          setCategory(selected || null);
+        }}
         className="w-full p-2 border rounded text-black text-center"
         disabled={availableCategories.length === 0}
       >

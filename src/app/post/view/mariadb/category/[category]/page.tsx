@@ -4,12 +4,10 @@ import { SidebarWrapper } from '../../../common/SidebarWrapper';
 import MariadbList from '../../MariadbList';
 
 interface PageProps {
-  params: {
-    category: string;
-  };
+  params: Promise<{ category: string }>;
 }
 
-async function getPostsByCategory(category: string) {
+async function getPosts(category: string) {
   const response = await fetch(`${API_URLS.POST.LIST}?theme=mariadb&category=${category}&page=1&limit=10`, {
     next: { revalidate: 0 }
   });
@@ -23,8 +21,9 @@ async function getPostsByCategory(category: string) {
 }
 
 export default async function MariadbCategoryPage({ params }: PageProps) {
-  const posts = await getPostsByCategory(params.category);
-  const categoryTitle = params.category.charAt(0).toUpperCase() + params.category.slice(1);
+  const { category } = await params;
+  const posts = await getPosts(category);
+  const categoryTitle = category.charAt(0).toUpperCase() + category.slice(1);
 
   return (
     <SidebarWrapper>

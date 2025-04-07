@@ -37,6 +37,9 @@ export function PostEditForm({ postId }: PostEditFormProps) {
   // 카테고리 관리 훅 사용
   const { categories, selectedCategory, setSelectedCategory } = useCategories(theme, language)
 
+  // 포스트 데이터
+  const [postData, setPostData] = useState<any>(null)
+
   // 기존 포스트 데이터 로드
   useEffect(() => {
     const fetchPost = async () => {
@@ -46,16 +49,16 @@ export function PostEditForm({ postId }: PostEditFormProps) {
           throw new Error('게시글을 불러오는데 실패했습니다.')
         }
         
-        const postData = await response.json()
-        setTitle(postData.title || '')
-        setContent(postData.content || '')
-        setTheme(postData.theme || 'spring')
-        setTopic(postData.topic || '')
-        setDescription(postData.description || '')
-        setTags(postData.tags || [])
-        setSelectedCategory(postData.category || 'introduction')
-        setThumbnail(postData.thumbnail || '')
-        setLanguage(postData.language || 'ko')
+        const data = await response.json()
+        setPostData(data)
+        setTitle(data.title || '')
+        setContent(data.content || '')
+        setTheme(data.theme || 'spring')
+        setTopic(data.topic || '')
+        setDescription(data.description || '')
+        setTags(data.tags || [])
+        setThumbnail(data.thumbnail || '')
+        setLanguage(data.language || 'ko')
       } catch (error) {
         console.error('Error fetching post:', error)
         alert('게시글을 불러오는데 실패했습니다.')
@@ -65,7 +68,16 @@ export function PostEditForm({ postId }: PostEditFormProps) {
     if (postId) {
       fetchPost()
     }
-  }, [postId, router, setSelectedCategory])
+  }, [postId, router])
+
+  // 카테고리 설정
+  useEffect(() => {
+    if (postData && categories.length > 0) {
+      // 서버에서 가져온 카테고리 값과 일치하는 카테고리 찾기
+      const matchedCategory = categories.find(cat => cat.value === postData.category)
+      setSelectedCategory(matchedCategory || categories[0])
+    }
+  }, [categories, postData, setSelectedCategory])
 
   // viewMode 변경 시에만 isViewerMounted 상태 관리
   useEffect(() => {
@@ -119,7 +131,7 @@ export function PostEditForm({ postId }: PostEditFormProps) {
           topic,
           description,
           tags,
-          category: selectedCategory,
+          category: selectedCategory?.value || '',
           thumbnail,
           language
         })
@@ -147,7 +159,7 @@ export function PostEditForm({ postId }: PostEditFormProps) {
         topic,
         description,
         tags,
-        category: selectedCategory,
+        category: selectedCategory?.value || '',
         thumbnail,
         language
       }))
@@ -166,7 +178,7 @@ export function PostEditForm({ postId }: PostEditFormProps) {
             topic,
             description,
             tags,
-            category: selectedCategory,
+            category: selectedCategory?.value || '',
             thumbnail,
             language
           }}
@@ -224,7 +236,7 @@ export function PostEditForm({ postId }: PostEditFormProps) {
               topic={topic}
               description={description}
               tags={tags}
-              category={selectedCategory}
+              category={selectedCategory?.value || ''}
               thumbnail={thumbnail}
               language={language}
               isViewerMounted={isViewerMounted}

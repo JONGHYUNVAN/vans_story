@@ -6,6 +6,7 @@ import { ReactNode } from 'react';
 interface MariadbLayoutProps {
   children: ReactNode;
   title: string;
+  isPreview?: boolean;
 }
 
 export default function MariadbLayout({ children, title }: MariadbLayoutProps) {

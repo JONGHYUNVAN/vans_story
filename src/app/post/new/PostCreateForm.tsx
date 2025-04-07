@@ -35,12 +35,6 @@ const LANGUAGES = [
   { value: 'en', label: 'English' }
 ]
 
-interface Category {
-  value: string;
-  label: string;
-  description?: string;
-}
-
 export function PostCreateForm() {
   const router = useRouter()
   const { t } = useTranslation('')
@@ -72,9 +66,9 @@ export function PostCreateForm() {
         setTopic(postData.topic || '')
         setDescription(postData.description || '')
         setTags(postData.tags || [])
-        setSelectedCategory(postData.category || '')
         setThumbnail(postData.thumbnail || '')
         setLanguage(postData.language || 'ko')
+        // 카테고리는 나중에 categories가 로드된 후 처리됨
       } catch (error) {
         console.error(t('post.create.tempSaveError'), error)
       }
@@ -165,7 +159,7 @@ export function PostCreateForm() {
         topic,
         description,
         tags,
-        category: selectedCategory,
+        category: selectedCategory?.value || '',
         thumbnail,
         language
       }))
@@ -186,7 +180,7 @@ export function PostCreateForm() {
                 topic,
                 description,
                 tags,
-                category: selectedCategory,
+                category: selectedCategory?.value || '',
                 thumbnail,
                 language
               }}
@@ -246,7 +240,7 @@ export function PostCreateForm() {
                 topic={topic}
                 description={description}
                 tags={tags}
-                category={selectedCategory}
+                category={selectedCategory?.value || ''}
                 thumbnail={thumbnail}
                 language={language}
                 isViewerMounted={isViewerMounted}

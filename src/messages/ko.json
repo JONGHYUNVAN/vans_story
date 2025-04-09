@@ -411,7 +411,7 @@
         "title": "기본 개념",
         "items": {
           "introduction": {
-            "title": "Docker 소개",
+            "title": "Why Docker?",
             "description": "Docker의 기본 개념과 컨테이너 기술에 대해 알아봅니다.",
             "path": "/post/view/docker/category/introduction",
             "icon": "SiDocker",

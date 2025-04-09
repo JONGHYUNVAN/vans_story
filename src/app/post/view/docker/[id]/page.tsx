@@ -33,7 +33,7 @@ export default async function ViewDockerPostPage({ params }: PageProps) {
   return (
     <SidebarWrapper>
       <DockerLayout title={post.title}>
-        <div className="space-y-6 text-white">
+        <div className="space-y-6  text-[#c8e5fa]">
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center gap-4">
               <span>작성자: {post.author}</span>

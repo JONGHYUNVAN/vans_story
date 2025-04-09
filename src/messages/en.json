@@ -486,5 +486,146 @@
       "description": "Something went wrong while using the service. Please try again later.",
       "retry": "Try Again"
     }
+  },
+  "Docker": {
+    "categories": {
+      "basics": {
+        "title": "Basic Concepts",
+        "items": {
+          "introduction": {
+            "title": "Docker Introduction",
+            "description": "Learn about Docker's basic concepts and container technology.",
+            "path": "/post/view/docker/category/introduction",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          },
+          "containers": {
+            "title": "Containers",
+            "description": "Learn about Docker containers and how to use them.",
+            "path": "/post/view/docker/category/containers",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          },
+          "images": {
+            "title": "Images",
+            "description": "Learn how to create and manage Docker images.",
+            "path": "/post/view/docker/category/images",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          },
+          "registry": {
+            "title": "Registry",
+            "description": "Understand Docker image repositories and distribution methods.",
+            "path": "/post/view/docker/category/registry",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          }
+        }
+      },
+      "dockerfile": {
+        "title": "Dockerfile",
+        "items": {
+          "basics": {
+            "title": "Basic Commands",
+            "description": "Learn about Dockerfile's basic commands and usage.",
+            "path": "/post/view/docker/category/dockerfile-basics",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          },
+          "multistage": {
+            "title": "Multi-stage Build",
+            "description": "Learn about multi-stage builds for efficient image creation.",
+            "path": "/post/view/docker/category/multistage-build",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          },
+          "optimization": {
+            "title": "Optimization",
+            "description": "Learn how to optimize Docker image size and build time.",
+            "path": "/post/view/docker/category/optimization",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          }
+        }
+      },
+      "compose": {
+        "title": "Docker Compose",
+        "items": {
+          "basics": {
+            "title": "Basic Configuration",
+            "description": "Learn about Docker Compose's basic configuration and usage.",
+            "path": "/post/view/docker/category/compose-basics",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          },
+          "networks": {
+            "title": "Networks",
+            "description": "Learn about network configuration and management in Docker Compose.",
+            "path": "/post/view/docker/category/compose-networks",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          },
+          "volumes": {
+            "title": "Volumes",
+            "description": "Understand volume configuration and management for data persistence.",
+            "path": "/post/view/docker/category/compose-volumes",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          }
+        }
+      },
+      "deployment": {
+        "title": "Deployment",
+        "items": {
+          "swarm": {
+            "title": "Docker Swarm",
+            "description": "Learn about container orchestration using Docker Swarm.",
+            "path": "/post/view/docker/category/swarm",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          },
+          "kubernetes": {
+            "title": "Kubernetes",
+            "description": "Learn how to integrate Docker with Kubernetes.",
+            "path": "/post/view/docker/category/kubernetes",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          },
+          "cicd": {
+            "title": "CI/CD",
+            "description": "Learn how to build CI/CD pipelines using Docker.",
+            "path": "/post/view/docker/category/cicd",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          }
+        }
+      },
+      "security": {
+        "title": "Security",
+        "items": {
+          "imageSecurity": {
+            "title": "Image Security",
+            "description": "Learn about Docker image security vulnerabilities and countermeasures.",
+            "path": "/post/view/docker/category/image-security",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          },
+          "containerSecurity": {
+            "title": "Container Security",
+            "description": "Learn about Docker container security settings and monitoring methods.",
+            "path": "/post/view/docker/category/container-security",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          },
+          "networkSecurity": {
+            "title": "Network Security",
+            "description": "Understand Docker network security settings and management methods.",
+            "path": "/post/view/docker/category/network-security",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          }
+        }
+      }
+    }
   }
 } 

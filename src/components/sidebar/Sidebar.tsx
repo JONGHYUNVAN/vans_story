@@ -8,6 +8,7 @@ import SpringSidebar from './SpringSidebar';
 import MariaDBSidebar from './MariaDBSidebar';
 import MongoDBSidebar from './MongoDBSidebar';
 import AlgorithmSidebar from './AlgorithmSidebar';
+import DockerSidebar from './DockerSidebar';
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -17,6 +18,7 @@ export default function Sidebar() {
   const isMariaPage = pathname.startsWith('/post/view/mariadb');
   const isMongoPage = pathname.startsWith('/post/view/mongodb');
   const isAlgorithmPage = pathname.startsWith('/post/view/algorithm');
+  const isDockerPage = pathname.startsWith('/post/view/docker');
 
   return (
     <aside className="fixed left-0 top-0 h-full z-[30] overflow-hidden">
@@ -26,6 +28,7 @@ export default function Sidebar() {
         : isMariaPage ? <MariaDBSidebar />
         : isMongoPage ? <MongoDBSidebar />
         : isAlgorithmPage ? <AlgorithmSidebar />
+        : isDockerPage ? <DockerSidebar />
         : <MainSidebar />}
     </aside>
   );

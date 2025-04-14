@@ -1,30 +1,16 @@
-import { API_URLS } from '@/api/constants/apiUrl';
 import { Viewer } from '@/app/post/viewer/Viewer';
-import { Post } from '@/interfaces/post/types';
 import AlgorithmLayout from '../AlgorithmLayout';
 import { SidebarWrapper } from '../../common/SidebarWrapper';
+import { getPostWithViewCount } from '../../common/usePostView';
+import { ViewCountHandler } from '../../common/ViewCountHandler';
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-async function getPost(id: string): Promise<Post> {
-  const response = await fetch(`${API_URLS.POST.GET}/${id}`);
-  if (!response.ok) {
-    throw new Error(`게시글 조회 실패, ${response.status}`);
-  }
-  const data = await response.json();
-  return {
-    ...data,
-    topic: data.topic || data.theme || '-',
-    viewCount: data.viewCount ?? 0,
-    likeCount: data.likeCount ?? 0
-  };
-}
-
 export default async function AlgorithmDetailPage({ params }: PageProps) {
   const { id } = await params;
-  const post = await getPost(id);
+  const post = await getPostWithViewCount(id);
   
   if (!post) {
     return (
@@ -37,6 +23,7 @@ export default async function AlgorithmDetailPage({ params }: PageProps) {
   return (
     <SidebarWrapper>
       <AlgorithmLayout title={post.title}>
+        <ViewCountHandler postId={id} />
         {/* 본문 */}
         <div className="prose prose-gray max-w-none">
           <Viewer content={post.content} />

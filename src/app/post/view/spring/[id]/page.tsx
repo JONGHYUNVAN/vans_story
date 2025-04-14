@@ -1,24 +1,17 @@
-import { API_URLS } from '@/api/constants/apiUrl';
 import { Viewer } from '@/app/post/viewer/Viewer';
 import { Post } from '@/interfaces/post/types';
 import SpringLayout from '../SpringLayout';
 import { SidebarWrapper } from '../../common/SidebarWrapper';
+import { getPostWithViewCount } from '../../common/usePostView';
+import { ViewCountHandler } from '../../common/ViewCountHandler';
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-async function getPost(id: string): Promise<Post> {
-  const response = await fetch(`${API_URLS.POST.GET}/${id}`);
-  if (!response.ok) {
-    throw new Error(`게시글 조회 실패, ${response.status}`);
-  }
-  return response.json();
-}
-
 export default async function ViewSpringPostPage({ params }: PageProps) {
   const { id } = await params;
-  const post = await getPost(id);
+  const post = await getPostWithViewCount(id);
   
   if (!post) {
     return (
@@ -33,6 +26,7 @@ export default async function ViewSpringPostPage({ params }: PageProps) {
   return (
     <SidebarWrapper>
       <SpringLayout title={post.title}>
+        <ViewCountHandler postId={id} />
         <div className="space-y-6 text-white">
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center gap-4">

@@ -1,23 +1,17 @@
-import { API_URLS } from '@/api/constants/apiUrl';
 import { Viewer } from '@/app/post/viewer/Viewer';
 import { Post } from '@/interfaces/post/types';
 import MariadbLayout from '../MariadbLayout';
+import { SidebarWrapper } from '../../common/SidebarWrapper';
+import { getPostWithViewCount } from '../../common/usePostView';
+import { ViewCountHandler } from '../../common/ViewCountHandler';
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-async function getPost(id: string): Promise<Post> {
-  const response = await fetch(`${API_URLS.POST.GET}/${id}`);
-  if (!response.ok) {
-    throw new Error(`게시글 조회 실패, ${response.status}`);
-  }
-  return response.json();
-}
-
 export default async function ViewMariadbPostPage({ params }: PageProps) {
   const { id } = await params;
-  const post = await getPost(id);
+  const post = await getPostWithViewCount(id);
   
   if (!post) {
     return (
@@ -30,34 +24,37 @@ export default async function ViewMariadbPostPage({ params }: PageProps) {
   }
 
   return (
-    <MariadbLayout title={post.title}>
-      <div className="space-y-6 text-white">
-        <div className="flex items-center justify-between text-sm">
-          <div className="flex items-center gap-4">
-            <span>작성자: {post.author}</span>
-            <span>주제: {post.topic}</span>
+    <SidebarWrapper>
+      <MariadbLayout title={post.title}>
+        <ViewCountHandler postId={id} />
+        <div className="space-y-6 text-white">
+          <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center gap-4">
+              <span>작성자: {post.author}</span>
+              <span>주제: {post.topic}</span>
+            </div>
+            <div className="flex items-center gap-4">
+              <span>조회수: {post.viewCount}</span>
+              <span>좋아요: {post.likeCount}</span>
+            </div>
           </div>
-          <div className="flex items-center gap-4">
-            <span>조회수: {post.viewCount}</span>
-            <span>좋아요: {post.likeCount}</span>
+
+          <div className="prose prose-invert max-w-none">
+            <Viewer content={post.content} />
+          </div>
+
+          <div className="flex items-center gap-2">
+            {post.tags && post.tags.length > 0 && post.tags.map((tag: string) => (
+              <span 
+                key={tag} 
+                className="px-2 py-1 bg-[#1a1a1a] text-gray-300 rounded-full text-xs"
+              >
+                {tag}
+              </span>
+            ))}
           </div>
         </div>
-
-        <div className="prose prose-invert max-w-none">
-          <Viewer content={post.content} />
-        </div>
-
-        <div className="flex items-center gap-2">
-          {post.tags && post.tags.length > 0 && post.tags.map((tag: string) => (
-            <span 
-              key={tag} 
-              className="px-2 py-1 bg-[#1a1a1a] text-gray-300 rounded-full text-xs"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-      </div>
-    </MariadbLayout>
+      </MariadbLayout>
+    </SidebarWrapper>
   );
 } 

@@ -18,7 +18,7 @@ export function useCategories(theme: string, language: string = 'ko') {
       setCategories([]);
       setSelectedCategory(null);
     }
-  }, [theme, language, selectedCategory]);
+  }, [theme, language]);
 
   return {
     categories,

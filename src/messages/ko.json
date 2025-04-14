@@ -443,9 +443,9 @@
       "dockerfile": {
         "title": "Dockerfile",
         "items": {
-          "basics": {
+          "dockerfile_basics": {
             "title": "기본 명령어",
-            "description": "Dockerfile의 기본 명령어와 사용법을 학습합니다.",
+            "description": "Dockerfile의 기본 명령어와 사용법을 배웁니다.",
             "path": "/post/view/docker/category/dockerfile-basics",
             "icon": "SiDocker",
             "color": "#2496ED"
@@ -469,9 +469,9 @@
       "compose": {
         "title": "Docker Compose",
         "items": {
-          "basics": {
+          "compose_basics": {
             "title": "기본 설정",
-            "description": "Docker Compose의 기본 설정과 사용법을 학습합니다.",
+            "description": "Docker Compose의 기본 설정과 사용법을 배웁니다.",
             "path": "/post/view/docker/category/compose-basics",
             "icon": "SiDocker",
             "color": "#2496ED"

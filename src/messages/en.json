@@ -525,7 +525,7 @@
       "dockerfile": {
         "title": "Dockerfile",
         "items": {
-          "basics": {
+          "dockerfile_basics": {
             "title": "Basic Commands",
             "description": "Learn about Dockerfile's basic commands and usage.",
             "path": "/post/view/docker/category/dockerfile-basics",
@@ -551,7 +551,7 @@
       "compose": {
         "title": "Docker Compose",
         "items": {
-          "basics": {
+          "compose_basics": {
             "title": "Basic Configuration",
             "description": "Learn about Docker Compose's basic configuration and usage.",
             "path": "/post/view/docker/category/compose-basics",

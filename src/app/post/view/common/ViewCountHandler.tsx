@@ -16,13 +16,35 @@ export function ViewCountHandler({ postId }: ViewCountHandlerProps) {
         ?.split('=')[1];
     };
 
-    const viewedPostsCookie = getCookie('viewed_posts');
-    const viewedPostsArray = viewedPostsCookie ? viewedPostsCookie.split(',') : [];
+    // 쿠키 삭제
+    const deleteCookie = (name: string) => {
+      document.cookie = `${name}=; path=/; max-age=0`;
+    };
+
+    // 세션 체크
+    const sessionValue = sessionStorage.getItem('viewed_posts');
+    const cookieValue = getCookie('viewed_posts');
+
+    // 세션이 없는데 쿠키가 있다면 쿠키 삭제
+    if (!sessionValue && cookieValue) {
+      deleteCookie('viewed_posts');
+      return;
+    }
+
+    // 세션이 있는데 쿠키가 없다면 세션 값으로 쿠키 복원
+    if (sessionValue && !cookieValue) {
+      document.cookie = `viewed_posts=${sessionValue}; path=/; max-age=86400`;
+    }
+
+    const viewedPostsArray = (sessionValue || cookieValue || '').split(',').filter(Boolean);
     
     // 이미 본 포스트가 아니라면 추가
     if (!viewedPostsArray.includes(postId)) {
       viewedPostsArray.push(postId);
       const newViewedPosts = viewedPostsArray.join(',');
+      
+      // 세션 스토리지에 저장
+      sessionStorage.setItem('viewed_posts', newViewedPosts);
       
       // 쿠키에 저장 (24시간)
       document.cookie = `viewed_posts=${newViewedPosts}; path=/; max-age=86400`;

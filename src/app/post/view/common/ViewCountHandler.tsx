@@ -28,14 +28,9 @@ export function ViewCountHandler({ postId }: ViewCountHandlerProps) {
     // 세션이 없는데 쿠키가 있다면 쿠키 삭제
     if (!sessionValue && cookieValue) {
       deleteCookie('viewed_posts');
-      return;
     }
 
-    // 세션이 있는데 쿠키가 없다면 세션 값으로 쿠키 복원
-    if (sessionValue && !cookieValue) {
-      document.cookie = `viewed_posts=${sessionValue}; path=/; max-age=86400`;
-    }
-
+    // 현재 조회한 포스트 목록 가져오기 (세션 또는 쿠키에서)
     const viewedPostsArray = (sessionValue || cookieValue || '').split(',').filter(Boolean);
     
     // 이미 본 포스트가 아니라면 추가

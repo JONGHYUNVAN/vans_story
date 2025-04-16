@@ -627,5 +627,66 @@
         }
       }
     }
+  },
+  "JWT": {
+    "categories": {
+      "gettingStarted": {
+        "title": "Getting Started",
+        "items": {
+          "introduction": {
+            "title": "What is JWT?",
+            "description": "Learn the basic concepts and structure of JWT.",
+            "path": "/post/view/jwt/category/introduction",
+            "icon": "FaKey",
+            "color": "#FF6B6B"
+          },
+          "structure": {
+            "title": "JWT Structure",
+            "description": "Understand the Header, Payload, and Signature structure of JWT.",
+            "path": "/post/view/jwt/category/structure",
+            "icon": "FaKey",
+            "color": "#FF6B6B"
+          }
+        }
+      },
+      "implementation": {
+        "title": "Implementation",
+        "items": {
+          "spring": {
+            "title": "Spring Security JWT",
+            "description": "Learn how to implement JWT in Spring Security.",
+            "path": "/post/view/jwt/category/spring",
+            "icon": "FaKey",
+            "color": "#FF6B6B"
+          },
+          "nodejs": {
+            "title": "Node.js JWT",
+            "description": "Learn how to implement JWT in Node.js.",
+            "path": "/post/view/jwt/category/nodejs",
+            "icon": "FaKey",
+            "color": "#FF6B6B"
+          }
+        }
+      },
+      "security": {
+        "title": "Security",
+        "items": {
+          "bestPractices": {
+            "title": "JWT Security Best Practices",
+            "description": "Learn best practices for using JWT securely.",
+            "path": "/post/view/jwt/category/best-practices",
+            "icon": "FaKey",
+            "color": "#FF6B6B"
+          },
+          "vulnerabilities": {
+            "title": "JWT Vulnerabilities",
+            "description": "Learn about JWT vulnerabilities and how to mitigate them.",
+            "path": "/post/view/jwt/category/vulnerabilities",
+            "icon": "FaKey",
+            "color": "#FF6B6B"
+          }
+        }
+      }
+    }
   }
 } 

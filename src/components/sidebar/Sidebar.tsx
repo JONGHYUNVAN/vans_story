@@ -9,6 +9,7 @@ import MariaDBSidebar from './MariaDBSidebar';
 import MongoDBSidebar from './MongoDBSidebar';
 import AlgorithmSidebar from './AlgorithmSidebar';
 import DockerSidebar from './DockerSidebar';
+import JWTSidebar from './JWTSidebar';
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -19,6 +20,7 @@ export default function Sidebar() {
   const isMongoPage = pathname.startsWith('/post/view/mongodb');
   const isAlgorithmPage = pathname.startsWith('/post/view/algorithm');
   const isDockerPage = pathname.startsWith('/post/view/docker');
+  const isJWTPage = pathname.startsWith('/post/view/jwt');
 
   return (
     <aside className="fixed left-0 top-0 h-full z-[30] overflow-hidden">
@@ -29,6 +31,7 @@ export default function Sidebar() {
         : isMongoPage ? <MongoDBSidebar />
         : isAlgorithmPage ? <AlgorithmSidebar />
         : isDockerPage ? <DockerSidebar />
+        : isJWTPage ? <JWTSidebar/>
         : <MainSidebar />}
     </aside>
   );

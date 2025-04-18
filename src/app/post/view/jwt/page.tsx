@@ -3,8 +3,6 @@ import { SidebarWrapper } from '../common/SidebarWrapper';
 import JWTLayout from './JWTLayout';
 import JWTList from './JWTList';
 
-
-
 async function getPosts() {
   const response = await fetch(`${API_URLS.POST.LIST}?theme=jwt&page=1&limit=10`, {
     next: { revalidate: 0 }

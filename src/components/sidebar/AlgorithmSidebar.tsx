@@ -1,12 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Fragment } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
 import BaseSidebar from './BaseSidebar';
-import { IoIosArrowForward } from 'react-icons/io';
-import { useTranslation } from '@/utils/i18n';
-import { TbBinaryTree } from 'react-icons/tb';
 import { RiCodeBoxLine } from 'react-icons/ri';
 import { IconType } from 'react-icons';
 
@@ -24,10 +19,6 @@ const algorithmIconRenderer = (Icon: IconType, color: string) => {
 };
 
 export default function AlgorithmSidebar() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const { t } = useTranslation('Algorithm');
-
   const frameworkName = 'Algorithm';
   const frameworkIcon = RiCodeBoxLine;
   const frameworkColor = '#6B7280';

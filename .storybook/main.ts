@@ -17,6 +17,11 @@ const config: StorybookConfig = {
   },
   "staticDirs": [
     "..\\public"
-  ]
+  ],
+  "viteFinal": async (config) => {
+    // 스토리북을 /storybook 경로에 배포하기 위한 설정
+    config.base = '/storybook/';
+    return config;
+  }
 };
 export default config;

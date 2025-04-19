@@ -8,8 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
-    "build-storybook-static": "npm run build-storybook && mkdir -p public/storybook && cp -r storybook-static/* public/storybook/"
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
@@ -64,6 +63,7 @@
     "@storybook/blocks": "^8.6.12",
     "@storybook/experimental-addon-test": "^8.6.12",
     "@storybook/experimental-nextjs-vite": "^8.6.12",
+    "@storybook/nextjs": "^8.6.12",
     "@storybook/react": "^8.6.12",
     "@storybook/test": "^8.6.12",
     "@types/node": "^20",

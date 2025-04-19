@@ -1,8 +1,0 @@
-{
-  "Next": {
-    "layouts": "레이아웃",
-    "nestedLayouts": "중첩 레이아웃",
-    "groupedLayouts": "그룹 레이아웃",
-    "parallelRoutes": "병렬 라우트"
-  }
-} 

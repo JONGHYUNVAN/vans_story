@@ -126,7 +126,7 @@ export function PostCreateForm() {
           topic,
           description,
           tags,
-          category: selectedCategory,
+          category: selectedCategory?.value || '',
           thumbnail,
           language
         })

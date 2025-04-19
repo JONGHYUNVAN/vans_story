@@ -635,7 +635,7 @@
         "title": "시작하기",
         "items": {
           "introduction": {
-            "title": "JWT란?",
+            "title": "Why JWT?",
             "description": "JWT의 기본 개념과 구조를 이해합니다.",
             "path": "/post/view/jwt/category/introduction",
             "icon": "FaKey",

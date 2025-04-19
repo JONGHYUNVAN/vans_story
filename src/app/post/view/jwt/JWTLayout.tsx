@@ -2,43 +2,47 @@
 
 import { ReactNode } from 'react';
 import { MdSecurity } from 'react-icons/md';
+import { useSidebarMargin } from '@/hooks/useSidebarMargin';
 
 interface JwtLayoutProps {
   children: ReactNode;
   title?: string;
-  showHeader?: boolean;
   isPreview?: boolean;
-  className?: string;
 }
 
-export default function JWTLayout({
-  children,
-  title,
-  showHeader = true,
-  isPreview = false,
-  className = '',
-}: JwtLayoutProps) {
+export default function JWTLayout({ children, title, isPreview = false }: JwtLayoutProps) {
+  const { shouldApplyMargin = false } = isPreview ? { shouldApplyMargin: false } : useSidebarMargin();
+
   return (
-    <div className={`min-h-screen bg-[#0A0A0A] ${className}`}>
-      {showHeader && !isPreview && (
-        <div className="relative overflow-hidden">
-          <div className="relative max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center p-3 rounded-full bg-[#1E4D2B]/20 backdrop-blur-sm mb-4 border border-[#FF3333]/20">
-                <MdSecurity className="h-8 w-8 text-[#1E4D2B]" />
+    <div className={`transition-all duration-300`}>
+      <div className="left-auto min-h-screen bg-black relative overflow-hidden">
+        {/* JWT 패턴 배경 - 실제 JWT 토큰 형태로 디자인 */}
+        <div className="absolute inset-0 opacity-[0.07]" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='100' viewBox='0 0 300 100'%3E%3Ctext x='10' y='30' font-family='monospace' font-size='12' fill='%23FF3333'%3Eeyj0eXAiOiJKV1QiLCJhbG%3C/text%3E%3Ctext x='10' y='50' font-family='monospace' font-size='12' fill='%23FF3333'%3EnVzZXJuYW1lIjoiSm9obiIsImF%3C/text%3E%3Ctext x='10' y='70' font-family='monospace' font-size='12' fill='%23FF3333'%3ENuRXkwMHFPOUZPcmNsZk40RiI%3C/text%3E%3Cline x1='0' y1='35' x2='300' y2='35' stroke='%23FF3333' stroke-width='0.5' stroke-dasharray='2,2' /%3E%3Cline x1='0' y1='65' x2='300' y2='65' stroke='%23FF3333' stroke-width='0.5' stroke-dasharray='2,2' /%3E%3Ctext x='260' y='25' font-family='monospace' font-size='8' fill='%231E4D2B'%3Eheader%3C/text%3E%3Ctext x='260' y='55' font-family='monospace' font-size='8' fill='%231E4D2B'%3Epayload%3C/text%3E%3Ctext x='260' y='85' font-family='monospace' font-size='8' fill='%231E4D2B'%3Esignature%3C/text%3E%3C/svg%3E")`,
+          backgroundSize: '300px 100px'
+        }} />
+
+        <div className="relative">
+          <div className="mx-auto max-w-5xl px-6 py-12 min-h-screen border-x border-[#FF3333]/20 relative">
+            {/* 배경 효과 */}
+            <div className="absolute inset-0">
+              <div className="absolute inset-0 bg-black/80" />
+            </div>
+
+            {title && (
+              <div className="relative mb-8 pb-8 border-b border-[#FF3333]/20">
+                <div className="flex items-center gap-3">
+                  <MdSecurity className="w-8 h-8 text-[#1E4D2B]" />
+                  <h1 className="text-2xl font-semibold text-white">{title}</h1>
+                </div>
               </div>
-              <h1 className="text-4xl font-bold text-white sm:text-5xl md:text-6xl">
-                {title || 'JWT'}
-              </h1>
-              <p className="mt-3 max-w-md mx-auto text-base text-[#88A8A8] sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
-                JSON Web Token에 대한 포스트를 확인하세요
-              </p>
+            )}
+
+            <div className="relative z-10 text-white">
+              {children}
             </div>
           </div>
         </div>
-      )}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {children}
       </div>
     </div>
   );

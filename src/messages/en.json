@@ -634,7 +634,7 @@
         "title": "Getting Started",
         "items": {
           "introduction": {
-            "title": "What is JWT?",
+            "title": "Why JWT?",
             "description": "Learn the basic concepts and structure of JWT.",
             "path": "/post/view/jwt/category/introduction",
             "icon": "FaKey",

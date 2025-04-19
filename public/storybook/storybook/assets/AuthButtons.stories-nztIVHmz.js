@@ -1,0 +1,3 @@
+import{j as r}from"./jsx-runtime-DoEZbXM1.js";import{A as a}from"./AuthButtons-BlrgRAch.js";import{P as m,s as n}from"./store-uBEAeSUp.js";import"./jsx-runtime-Bw5QeaCk.js";import"./i18n-DRW5sA45.js";import"./index-D5feAV_3.js";const p=()=>r.jsx(m,{store:n,children:r.jsx(a,{})}),h={title:"stories/components/header/AuthButtons",component:p,parameters:{layout:"centered"}},t={args:{}};var e,o,s;t.parameters={...t.parameters,docs:{...(e=t.parameters)==null?void 0:e.docs,source:{originalSource:`{
+  args: {}
+}`,...(s=(o=t.parameters)==null?void 0:o.docs)==null?void 0:s.source}}};const x=["Default"];export{t as Default,x as __namedExportsOrder,h as default};

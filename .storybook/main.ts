@@ -1,4 +1,5 @@
 import type { StorybookConfig } from "@storybook/experimental-nextjs-vite";
+import path from 'path';
 
 const config: StorybookConfig = {
   "stories": [
@@ -15,13 +16,13 @@ const config: StorybookConfig = {
     "name": "@storybook/experimental-nextjs-vite",
     "options": {}
   },
-  "staticDirs": [
-    "..\\public"
-  ],
+  "staticDirs": ['../public'],
   "viteFinal": async (config) => {
-    // 스토리북을 /storybook 경로에 배포하기 위한 설정
-    config.base = '/storybook/';
-    return config;
+    // 스토리북을 정적 파일로 제공하기 위한 설정
+    return {
+      ...config,
+      base: '/storybook/'
+    };
   }
 };
 export default config;

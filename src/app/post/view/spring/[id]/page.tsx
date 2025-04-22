@@ -2,7 +2,7 @@ import { Viewer } from '@/app/post/viewer/Viewer';
 import { Post } from '@/interfaces/post/types';
 import SpringLayout from '../SpringLayout';
 import { SidebarWrapper } from '../../common/SidebarWrapper';
-import { getPostWithViewCount } from '../../common/usePostView';
+import { getPostWithViewCount } from '../../api/getPostById';
 import { ViewCountHandler } from '../../common/ViewCountHandler';
 
 interface PageProps {

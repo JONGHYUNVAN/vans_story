@@ -1,7 +1,7 @@
 import { API_URLS } from '@/api/constants/apiUrl';
-import DockerLayout from '../../DockerLayout';
+import NextjsLayout from '../../NextjsLayout';
 import { SidebarWrapper } from '../../../common/SidebarWrapper';
-import DockerList from '../../DockerList';
+import NextjsList from '../../NextjsList';
 import { getPostList } from '@/app/post/view/api/getPostList';
 
 interface PageProps {
@@ -10,15 +10,12 @@ interface PageProps {
 
 export default async function Page({ params }: PageProps) {
   const { category } = await params;
-  const posts = await getPostList('docker', category);
-  
-  const categoryTitle = category.charAt(0).toUpperCase() + category.slice(1);
-  
+  const posts = await getPostList('nextjs', category);
   return (
     <SidebarWrapper>
-      <DockerLayout title={`Docker - ${categoryTitle}`}>
-        <DockerList posts={posts} />
-      </DockerLayout>
+      <NextjsLayout title={`Next.js - ${category}`}>
+        <NextjsList posts={posts} />
+      </NextjsLayout>
     </SidebarWrapper>
   );
 } 

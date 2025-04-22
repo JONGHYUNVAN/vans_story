@@ -1,6 +1,6 @@
 import { Viewer } from '@/app/post/viewer/Viewer';
 import { SidebarWrapper } from '../../common/SidebarWrapper';
-import { getPostWithViewCount } from '../../common/usePostView';
+import { getPostWithViewCount } from '../../api/getPostById';
 import { ViewCountHandler } from '../../common/ViewCountHandler';
 import JWTLayout from '../JWTLayout';
 import { showNotFound } from '@/utils/errorHandling';

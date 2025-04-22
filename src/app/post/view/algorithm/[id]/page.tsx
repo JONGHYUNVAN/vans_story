@@ -1,7 +1,7 @@
 import { Viewer } from '@/app/post/viewer/Viewer';
 import AlgorithmLayout from '../AlgorithmLayout';
 import { SidebarWrapper } from '../../common/SidebarWrapper';
-import { getPostWithViewCount } from '../../common/usePostView';
+import { getPostWithViewCount } from '../../api/getPostById';
 import { ViewCountHandler } from '../../common/ViewCountHandler';
 
 interface PageProps {

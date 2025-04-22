@@ -30,7 +30,7 @@ const PostCardWrapper = ({ children }: { children: React.ReactNode }) => (
 
 // 스토리북 메타데이터
 const meta: Meta<typeof PostCard> = {
-  title: 'Components/PostCard/NestJS',
+  title: 'stories/components/PostCard/NestJS',
   component: PostCard,
   parameters: {
     backgrounds: {

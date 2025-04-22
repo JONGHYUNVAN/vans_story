@@ -2,27 +2,15 @@ import { API_URLS } from '@/api/constants/apiUrl';
 import MongodbLayout from '../../MongodbLayout';
 import { SidebarWrapper } from '../../../common/SidebarWrapper';
 import MongodbList from '../../MongodbList';
+import { getPostList } from '@/app/post/view/api/getPostList';
 
 interface PageProps {
   params: Promise<{ category: string }>;
 }
 
-async function getPosts(category: string) {
-  const response = await fetch(`${API_URLS.POST.LIST}?theme=mongodb&category=${category}&page=1&limit=10`, {
-    next: { revalidate: 0 }
-  });
-
-  if (!response.ok) {
-    throw new Error('게시글을 불러오는데 실패했습니다.');
-  }
-
-  const data = await response.json();
-  return data.data || [];
-}
-
 export default async function Page({ params }: PageProps) {
   const { category } = await params;
-  const posts = await getPosts(category);
+  const posts = await getPostList('mongodb', category);
   return (
     <SidebarWrapper>
       <MongodbLayout title={`MongoDB - ${category}`}>

@@ -22,7 +22,7 @@ const mockPost: BasePost = {
 // PostCard를 감싸는 컴포넌트
 const PostCardWrapper = ({ children }: { children: React.ReactNode }) => (
   <Provider store={store}>
-    <div className="w-[400px] p-4 bg-zinc-900">
+    <div className="w-full max-w-2xl mx-auto p-4 bg-gray-900">
       {children}
     </div>
   </Provider>

@@ -24,7 +24,7 @@ export function PostEditForm({ postId }: PostEditFormProps) {
   
   // 기본 상태 관리
   const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
+  const [content, setContent] = useState<any>('')
   const [theme, setTheme] = useState('spring')
   const [topic, setTopic] = useState('')
   const [description, setDescription] = useState('')
@@ -117,6 +117,9 @@ export function PostEditForm({ postId }: PostEditFormProps) {
       if (!token) {
         throw new Error('로그인이 필요합니다.')
       }
+
+      // content 값 로그 출력
+      console.log('content to send:', content)
 
       const response = await fetch(`${API_URLS.POST.UPDATE}/${postId}`, {
         method: 'PATCH',

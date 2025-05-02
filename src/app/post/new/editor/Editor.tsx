@@ -9,9 +9,9 @@ import { useEffect } from 'react'
 
 interface EditorProps {
   /** 초기 에디터 컨텐츠 */
-  initialContent?: string
+  initialContent?: any // string | object 모두 허용
   /** 에디터 내용이 변경될 때 호출되는 콜백 */
-  onChange?: (html: string) => void
+  onChange?: (json: object) => void
   /** 에디터 읽기 전용 모드 */
   readonly?: boolean
 }
@@ -27,13 +27,13 @@ export function Editor({ initialContent = '', onChange, readonly = false }: Edit
     immediatelyRender: false,
     editable: !readonly,
     onUpdate: ({ editor }) => {
-      onChange?.(editor.getHTML())
+      onChange?.(editor.getJSON())
     },
   })
 
   // content가 변경될 때 에디터 내용 업데이트
   useEffect(() => {
-    if (editor && initialContent !== editor.getHTML()) {
+    if (editor && JSON.stringify(initialContent) !== JSON.stringify(editor.getJSON())) {
       editor.commands.setContent(initialContent)
     }
   }, [editor, initialContent])

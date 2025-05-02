@@ -41,7 +41,7 @@ export function PostCreateForm() {
   
   // 기본 상태 관리
   const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
+  const [content, setContent] = useState<any>('')
   const [theme, setTheme] = useState('nextjs')
   const [topic, setTopic] = useState('')
   const [description, setDescription] = useState('')

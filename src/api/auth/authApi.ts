@@ -64,11 +64,11 @@ export const authApi = {
       method: 'POST',
       credentials: 'include',
     });
-
+    console.log(res.status);
     if (!res.ok) throw new Error('Token refresh failed');
 
-    const data = await res.json();
-    tokenStorage.setToken(data.accessToken);
-    return data;
+    const newToken = res.headers.get('authorization')?.split(' ')[1];
+    tokenStorage.setToken(newToken ?? '');
+    return newToken ?? '';
   },
 };

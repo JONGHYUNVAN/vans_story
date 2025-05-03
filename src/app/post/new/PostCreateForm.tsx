@@ -26,6 +26,7 @@ import SpringLayout from '../view/spring/SpringLayout'
 import { SiNextdotjs } from 'react-icons/si'
 import { FrameworkPost } from '@/types/FrameworkPost'
 import { PostPreview } from '../common/PostPreview'
+import { ApiWrapper } from '@/api/wrapper/wrapper'
 
 type ViewMode = 'edit' | 'preview'
 
@@ -113,23 +114,16 @@ export function PostCreateForm() {
         throw new Error('로그인이 필요합니다.')
       }
 
-      const response = await fetch(API_URLS.POST.CREATE, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          title,
-          content,
-          theme,
-          topic,
-          description,
-          tags,
-          category: selectedCategory?.value || '',
-          thumbnail,
-          language
-        })
+      const response = await ApiWrapper.post(API_URLS.POST.CREATE, {
+        title,
+        content,
+        theme,
+        topic,
+        description,
+        tags,
+        category: selectedCategory?.value || '',
+        thumbnail,
+        language
       })
 
       const data = await response.json()

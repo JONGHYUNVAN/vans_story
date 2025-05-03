@@ -9,6 +9,7 @@ import { useTranslation } from '@/utils/i18n'
 import { tokenStorage } from '@/utils/token'
 import { PostFormInputs } from '../../new/components/PostFormInputs'
 import { useCategories } from '@/hooks/useCategories'
+import { ApiWrapper } from '@/api/wrapper/wrapper'
 
 import { PostPreview } from '../../common/PostPreview'
 
@@ -118,26 +119,16 @@ export function PostEditForm({ postId }: PostEditFormProps) {
         throw new Error('로그인이 필요합니다.')
       }
 
-      // content 값 로그 출력
-      console.log('content to send:', content)
-
-      const response = await fetch(`${API_URLS.POST.UPDATE}/${postId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          title,
-          content,
-          theme,
-          topic,
-          description,
-          tags,
-          category: selectedCategory?.value || '',
-          thumbnail,
-          language
-        })
+      const response = await ApiWrapper.patch(`${API_URLS.POST.UPDATE}/${postId}`, {
+        title,
+        content,
+        theme,
+        topic,
+        description,
+        tags,
+        category: selectedCategory?.value || '',
+        thumbnail,
+        language
       })
 
       const data = await response.json()

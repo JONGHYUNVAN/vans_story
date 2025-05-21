@@ -89,7 +89,7 @@ export default function BaseSidebar({
         flex items-center justify-center
         ${previewButtonBgClasses} rounded-r-lg
         transform transition-all duration-300 ease-in-out border-r ${borderClasses}
-        ${!isSmallScreen || isOpen ? 'opacity-0 pointer-events-none' : 'opacity-90'}
+        ${!isSmallScreen || isOpen ? 'opacity-0 pointer-events-none' : 'opacity-30'}
       `}>
         <div className="flex flex-col items-center gap-2">
           <div className="text-center mb-2">

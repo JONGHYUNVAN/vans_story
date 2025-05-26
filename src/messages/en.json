@@ -130,6 +130,69 @@
       }
     }
   },
+  "DatabaseTheory": {
+    "categories": {
+      "basics": {
+        "title": "Database Basics",
+        "items": {
+          "introduction": {
+            "title": "Introduction to Databases",
+            "description": "Learn about the basic concepts and importance of databases.",
+            "path": "/post/view/database-theory/category/introduction",
+            "icon": "TbDatabase",
+            "color": "#6B7280"
+          },
+          "normalization": {
+            "title": "Normalization",
+            "description": "Learn about database normalization concepts and stages.",
+            "path": "/post/view/database-theory/category/normalization",
+            "icon": "TbDatabase",
+            "color": "#6B7280"
+          },
+          "indexing": {
+            "title": "Indexing",
+            "description": "Understand database indexing concepts and types.",
+            "path": "/post/view/database-theory/category/indexing",
+            "icon": "TbDatabase",
+            "color": "#6B7280"
+          },
+          "identifier": {
+            "title": "Identifier",
+            "description": "Learn about the concept and role of identifiers in databases.",
+            "path": "/post/view/database-theory/category/identifier",
+            "icon": "TbDatabase",
+            "color": "#6B7280"
+          }
+        }
+      },
+      "advanced": {
+        "title": "Advanced Theory",
+        "items": {
+          "transaction": {
+            "title": "Transactions",
+            "description": "Learn about transaction concepts and ACID properties.",
+            "path": "/post/view/database-theory/category/transaction",
+            "icon": "TbDatabase",
+            "color": "#6B7280"
+          },
+          "concurrency": {
+            "title": "Concurrency Control",
+            "description": "Learn about database concurrency control methods.",
+            "path": "/post/view/database-theory/category/concurrency",
+            "icon": "TbDatabase",
+            "color": "#6B7280"
+          },
+          "recovery": {
+            "title": "Recovery",
+            "description": "Learn about database recovery techniques.",
+            "path": "/post/view/database-theory/category/recovery",
+            "icon": "TbDatabase",
+            "color": "#6B7280"
+          }
+        }
+      }
+    }
+  },
   "Nextjs": {
     "intro": "Why Next?",
     "layouts": "Layouts",
@@ -304,6 +367,13 @@
             "icon": "SiMariadb",
             "color": "#003545"
           },
+          "relational": {
+            "title": "Relational Database",
+            "description": "Learn the concepts and features of relational databases.",
+            "path": "/post/view/mariadb/category/relational",
+            "icon": "SiMariadb",
+            "color": "#003545"
+          },
           "installation": {
             "title": "Installation and Setup",
             "description": "Learn how to install and configure MariaDB.",
@@ -311,7 +381,7 @@
             "icon": "SiMariadb",
             "color": "#003545"
           },
-          "basicCommands": {
+          "basic-commands": {
             "title": "Basic Commands",
             "description": "Learn the basic SQL commands in MariaDB.",
             "path": "/post/view/mariadb/category/basic-commands",

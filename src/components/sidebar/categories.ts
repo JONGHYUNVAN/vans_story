@@ -1,6 +1,6 @@
 import { SiNestjs, SiSpring, SiMariadb, SiMongodb, SiNextdotjs, 
          SiDocker, SiJest, SiCypress, SiGit, SiJunit5 } from "react-icons/si";
-import { TbBinaryTree2 } from "react-icons/tb";
+import { TbBinaryTree2, TbDatabase } from "react-icons/tb";
 import { RiShieldKeyholeLine } from "react-icons/ri";
 
 export const main_categories = {
@@ -12,8 +12,9 @@ export const main_categories = {
     { name: 'Spring', path: '/post/view/spring', icon: SiSpring, color: '#6DB33F' }
   ],
   'Database': [
+    { name: 'Database Theory', path: '/post/view/database-theory', icon: TbDatabase, color: '#2563EB' },
     { name: 'MariaDB', path: '/post/view/mariadb', icon: SiMariadb, color: '#003545' },
-    { name: 'MongoDB', path: '/post/view/mongodb', icon: SiMongodb, color: '#47A248' }
+    { name: 'MongoDB', path: '/post/view/mongodb', icon: SiMongodb, color: '#47A248' },
   ],
   'IT': [
     { name: 'Docker', path: '/post/view/docker', icon: SiDocker, color: '#2496ED' },

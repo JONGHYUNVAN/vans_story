@@ -25,7 +25,7 @@ import MongodbLayout from '../view/mongodb/MongodbLayout'
 import SpringLayout from '../view/spring/SpringLayout'
 import { SiNextdotjs } from 'react-icons/si'
 import { FrameworkPost } from '@/types/FrameworkPost'
-import { PostPreview } from '../common/PostPreview'
+import { PostPreview } from '../edit/preview/PostPreview'
 import { ApiWrapper } from '@/api/wrapper/wrapper'
 
 type ViewMode = 'edit' | 'preview'

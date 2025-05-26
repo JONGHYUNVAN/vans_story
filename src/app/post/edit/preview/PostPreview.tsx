@@ -1,17 +1,19 @@
 import { FrameworkPost } from '@/types/FrameworkPost'
-import { Viewer } from '../viewer/Viewer'
-import AlgorithmPostCard from '../view/common/postcard/algorithm/PostCard'
-import NextjsPostCard from '../view/common/postcard/nextjs/PostCard'
-import NestjsPostCard from '../view/common/postcard/nestjs/PostCard'
-import MariadbPostCard from '../view/common/postcard/mariadb/PostCard'
-import MongodbPostCard from '../view/common/postcard/mongodb/PostCard'
-import SpringPostCard from '../view/common/postcard/spring/PostCard'
-import AlgorithmLayout from '../view/algorithm/AlgorithmLayout'
-import NextjsLayout from '../view/nextjs/NextjsLayout'
-import NestjsLayout from '../view/nestjs/NestjsLayout'
-import MariadbLayout from '../view/mariadb/MariadbLayout'
-import MongodbLayout from '../view/mongodb/MongodbLayout'
-import SpringLayout from '../view/spring/SpringLayout'
+import { Viewer } from '../../viewer/Viewer'
+import AlgorithmPostCard from '../../view/common/postcard/algorithm/PostCard'
+import NextjsPostCard from '../../view/common/postcard/nextjs/PostCard'
+import NestjsPostCard from '../../view/common/postcard/nestjs/PostCard'
+import MariadbPostCard from '../../view/common/postcard/mariadb/PostCard'
+import MongodbPostCard from '../../view/common/postcard/mongodb/PostCard'
+import SpringPostCard from '../../view/common/postcard/spring/PostCard'
+import DatabaseTheoryPostCard from '../../view/common/postcard/database-theory/PostCard'
+import AlgorithmLayout from '../../view/algorithm/AlgorithmLayout'
+import NextjsLayout from '../../view/nextjs/NextjsLayout'
+import NestjsLayout from '../../view/nestjs/NestjsLayout'
+import MariadbLayout from '../../view/mariadb/MariadbLayout'
+import MongodbLayout from '../../view/mongodb/MongodbLayout'
+import SpringLayout from '../../view/spring/SpringLayout'
+import DatabaseTheoryLayout from '../../view/database-theory/DatabaseTheoryLayout'
 
 interface PostPreviewProps {
   id: string
@@ -69,6 +71,16 @@ export function PostPreview({
           </AlgorithmLayout>
         </>
       )}
+      {theme === 'database-theory' && (
+        <>
+          <DatabaseTheoryPostCard post={postData} />
+          <DatabaseTheoryLayout title={title} isPreview>
+            <div className="prose max-w-none text-white">
+              {isViewerMounted && <Viewer content={content} />}
+            </div>
+          </DatabaseTheoryLayout>
+        </>
+      )}
       {theme === 'nextjs' && (
         <>
           <NextjsPostCard post={postData} />
@@ -119,7 +131,7 @@ export function PostPreview({
           </SpringLayout>
         </>
       )}
-      {!['algorithm', 'nextjs', 'nestjs', 'mariadb', 'mongodb', 'spring'].includes(theme) && (
+      {!['algorithm', 'nextjs', 'nestjs', 'mariadb', 'mongodb', 'spring', 'database-theory'].includes(theme) && (
         <div className="prose max-w-none text-white">
           <h1>{title}</h1>
           {isViewerMounted && <Viewer content={content} />}

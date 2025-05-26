@@ -137,6 +137,69 @@
       }
     }
   },
+  "DatabaseTheory": {
+    "categories": {
+      "basics": {
+        "title": "데이터베이스 기초",
+        "items": {
+          "introduction": {
+            "title": "데이터베이스 이론",
+            "description": "데이터베이스의 기본 개념에 대해 알아봅니다.",
+            "path": "/post/view/database-theory/category/introduction",
+            "icon": "TbDatabase",
+            "color": "#6B7280"
+          },
+          "normalization": {
+            "title": "정규화",
+            "description": "데이터베이스 정규화의 개념과 단계를 학습합니다.",
+            "path": "/post/view/database-theory/category/normalization",
+            "icon": "TbDatabase",
+            "color": "#6B7280"
+          },
+          "indexing": {
+            "title": "인덱싱",
+            "description": "데이터베이스 인덱싱의 개념과 종류를 학습합니다.",
+            "path": "/post/view/database-theory/category/indexing",
+            "icon": "TbDatabase",
+            "color": "#6B7280"
+          },
+          "identifier": {
+            "title": "식별자",
+            "description": "데이터베이스에서 식별자의 개념과 역할을 학습합니다.",
+            "path": "/post/view/database-theory/category/identifier",
+            "icon": "TbDatabase",
+            "color": "#6B7280"
+          }
+        }
+      },
+      "advanced": {
+        "title": "고급 이론",
+        "items": {
+          "transaction": {
+            "title": "트랜잭션",
+            "description": "트랜잭션의 개념과 ACID 속성을 학습합니다.",
+            "path": "/post/view/database-theory/category/transaction",
+            "icon": "TbDatabase",
+            "color": "#6B7280"
+          },
+          "concurrency": {
+            "title": "동시성 제어",
+            "description": "데이터베이스 동시성 제어 방법을 알아봅니다.",
+            "path": "/post/view/database-theory/category/concurrency",
+            "icon": "TbDatabase",
+            "color": "#6B7280"
+          },
+          "recovery": {
+            "title": "복구",
+            "description": "데이터베이스 복구 기법을 학습합니다.",
+            "path": "/post/view/database-theory/category/recovery",
+            "icon": "TbDatabase",
+            "color": "#6B7280"
+          }
+        }
+      }
+    }
+  },
   "Nextjs": {
     "categories": {
       "gettingStarted": {
@@ -305,6 +368,13 @@
             "icon": "SiMariadb",
             "color": "#003545"
           },
+          "relational": {
+            "title": "관계형 데이터베이스",
+            "description": "관계형 데이터베이스의 개념과 특징을 학습합니다.",
+            "path": "/post/view/mariadb/category/relational",
+            "icon": "SiMariadb",
+            "color": "#003545"
+          },
           "installation": {
             "title": "설치 및 설정",
             "description": "MariaDB 설치 및 기본 설정 방법을 알아봅니다.",
@@ -312,7 +382,7 @@
             "icon": "SiMariadb",
             "color": "#003545"
           },
-          "basicCommands": {
+          "basic-commands": {
             "title": "기본 명령어",
             "description": "MariaDB의 기본적인 SQL 명령어를 학습합니다.",
             "path": "/post/view/mariadb/category/basic-commands",

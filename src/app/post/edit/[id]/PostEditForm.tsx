@@ -11,7 +11,7 @@ import { PostFormInputs } from '../../new/components/PostFormInputs'
 import { useCategories } from '@/hooks/useCategories'
 import { ApiWrapper } from '@/api/wrapper/wrapper'
 
-import { PostPreview } from '../../common/PostPreview'
+import { PostPreview } from '../preview/PostPreview'
 
 type ViewMode = 'edit' | 'preview'
 

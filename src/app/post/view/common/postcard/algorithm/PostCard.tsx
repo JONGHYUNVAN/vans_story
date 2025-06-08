@@ -3,11 +3,11 @@
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useTranslation } from '@/utils/i18n';
-import { FrameworkPost } from '@/types/FrameworkPost';
+import { PostInfo } from "@/interfaces/post/types";
 
 export interface PostCardProps {
-  post: FrameworkPost;
-  renderBadge?: (post: FrameworkPost) => React.ReactNode;
+  post: PostInfo;
+  renderBadge?: (post: PostInfo) => React.ReactNode;
 }
 
 export default function PostCard({ 

@@ -3,12 +3,12 @@
 import { SiNextdotjs } from 'react-icons/si';
 import PostCard from '../common/postcard/nextjs/PostCard';
 import { useTranslation } from '@/utils/i18n';
-import { FrameworkPost } from '@/types/FrameworkPost';
+import { PostInfo } from "@/interfaces/post/types";
 import { sortPosts } from '@/utils/sortPosts';
 import { useState } from 'react';
 import Link from 'next/link';
 
-interface Post extends FrameworkPost {
+interface Post extends PostInfo {
   _id: string;
 }
 

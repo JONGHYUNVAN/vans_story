@@ -1,4 +1,4 @@
-import { FrameworkPost } from '../types/FrameworkPost';
+import { PostInfo } from "@/interfaces/post/types";
 
 /**
  * 포스트 목록을 지정된 정렬 옵션에 따라 정렬합니다
@@ -6,7 +6,7 @@ import { FrameworkPost } from '../types/FrameworkPost';
  * @param sortOption 정렬 옵션 ('latest', 'oldest', 'views', 'likes')
  * @returns 정렬된 포스트 배열
  */
-export function sortPosts<T extends FrameworkPost>(posts: T[], sortOption: string): T[] {
+export function sortPosts<T extends PostInfo>(posts: T[], sortOption: string): T[] {
   return [...posts].sort((a, b) => {
     switch (sortOption) {
       case 'latest':

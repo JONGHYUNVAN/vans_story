@@ -12,3 +12,23 @@ export interface Post {
     likeCount: number;
     tags: string[];
 }
+/**
+ * 프레임워크 포스트 공통 인터페이스
+ * Next.js, Nest.js, Spring 등 모든 프레임워크 포스트에서 사용
+ */
+export interface PostInfo {
+  id: string;
+  title: string;
+  topic: string;
+  description: string;
+  author: string;
+  createdAt: string;
+  updatedAt: string;
+  tags: string[];
+  viewCount: number;
+  likeCount: number;
+  theme: string;
+  category: string;
+  thumbnail: string;
+  language: string;
+}

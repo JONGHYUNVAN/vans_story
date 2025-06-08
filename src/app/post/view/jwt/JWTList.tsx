@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { API_URLS } from '@/api/constants/apiUrl';
-import { FrameworkPost } from '@/types/FrameworkPost';
+import { PostInfo } from "@/interfaces/post/types";
 import PostCard from '../common/postcard/jwt/PostCard';
 import { useTranslation } from '@/utils/i18n';
 import { sortPosts } from '@/utils/sortPosts';
 import Link from 'next/link';
 
-interface Post extends FrameworkPost {
+interface Post extends PostInfo {
   _id: string;
 }
 

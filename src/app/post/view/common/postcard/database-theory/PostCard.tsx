@@ -1,11 +1,11 @@
 'use client';
 
-import { FrameworkPost } from '@/types/FrameworkPost';
+import { PostInfo } from "@/interfaces/post/types";
 import { TbDatabase } from 'react-icons/tb';
 import { useTranslation } from '@/utils/i18n';
 
 interface PostCardProps {
-  post: FrameworkPost;
+  post: PostInfo;
   renderBadge?: () => React.ReactNode;
 }
 

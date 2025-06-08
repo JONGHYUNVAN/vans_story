@@ -3,12 +3,12 @@
 import { SiDocker } from 'react-icons/si';
 import PostCard from '../common/postcard/docker/PostCard';
 import { useTranslation } from '@/utils/i18n';
-import { FrameworkPost } from '@/types/FrameworkPost';
+import { PostInfo } from "@/interfaces/post/types";
 import { sortPosts } from '@/utils/sortPosts';
 import Link from 'next/link';
 
 interface DockerListProps {
-  posts: FrameworkPost[];
+  posts: PostInfo[];
 }
 
 export default function DockerList({ posts }: DockerListProps) {

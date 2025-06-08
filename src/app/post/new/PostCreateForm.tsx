@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Editor } from './editor/Editor'
-import { Viewer } from '../viewer/Viewer'
+import { Viewer } from '../../../components/viewer/Viewer'
 import { PostHeader } from './PostHeader'
 import { useRouter } from 'next/navigation'
 import { API_URLS } from '@/api/constants/apiUrl'
@@ -24,7 +24,7 @@ import MariadbLayout from '../view/mariadb/MariadbLayout'
 import MongodbLayout from '../view/mongodb/MongodbLayout'
 import SpringLayout from '../view/spring/SpringLayout'
 import { SiNextdotjs } from 'react-icons/si'
-import { FrameworkPost } from '@/types/FrameworkPost'
+import { PostInfo } from "@/interfaces/post/types"
 import { PostPreview } from '../edit/preview/PostPreview'
 import { ApiWrapper } from '@/api/wrapper/wrapper'
 

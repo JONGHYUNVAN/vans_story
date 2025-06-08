@@ -3,10 +3,10 @@ import { Provider } from 'react-redux';
 import { store } from '@/store/store';
 import React from 'react';
 import PostCard from '@/app/post/view/common/postcard/algorithm/PostCard';
-import { FrameworkPost } from '@/types/FrameworkPost';
+import { PostInfo } from "@/interfaces/post/types";
 
 // 모의 데이터 생성
-const mockPost: FrameworkPost = {
+const mockPost: PostInfo = {
   id: '1',
   title: '그래프 알고리즘: 다익스트라부터 벨만-포드까지',
   description: '그래프 알고리즘은 현대 컴퓨터 과학의 핵심이 되는 중요한 개념입니다.\n\n이 포스트에서는 다익스트라(Dijkstra), 벨만-포드(Bellman-Ford), 플로이드-워셜(Floyd-Warshall) 알고리즘의 원리와 구현 방법을 알아봅니다.\n\n시간/공간 복잡도 분석과 실전 문제 해결 전략도 다룹니다.',

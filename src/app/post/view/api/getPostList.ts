@@ -1,7 +1,7 @@
 import { API_URLS } from '@/api/constants/apiUrl';
-import { FrameworkPost } from '@/types/FrameworkPost';
+import { PostInfo } from "@/interfaces/post/types";
 
-export interface Post extends FrameworkPost {
+export interface Post extends PostInfo {
   _id: string;
 }
 

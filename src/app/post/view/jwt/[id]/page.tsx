@@ -1,4 +1,4 @@
-import { Viewer } from '@/app/post/viewer/Viewer';
+import { Viewer } from '@/components/viewer/Viewer';
 import { SidebarWrapper } from '../../common/SidebarWrapper';
 import { getPostWithViewCount } from '../../api/getPostById';
 import { ViewCountHandler } from '../../common/ViewCountHandler';

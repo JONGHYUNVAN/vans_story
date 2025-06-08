@@ -1,5 +1,5 @@
 import { API_URLS } from '@/api/constants/apiUrl';
-import { Viewer } from '@/app/post/viewer/Viewer';
+import { Viewer } from '@/components/viewer/Viewer';
 import { Post } from '@/interfaces/post/types';
 import NextjsLayout from '../NextjsLayout';
 import { SidebarWrapper } from '../../common/SidebarWrapper';

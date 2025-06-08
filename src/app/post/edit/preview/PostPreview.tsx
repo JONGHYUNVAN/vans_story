@@ -1,5 +1,5 @@
-import { FrameworkPost } from '@/types/FrameworkPost'
-import { Viewer } from '../../viewer/Viewer'
+import { PostInfo } from "@/interfaces/post/types"
+import { Viewer } from '../../../../components/viewer/Viewer'
 import AlgorithmPostCard from '../../view/common/postcard/algorithm/PostCard'
 import NextjsPostCard from '../../view/common/postcard/nextjs/PostCard'
 import NestjsPostCard from '../../view/common/postcard/nestjs/PostCard'
@@ -42,7 +42,7 @@ export function PostPreview({
   language,
   isViewerMounted = true
 }: PostPreviewProps) {
-  const postData: FrameworkPost = {
+  const postData: PostInfo = {
     id,
     title,
     description,

@@ -39,6 +39,9 @@ import yaml from 'highlight.js/lib/languages/yaml'
 import bash from 'highlight.js/lib/languages/bash'
 import markdown from 'highlight.js/lib/languages/markdown'
 import Youtube from '@tiptap/extension-youtube'
+import { Extension, Editor } from '@tiptap/core'
+import { RawCommands } from '@tiptap/core'
+import { ResizableDraggableImage } from './ResizableDraggableImage'
 
 
 const lowlight = createLowlight()
@@ -65,6 +68,13 @@ lowlight.register('yaml', yaml)
 lowlight.register('bash', bash)
 lowlight.register('markdown', markdown)
 
+declare module '@tiptap/core' {
+  interface Commands<ReturnType> {
+    uploadImage: {
+      uploadImage: (url: string) => ReturnType
+    }
+  }
+}
 
 export const EditorExtensions = [
   // 기본적인 편집 기능들을 포함하는 확장 모음
@@ -80,6 +90,9 @@ export const EditorExtensions = [
   Image.configure({
     inline: true,
     allowBase64: true,
+    HTMLAttributes: {
+      class: 'max-w-full h-auto',
+    },
   }),
   // 링크 확장
   Link.configure({
@@ -151,4 +164,5 @@ export const EditorExtensions = [
       class: 'w-full aspect-video',
     },
   }),
+  ResizableDraggableImage,
 ]

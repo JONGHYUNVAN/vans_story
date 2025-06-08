@@ -495,13 +495,36 @@ export function EditorMenuBar() {
           <button
             type="button"
             onClick={() => {
-              const url = window.prompt('이미지 URL을 입력하세요:')
-              if (url) {
-                editor.chain().focus().setImage({ src: url }).run()
+              const input = document.createElement('input')
+              input.type = 'file'
+              input.accept = 'image/*'
+              input.onchange = async (e: Event) => {
+                const target = e.target as HTMLInputElement
+                const file = target.files?.[0]
+                if (file) {
+                  const formData = new FormData()
+                  formData.append('image', file)
+                  try {
+                    const response = await fetch('http://localhost:3002/api/upload', {
+                      method: 'POST',
+                      body: formData,
+                    })
+                    const data = await response.json()
+                    if (data.success && data.fileName) {
+                      editor.chain().focus().setImage({ src: data.fileName }).run()
+                    } else {
+                      alert(data.error || '이미지 업로드에 실패했습니다.')
+                    }
+                  } catch (error) {
+                    console.error('이미지 업로드 에러:', error)
+                    alert('이미지 업로드에 실패했습니다.')
+                  }
+                }
               }
+              input.click()
             }}
             className="p-2 rounded hover:bg-gray-100"
-            title="이미지 삽입"
+            title="사진 업로드"
           >
             <Image size={18} />
           </button>

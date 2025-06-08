@@ -26,8 +26,8 @@ export const authApi = {
     }
 
     // Authorization 헤더에서 토큰 추출
-    const authHeader = res.headers.get('authorization');
-    const accessToken = authHeader ? authHeader.split(' ')[1] : ''; // 'Bearer ' 부분 제거
+    const authHeader = res.headers.get('Authorization');
+    const accessToken = authHeader ? authHeader.split(' ')[1] : '';
     tokenStorage.setToken(accessToken);
 
     return { 

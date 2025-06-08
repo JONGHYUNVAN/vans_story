@@ -434,3 +434,23 @@ p + .ProseMirror table {
     border-right-color: rgba(255, 255, 255, 0.5);
   }
 }
+
+.ProseMirror img.float-left,
+.ProseMirror img.float-right,
+.ProseMirror img.float-none {
+  display: inline !important;
+  margin: 0 !important;
+  float: none !important;
+}
+.ProseMirror img.float-left {
+  float: left !important;
+  margin-right: 12px !important;
+}
+.ProseMirror img.float-right {
+  float: right !important;
+  margin-left: 12px !important;
+}
+.ProseMirror img.float-none {
+  display: block !important;
+  margin: 0 auto 8px auto !important;
+}

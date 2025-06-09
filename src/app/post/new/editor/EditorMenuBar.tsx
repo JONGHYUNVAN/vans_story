@@ -505,10 +505,7 @@ export function EditorMenuBar() {
                   const formData = new FormData()
                   formData.append('image', file)
                   try {
-                    const response = await fetch('http://localhost:3002/api/upload', {
-                      method: 'POST',
-                      body: formData,
-                    })
+                    const response = await fetch('/api/upload/image', { method: 'POST', body: formData })
                     const data = await response.json()
                     if (data.success && data.fileName) {
                       editor.chain().focus().setImage({ src: data.fileName }).run()

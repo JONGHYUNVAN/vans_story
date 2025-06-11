@@ -13,37 +13,15 @@ interface PostEditFormProps {
 
 export function PostEditForm({ postId }: PostEditFormProps) {
   const {
-    // 상태
-    title,
-    setTitle,
-    content,
-    setContent,
-    theme,
-    setTheme,
-    topic,
-    setTopic,
-    description,
-    setDescription,
-    tags,
-    setTags,
-    thumbnail,
-    setThumbnail,
-    language,
-    setLanguage,
-    viewMode,
+    post,
+    setPost,
     isLoading,
     error,
-    
-    // 카테고리 관련
+    viewMode,
+    setViewMode,
     categories,
-    selectedCategory,
-    setSelectedCategory,
-    
-    // 핸들러
     handleSubmit,
     handleTempSave,
-    
-    // 현재 포스트 데이터
     currentPostData
   } = usePostEdit(postId)
 
@@ -56,7 +34,9 @@ export function PostEditForm({ postId }: PostEditFormProps) {
   }
 
   const handleEditorChange = (json: object) => {
-    setContent(JSON.stringify(json))
+    if (post) {
+      setPost({ ...post, content: JSON.stringify(json) })
+    }
   }
 
   return (
@@ -73,39 +53,39 @@ export function PostEditForm({ postId }: PostEditFormProps) {
       {viewMode === 'edit' ? (
         <div className="space-y-6">
           <PostFormInputs
-            title={title}
-            setTitle={setTitle}
-            topic={topic}
-            setTopic={setTopic}
-            description={description}
-            setDescription={setDescription}
-            theme={theme}
-            setTheme={setTheme}
-            language={language}
-            setLanguage={setLanguage}
-            category={selectedCategory}
-            setCategory={setSelectedCategory}
-            thumbnail={thumbnail}
-            setThumbnail={setThumbnail}
-            tags={tags}
-            setTags={setTags}
+            title={post?.title || ''}
+            setTitle={(title) => post && setPost({ ...post, title })}
+            topic={post?.topic || ''}
+            setTopic={(topic) => post && setPost({ ...post, topic })}
+            description={post?.description || ''}
+            setDescription={(description) => post && setPost({ ...post, description })}
+            theme={post?.theme || 'spring'}
+            setTheme={(theme) => post && setPost({ ...post, theme })}
+            language={post?.language || 'ko'}
+            setLanguage={(language) => post && setPost({ ...post, language })}
+            category={categories.find(c => c.value === post?.categoryId) || null}
+            setCategory={(category) => post && setPost({ ...post, categoryId: category?.value || '' })}
+            thumbnail={post?.thumbnail || ''}
+            setThumbnail={(thumbnail) => post && setPost({ ...post, thumbnail })}
+            tags={post?.tags || []}
+            setTags={(tags) => post && setPost({ ...post, tags })}
             availableCategories={categories}
           />
-          <Editor initialContent={content} onChange={handleEditorChange} />
+          <Editor initialContent={post?.content || ''} onChange={handleEditorChange} />
         </div>
       ) : (
         <div className="bg-black -mx-8 -mb-8 mt-4 p-8">
           <PostPreview
             id={postId}
-            title={title}
-            content={content}
-            theme={theme}
-            topic={topic}
-            description={description}
-            tags={tags}
-            category={selectedCategory?.value || ''}
-            thumbnail={thumbnail}
-            language={language}
+            title={post?.title || ''}
+            content={post?.content || ''}
+            theme={post?.theme || 'spring'}
+            topic={post?.topic || ''}
+            description={post?.description || ''}
+            tags={post?.tags || []}
+            category={post?.categoryId || ''}
+            thumbnail={post?.thumbnail || ''}
+            language={post?.language || 'ko'}
           />
         </div>
       )}

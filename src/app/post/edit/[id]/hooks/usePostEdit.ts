@@ -20,6 +20,19 @@ export interface PostData {
   language: string
 }
 
+export type Post = {
+  id: string
+  title: string
+  content: string
+  theme: string
+  topic: string
+  description: string
+  tags: string[]
+  categoryId: string
+  thumbnail: string
+  language: string
+}
+
 async function fetchPostData(postId: string) {
   const response = await fetch(`${API_URLS.POST.UPDATE}/${postId}`, {
     next: {
@@ -36,58 +49,38 @@ async function fetchPostData(postId: string) {
 
 export function usePostEdit(postId: string) {
   const router = useRouter()
-  const { t } = useTranslation('')
-  
-  // 기본 상태 관리
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
-  const [theme, setTheme] = useState('spring')
-  const [topic, setTopic] = useState('')
-  const [description, setDescription] = useState('')
-  const [tags, setTags] = useState<string[]>([])
-  const [thumbnail, setThumbnail] = useState('')
-  const [language, setLanguage] = useState('ko')
-  const [viewMode, setViewMode] = useState<ViewMode>('edit')
+  const { t } = useTranslation('post')
+  const [post, setPost] = useState<Post | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [viewMode, setViewMode] = useState<ViewMode>('edit')
+  const { categories } = useCategories(post?.theme || 'spring', post?.language || 'ko')
 
-  // 카테고리 관리 훅 사용
-  const { categories, selectedCategory, setSelectedCategory } = useCategories(theme, language)
-
-  // 포스트 데이터 로드
-  const loadPostData = useCallback(async () => {
+  const fetchPost = useCallback(async () => {
     try {
       setIsLoading(true)
-      setError(null)
-      const data = await fetchPostData(postId)
-      
-      setTitle(data.title || '')
-      setContent(data.content || '')
-      setTheme(data.theme || 'spring')
-      setTopic(data.topic || '')
-      setDescription(data.description || '')
-      setTags(data.tags || [])
-      setThumbnail(data.thumbnail || '')
-      setLanguage(data.language || 'ko')
-
-      // 카테고리 설정
-      if (data && categories.length > 0) {
-        const matchedCategory = categories.find(cat => cat.value === data.category)
-        setSelectedCategory(matchedCategory || categories[0])
-      }
+      const res = await fetch(`/api/posts/${postId}`, {
+        headers: {
+          Authorization: `Bearer ${tokenStorage.getToken()}`,
+        },
+      })
+      if (!res.ok) throw new Error(res.status.toString())
+      const data = await res.json()
+      setPost(data)
     } catch (error) {
-      console.error('Error fetching post:', error)
-      setError(error instanceof Error ? error.message : '게시글을 불러오는데 실패했습니다.')
+      const errorMessage = error instanceof Error 
+        ? t(`post.fetchError.${error.message}`)
+        : t('post.fetchError.default')
+      setError(errorMessage)
     } finally {
       setIsLoading(false)
     }
-  }, [postId, categories, setSelectedCategory])
+  }, [postId, t])
 
   useEffect(() => {
-    if (postId) {
-      loadPostData()
-    }
-  }, [postId, loadPostData])
+    fetchPost()
+  }, [fetchPost])
 
   // viewMode 변경 이벤트 구독
   useEffect(() => {
@@ -112,15 +105,15 @@ export function usePostEdit(postId: string) {
 
   const handleSubmit = useCallback(async () => {
     const postData: PostData = {
-      title,
-      content,
-      theme,
-      topic,
-      description,
-      tags,
-      category: selectedCategory?.value || '',
-      thumbnail,
-      language
+      title: post?.title || '',
+      content: post?.content || '',
+      theme: post?.theme || 'spring',
+      topic: post?.topic || '',
+      description: post?.description || '',
+      tags: post?.tags || [],
+      category: post?.categoryId || '',
+      thumbnail: post?.thumbnail || '',
+      language: post?.language || 'ko'
     }
 
     if (!postData.title || !postData.content || !postData.theme || !postData.topic || 
@@ -147,19 +140,19 @@ export function usePostEdit(postId: string) {
       console.error('Error updating post:', error)
       setError(error instanceof Error ? error.message : t('post.edit.submitError'))
     }
-  }, [title, content, theme, topic, description, tags, selectedCategory, thumbnail, language, postId, t, router])
+  }, [post, t, router])
 
   const handleTempSave = useCallback(() => {
     const postData: PostData = {
-      title,
-      content,
-      theme,
-      topic,
-      description,
-      tags,
-      category: selectedCategory?.value || '',
-      thumbnail,
-      language
+      title: post?.title || '',
+      content: post?.content || '',
+      theme: post?.theme || 'spring',
+      topic: post?.topic || '',
+      description: post?.description || '',
+      tags: post?.tags || [],
+      category: post?.categoryId || '',
+      thumbnail: post?.thumbnail || '',
+      language: post?.language || 'ko'
     }
 
     if (postData.title || postData.content || postData.theme || postData.topic || 
@@ -168,34 +161,45 @@ export function usePostEdit(postId: string) {
       localStorage.setItem(`temp_post_${postId}`, JSON.stringify(postData))
       alert(t('post.create.tempSaveSuccess'))
     }
-  }, [title, content, theme, topic, description, tags, selectedCategory, thumbnail, language, postId, t])
+  }, [post, t])
+
+  const updatePost = useCallback(async (postData: Partial<Post>) => {
+    try {
+      setIsSubmitting(true)
+      const res = await fetch(`/api/posts/${postId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${tokenStorage.getToken()}`,
+        },
+        body: JSON.stringify(postData),
+      })
+      if (!res.ok) throw new Error(res.status.toString())
+      const updated = await res.json()
+      setPost(updated)
+      return updated
+    } catch (error) {
+      const errorMessage = error instanceof Error 
+        ? t(`post.updateError.${error.message}`)
+        : t('post.updateError.default')
+      setError(errorMessage)
+      throw error
+    } finally {
+      setIsSubmitting(false)
+    }
+  }, [postId, t])
 
   return {
     // 상태
-    title,
-    setTitle,
-    content,
-    setContent,
-    theme,
-    setTheme,
-    topic,
-    setTopic,
-    description,
-    setDescription,
-    tags,
-    setTags,
-    thumbnail,
-    setThumbnail,
-    language,
-    setLanguage,
-    viewMode,
+    post,
+    setPost,
     isLoading,
     error,
+    viewMode,
+    setViewMode,
     
     // 카테고리 관련
     categories,
-    selectedCategory,
-    setSelectedCategory,
     
     // 핸들러
     handleSubmit,
@@ -203,15 +207,15 @@ export function usePostEdit(postId: string) {
     
     // 현재 포스트 데이터
     currentPostData: {
-      title,
-      content,
-      theme,
-      topic,
-      description,
-      tags,
-      category: selectedCategory?.value || '',
-      thumbnail,
-      language
+      title: post?.title || '',
+      content: post?.content || '',
+      theme: post?.theme || 'spring',
+      topic: post?.topic || '',
+      description: post?.description || '',
+      tags: post?.tags || [],
+      category: post?.categoryId || '',
+      thumbnail: post?.thumbnail || '',
+      language: post?.language || 'ko'
     }
   }
 } 

@@ -1,19 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 
+type RouteContext = {
+  params: Promise<{ id: string }>;
+};
+
+// GET /api/posts/[id]
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  context: RouteContext
 ) {
   try {
-    const { id } = await params;
-    const headersList = await headers();
+    const [{ id }, headersList] = await Promise.all([
+      context.params,
+      headers()
+    ]);
     const token = headersList.get('Authorization');
 
     const res = await fetch(`${process.env.API_URL}/posts/${id}`, {
       headers: {
         Authorization: token || '',
       },
+      next: { revalidate: 0 } // 항상 최신 데이터
     });
 
     if (!res.ok) {
@@ -23,36 +31,7 @@ export async function GET(
     const data = await res.json();
     return NextResponse.json(data);
   } catch (error) {
-    return new NextResponse(null, { status: 500 });
-  }
-}
-
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await params;
-    const headersList = await headers();
-    const token = headersList.get('Authorization');
-    const body = await request.json();
-
-    const res = await fetch(`${process.env.API_URL}/posts/${id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token || '',
-      },
-      body: JSON.stringify(body),
-    });
-
-    if (!res.ok) {
-      return new NextResponse(null, { status: res.status });
-    }
-
-    const data = await res.json();
-    return NextResponse.json(data);
-  } catch (error) {
+    console.error('Error fetching post:', error);
     return new NextResponse(null, { status: 500 });
   }
 } 

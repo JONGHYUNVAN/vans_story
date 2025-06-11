@@ -1,29 +1,26 @@
 'use client'
 
 import { useTranslation } from '@/utils/i18n'
+import type { PostData } from '../types/post'
 
-interface PostEditHeaderProps {
+type PostEditHeaderProps = {
   postId: string
-  postData: {
-    title: string
-    content: string
-    theme: string
-    topic: string
-    description: string
-    tags: string[]
-    category: string
-    thumbnail: string
-    language: string
-  }
-  onSubmit: () => Promise<void>
-  onTempSave: () => void
+  postData: PostData
 }
 
-export function PostEditHeader({ postId, postData, onSubmit, onTempSave }: PostEditHeaderProps) {
-  const { t } = useTranslation('')
+export function PostEditHeader({ postId, postData }: PostEditHeaderProps) {
+  const { t } = useTranslation('post')
+
+  const handleSubmit = () => {
+    window.dispatchEvent(new CustomEvent('postSubmit', { detail: { postId } }))
+  }
+
+  const handleTempSave = () => {
+    window.dispatchEvent(new CustomEvent('postTempSave', { detail: { postId } }))
+  }
 
   return (
-    <div className="flex justify-between items-center mb-4">
+    <div className="flex justify-between items-center mb-6">
       <div className="flex-1">
         <h1 className="text-2xl font-bold mb-2">{postData.title || t('post.create.titlePlaceholder')}</h1>
         <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -44,12 +41,18 @@ export function PostEditHeader({ postId, postData, onSubmit, onTempSave }: PostE
           )}
         </div>
       </div>
-      <div className="flex gap-2">
-        <button onClick={onTempSave} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded">
-          {t('post.create.tempSave')}
+      <div className="flex items-center space-x-4">
+        <button
+          onClick={handleSubmit}
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          {t('post.edit.submit')}
         </button>
-        <button onClick={onSubmit} className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded">
-          {t('post.create.submit')}
+        <button
+          onClick={handleTempSave}
+          className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50"
+        >
+          {t('post.edit.tempSave')}
         </button>
       </div>
     </div>

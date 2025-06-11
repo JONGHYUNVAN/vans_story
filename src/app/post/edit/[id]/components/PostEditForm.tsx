@@ -6,17 +6,13 @@ import { PostPreview } from '../../../../../components/editor/EditorPreview'
 import { PostEditHeader } from './PostEditHeader'
 import { PostEditViewMode } from './PostEditViewMode'
 import { usePostEdit } from '../hooks/usePostEdit'
-
-interface PostEditFormProps {
-  postId: string
-}
+import type { PostEditFormProps } from '../types/post'
+import { useEffect } from 'react'
 
 export function PostEditForm({ postId }: PostEditFormProps) {
   const {
     post,
     setPost,
-    isLoading,
-    error,
     viewMode,
     setViewMode,
     categories,
@@ -25,13 +21,27 @@ export function PostEditForm({ postId }: PostEditFormProps) {
     currentPostData
   } = usePostEdit(postId)
 
-  if (isLoading) {
-    return <div className="text-center py-8">로딩 중...</div>
-  }
+  useEffect(() => {
+    const handlePostSubmit = (e: CustomEvent) => {
+      if (e.detail.postId === postId) {
+        handleSubmit()
+      }
+    }
 
-  if (error) {
-    return <div className="text-center py-8 text-red-500">{error}</div>
-  }
+    const handlePostTempSave = (e: CustomEvent) => {
+      if (e.detail.postId === postId) {
+        handleTempSave()
+      }
+    }
+
+    window.addEventListener('postSubmit', handlePostSubmit as EventListener)
+    window.addEventListener('postTempSave', handlePostTempSave as EventListener)
+
+    return () => {
+      window.removeEventListener('postSubmit', handlePostSubmit as EventListener)
+      window.removeEventListener('postTempSave', handlePostTempSave as EventListener)
+    }
+  }, [postId, handleSubmit, handleTempSave])
 
   const handleEditorChange = (json: object) => {
     if (post) {
@@ -43,9 +53,17 @@ export function PostEditForm({ postId }: PostEditFormProps) {
     <>
       <PostEditHeader 
         postId={postId}
-        postData={currentPostData}
-        onSubmit={handleSubmit}
-        onTempSave={handleTempSave}
+        postData={currentPostData || {
+          title: '',
+          content: '',
+          theme: 'spring',
+          topic: '',
+          description: '',
+          tags: [],
+          category: '',
+          thumbnail: '',
+          language: 'ko'
+        }}
       />
       
       <PostEditViewMode viewMode={viewMode} />

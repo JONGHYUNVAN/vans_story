@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { SiNestjs } from 'react-icons/si';
-import PostCard from '../common/postcard/nestjs/PostCard';
+import PostCard from '../components/postcard/nestjs/PostCard';
 import { useTranslation } from '@/utils/i18n';
 import { PostInfo } from "@/interfaces/post/types";
 import { sortPosts } from '@/utils/sortPosts';

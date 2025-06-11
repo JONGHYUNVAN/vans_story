@@ -1,6 +1,6 @@
-import { API_URLS } from '@/api/constants/apiUrl';
+import { API_URLS } from '@/constants/apiUrl';
 import MariadbLayout from './MariadbLayout';
-import { SidebarWrapper } from '../common/SidebarWrapper';
+import { SidebarWrapper } from '../utils/SidebarWrapper';
 import MariadbList from './MariadbList';
 
 async function getPosts() {

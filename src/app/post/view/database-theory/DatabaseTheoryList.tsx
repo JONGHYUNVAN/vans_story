@@ -1,7 +1,7 @@
 'use client';
 
 import { TbDatabase } from 'react-icons/tb';
-import PostCard from '../common/postcard/database-theory/PostCard';
+import PostCard from '../components/postcard/database-theory/PostCard';
 import { useTranslation } from '@/utils/i18n';
 import { PostInfo } from "@/interfaces/post/types";
 import { sortPosts } from '@/utils/sortPosts';

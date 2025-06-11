@@ -21,7 +21,7 @@ import yaml from 'highlight.js/lib/languages/yaml'
 import bash from 'highlight.js/lib/languages/bash'
 import markdown from 'highlight.js/lib/languages/markdown'
 import { EditorContent, useEditor } from '@tiptap/react'
-import { EditorExtensions } from '../../app/post/new/editor/EditorExtensions'
+import { EditorExtensions } from '../editor/EditorExtensions'
 
 const lowlight = createLowlight(common)
 lowlight.register('js', js)

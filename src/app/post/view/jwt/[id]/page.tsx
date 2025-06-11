@@ -1,7 +1,7 @@
 import { Viewer } from '@/components/viewer/Viewer';
-import { SidebarWrapper } from '../../common/SidebarWrapper';
-import { getPostWithViewCount } from '../../api/getPostById';
-import { ViewCountHandler } from '../../common/ViewCountHandler';
+import { SidebarWrapper } from '../../utils/SidebarWrapper';
+import { getPostWithViewCount } from '../../utils/api/getPostById';
+import { ViewCountHandler } from '../../utils/ViewCountHandler';
 import JWTLayout from '../JWTLayout';
 import { showNotFound } from '@/utils/errorHandling';
 

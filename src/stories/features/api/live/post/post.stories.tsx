@@ -1,7 +1,7 @@
 'use client';
 import type { Meta, StoryObj } from '@storybook/react';
 import PostApiLive from './post.api.live';
-import { API_URLS } from '@/api/constants/apiUrl';
+import { API_URLS } from '@/constants/apiUrl';
 
 const meta: Meta = {
   title: 'Features/API/Live/Post',

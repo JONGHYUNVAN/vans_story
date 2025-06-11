@@ -1,5 +1,5 @@
-import { API_URLS } from '@/api/constants/apiUrl';
-import { SidebarWrapper } from '../common/SidebarWrapper';
+import { API_URLS } from '@/constants/apiUrl';
+import { SidebarWrapper } from '../utils/SidebarWrapper';
 import JWTLayout from './JWTLayout';
 import JWTList from './JWTList';
 

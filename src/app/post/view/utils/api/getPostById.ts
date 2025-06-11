@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import { API_URLS } from '@/api/constants/apiUrl';
+import { API_URLS } from '@/constants/apiUrl';
 import { Post } from '@/interfaces/post/types';
 
 export async function getPostWithViewCount(id: string): Promise<Post> {

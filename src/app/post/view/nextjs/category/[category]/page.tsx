@@ -1,8 +1,8 @@
-import { API_URLS } from '@/api/constants/apiUrl';
+import { API_URLS } from '@/constants/apiUrl';
 import NextjsLayout from '../../NextjsLayout';
-import { SidebarWrapper } from '../../../common/SidebarWrapper';
+import { SidebarWrapper } from '../../../utils/SidebarWrapper';
 import NextjsList from '../../NextjsList';
-import { getPostList } from '@/app/post/view/api/getPostList';
+import { getPostList } from '@/app/post/view/utils/api/getPostList';
 
 interface PageProps {
   params: Promise<{ category: string }>;

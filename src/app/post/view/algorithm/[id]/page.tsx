@@ -1,8 +1,8 @@
 import { Viewer } from '@/components/viewer/Viewer';
 import AlgorithmLayout from '../AlgorithmLayout';
-import { SidebarWrapper } from '../../common/SidebarWrapper';
-import { getPostWithViewCount } from '../../api/getPostById';
-import { ViewCountHandler } from '../../common/ViewCountHandler';
+import { SidebarWrapper } from '../../utils/SidebarWrapper';
+import { getPostWithViewCount } from '../../utils/api/getPostById';
+import { ViewCountHandler } from '../../utils/ViewCountHandler';
 
 interface PageProps {
   params: Promise<{ id: string }>;

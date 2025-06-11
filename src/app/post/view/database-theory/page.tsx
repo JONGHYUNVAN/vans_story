@@ -1,7 +1,7 @@
-import { API_URLS } from '@/api/constants/apiUrl';
+import { API_URLS } from '@/constants/apiUrl';
 import DatabaseTheoryList from './DatabaseTheoryList';
 import DatabaseTheoryLayout from './DatabaseTheoryLayout';
-import { SidebarWrapper } from '../common/SidebarWrapper';
+import { SidebarWrapper } from '../utils/SidebarWrapper';
 
 async function getPosts() {
   const response = await fetch(`${API_URLS.POST.LIST}?theme=database-theory&page=1&limit=10`, {

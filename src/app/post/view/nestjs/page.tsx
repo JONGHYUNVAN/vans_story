@@ -1,6 +1,6 @@
-import { API_URLS } from '@/api/constants/apiUrl';
+import { API_URLS } from '@/constants/apiUrl';
 import NestjsLayout from './NestjsLayout';
-import { SidebarWrapper } from '../common/SidebarWrapper';
+import { SidebarWrapper } from '../utils/SidebarWrapper';
 import NestjsList from './NestjsList';
 
 

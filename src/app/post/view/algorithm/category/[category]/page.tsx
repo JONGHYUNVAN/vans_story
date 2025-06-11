@@ -1,7 +1,7 @@
-import { API_URLS } from '@/api/constants/apiUrl';
+import { API_URLS } from '@/constants/apiUrl';
 import AlgorithmList from '../../AlgorithmList';
 import AlgorithmLayout from '../../AlgorithmLayout';
-import { SidebarWrapper } from '../../../common/SidebarWrapper';
+import { SidebarWrapper } from '../../../utils/SidebarWrapper';
 interface PageProps {
   params: Promise<{ category: string }>;
 }

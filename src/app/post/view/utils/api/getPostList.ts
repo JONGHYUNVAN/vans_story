@@ -1,4 +1,4 @@
-import { API_URLS } from '@/api/constants/apiUrl';
+import { API_URLS } from '@/constants/apiUrl';
 import { PostInfo } from "@/interfaces/post/types";
 
 export interface Post extends PostInfo {

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Provider } from 'react-redux';
 import { store } from '@/store/store';
 import React from 'react';
-import PostCard from '@/app/post/view/common/postcard/algorithm/PostCard';
+import PostCard from '@/app/post/view/components/postcard/algorithm/PostCard';
 import { PostInfo } from "@/interfaces/post/types";
 
 // 모의 데이터 생성

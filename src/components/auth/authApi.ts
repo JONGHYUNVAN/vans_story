@@ -1,4 +1,3 @@
-import { API_URLS } from '@/api/constants/apiUrl';
 import { tokenStorage } from '@/utils/token';
 
 /**
@@ -14,11 +13,11 @@ export const authApi = {
    * @throws {Error} 로그인 실패 시 에러 발생
    */
   async login(credentials: { email: string; password: string }) {
-    const res = await fetch(`${API_URLS.AUTH.LOGIN}`, {
+    const res = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(credentials),
-      credentials: 'include', 
+      credentials: 'include',
     });
 
     if (!res.ok) {
@@ -42,7 +41,7 @@ export const authApi = {
    * @throws {Error} 로그아웃 실패 시 에러 발생
    */
   async logout() {
-    const res = await fetch(`${API_URLS.AUTH.LOGOUT}`, {
+    const res = await fetch('/api/auth/logout', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${tokenStorage.getToken()}`,
@@ -60,11 +59,11 @@ export const authApi = {
    * @throws {Error} 토큰 갱신 실패 시 에러 발생
    */
   async refresh() {
-    const res = await fetch(`${API_URLS.AUTH.REFRESH}`, {
+    const res = await fetch('/api/auth/refresh', {
       method: 'POST',
       credentials: 'include',
     });
-    console.log(res.status);
+
     if (!res.ok) throw new Error('Token refresh failed');
 
     const newToken = res.headers.get('authorization')?.split(' ')[1];

@@ -1,10 +1,10 @@
-import { API_URLS } from '@/api/constants/apiUrl';
+import { API_URLS } from '@/constants/apiUrl';
 import { Viewer } from '@/components/viewer/Viewer';
 import { Post } from '@/interfaces/post/types';
 import NextjsLayout from '../NextjsLayout';
-import { SidebarWrapper } from '../../common/SidebarWrapper';
-import { getPostWithViewCount } from '../../api/getPostById';
-import { ViewCountHandler } from '../../common/ViewCountHandler';
+import { SidebarWrapper } from '../../utils/SidebarWrapper';
+import { getPostWithViewCount } from '../../utils/api/getPostById';
+import { ViewCountHandler } from '../../utils/ViewCountHandler';
 
 interface PageProps {
   params: Promise<{ id: string }>;

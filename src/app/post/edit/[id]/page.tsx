@@ -1,15 +1,16 @@
-import { PostEditForm } from './PostEditForm'
+import { PostEditForm } from "./components/PostEditForm";
+import { Suspense } from "react";
 
 interface PageProps {
-  params: Promise<any>;
+  params: {
+    id: string;
+  };
 }
 
-export default async function EditPostPage({ params }: PageProps) {
-  const { id } = await params;
-  
+export default function EditPostPage({ params }: PageProps) {
   return (
-    <div className="max-w-screen-lg mx-auto z-50">
-      <PostEditForm postId={id} />
-    </div>
-  )
+    <Suspense fallback={<div className="text-center py-8">로딩 중...</div>}>
+      <PostEditForm postId={params.id} />
+    </Suspense>
+  );
 } 

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { SiMariadb } from 'react-icons/si';
-import PostCard from '../common/postcard/mariadb/PostCard';
+import PostCard from '../components/postcard/mariadb/PostCard';
 import { useTranslation } from '@/utils/i18n';
 import { PostInfo } from "@/interfaces/post/types";
 import { sortPosts } from '@/utils/sortPosts';

@@ -1,5 +1,5 @@
 import { API_URLS } from '../constants/apiUrl';
-import { authApi } from '../auth/authApi';
+import { authApi } from '../components/auth/authApi';
 import { tokenStorage } from '@/utils/token';
 
 /**

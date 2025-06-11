@@ -1,7 +1,7 @@
 'use client';
 
 import { TbBinaryTree, TbGraph } from 'react-icons/tb';
-import PostCard from '../common/postcard/algorithm/PostCard';
+import PostCard from '../components/postcard/algorithm/PostCard';
 import { useTranslation } from '@/utils/i18n';
 import { PostInfo } from "@/interfaces/post/types";
 import { sortPosts } from '@/utils/sortPosts';

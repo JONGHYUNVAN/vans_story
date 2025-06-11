@@ -1,6 +1,6 @@
-import { API_URLS } from '@/api/constants/apiUrl';
+import { API_URLS } from '@/constants/apiUrl';
 import NextjsLayout from './NextjsLayout';
-import { SidebarWrapper } from '../common/SidebarWrapper';
+import { SidebarWrapper } from '../utils/SidebarWrapper';
 import NextjsList from './NextjsList';
 
 async function getPosts() {

@@ -1,6 +1,6 @@
-import { ViewPostHeader } from '../common/ViewPostHeader';
-import { ViewPostContent } from '../common/ViewPostContent';
-import { API_URLS } from '@/api/constants/apiUrl';
+import { ViewPostHeader } from '../utils/ViewPostHeader';
+import { ViewPostContent } from '../utils/ViewPostContent';
+import { API_URLS } from '@/constants/apiUrl';
 import { Post } from '@/interfaces/post/types';
 
 interface PageProps {

@@ -1,7 +1,7 @@
-import { API_URLS } from '@/api/constants/apiUrl';
+import { API_URLS } from '@/constants/apiUrl';
 import AlgorithmList from './AlgorithmList';
 import AlgorithmLayout from './AlgorithmLayout';
-import { SidebarWrapper } from '../common/SidebarWrapper';
+import { SidebarWrapper } from '../utils/SidebarWrapper';
 async function getPosts() {
   const response = await fetch(`${API_URLS.POST.LIST}?theme=algorithm&page=1&limit=10`, {
     next: { revalidate: 0 }

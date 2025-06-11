@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { API_URLS } from '@/api/constants/apiUrl';
+import { API_URLS } from '@/constants/apiUrl';
 import LoginApiLive from './login.api.live';
 
 

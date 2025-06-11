@@ -2,8 +2,8 @@ import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import { Provider } from 'react-redux';
 import { store } from '@/store/store';
-import PostCard from '@/app/post/view/common/postcard/nestjs/PostCard';
-import { BasePost } from '@/app/post/view/common/postcard/BasePost';
+import PostCard from '@/app/post/view/components/postcard/nestjs/PostCard';
+import { BasePost } from '@/app/post/view/components/postcard/BasePost';
 
 // 목업 데이터
 const mockPost: BasePost = {

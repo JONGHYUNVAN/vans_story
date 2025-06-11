@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Provider } from 'react-redux';
 import { store } from '@/store/store';
 import React from 'react';
-import PostCard from '@/app/post/view/common/postcard/jwt/PostCard';
-import { BasePost } from '@/app/post/view/common/postcard/BasePost';
+import PostCard from '@/app/post/view/components/postcard/jwt/PostCard';
+import { BasePost } from '@/app/post/view/components/postcard/BasePost';
 
 // 모의 데이터 생성
 const mockPost: BasePost = {

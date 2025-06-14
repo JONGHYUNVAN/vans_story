@@ -32,6 +32,21 @@ export function PostCreateForm() {
   // 카테고리 관리 훅 사용 (formData 이후)
   const { categories, selectedCategory, setSelectedCategory } = useCategories(formData.theme, formData.language)
 
+  // selectedCategory가 변경될 때 formData.category도 자동 업데이트
+  useEffect(() => {
+    if (selectedCategory && selectedCategory.value !== formData.category) {
+      console.log('🔄 카테고리 자동 동기화:', selectedCategory.label);
+      updateFormData('category', selectedCategory.value);
+    }
+  }, [selectedCategory, formData.category, updateFormData]);
+
+  // 테마/언어 변화 추적
+  useEffect(() => {
+    console.log('🎨 테마/언어 변화 감지');
+    console.log('- theme:', formData.theme);
+    console.log('- language:', formData.language);
+  }, [formData.theme, formData.language]);
+
   useEffect(() => {
     if (viewMode === 'preview') {
       const timer = setTimeout(() => {
@@ -74,7 +89,11 @@ export function PostCreateForm() {
               language={formData.language}
               setLanguage={(value) => updateFormData('language', value)}
               category={selectedCategory}
-              setCategory={setSelectedCategory}
+              setCategory={(cat) => {
+                console.log('🎯 카테고리 선택 변경:', cat?.label || 'null');
+                setSelectedCategory(cat);
+                updateFormData('category', cat?.value || '');
+              }}
               thumbnail={formData.thumbnail}
               setThumbnail={(value) => updateFormData('thumbnail', value)}
               tags={formData.tags}

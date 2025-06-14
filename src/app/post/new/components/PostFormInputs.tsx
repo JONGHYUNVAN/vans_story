@@ -97,6 +97,7 @@ export function PostFormInputs({
       <select
         value={category?.value || ''}
         onChange={(e) => {
+          console.log('🔄 카테고리 select onChange:', e.target.value);
           const selected = availableCategories.find(c => c.value === e.target.value);
           setCategory(selected || null);
         }}

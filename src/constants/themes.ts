@@ -54,7 +54,7 @@ export const getCategoriesByTheme = (theme: string, language: string = 'ko') => 
     const themeData = messages[themeName];
     
     if (!themeData?.categories) {
-      console.warn(`No categories found for theme: ${themeName}`);
+      console.warn(`❌ 테마 카테고리 없음: ${themeName}`);
       return [];
     }
 
@@ -75,7 +75,7 @@ export const getCategoriesByTheme = (theme: string, language: string = 'ko') => 
 
     return categories;
   } catch (error) {
-    console.error('카테고리 정보를 가져오는데 실패했습니다:', error);
+    console.error('❌ 카테고리 정보를 가져오는데 실패했습니다:', error);
     return [];
   }
 };

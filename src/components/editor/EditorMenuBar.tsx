@@ -189,7 +189,7 @@ export function EditorMenuBar({ localImages, setLocalImages }: {
   // 컴포넌트 언마운트 시 URL 해제
   useEffect(() => {
     return () => {
-      localImages.forEach((_, url) => {
+      localImages?.forEach((_, url) => {
         URL.revokeObjectURL(url)
       })
     }

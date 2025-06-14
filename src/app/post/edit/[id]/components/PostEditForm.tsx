@@ -7,15 +7,20 @@ import { PostEditHeader } from './PostEditHeader'
 import { PostEditViewMode } from './PostEditViewMode'
 import { usePostEdit } from '../hooks/usePostEdit'
 import type { PostEditFormProps } from '../types/post'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 export function PostEditForm({ postId }: PostEditFormProps) {
+  // 새로 업로드하는 이미지만 관리 (기존 이미지는 건드리지 않음)
+  const [localImages, setLocalImages] = useState<Map<string, File>>(new Map())
+  
   const {
     post,
     setPost,
     viewMode,
     setViewMode,
     categories,
+    selectedCategory,
+    setSelectedCategory,
     handleSubmit,
     handleTempSave,
     currentPostData
@@ -46,6 +51,22 @@ export function PostEditForm({ postId }: PostEditFormProps) {
   const handleEditorChange = (json: object) => {
     if (post) {
       setPost({ ...post, content: JSON.stringify(json) })
+    }
+  }
+
+  // content를 에디터에 전달하기 전에 파싱
+  const getEditorContent = () => {
+    if (!post?.content) return '';
+    
+    try {
+      // JSON 문자열인 경우 파싱
+      if (typeof post.content === 'string' && post.content.startsWith('{')) {
+        return JSON.parse(post.content);
+      }
+      return post.content;
+    } catch (error) {
+      console.warn('Content 파싱 실패, 원본 사용:', error);
+      return post.content;
     }
   }
 
@@ -81,15 +102,23 @@ export function PostEditForm({ postId }: PostEditFormProps) {
             setTheme={(theme) => post && setPost({ ...post, theme })}
             language={post?.language || 'ko'}
             setLanguage={(language) => post && setPost({ ...post, language })}
-            category={categories.find(c => c.value === post?.categoryId) || null}
-            setCategory={(category) => post && setPost({ ...post, categoryId: category?.value || '' })}
+            category={selectedCategory}
+            setCategory={(category) => {
+              setSelectedCategory(category);
+              if (post) setPost({ ...post, categoryId: category?.value || '' });
+            }}
             thumbnail={post?.thumbnail || ''}
             setThumbnail={(thumbnail) => post && setPost({ ...post, thumbnail })}
             tags={post?.tags || []}
             setTags={(tags) => post && setPost({ ...post, tags })}
             availableCategories={categories}
           />
-          <Editor initialContent={post?.content || ''} onChange={handleEditorChange} />
+          <Editor 
+            initialContent={getEditorContent()} 
+            onChange={handleEditorChange}
+            localImages={localImages}
+            setLocalImages={setLocalImages}
+          />
         </div>
       ) : (
         <div className="bg-black -mx-8 -mb-8 mt-4 p-8">

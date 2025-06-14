@@ -7,7 +7,7 @@ export async function updatePost(postId: string, postData: PostData) {
     throw new Error('로그인이 필요합니다.');
   }
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/${postId}`, {
+  const res = await fetch(`/api/posts/${postId}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',

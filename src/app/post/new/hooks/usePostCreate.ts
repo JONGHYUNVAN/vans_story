@@ -35,7 +35,6 @@ export function usePostCreate(editorRef?: React.MutableRefObject<any>, localImag
           category: postData.category || ''
         }))
       } catch (error) {
-        console.error(t('post.create.tempSaveError'), error)
       }
     }
   }, [t])
@@ -44,7 +43,7 @@ export function usePostCreate(editorRef?: React.MutableRefObject<any>, localImag
     setFormData(prev => ({
       ...prev,
       [field]: value
-    }))
+    }));
   }
 
   // 이미지 업로드 및 치환 훅 사용
@@ -73,14 +72,98 @@ export function usePostCreate(editorRef?: React.MutableRefObject<any>, localImag
         throw new Error('로그인이 필요합니다.')
       }
 
-      // editorRef에서 HTML 추출
-      const html = editorRef?.current?.getHTML ? editorRef.current.getHTML() : formData.content
-      // 이미지 업로드 및 src 치환
-      const finalHtml = await uploadAndReplace(html)
-      const response = await ApiWrapper.post(API_URLS.POST.CREATE, {
+      // 컨텐츠 처리: 서버가 객체를 요구하므로 객체 그대로 전송
+      let finalContent;
+      if (typeof formData.content === 'object' && formData.content !== null) {
+        // formData.content가 객체인 경우 그대로 사용 (서버가 객체를 요구)
+        finalContent = formData.content;
+      } else {
+        // 문자열인 경우 빈 에디터 JSON 구조로 변환
+        finalContent = {
+          type: 'doc',
+          content: [
+            {
+              type: 'paragraph',
+              content: [
+                {
+                  type: 'text',
+                  text: formData.content || ''
+                }
+              ]
+            }
+          ]
+        };
+      }
+
+      // JSON 객체 내 이미지 업로드 처리
+      const processContentImages = async (content: any): Promise<any> => {
+        if (!content || typeof content !== 'object') return content;
+        
+        if (Array.isArray(content)) {
+          return Promise.all(content.map(item => processContentImages(item)));
+        }
+        
+        // 이미지 노드인 경우 백엔드로 업로드
+        if (content.type === 'resizableDraggableImage' && content.attrs?.src) {
+          const originalSrc = content.attrs.src;
+          
+          if (originalSrc.startsWith('blob:') || originalSrc.startsWith('data:')) {
+            try {
+              // blob URL에서 실제 파일 데이터 추출
+              const response = await fetch(originalSrc);
+              const blob = await response.blob();
+              
+              // FormData로 파일 업로드
+              const formData = new FormData();
+              formData.append('image', blob, 'image.png');
+              
+              const uploadResponse = await fetch(API_URLS.POST.UPLOAD_IMAGE, {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Bearer ${tokenStorage.getToken()}`
+                },
+                body: formData
+              });
+              
+              if (!uploadResponse.ok) {
+                throw new Error('이미지 업로드 실패');
+              }
+              
+              const uploadResult = await uploadResponse.json();
+              const uploadedSrc = uploadResult.fileName || uploadResult.url || uploadResult.imageUrl;
+              
+              
+              return {
+                ...content,
+                attrs: {
+                  ...content.attrs,
+                  src: uploadedSrc
+                }
+              };
+            } catch (error) {
+              throw new Error(`이미지 업로드 실패: ${error instanceof Error ? error.message : '알 수 없는 오류'}`);
+            }
+          }
+        }
+        
+        // 재귀적으로 하위 content 처리
+        const processedContent = { ...content };
+        if (content.content) {
+          processedContent.content = await processContentImages(content.content);
+        }
+        
+        return processedContent;
+      };
+
+      // 이미지 업로드 처리
+      finalContent = await processContentImages(finalContent);
+      
+      const submitData = {
         ...formData,
-        content: finalHtml
-      })
+        content: finalContent
+      };
+
+      const response = await ApiWrapper.post(API_URLS.POST.CREATE, submitData)
 
       const data = await response.json()
       if (!response.ok) {
@@ -94,7 +177,6 @@ export function usePostCreate(editorRef?: React.MutableRefObject<any>, localImag
       localStorage.removeItem('temp_post')
       router.push(`/post/view/${formData.theme}/${data._id}`)
     } catch (error) {
-      console.error('Error submitting post:', error)
       alert(error instanceof Error ? error.message : t('post.create.submitError'))
     }
   }

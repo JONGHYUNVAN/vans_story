@@ -5,8 +5,9 @@ import { tokenStorage } from '@/utils/token'
 import { ApiWrapper } from '@/utils/apiWrapper'
 import { useTranslation } from '@/utils/i18n'
 import { PostCreateData } from '../types/post'
+import { useImageUploadAndReplace } from '@/hooks/useImageUploadAndReplace'
 
-export function usePostCreate() {
+export function usePostCreate(editorRef?: React.MutableRefObject<any>, localImages?: Map<string, File>) {
   const router = useRouter()
   const { t } = useTranslation('')
   
@@ -46,6 +47,9 @@ export function usePostCreate() {
     }))
   }
 
+  // 이미지 업로드 및 치환 훅 사용
+  const { uploadAndReplace } = useImageUploadAndReplace(localImages || new Map())
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
@@ -69,7 +73,14 @@ export function usePostCreate() {
         throw new Error('로그인이 필요합니다.')
       }
 
-      const response = await ApiWrapper.post(API_URLS.POST.CREATE, formData)
+      // editorRef에서 HTML 추출
+      const html = editorRef?.current?.getHTML ? editorRef.current.getHTML() : formData.content
+      // 이미지 업로드 및 src 치환
+      const finalHtml = await uploadAndReplace(html)
+      const response = await ApiWrapper.post(API_URLS.POST.CREATE, {
+        ...formData,
+        content: finalHtml
+      })
 
       const data = await response.json()
       if (!response.ok) {

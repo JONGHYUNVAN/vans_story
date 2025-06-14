@@ -14,13 +14,16 @@ interface EditorProps {
   onChange?: (json: object) => void
   /** 에디터 읽기 전용 모드 */
   readonly?: boolean
+  localImages: Map<string, File>
+  setLocalImages: React.Dispatch<React.SetStateAction<Map<string, File>>>
+  editorRef?: React.MutableRefObject<any>
 }
 
 /**
  * Tiptap 기반의 리치 텍스트 에디터
  * @component
  */
-export function Editor({ initialContent = '', onChange, readonly = false }: EditorProps) {
+export function Editor({ initialContent = '', onChange, readonly = false, localImages, setLocalImages, editorRef }: EditorProps) {
   const editor = useEditor({
     extensions: EditorExtensions,
     content: initialContent,
@@ -30,6 +33,11 @@ export function Editor({ initialContent = '', onChange, readonly = false }: Edit
       onChange?.(editor.getJSON())
     },
   })
+
+  // editorRef에 editor 인스턴스 할당
+  if (editorRef) {
+    editorRef.current = editor;
+  }
 
   // content가 변경될 때 에디터 내용 업데이트
   useEffect(() => {
@@ -43,7 +51,7 @@ export function Editor({ initialContent = '', onChange, readonly = false }: Edit
   return (
     <EditorProvider value={editor}>
       <div className="relative">
-        <EditorMenuBar />
+        <EditorMenuBar localImages={localImages} setLocalImages={setLocalImages} />
         <div className="prose max-w-none">
           <EditorContent 
             editor={editor} 

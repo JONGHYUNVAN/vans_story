@@ -73,8 +73,48 @@ declare module '@tiptap/core' {
     uploadImage: {
       uploadImage: (url: string) => ReturnType
     }
+    resizableDraggableImage: {
+      setResizableDraggableImage: (options: {
+        src: string
+        width?: string
+        height?: string
+        class?: string
+        'data-local'?: string
+      }) => ReturnType
+    }
+    image: {
+      setImage: (options: {
+        src: string
+        alt?: string
+        title?: string
+      }) => ReturnType
+    }
   }
 }
+
+// 커스텀 이미지 확장
+const CustomImage = Image.extend({
+  name: 'image',
+  addAttributes() {
+    return {
+      src: {
+        default: null,
+      },
+      alt: {
+        default: null,
+      },
+      title: {
+        default: null,
+      },
+      'data-local': {
+        default: null,
+      },
+      class: {
+        default: 'float-none',
+      }
+    }
+  }
+})
 
 export const EditorExtensions = [
   // 기본적인 편집 기능들을 포함하는 확장 모음
@@ -86,8 +126,8 @@ export const EditorExtensions = [
     underline: false,
     listItem: false,
   }),
-  // 이미지 확장
-  Image.configure({
+  // 커스텀 이미지 확장
+  CustomImage.configure({
     inline: true,
     allowBase64: true,
     HTMLAttributes: {
@@ -164,5 +204,9 @@ export const EditorExtensions = [
       class: 'w-full aspect-video',
     },
   }),
-  ResizableDraggableImage,
+  ResizableDraggableImage.configure({
+    HTMLAttributes: {
+      class: 'max-w-full h-auto',
+    },
+  }),
 ]

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Editor } from '@/components/editor/Editor'
 import { PostHeader } from './PostHeader'
 import { useTranslation } from '@/utils/i18n'
@@ -19,12 +19,17 @@ const LANGUAGES = [
 
 export function PostCreateForm() {
   const { t } = useTranslation('')
-  const { formData, updateFormData, handleSubmit, handleTempSave } = usePostCreate()
-  
   const [viewMode, setViewMode] = useState<ViewMode>('edit')
   const [isViewerMounted, setIsViewerMounted] = useState(false)
 
-  // 카테고리 관리 훅 사용
+  // localImages 상태와 editorRef 추가
+  const [localImages, setLocalImages] = useState<Map<string, File>>(new Map())
+  const editorRef = useRef<any>(null)
+
+  // usePostCreate 훅에 editorRef, localImages 전달
+  const { formData, updateFormData, handleSubmit, handleTempSave } = usePostCreate(editorRef, localImages)
+
+  // 카테고리 관리 훅 사용 (formData 이후)
   const { categories, selectedCategory, setSelectedCategory } = useCategories(formData.theme, formData.language)
 
   useEffect(() => {
@@ -79,6 +84,9 @@ export function PostCreateForm() {
             <Editor
               initialContent={formData.content}
               onChange={(value) => updateFormData('content', value)}
+              localImages={localImages}
+              setLocalImages={setLocalImages}
+              editorRef={editorRef}
             />
           </div>
         ) : (

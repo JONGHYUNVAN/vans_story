@@ -36,6 +36,11 @@ export const ResizableDraggableImage = Node.create<ResizableDraggableImageOption
         parseHTML: element => element.getAttribute('class') || 'float-none',
         renderHTML: attributes => attributes.class ? { class: attributes.class } : {},
       },
+      'data-local': {
+        default: null,
+        parseHTML: element => element.getAttribute('data-local'),
+        renderHTML: attributes => attributes['data-local'] ? { 'data-local': attributes['data-local'] } : {},
+      },
     }
   },
 
@@ -62,6 +67,14 @@ export const ResizableDraggableImage = Node.create<ResizableDraggableImageOption
 
   addCommands() {
     return {
+      setResizableDraggableImage:
+        (options) =>
+        ({ commands }) => {
+          return commands.insertContent({
+            type: this.name,
+            attrs: options,
+          })
+        },
       setImage:
         (options) =>
         ({ commands }) => {
@@ -114,8 +127,8 @@ export const ResizableDraggableImage = Node.create<ResizableDraggableImageOption
       const handles = [
         createHandle('nwse-resize', -1, -1),
         createHandle('nesw-resize', 1, -1),
-        createHandle('nwse-resize', -1, 1),
-        createHandle('nesw-resize', 1, 1),
+        createHandle('nesw-resize', -1, 1),
+        createHandle('nwse-resize', 1, 1),
       ]
       handles.forEach(h => wrapper.appendChild(h))
 
@@ -153,33 +166,6 @@ export const ResizableDraggableImage = Node.create<ResizableDraggableImageOption
           document.addEventListener('mouseup', onMouseUp)
         })
       })
-
-      const createFloatButton = (label: string, top: number, className: string) => {
-        const btn = document.createElement('button')
-        btn.textContent = label
-        btn.style.position = 'absolute'
-        btn.style.left = '-28px'
-        btn.style.top = `${top}px`
-        btn.style.zIndex = '20'
-        btn.style.background = '#eee'
-        btn.style.border = '1px solid #aaa'
-        btn.style.borderRadius = '4px'
-        btn.style.fontSize = '12px'
-        btn.onclick = (e) => {
-          e.preventDefault()
-          img.className = className
-          const pos = getPos!() as number
-          const transaction = editor.state.tr.setNodeMarkup(pos, undefined, {
-            ...node.attrs,
-            class: className,
-          })
-          editor.view.dispatch(transaction)
-        }
-        return btn
-      }
-      wrapper.appendChild(createFloatButton('좌', 0, 'float-left'))
-      wrapper.appendChild(createFloatButton('우', 24, 'float-right'))
-      wrapper.appendChild(createFloatButton('해제', 48, 'float-none'))
 
       return {
         dom: wrapper,

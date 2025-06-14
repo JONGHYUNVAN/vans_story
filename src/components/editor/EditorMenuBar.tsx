@@ -6,12 +6,13 @@ import {
   Palette, Code, List, ListOrdered, Table, Quote, 
   Image, Smile, Video
 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import EmojiPicker, { EmojiStyle } from 'emoji-picker-react'
 import { koreanFonts } from '@/app/fonts/editor/kr';
 import { englishFonts } from '@/app/fonts/editor/en';
 import { codeFonts } from '@/app/fonts/editor/co';
 import { FaYoutube } from 'react-icons/fa'
+import { Editor } from '@tiptap/core'
 const FONT_SIZES = ['12', '14', '16', '18', '20', '24', '28', '32', '36', '40'];
 
 const CODE_LANGUAGE = [
@@ -32,7 +33,10 @@ const FONTS_BY_LANGUAGE = {
   co: codeFonts,
 };
 
-export function EditorMenuBar() {
+export function EditorMenuBar({ localImages, setLocalImages }: {
+  localImages: Map<string, File>,
+  setLocalImages: React.Dispatch<React.SetStateAction<Map<string, File>>>
+}) {
   const editor = useEditorContext();
   const [fontSize, setFontSize] = useState('12');
   const [preset, setPreset] = useState('normal');
@@ -152,6 +156,44 @@ export function EditorMenuBar() {
       document.removeEventListener('input', handleInput);
     };
   }, [editor]);
+
+  // 이미지 선택 핸들러
+  const handleImageSelect = useCallback((file: File) => {
+    if (!editor) return;
+    
+    const localUrl = URL.createObjectURL(file)
+    setLocalImages(prev => new Map(prev).set(localUrl, file))
+    
+    editor.chain().focus().setImage({ 
+      src: localUrl
+    }).run()
+  }, [editor, setLocalImages])
+
+  // 이미지 업로드 버튼 클릭 핸들러
+  const handleImageUploadClick = useCallback(() => {
+    if (!editor) return;
+    
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.accept = 'image/*'
+    input.onchange = (e: Event) => {
+      const target = e.target as HTMLInputElement
+      const file = target.files?.[0]
+      if (file) {
+        handleImageSelect(file)
+      }
+    }
+    input.click()
+  }, [editor, handleImageSelect])
+
+  // 컴포넌트 언마운트 시 URL 해제
+  useEffect(() => {
+    return () => {
+      localImages.forEach((_, url) => {
+        URL.revokeObjectURL(url)
+      })
+    }
+  }, [localImages])
 
   if (!editor) return null;
 
@@ -494,32 +536,7 @@ export function EditorMenuBar() {
 
           <button
             type="button"
-            onClick={() => {
-              const input = document.createElement('input')
-              input.type = 'file'
-              input.accept = 'image/*'
-              input.onchange = async (e: Event) => {
-                const target = e.target as HTMLInputElement
-                const file = target.files?.[0]
-                if (file) {
-                  const formData = new FormData()
-                  formData.append('image', file)
-                  try {
-                    const response = await fetch('/api/upload/image', { method: 'POST', body: formData })
-                    const data = await response.json()
-                    if (data.success && data.fileName) {
-                      editor.chain().focus().setImage({ src: data.fileName }).run()
-                    } else {
-                      alert(data.error || '이미지 업로드에 실패했습니다.')
-                    }
-                  } catch (error) {
-                    console.error('이미지 업로드 에러:', error)
-                    alert('이미지 업로드에 실패했습니다.')
-                  }
-                }
-              }
-              input.click()
-            }}
+            onClick={handleImageUploadClick}
             className="p-2 rounded hover:bg-gray-100"
             title="사진 업로드"
           >

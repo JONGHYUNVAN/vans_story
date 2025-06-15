@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { inter, notoSansKr, robotoMono, gamjaFlower, dancingScript } from './fonts';
-import Header from "@/components/header/Header";
+import Header from "@/components/layout/header/Header";
 import "./globals.css";
 import { StoreProviders } from "../store/providers";
-import LoginModal from "@/components/auth/LoginModal";
-import Sidebar from "@/components/sidebar/Sidebar";
+import LoginModal from "@/components/ui/auth/LoginModal";
+import Sidebar from "@/components/layout/sidebar/base/Sidebar";
 
 export const metadata: Metadata = {
   title: "Vans Dev Blog",

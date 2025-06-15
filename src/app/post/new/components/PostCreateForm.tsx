@@ -1,12 +1,12 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { Editor } from '@/components/editor/Editor'
+import { Editor } from '@/components/features/post/editor/Editor'
 import { PostHeader } from './PostHeader'
 import { useTranslation } from '@/utils/i18n'
 import { PostFormInputs } from './PostFormInputs'
 import { useCategories } from '@/hooks/useCategories'
-import { PostPreview } from '@/components/editor/EditorPreview'
+import { PostPreview } from '@/components/features/post/editor/EditorPreview'
 import { PostCreateViewMode } from './PostCreateViewMode'
 import { usePostCreate } from '../hooks/usePostCreate'
 import { ViewMode } from '../types/post'
@@ -35,7 +35,6 @@ export function PostCreateForm() {
   // selectedCategory가 변경될 때 formData.category도 자동 업데이트
   useEffect(() => {
     if (selectedCategory && selectedCategory.value !== formData.category) {
-      console.log('🔄 카테고리 자동 동기화:', selectedCategory.label);
       updateFormData('category', selectedCategory.value);
     }
   }, [selectedCategory, formData.category, updateFormData]);
@@ -90,7 +89,6 @@ export function PostCreateForm() {
               setLanguage={(value) => updateFormData('language', value)}
               category={selectedCategory}
               setCategory={(cat) => {
-                console.log('🎯 카테고리 선택 변경:', cat?.label || 'null');
                 setSelectedCategory(cat);
                 updateFormData('category', cat?.value || '');
               }}

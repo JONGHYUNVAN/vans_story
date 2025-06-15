@@ -1,0 +1,66 @@
+import { tokenStorage } from '@/utils/token';
+import { ApiFetch } from '@/app/api/apiFetch/apiFetch';
+
+/**
+ * 인증 관련 API 함수들
+ */
+export const authService = {
+  /**
+   * 로그인
+   * @param {Object} credentials - 사용자 인증 정보
+   * @param {string} credentials.email - 사용자 이메일
+   * @param {string} credentials.password - 사용자 비밀번호
+   * @returns {Promise<Object>} 로그인 응답 데이터
+   * @throws {Error} 로그인 실패 시 에러 발생
+   */
+  async login(credentials: { email: string; password: string }) {
+    const res = await ApiFetch.basicPost('/api/auth/login', credentials, {
+      credentials: 'include',
+    });
+
+    if (!res.ok) {
+      throw new Error(res.status.toString());
+    }
+
+    // Authorization 헤더에서 토큰 추출
+    const authHeader = res.headers.get('Authorization');
+    const accessToken = authHeader ? authHeader.split(' ')[1] : '';
+    tokenStorage.setToken(accessToken);
+
+    return { 
+      accessToken,
+      email: credentials.email 
+    };
+  },
+
+  /**
+   * 로그아웃
+   * @returns {Promise<void>} 로그아웃 처리
+   * @throws {Error} 로그아웃 실패 시 에러 발생
+   */
+  async logout() {
+    const res = await ApiFetch.authPost('/api/auth/logout', {}, {
+      credentials: 'include',
+    });
+
+    if (!res.ok) throw new Error('Logout failed');
+    tokenStorage.removeToken();
+  },
+
+  /**
+   * 토큰 갱신
+   * @returns {Promise<Object>} 갱신된 토큰 데이터
+   * @throws {Error} 토큰 갱신 실패 시 에러 발생
+   */
+  async refresh() {
+    const res = await ApiFetch.basicPost('/api/auth/refresh', {}, {
+      credentials: 'include',
+    });
+
+    if (!res.ok) throw new Error('Token refresh failed');
+
+    const newToken = res.headers.get('authorization')?.split(' ')[1];
+    tokenStorage.setToken(newToken ?? '');
+    return newToken ?? '';
+  },
+};

@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react';
 import { API_URLS } from '@/constants/apiUrl';
 import { PostInfo } from "@/interfaces/post/types";
-import PostCard from '../components/postcard/jwt/PostCard';
+import PostCard from '../../../../components/ui/post/postcard/jwt/PostCard';
 import { useTranslation } from '@/utils/i18n';
-import { sortPosts } from '@/utils/sortPosts';
+import { sortPosts } from '@/components/features/post/sort/sortPosts';
 import Link from 'next/link';
 
 interface Post extends PostInfo {

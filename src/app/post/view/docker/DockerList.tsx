@@ -1,10 +1,10 @@
 'use client';
 
 import { SiDocker } from 'react-icons/si';
-import PostCard from '../components/postcard/docker/PostCard';
+import PostCard from '../../../../components/ui/post/postcard/docker/PostCard';
 import { useTranslation } from '@/utils/i18n';
 import { PostInfo } from "@/interfaces/post/types";
-import { sortPosts } from '@/utils/sortPosts';
+import { sortPosts } from '@/components/features/post/sort/sortPosts';
 import Link from 'next/link';
 
 interface DockerListProps {

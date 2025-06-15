@@ -1,4 +1,4 @@
-import { Viewer } from '@/components/viewer/Viewer';
+import { Viewer } from '@/components/features/post/viewer/Viewer';
 import DatabaseTheoryLayout from '../DatabaseTheoryLayout';
 import { SidebarWrapper } from '../../utils/SidebarWrapper';
 import { getPostWithViewCount } from '../../utils/api/getPostById';

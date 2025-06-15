@@ -1,0 +1,4 @@
+import{j as d,P as s,s as o}from"./iframe-JTgUOfHV.js";const i=({children:e})=>d.jsx(s,{store:o,children:e});i.__docgenInfo={description:"",methods:[],displayName:"ReduxProvider",props:{children:{required:!0,tsType:{name:"ReactReactNode",raw:"React.ReactNode"},description:"Provider로 감쌀 자식 컴포넌트들"}}};const t=e=>d.jsx(i,{children:d.jsx(e,{})}),r=e=>d.jsx("div",{style:{height:"100vh",width:"100vw",position:"relative",overflow:"hidden"},children:d.jsx(e,{})}),n=e=>d.jsx("div",{style:{padding:"24px"},children:d.jsx(e,{})});t.__docgenInfo={description:`Redux Provider를 포함하는 데코레이터\r
+상태 관리가 필요한 컴포넌트들에 사용합니다.`,methods:[],displayName:"withRedux"};r.__docgenInfo={description:`전체 화면 레이아웃을 위한 데코레이터\r
+사이드바, 헤더 등 레이아웃 컴포넌트들에 사용합니다.`,methods:[],displayName:"withFullscreen"};n.__docgenInfo={description:`패딩을 포함한 데코레이터\r
+일반적인 컴포넌트들에 사용합니다.`,methods:[],displayName:"withPadding"};export{t as a,r as b,n as w};

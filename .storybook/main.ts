@@ -1,4 +1,4 @@
-import type { StorybookConfig } from "@storybook/experimental-nextjs-vite";
+import type { StorybookConfig } from "@storybook/nextjs";
 import path from 'path';
 
 const config: StorybookConfig = {
@@ -7,21 +7,23 @@ const config: StorybookConfig = {
     "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"
   ],
   "addons": [
-    "@storybook/addon-essentials",
-    "@storybook/addon-onboarding",
     "@chromatic-com/storybook",
-    "@storybook/experimental-addon-test"
+    "@storybook/addon-vitest",
+    "@storybook/addon-docs"
   ],
   "framework": {
-    "name": "@storybook/experimental-nextjs-vite",
+    "name": "@storybook/nextjs",
     "options": {}
   },
-  "viteFinal": async (config) => {
-    // 스토리북을 정적 파일로 제공하기 위한 설정
-    return {
-      ...config,
-      base: './'
-    };
+  "staticDirs": ["../public"],
+  "webpackFinal": async (config) => {
+    if (config.resolve) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        '@': path.resolve(__dirname, '../src'),
+      };
+    }
+    return config;
   }
 };
 export default config;

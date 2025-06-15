@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { API_URLS } from '@/constants/apiUrl'
 import { tokenStorage } from '@/utils/token'
-import { ApiWrapper } from '@/utils/apiWrapper'
+import { ApiFetch } from '@/app/api/apiFetch/apiFetch'
 import { useTranslation } from '@/utils/i18n'
 import { PostCreateData } from '../types/post'
 import { useImageUploadAndReplace } from '@/hooks/useImageUploadAndReplace'
@@ -117,13 +117,7 @@ export function usePostCreate(editorRef?: React.MutableRefObject<any>, localImag
               const formData = new FormData();
               formData.append('image', blob, 'image.png');
               
-              const uploadResponse = await fetch(API_URLS.POST.UPLOAD_IMAGE, {
-                method: 'POST',
-                headers: {
-                  'Authorization': `Bearer ${tokenStorage.getToken()}`
-                },
-                body: formData
-              });
+              const uploadResponse = await ApiFetch.filePost(API_URLS.POST.UPLOAD_IMAGE, formData);
               
               if (!uploadResponse.ok) {
                 throw new Error('이미지 업로드 실패');
@@ -163,7 +157,7 @@ export function usePostCreate(editorRef?: React.MutableRefObject<any>, localImag
         content: finalContent
       };
 
-      const response = await ApiWrapper.post(API_URLS.POST.CREATE, submitData)
+      const response = await ApiFetch.authPost(API_URLS.POST.CREATE, submitData)
 
       const data = await response.json()
       if (!response.ok) {

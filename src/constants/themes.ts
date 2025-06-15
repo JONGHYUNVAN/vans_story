@@ -1,4 +1,4 @@
-import { main_categories } from '@/components/sidebar/categories';
+import { main_categories } from '@/interfaces/post/categories';
 
 export interface ThemeOption {
   value: string

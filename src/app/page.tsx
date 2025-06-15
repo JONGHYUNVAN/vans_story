@@ -3,8 +3,8 @@
  * - 타이핑 효과가 있는 환영 메시지 표시
  * - 배경 비디오와 오버레이 효과 포함
  */
-import { BackgroundVideo, BlogTitle, MainContent } from '../components/home';
-import TypewriterSection from '../components/home/TypewriterSection';
+import { BackgroundVideo, BlogTitle, MainContent } from '../components/features/home';
+import TypewriterSection from '../components/features/home/TypewriterSection';
 
 export default function Home() {
   return (

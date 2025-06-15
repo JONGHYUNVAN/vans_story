@@ -1,4 +1,4 @@
-import { Viewer } from '@/components/viewer/Viewer';
+import { Viewer } from '@/components/features/post/viewer/Viewer';
 import { Post } from '@/interfaces/post/types';
 import SpringLayout from '../SpringLayout';
 import { SidebarWrapper } from '../../utils/SidebarWrapper';

@@ -1,4 +1,6 @@
 import { useCallback } from 'react'
+import { ApiFetch } from '@/app/api/apiFetch/apiFetch'
+import { API_URLS } from '@/constants/apiUrl';
 
 /**
  * 에디터 HTML 내 blob: URL 이미지를 서버에 업로드하고 src를 서버 URL로 치환
@@ -16,7 +18,7 @@ export function useImageUploadAndReplace(localImages: Map<string, File>) {
       if (!file) return { blobUrl, serverUrl: null };
       const formData = new FormData();
       formData.append('image', file);
-      const res = await fetch('/api/upload', { method: 'POST', body: formData });
+      const res = await ApiFetch.filePost(API_URLS.POST.UPLOAD_IMAGE, formData);
       if (!res.ok) return { blobUrl, serverUrl: null };
       const { fileName } = await res.json();
       const serverUrl = fileName;

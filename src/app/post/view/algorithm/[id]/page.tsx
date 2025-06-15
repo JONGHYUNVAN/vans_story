@@ -1,4 +1,4 @@
-import { Viewer } from '@/components/viewer/Viewer';
+import { Viewer } from '@/components/features/post/viewer/Viewer';
 import AlgorithmLayout from '../AlgorithmLayout';
 import { SidebarWrapper } from '../../utils/SidebarWrapper';
 import { getPostWithViewCount } from '../../utils/api/getPostById';

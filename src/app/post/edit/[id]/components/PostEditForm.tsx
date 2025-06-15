@@ -1,8 +1,8 @@
 'use client'
 
-import { Editor } from '@/components/editor/Editor'
+import { Editor } from '@/components/features/post/editor/Editor'
 import { PostFormInputs } from '@/app/post/new/components/PostFormInputs'
-import { PostPreview } from '../../../../../components/editor/EditorPreview'
+import { PostPreview } from '../../../../../components/features/post/editor/EditorPreview'
 import { PostEditHeader } from './PostEditHeader'
 import { PostEditViewMode } from './PostEditViewMode'
 import { usePostEdit } from '../hooks/usePostEdit'

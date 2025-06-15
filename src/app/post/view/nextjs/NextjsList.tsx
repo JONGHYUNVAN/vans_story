@@ -1,10 +1,10 @@
 'use client';
 
 import { SiNextdotjs } from 'react-icons/si';
-import PostCard from '../components/postcard/nextjs/PostCard';
+import PostCard from '../../../../components/ui/post/postcard/nextjs/PostCard';
 import { useTranslation } from '@/utils/i18n';
 import { PostInfo } from "@/interfaces/post/types";
-import { sortPosts } from '@/utils/sortPosts';
+import { sortPosts } from '@/components/features/post/sort/sortPosts';
 import { useState } from 'react';
 import Link from 'next/link';
 

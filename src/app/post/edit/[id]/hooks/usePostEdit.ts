@@ -5,6 +5,7 @@ import { useCategories } from '@/hooks/useCategories'
 import { getPost, updatePost, saveTempPost } from '@/app/api/posts/actions/client'
 import { tokenStorage } from '@/utils/token'
 import { API_URLS } from '@/constants/apiUrl'
+import { ApiFetch } from '@/app/api/apiFetch/apiFetch'
 import type { Post, PostData } from '../types/post'
 
 export type ViewMode = 'edit' | 'preview'
@@ -65,13 +66,7 @@ export function usePostEdit(postId: string) {
             const formData = new FormData();
             formData.append('image', blob, 'image.png');
             
-            const uploadResponse = await fetch(API_URLS.POST.UPLOAD_IMAGE, {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${tokenStorage.getToken()}`
-              },
-              body: formData
-            });
+            const uploadResponse = await ApiFetch.filePost(API_URLS.POST.UPLOAD_IMAGE, formData);
             
             if (!uploadResponse.ok) {
               const errorText = await uploadResponse.text();

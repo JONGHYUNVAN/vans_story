@@ -1,5 +1,5 @@
 import { Post } from '@/interfaces/post/types'
-import { Viewer } from '../../../../components/viewer/Viewer'
+import { Viewer } from '../../../../components/features/post/viewer/Viewer'
 
 export function ViewPostContent({ post }: { post: Post }) {
   return (

@@ -1,10 +1,10 @@
 'use client';
 
 import { TbDatabase } from 'react-icons/tb';
-import PostCard from '../components/postcard/database-theory/PostCard';
+import PostCard from '../../../../components/ui/post/postcard/database-theory/PostCard';
 import { useTranslation } from '@/utils/i18n';
 import { PostInfo } from "@/interfaces/post/types";
-import { sortPosts } from '@/utils/sortPosts';
+import { sortPosts } from '@/components/features/post/sort/sortPosts';
 import Link from 'next/link';
 
 interface Post extends PostInfo {

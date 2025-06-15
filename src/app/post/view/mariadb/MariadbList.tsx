@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { SiMariadb } from 'react-icons/si';
-import PostCard from '../components/postcard/mariadb/PostCard';
+import PostCard from '../../../../components/ui/post/postcard/mariadb/PostCard';
 import { useTranslation } from '@/utils/i18n';
 import { PostInfo } from "@/interfaces/post/types";
-import { sortPosts } from '@/utils/sortPosts';
+import { sortPosts } from '@/components/features/post/sort/sortPosts';
 import Link from 'next/link';
 
 interface Post extends PostInfo {

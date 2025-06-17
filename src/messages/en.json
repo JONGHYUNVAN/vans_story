@@ -541,8 +541,17 @@
       "tempSaveSuccess": "Saved as draft.",
       "tempSaveError": "Failed to load draft data",
       "submitSuccess": "Post has been published.",
-      "submitError": "An error occurred while publishing the post."
-    }
+      "submitError": "An error occurred while publishing the post.",
+      "titlePlaceholder": "Enter title"
+    },
+    "edit": {
+      "submit": "Publish",
+      "tempSave": "Save Draft"
+    },
+    "updateError": {
+      "default": "Failed to update post"
+    },
+    "noChanges": "No changes to save"
   },
   "error": {
     "404": {

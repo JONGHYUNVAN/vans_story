@@ -11,5 +11,8 @@ export const API_URLS = {
     CREATE: `${process.env.NEXT_PUBLIC_POST_API_URL}/posts`,
     UPDATE: `${process.env.NEXT_PUBLIC_POST_API_URL}/posts`,
     UPLOAD_IMAGE: `/api/upload/image`,
-  }
+  },
+  AI: {
+    SEND: `${process.env.AI_API_URL}`,
+  },
 } as const; 

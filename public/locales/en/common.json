@@ -4,5 +4,19 @@
     "nestedLayouts": "Nested Layouts",
     "groupedLayouts": "Grouped Layouts",
     "parallelRoutes": "Parallel Routes"
+  },
+  "post": {
+    "edit": {
+      "submit": "Publish",
+      "tempSave": "Save Draft"
+    },
+    "create": {
+      "titlePlaceholder": "Enter title",
+      "tempSaveSuccess": "Draft saved successfully"
+    },
+    "updateError": {
+      "default": "Failed to update post"
+    },
+    "noChanges": "No changes to save"
   }
 } 

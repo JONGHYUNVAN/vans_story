@@ -4,9 +4,10 @@ import {
   Bold, Italic, Underline, Strikethrough, 
   AlignLeft, AlignCenter, AlignRight, AlignJustify,
   Palette, Code, List, ListOrdered, Table, Quote, 
-  Image, Smile, Video
+  Image, Smile, Video, Bot
 } from 'lucide-react'
 import { useEffect, useState, useCallback } from 'react'
+import { AiChatModal } from './AiChatModal'
 import EmojiPicker, { EmojiStyle } from 'emoji-picker-react'
 import { koreanFonts } from '@/app/fonts/editor/kr';
 import { englishFonts } from '@/app/fonts/editor/en';
@@ -51,6 +52,7 @@ export function EditorMenuBar({ localImages, setLocalImages }: {
   const [inputLanguage, setInputLanguage] = useState<'ko' | 'en' | 'co' >('en');
   const [selectedFont, setSelectedFont] = useState('ko');
   const [isSticky, setIsSticky] = useState(false);
+  const [showAiChat, setShowAiChat] = useState(false);
 
   useEffect(() => {
     if (!editor) return;
@@ -76,17 +78,25 @@ export function EditorMenuBar({ localImages, setLocalImages }: {
     }
   }, [selectedFont, editor]);
 
-  // 스크롤 이벤트 리스너 추가
+  // 스크롤 이벤트 리스너 추가 (성능 최적화를 위한 throttling 적용)
   useEffect(() => {
+    let ticking = false;
+    
     const handleScroll = () => {
-      const editorElement = document.querySelector('.ProseMirror');
-      if (editorElement) {
-        const editorRect = editorElement.getBoundingClientRect();
-        setIsSticky(editorRect.top < 100); // 헤더 높이에 따라 조정
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const editorElement = document.querySelector('.ProseMirror');
+          if (editorElement) {
+            const editorRect = editorElement.getBoundingClientRect();
+            setIsSticky(editorRect.top < 100); // 헤더 높이에 따라 조정
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -133,7 +143,7 @@ export function EditorMenuBar({ localImages, setLocalImages }: {
       editor.off('transaction', updateActiveStates);
       editor.off('selectionUpdate', updateActiveStates);
     };
-  }, [activeStates]);
+  }, [editor]); // activeStates 의존성 제거하여 무한 루프 방지
   useEffect(() => {
     const handleComposition = (e: CompositionEvent) => {
       if (e.data) setInputLanguage('ko');
@@ -565,7 +575,7 @@ export function EditorMenuBar({ localImages, setLocalImages }: {
               </div>
             )}
 
-          <button
+                    <button
             type="button"
             onClick={() => {
               const url = window.prompt('YouTube URL을 입력하세요:')
@@ -580,9 +590,29 @@ export function EditorMenuBar({ localImages, setLocalImages }: {
             >
             <FaYoutube size={18} className="text-red-600" />
           </button>
+
+          {/* AI 어시스턴트 버튼 */}
+          <button
+            type="button"
+            onClick={() => setShowAiChat(true)}
+            className="p-2 rounded hover:bg-gray-100 hover:bg-blue-50 transition-colors"
+            title="AI 어시스턴트"
+          >
+            <Bot size={18} className="text-blue-600" />
+          </button>
           </div>
         </div>
       </div>
+
+      {/* AI 채팅 모달 */}
+      <AiChatModal
+        isOpen={showAiChat}
+        onClose={() => setShowAiChat(false)}
+        onInsertText={(text) => {
+          editor.chain().focus().insertContent(text).run();
+          setShowAiChat(false);
+        }}
+      />
     </div>  
     </div>
   )

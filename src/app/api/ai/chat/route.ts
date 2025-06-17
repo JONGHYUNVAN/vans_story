@@ -1,0 +1,68 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { headers } from 'next/headers';
+import { API_URLS } from '@/constants/apiUrl';
+
+export type ChatRequest = {
+  message: string;
+  model?: string;        // 선택사항, 기본값: gpt-4o-mini
+  max_tokens?: number;   // 선택사항, 기본값: 1000
+  temperature?: number;  // 선택사항, 기본값: 0.7 (0=일관적, 2=창의적)
+};
+
+// POST /api/ai/chat - 채팅 메시지 전송
+export async function POST(request: NextRequest) {
+  try {
+    const headersList = await headers();
+    const token = headersList.get('Authorization');
+    const body: ChatRequest = await request.json();
+
+    // 메시지 데이터 검증
+    if (!body.message || body.message.trim() === '') {
+      return NextResponse.json(
+        { error: '메시지 내용이 필요합니다.' },
+        { status: 400 }
+      );
+    }
+
+    const res = await fetch(`${API_URLS.AI.SEND}/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { Authorization: token }),
+      },
+      body: JSON.stringify({
+        message: body.message,
+        model: body.model || 'gpt-4o-mini',
+        max_tokens: body.max_tokens || 1000,
+        temperature: body.temperature || 0.7,
+      })
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => null);
+      return NextResponse.json(
+        { error: errorData?.message || '채팅 메시지 전송에 실패했습니다.' },
+        { status: res.status }
+      );
+    }
+
+    const data = await res.json();
+    
+    // 3003번 포트 응답 형식을 우리 형식으로 매핑
+    const mappedResponse = {
+      id: data.id || `chat-${Date.now()}`,
+      message: data.response || data.message || '응답을 받지 못했습니다.',
+      model: data.model || 'gpt-4o-mini',
+      tokens_used: data.usage?.total_tokens || 0,
+      timestamp: new Date().toISOString(),
+    };
+    
+    return NextResponse.json(mappedResponse);
+  } catch (error) {
+    console.error('Error sending chat message:', error);
+    return NextResponse.json(
+      { error: '서버 오류가 발생했습니다.' },
+      { status: 500 }
+    );
+  }
+} 

@@ -683,8 +683,17 @@
       "tempSaveSuccess": "임시저장되었습니다.",
       "tempSaveError": "임시저장 데이터 로드 실패",
       "submitSuccess": "게시글이 등록되었습니다.",
-      "submitError": "게시글 등록 중 오류가 발생했습니다."
-    }
+      "submitError": "게시글 등록 중 오류가 발생했습니다.",
+      "titlePlaceholder": "제목을 입력하세요"
+    },
+    "edit": {
+      "submit": "게시",
+      "tempSave": "임시저장"
+    },
+    "updateError": {
+      "default": "게시글 업데이트 실패"
+    },
+    "noChanges": "변경사항이 없습니다"
   },
   "error": {
     "404": {

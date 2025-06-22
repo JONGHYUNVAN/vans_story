@@ -13,6 +13,6 @@ export const API_URLS = {
     UPLOAD_IMAGE: `/api/imageUpload`,
   },
   AI: {
-    SEND: `/api/ai/chat`,
+    SEND: `/api/ai`,
   },
 } as const; 

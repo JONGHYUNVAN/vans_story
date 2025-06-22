@@ -24,10 +24,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const res = await fetch(`${API_URLS.AI.SEND}/chat`, {
+    const res = await fetch(`${process.env.AI_API_URL}/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'X-API-Key': process.env.AI_ROUTE_API_KEY || '',
         ...(token && { Authorization: token }),
       },
       body: JSON.stringify({

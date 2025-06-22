@@ -157,8 +157,8 @@ export function AiChatModal({ isOpen, onClose, onInsertText }: AiChatModalProps)
 2. Write in formal explanatory tone (~입니다). 
 3. Use clear structure.
 4. never use **. 
-5. Include SQL/ERD/code blocks and tables when useful. Explain from a data modeler's view.
-6. max 2000 chars, end with summary`;
+5. Include SQL/ERD/code blocks and tables when useful.
+6. min 1 chars, max 2000 chars, end with summary when more than 1000 chars`;
 
       const chatRequest: ChatRequest = {
         message: `${systemMessage}\n\n사용자 요청: ${currentInput}`,

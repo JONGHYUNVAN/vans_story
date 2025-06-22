@@ -11,6 +11,9 @@ export async function POST(request: NextRequest) {
     // 기존 이미지 API로 요청 전달
     const response = await fetch(`${imageApiUrl}/upload`, {
       method: 'POST',
+      headers: {
+        'X-API-Key': process.env.IMAGE_ROUTE_API_KEY || '',
+      },
       body: formData,
     });
 

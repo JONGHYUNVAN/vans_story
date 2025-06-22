@@ -157,7 +157,7 @@ export function usePostCreate(editorRef?: React.MutableRefObject<any>, localImag
         content: finalContent
       };
 
-      const response = await ApiFetch.authPost(API_URLS.POST.CREATE, submitData)
+      const response = await ApiFetch.post_withAuth(API_URLS.POST.CREATE, submitData)
 
       const data = await response.json()
       if (!response.ok) {

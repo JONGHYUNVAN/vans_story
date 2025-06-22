@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslation } from '@/utils/i18n'
 import { useCategories } from '@/hooks/useCategories'
-import { getPost, updatePost, saveTempPost } from '@/app/api/posts/actions/client'
+import { getPostForEdit, updatePost, saveTempPost } from '@/app/api/posts/actions/client'
 import { tokenStorage } from '@/utils/token'
 import { API_URLS } from '@/constants/apiUrl'
 import { ApiFetch } from '@/app/api/apiFetch/apiFetch'
@@ -19,7 +19,7 @@ export function usePostEdit(postId: string) {
   const { categories, selectedCategory, setSelectedCategory } = useCategories(post?.theme || 'spring', post?.language || 'ko')
 
   useEffect(() => {
-    getPost(postId).then((fetchedPost) => {
+    getPostForEdit(postId).then((fetchedPost) => {
       setPost(fetchedPost)
       originalPostRef.current = fetchedPost // 원본 데이터 저장
     })

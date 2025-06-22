@@ -1,0 +1,63 @@
+{
+  "JWT": {
+    "categories": {
+      "gettingStarted": {
+        "title": "시작하기",
+        "items": {
+          "introduction": {
+            "title": "Why JWT?",
+            "description": "JWT의 기본 개념과 구조를 이해합니다.",
+            "path": "/post/view/jwt/category/introduction",
+            "icon": "FaKey",
+            "color": "#FF6B6B"
+          },
+          "structure": {
+            "title": "JWT 구조",
+            "description": "JWT의 Header, Payload, Signature 구조를 알아봅니다.",
+            "path": "/post/view/jwt/category/structure",
+            "icon": "FaKey",
+            "color": "#FF6B6B"
+          }
+        }
+      },
+      "implementation": {
+        "title": "구현하기",
+        "items": {
+          "spring": {
+            "title": "Spring Security JWT",
+            "description": "Spring Security에서 JWT 구현 방법을 알아봅니다.",
+            "path": "/post/view/jwt/category/spring",
+            "icon": "FaKey",
+            "color": "#FF6B6B"
+          },
+          "nodejs": {
+            "title": "Node.js JWT",
+            "description": "Node.js에서 JWT 구현 방법을 알아봅니다.",
+            "path": "/post/view/jwt/category/nodejs",
+            "icon": "FaKey",
+            "color": "#FF6B6B"
+          }
+        }
+      },
+      "security": {
+        "title": "보안",
+        "items": {
+          "bestPractices": {
+            "title": "JWT 보안 모범 사례",
+            "description": "JWT를 안전하게 사용하기 위한 모범 사례를 알아봅니다.",
+            "path": "/post/view/jwt/category/best-practices",
+            "icon": "FaKey",
+            "color": "#FF6B6B"
+          },
+          "vulnerabilities": {
+            "title": "JWT 취약점",
+            "description": "JWT의 주요 취약점과 대응 방안을 알아봅니다.",
+            "path": "/post/view/jwt/category/vulnerabilities",
+            "icon": "FaKey",
+            "color": "#FF6B6B"
+          }
+        }
+      }
+    }
+  }
+} 

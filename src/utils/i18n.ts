@@ -2,11 +2,69 @@
 
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setLocale } from '@/store/i18n/slice';
-import ko from '@/messages/ko.json';
-import en from '@/messages/en.json';
+
+// 한국어 파일들 import
+import koCommon from '@/messages/ko/common.json';
+import koAuth from '@/messages/ko/auth.json';
+import koPost from '@/messages/ko/post.json';
+import koError from '@/messages/ko/error.json';
+import koAbout from '@/messages/ko/about.json';
+import koAlgorithm from '@/messages/ko/tech/algorithm.json';
+import koDatabase from '@/messages/ko/tech/database.json';
+import koFrameworks from '@/messages/ko/tech/frameworks.json';
+import koDatabases from '@/messages/ko/tech/databases.json';
+import koDocker from '@/messages/ko/tech/docker.json';
+import koJWT from '@/messages/ko/tech/jwt.json';
+
+// 영어 파일들 import
+import enCommon from '@/messages/en/common.json';
+import enAuth from '@/messages/en/auth.json';
+import enPost from '@/messages/en/post.json';
+import enError from '@/messages/en/error.json';
+import enAbout from '@/messages/en/about.json';
+import enAlgorithm from '@/messages/en/tech/algorithm.json';
+import enDatabase from '@/messages/en/tech/database.json';
+import enFrameworks from '@/messages/en/tech/frameworks.json';
+import enDatabases from '@/messages/en/tech/databases.json';
+import enDocker from '@/messages/en/tech/docker.json';
+import enJWT from '@/messages/en/tech/jwt.json';
+
+// 번역 객체들을 하나로 병합
+const mergeTranslations = (...translations: any[]) => {
+  return translations.reduce((merged, translation) => {
+    return { ...merged, ...translation };
+  }, {});
+};
 
 // 지원하는 언어의 번역을 객체로 정의
-const translations = { ko, en };
+const translations = {
+  ko: mergeTranslations(
+    koCommon,
+    koAuth,
+    koPost,
+    koError,
+    koAbout,
+    koAlgorithm,
+    koDatabase,
+    koFrameworks,
+    koDatabases,
+    koDocker,
+    koJWT
+  ),
+  en: mergeTranslations(
+    enCommon,
+    enAuth,
+    enPost,
+    enError,
+    enAbout,
+    enAlgorithm,
+    enDatabase,
+    enFrameworks,
+    enDatabases,
+    enDocker,
+    enJWT
+  )
+};
 
 // 번역 파라미터 인터페이스
 interface TranslationParams {

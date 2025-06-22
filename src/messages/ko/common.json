@@ -1,0 +1,23 @@
+{
+  "Header": {
+    "headerMenu": "메뉴를 보시려면 마우스를 올려주세요",
+    "projects": "프로젝트",
+    "aboutVan": "Van 소개",
+    "greeting": "좋은 하루 보내세요, {username}님!"
+  },
+  "Sidebar": {
+    "sidebarMenu": "사이드바 메뉴 보기"
+  },
+  "common": {
+    "login": "로그인",
+    "logout": "로그아웃",
+    "email": "이메일",
+    "password": "비밀번호"
+  },
+  "home": {
+    "welcome": "안녕하세요! 이 블로그는 Van 의 개발 이야기를 담을 겁니다.",
+    "blogIntro": "블로그 소개",
+    "techIntro": "프론트엔드 개발, 백엔드 개발, React, Next.js, Spring Boot 등 다양한 주제의 글을 작성할 예정입니다.",
+    "expectation": "완성을 기대해 주세요! ✨"
+  }
+} 

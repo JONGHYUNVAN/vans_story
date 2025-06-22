@@ -1,0 +1,36 @@
+{
+  "AboutVan": {
+    "subtitle": "Hello! I'm Van, a backend developer who loves to code ✨",
+    "greeting": {
+      "title": "Nice to meet you! 👋",
+      "description": "Hello! I'm Van, a backend developer who continuously learns and grows. I'm passionate about designing scalable and reliable systems, and solving complex business problems with technical solutions. With 5 years of experience, I've been building systems that satisfy both performance and scalability using modern backend architecture and cloud technologies."
+    },
+    "techStack": {
+      "title": "Tech Stack",
+      "subtitle": "Creating innovative solutions with cutting-edge backend technologies of 2025"
+    },
+    "education": {
+      "title": "Education"
+    },
+    "experience": {
+      "title": "Experience",
+      "subtitle": "Backend development experience and growth story from various environments"
+    },
+    "projects": {
+      "title": "Featured Projects",
+      "subtitle": "Introducing projects that solved real business problems"
+    },
+    "skills": {
+      "title": "Skills & Expertise",
+      "subtitle": "Technical competencies and soft skills built over 5 years of experience"
+    },
+    "interests": {
+      "title": "Interests & Activities"
+    },
+    "contact": {
+      "title": "Let's Connect",
+      "subtitle": "Let's talk about new projects or collaboration opportunities"
+    },
+    "footer": "Let's become better developers together! 🚀"
+  }
+}

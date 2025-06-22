@@ -1,0 +1,143 @@
+{
+  "Docker": {
+    "categories": {
+      "basics": {
+        "title": "기본 개념",
+        "items": {
+          "introduction": {
+            "title": "Why Docker?",
+            "description": "Docker의 기본 개념과 컨테이너 기술에 대해 알아봅니다.",
+            "path": "/post/view/docker/category/introduction",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          },
+          "containers": {
+            "title": "컨테이너",
+            "description": "Docker 컨테이너의 개념과 사용법을 학습합니다.",
+            "path": "/post/view/docker/category/containers",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          },
+          "images": {
+            "title": "이미지",
+            "description": "Docker 이미지의 생성과 관리 방법을 배웁니다.",
+            "path": "/post/view/docker/category/images",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          },
+          "registry": {
+            "title": "레지스트리",
+            "description": "Docker 이미지 저장소와 배포 방법을 이해합니다.",
+            "path": "/post/view/docker/category/registry",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          }
+        }
+      },
+      "dockerfile": {
+        "title": "Dockerfile",
+        "items": {
+          "dockerfile_basics": {
+            "title": "기본 명령어",
+            "description": "Dockerfile의 기본 명령어와 사용법을 배웁니다.",
+            "path": "/post/view/docker/category/dockerfile-basics",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          },
+          "multistage": {
+            "title": "멀티스테이지 빌드",
+            "description": "효율적인 이미지 생성을 위한 멀티스테이지 빌드 방법을 배웁니다.",
+            "path": "/post/view/docker/category/multistage-build",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          },
+          "optimization": {
+            "title": "최적화",
+            "description": "Docker 이미지 크기와 빌드 시간을 최적화하는 방법을 알아봅니다.",
+            "path": "/post/view/docker/category/optimization",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          }
+        }
+      },
+      "compose": {
+        "title": "Docker Compose",
+        "items": {
+          "compose_basics": {
+            "title": "기본 설정",
+            "description": "Docker Compose의 기본 설정과 사용법을 배웁니다.",
+            "path": "/post/view/docker/category/compose-basics",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          },
+          "networks": {
+            "title": "네트워크",
+            "description": "Docker Compose에서 네트워크 설정과 관리 방법을 배웁니다.",
+            "path": "/post/view/docker/category/compose-networks",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          },
+          "volumes": {
+            "title": "볼륨",
+            "description": "데이터 영속성을 위한 볼륨 설정과 관리 방법을 이해합니다.",
+            "path": "/post/view/docker/category/compose-volumes",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          }
+        }
+      },
+      "deployment": {
+        "title": "배포",
+        "items": {
+          "swarm": {
+            "title": "Docker Swarm",
+            "description": "Docker Swarm을 사용한 컨테이너 오케스트레이션을 학습합니다.",
+            "path": "/post/view/docker/category/swarm",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          },
+          "kubernetes": {
+            "title": "Kubernetes",
+            "description": "Kubernetes와 Docker의 연동 방법을 배웁니다.",
+            "path": "/post/view/docker/category/kubernetes",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          },
+          "cicd": {
+            "title": "CI/CD",
+            "description": "Docker를 활용한 지속적 통합/배포 파이프라인 구축 방법을 알아봅니다.",
+            "path": "/post/view/docker/category/cicd",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          }
+        }
+      },
+      "security": {
+        "title": "보안",
+        "items": {
+          "imageSecurity": {
+            "title": "이미지 보안",
+            "description": "Docker 이미지의 보안 취약점과 대응 방법을 학습합니다.",
+            "path": "/post/view/docker/category/image-security",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          },
+          "containerSecurity": {
+            "title": "컨테이너 보안",
+            "description": "Docker 컨테이너의 보안 설정과 모니터링 방법을 배웁니다.",
+            "path": "/post/view/docker/category/container-security",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          },
+          "networkSecurity": {
+            "title": "네트워크 보안",
+            "description": "Docker 네트워크의 보안 설정과 관리 방법을 이해합니다.",
+            "path": "/post/view/docker/category/network-security",
+            "icon": "SiDocker",
+            "color": "#2496ED"
+          }
+        }
+      }
+    }
+  }
+} 

@@ -2,7 +2,7 @@ import { Viewer } from '@/components/features/post/viewer/Viewer';
 import { Post } from '@/interfaces/post/types';
 import NestjsLayout from '../NestjsLayout';
 import { SidebarWrapper } from '../../utils/SidebarWrapper';
-import { getPostWithViewCount } from '../../utils/api/getPostById';
+import { getPostWithViewCount } from '@/app/api/posts/actions/client';
 import { ViewCountHandler } from '../../utils/ViewCountHandler';
 
 interface PageProps {

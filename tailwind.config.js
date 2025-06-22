@@ -28,6 +28,9 @@ module.exports = {
       },
       animation: {
         wave: 'wave 1.5s infinite'
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
       }
     }
   },

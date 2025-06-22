@@ -2,7 +2,7 @@ import { SidebarWrapper } from '../../../utils/SidebarWrapper';
 import JWTLayout from '../../JWTLayout';
 import JWTList from '../../JWTList';
 import { handleEmptyData } from '@/utils/errorHandling';
-import { getPostList, Post } from '@/app/post/view/utils/api/getPostList';
+import { getPostList } from '@/app/api/posts/actions/client';
 
 interface PageProps {
   params: Promise<{ category: string }>;

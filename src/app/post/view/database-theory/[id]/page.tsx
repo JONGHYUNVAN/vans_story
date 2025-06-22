@@ -1,7 +1,7 @@
 import { Viewer } from '@/components/features/post/viewer/Viewer';
 import DatabaseTheoryLayout from '../DatabaseTheoryLayout';
 import { SidebarWrapper } from '../../utils/SidebarWrapper';
-import { getPostWithViewCount } from '../../utils/api/getPostById';
+import { getPostWithViewCount } from '@/app/api/posts/actions/client';
 import { ViewCountHandler } from '../../utils/ViewCountHandler';
 
 interface PageProps {

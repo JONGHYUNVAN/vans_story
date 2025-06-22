@@ -135,14 +135,14 @@ export class ApiFetch {
   /**
    * Auth GET 요청 (토큰 포함)
    */
-  static async authGet(url: string, options: RequestInit = {}): Promise<Response> {
+  static async get_withAuth(url: string, options: RequestInit = {}): Promise<Response> {
     return this.authFetch(url, { ...options, method: 'GET' });
   }
 
   /**
    * Auth POST 요청 (토큰 포함)
    */
-  static async authPost(url: string, data: any, options: RequestInit = {}): Promise<Response> {
+  static async post_withAuth(url: string, data: any, options: RequestInit = {}): Promise<Response> {
     return this.authFetch(url, {
       ...options,
       method: 'POST',
@@ -153,7 +153,7 @@ export class ApiFetch {
   /**
    * Auth PATCH 요청 (토큰 포함)
    */
-  static async authPatch(url: string, data: any, options: RequestInit = {}): Promise<Response> {
+  static async patch_withAuth(url: string, data: any, options: RequestInit = {}): Promise<Response> {
     return this.authFetch(url, {
       ...options,
       method: 'PATCH',
@@ -164,8 +164,7 @@ export class ApiFetch {
   /**
    * Auth DELETE 요청 (토큰 포함)
    */
-  static async authDelete(url: string, options: RequestInit = {}): Promise<Response> {
+  static async delete_withAuth(url: string, options: RequestInit = {}): Promise<Response> {
     return this.authFetch(url, { ...options, method: 'DELETE' });
   }
-
 } 

@@ -1,0 +1,124 @@
+{
+  "Algorithm": {
+    "categories": {
+      "basics": {
+        "title": "Algorithm Basics",
+        "items": {
+          "introduction": {
+            "title": "Introduction to Algorithms",
+            "description": "Learn about the basic concepts and importance of algorithms.",
+            "path": "/post/view/algorithm/category/introduction",
+            "icon": "RiCodeBoxLine",
+            "color": "#6B7280"
+          },
+          "complexity": {
+            "title": "Time & Space Complexity",
+            "description": "Learn how to measure the efficiency of algorithms.",
+            "path": "/post/view/algorithm/category/complexity",
+            "icon": "TbClockHour4",
+            "color": "#6B7280"
+          },
+          "dataStructures": {
+            "title": "Data Structures Basics",
+            "description": "Learn about the basic data structures for algorithms.",
+            "path": "/post/view/algorithm/category/data-structures",
+            "icon": "FaLayerGroup",
+            "color": "#6B7280"
+          }
+        }
+      },
+      "sorting": {
+        "title": "Sorting Algorithms",
+        "items": {
+          "bubbleSort": {
+            "title": "Bubble Sort",
+            "description": "Understand a simple but inefficient sorting algorithm.",
+            "path": "/post/view/algorithm/category/bubble-sort",
+            "icon": "TbArrowsSort",
+            "color": "#6B7280"
+          },
+          "selectionSort": {
+            "title": "Selection Sort",
+            "description": "Learn about an algorithm that sorts by selecting the minimum value.",
+            "path": "/post/view/algorithm/category/selection-sort",
+            "icon": "TbArrowsSort",
+            "color": "#6B7280"
+          },
+          "quickSort": {
+            "title": "Quick Sort",
+            "description": "Study an efficient sorting algorithm using the divide and conquer strategy.",
+            "path": "/post/view/algorithm/category/quick-sort",
+            "icon": "TbArrowsSort",
+            "color": "#6B7280"
+          },
+          "mergeSort": {
+            "title": "Merge Sort",
+            "description": "Learn about a sorting algorithm with stable and predictable performance.",
+            "path": "/post/view/algorithm/category/merge-sort",
+            "icon": "TbArrowsSort",
+            "color": "#6B7280"
+          }
+        }
+      },
+      "graphAlgorithms": {
+        "title": "Graph Algorithms",
+        "items": {
+          "graphBasics": {
+            "title": "Graph Basics",
+            "description": "Learn about the concepts and representation methods of graphs.",
+            "path": "/post/view/algorithm/category/graph-basics",
+            "icon": "TbGraph",
+            "color": "#6B7280"
+          },
+          "bfs": {
+            "title": "Breadth First Search (BFS)",
+            "description": "Learn how to traverse a graph using breadth first search.",
+            "path": "/post/view/algorithm/category/bfs",
+            "icon": "TbGraph",
+            "color": "#6B7280"
+          },
+          "dfs": {
+            "title": "Depth First Search (DFS)",
+            "description": "Learn how to traverse a graph using depth first search.",
+            "path": "/post/view/algorithm/category/dfs",
+            "icon": "TbGraph",
+            "color": "#6B7280"
+          },
+          "dijkstra": {
+            "title": "Dijkstra's Algorithm",
+            "description": "Learn about an algorithm for finding the shortest path.",
+            "path": "/post/view/algorithm/category/dijkstra",
+            "icon": "TbRouteSquare2",
+            "color": "#6B7280"
+          }
+        }
+      },
+      "dynamicProgramming": {
+        "title": "Dynamic Programming",
+        "items": {
+          "dpBasics": {
+            "title": "Dynamic Programming Basics",
+            "description": "Learn about memoization and tabulation techniques.",
+            "path": "/post/view/algorithm/category/dp-basics",
+            "icon": "TbBinaryTree",
+            "color": "#6B7280"
+          },
+          "fibonacciDP": {
+            "title": "Fibonacci Sequence",
+            "description": "Solve the Fibonacci sequence problem using dynamic programming.",
+            "path": "/post/view/algorithm/category/fibonacci-dp",
+            "icon": "TbBinaryTree",
+            "color": "#6B7280"
+          },
+          "knapsackProblem": {
+            "title": "Knapsack Problem",
+            "description": "Solve the classic knapsack problem using dynamic programming.",
+            "path": "/post/view/algorithm/category/knapsack",
+            "icon": "TbBinaryTree",
+            "color": "#6B7280"
+          }
+        }
+      }
+    }
+  }
+} 

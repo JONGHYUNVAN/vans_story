@@ -2,7 +2,7 @@ import { API_URLS } from '@/constants/apiUrl';
 import DockerLayout from '../../DockerLayout';
 import { SidebarWrapper } from '../../../utils/SidebarWrapper';
 import DockerList from '../../DockerList';
-import { getPostList } from '@/app/post/view/utils/api/getPostList';
+import { getPostList } from '@/app/api/posts/actions/client';
 
 interface PageProps {
   params: Promise<{ category: string }>;

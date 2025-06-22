@@ -39,7 +39,7 @@ export const authService = {
    * @throws {Error} 로그아웃 실패 시 에러 발생
    */
   async logout() {
-    const res = await ApiFetch.authPost('/api/auth/logout', {}, {
+    const res = await ApiFetch.post_withAuth('/api/auth/logout', {}, {
       credentials: 'include',
     });
 

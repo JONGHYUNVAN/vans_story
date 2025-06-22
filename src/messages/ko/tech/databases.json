@@ -1,0 +1,121 @@
+{
+  "MariaDB": {
+    "categories": {
+      "gettingStarted": {
+        "title": "시작하기",
+        "items": {
+          "introduction": {
+            "title": "Why MariaDB?",
+            "description": "MariaDB의 장점과 특징을 알아봅니다.",
+            "path": "/post/view/mariadb/category/introduction",
+            "icon": "SiMariadb",
+            "color": "#003545"
+          },
+          "relational": {
+            "title": "관계형 데이터베이스",
+            "description": "관계형 데이터베이스의 개념과 특징을 학습합니다.",
+            "path": "/post/view/mariadb/category/relational",
+            "icon": "SiMariadb",
+            "color": "#003545"
+          },
+          "installation": {
+            "title": "설치 및 설정",
+            "description": "MariaDB 설치 및 기본 설정 방법을 알아봅니다.",
+            "path": "/post/view/mariadb/category/installation",
+            "icon": "SiMariadb",
+            "color": "#003545"
+          },
+          "basic-commands": {
+            "title": "기본 명령어",
+            "description": "MariaDB의 기본적인 SQL 명령어를 학습합니다.",
+            "path": "/post/view/mariadb/category/basic-commands",
+            "icon": "SiMariadb",
+            "color": "#003545"
+          }
+        }
+      },
+      "advanced": {
+        "title": "고급 기능",
+        "items": {
+          "optimization": {
+            "title": "성능 최적화",
+            "description": "MariaDB의 성능을 최적화하는 방법을 학습합니다.",
+            "path": "/post/view/mariadb/category/optimization",
+            "icon": "SiMariadb",
+            "color": "#003545"
+          },
+          "replication": {
+            "title": "복제 설정",
+            "description": "MariaDB의 복제 기능을 설정하고 관리하는 방법을 배웁니다.",
+            "path": "/post/view/mariadb/category/replication",
+            "icon": "SiMariadb",
+            "color": "#003545"
+          },
+          "security": {
+            "title": "보안 설정",
+            "description": "MariaDB의 보안 설정과 사용자 관리 방법을 학습합니다.",
+            "path": "/post/view/mariadb/category/security",
+            "icon": "SiMariadb",
+            "color": "#003545"
+          }
+        }
+      }
+    }
+  },
+  "MongoDB": {
+    "categories": {
+      "gettingStarted": {
+        "title": "시작하기",
+        "items": {
+          "introduction": {
+            "title": "Why MongoDB?",
+            "description": "MongoDB의 장점과 특징을 알아봅니다.",
+            "path": "/post/view/mongodb/category/introduction",
+            "icon": "SiMongodb",
+            "color": "#e5bc7a"
+          },
+          "installation": {
+            "title": "설치 및 설정",
+            "description": "MongoDB 설치 및 기본 설정 방법을 알아봅니다.",
+            "path": "/post/view/mongodb/category/installation",
+            "icon": "SiMongodb",
+            "color": "#e5bc7a"
+          },
+          "basicConcepts": {
+            "title": "기본 개념",
+            "description": "MongoDB의 컬렉션, 문서, BSON 등 기본 개념을 이해합니다.",
+            "path": "/post/view/mongodb/category/basic-concepts",
+            "icon": "SiMongodb",
+            "color": "#e5bc7a"
+          },
+          "crud": {
+            "title": "CRUD 작업",
+            "description": "MongoDB에서 데이터 생성, 조회, 수정, 삭제 방법을 알아봅니다.",
+            "path": "/post/view/mongodb/category/crud",
+            "icon": "SiMongodb",
+            "color": "#e5bc7a"
+          }
+        }
+      },
+      "advanced": {
+        "title": "고급 기능",
+        "items": {
+          "aggregation": {
+            "title": "애그리게이션 프레임워크",
+            "description": "MongoDB의 강력한 데이터 처리 도구인 애그리게이션 파이프라인을 활용합니다.",
+            "path": "/post/view/mongodb/category/aggregation",
+            "icon": "SiMongodb",
+            "color": "#e5bc7a"
+          },
+          "indexing": {
+            "title": "인덱싱 및 최적화",
+            "description": "MongoDB 쿼리 성능 최적화를 위한 인덱스 전략을 알아봅니다.",
+            "path": "/post/view/mongodb/category/indexing",
+            "icon": "SiMongodb",
+            "color": "#e5bc7a"
+          }
+        }
+      }
+    }
+  }
+} 

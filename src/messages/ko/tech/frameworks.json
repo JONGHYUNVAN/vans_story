@@ -1,0 +1,158 @@
+{
+  "Nextjs": {
+    "categories": {
+      "gettingStarted": {
+        "title": "시작하기",
+        "items": {
+          "introduction": {
+            "title": "Why Next?",
+            "description": "Next.js의 장점과 특징을 알아봅니다.",
+            "path": "/post/view/nextjs/category/introduction",
+            "icon": "SiNextdotjs",
+            "color": "#000000"
+          },
+          "installation": {
+            "title": "설치 및 설정",
+            "description": "Next.js 프로젝트 설치 및 기본 설정 방법을 알아봅니다.",
+            "path": "/post/view/nextjs/category/installation",
+            "icon": "SiNextdotjs",
+            "color": "#000000"
+          },
+          "projectStructure": {
+            "title": "프로젝트 구조",
+            "description": "Next.js 프로젝트의 기본 구조와 각 디렉토리의 역할을 이해합니다.",
+            "path": "/post/view/nextjs/category/project-structure",
+            "icon": "SiNextdotjs",
+            "color": "#000000"
+          },
+          "firstApp": {
+            "title": "첫 번째 앱 만들기",
+            "description": "간단한 Next.js 애플리케이션을 만들어보며 기본 개념을 학습합니다.",
+            "path": "/post/view/nextjs/category/first-app",
+            "icon": "SiNextdotjs",
+            "color": "#000000"
+          }
+        }
+      }
+    }
+  },
+  "Nestjs": {
+    "categories": {
+      "gettingStarted": {
+        "title": "시작하기",
+        "items": {
+          "introduction": {
+            "title": "Why Nest?",
+            "description": "Nest.js의 장점과 특징을 알아봅니다.",
+            "path": "/post/view/nestjs/category/introduction",
+            "icon": "SiNestjs",
+            "color": "#E0234E"
+          },
+          "installation": {
+            "title": "설치 및 설정",
+            "description": "Nest.js 프로젝트 설치 및 기본 설정 방법을 알아봅니다.",
+            "path": "/post/view/nestjs/category/installation",
+            "icon": "SiNestjs",
+            "color": "#E0234E"
+          },
+          "projectStructure": {
+            "title": "프로젝트 구조",
+            "description": "Nest.js 프로젝트의 기본 구조와 각 디렉토리의 역할을 이해합니다.",
+            "path": "/post/view/nestjs/category/project-structure",
+            "icon": "SiNestjs",
+            "color": "#E0234E"
+          },
+          "firstApp": {
+            "title": "첫 번째 앱 만들기",
+            "description": "간단한 Nest.js 애플리케이션을 만들어보며 기본 개념을 학습합니다.",
+            "path": "/post/view/nestjs/category/first-app",
+            "icon": "SiNestjs",
+            "color": "#E0234E"
+          }
+        }
+      }
+    }
+  },
+  "Spring": {
+    "categories": {
+      "gettingStarted": {
+        "title": "시작하기",
+        "items": {
+          "introduction": {
+            "title": "Why Spring?",
+            "description": "Spring Framework의 장점과 특징을 알아봅니다.",
+            "path": "/post/view/spring/category/introduction",
+            "icon": "SiSpring",
+            "color": "#6DB33F"
+          },
+          "installation": {
+            "title": "설치 및 설정",
+            "description": "Spring Framework 프로젝트 설치 및 기본 설정 방법을 알아봅니다.",
+            "path": "/post/view/spring/category/installation",
+            "icon": "SiSpring",
+            "color": "#6DB33F"
+          },
+          "projectStructure": {
+            "title": "프로젝트 구조",
+            "description": "Spring Framework 프로젝트의 기본 구조와 각 디렉토리의 역할을 이해합니다.",
+            "path": "/post/view/spring/category/project-structure",
+            "icon": "SiSpring",
+            "color": "#6DB33F"
+          },
+          "firstApp": {
+            "title": "첫 번째 앱 만들기",
+            "description": "간단한 Spring Framework 애플리케이션을 만들어보며 기본 개념을 학습합니다.",
+            "path": "/post/view/spring/category/first-app",
+            "icon": "SiSpring",
+            "color": "#6DB33F"
+          }
+        }
+      },
+      "core": {
+        "title": "핵심 개념",
+        "items": {
+          "ioc": {
+            "title": "IoC & DI",
+            "description": "제어의 역전(IoC)과 의존성 주입(DI)에 대해 알아봅니다.",
+            "path": "/post/view/spring/category/ioc-di",
+            "icon": "SiSpring",
+            "color": "#6DB33F"
+          },
+          "aop": {
+            "title": "AOP",
+            "description": "관점 지향 프로그래밍(AOP)과 Spring에서의 활용법을 알아봅니다.",
+            "path": "/post/view/spring/category/aop",
+            "icon": "SiSpring",
+            "color": "#6DB33F"
+          },
+          "mvc": {
+            "title": "MVC 패턴",
+            "description": "Spring MVC 아키텍처와 웹 애플리케이션 개발 방법을 알아봅니다.",
+            "path": "/post/view/spring/category/mvc",
+            "icon": "SiSpring",
+            "color": "#6DB33F"
+          }
+        }
+      },
+      "data": {
+        "title": "데이터 액세스",
+        "items": {
+          "jpa": {
+            "title": "Spring Data JPA",
+            "description": "JPA를 활용한 데이터베이스 액세스 방법을 알아봅니다.",
+            "path": "/post/view/spring/category/data-jpa",
+            "icon": "SiSpring",
+            "color": "#6DB33F"
+          },
+          "jdbc": {
+            "title": "JDBC & Transaction",
+            "description": "JDBC와 트랜잭션 관리에 대해 알아봅니다.",
+            "path": "/post/view/spring/category/jdbc-transaction",
+            "icon": "SiSpring",
+            "color": "#6DB33F"
+          }
+        }
+      }
+    }
+  }
+} 

@@ -74,7 +74,7 @@ export default function Header({ isStorybook = false }: HeaderProps) {
               <Link href="/projects" className="text-gray-600 hover:text-blue-600 transition-colors">
                 {t('Header.projects')}
               </Link>
-              <Link href="/about" className="text-gray-600 hover:text-blue-600 transition-colors">
+              <Link href="/aboutVan" className="text-gray-600 hover:text-blue-600 transition-colors">
                 {t('Header.aboutVan')}
               </Link>
             </nav>

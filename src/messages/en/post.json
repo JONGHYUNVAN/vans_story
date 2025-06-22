@@ -1,0 +1,43 @@
+{
+  "post": {
+    "views": "{count} views",
+    "likes": "{count} likes",
+    "sort": {
+      "latest": "Latest",
+      "oldest": "Oldest",
+      "views": "Most viewed",
+      "likes": "Most liked"
+    },
+    "by": "by. {author}",
+    "create": {
+      "title": "Create New Post",
+      "inputTitle": "Enter title",
+      "inputTopic": "Enter topic",
+      "inputDescription": "Enter description",
+      "inputTags": "Enter tags (comma separated)",
+      "selectTheme": "Select theme",
+      "selectCategory": "Select category",
+      "inputThumbnail": "Enter thumbnail URL",
+      "inputLanguage": "Enter language",
+      "selectLanguage": "Select language",
+      "edit": "Edit",
+      "preview": "Preview",
+      "submit": "Submit",
+      "tempSave": "Save as draft",
+      "validation": "Please fill in all required fields.",
+      "tempSaveSuccess": "Saved as draft.",
+      "tempSaveError": "Failed to load draft data",
+      "submitSuccess": "Post has been published.",
+      "submitError": "An error occurred while publishing the post.",
+      "titlePlaceholder": "Enter title"
+    },
+    "edit": {
+      "submit": "Publish",
+      "tempSave": "Save Draft"
+    },
+    "updateError": {
+      "default": "Failed to update post"
+    },
+    "noChanges": "No changes to save"
+  }
+} 

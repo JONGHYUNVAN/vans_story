@@ -1,42 +1,26 @@
-import { tokenStorage } from '@/utils/token';
 import type { PostData } from '@/app/post/edit/[id]/types/post';
+import { Post } from '@/interfaces/post/types';
+import { ApiFetch } from '../../apiFetch/apiFetch';
 
 export async function updatePost(postId: string, postData: PostData) {
-  const token = tokenStorage.getToken();
-  if (!token) {
-    throw new Error('로그인이 필요합니다.');
+  const response = await ApiFetch.patch_withAuth(`/api/posts/${postId}`, postData);
+  
+  if (!response.ok) {
+    const error = await response.json().catch(() => null);
+    throw new Error(error?.message || response.status.toString());
   }
 
-  const res = await fetch(`/api/posts/${postId}`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(postData),
-  });
-
-  if (!res.ok) {
-    const error = await res.json().catch(() => null);
-    throw new Error(error?.message || res.status.toString());
-  }
-
-  return res.json();
+  return response.json();
 }
 
-export async function getPost(postId: string) {
-  const token = tokenStorage.getToken();
-  const res = await fetch(`/api/posts/${postId}`, {
-    headers: {
-      Authorization: token ? `Bearer ${token}` : '',
-    },
-  });
+export async function getPostForEdit(postId: string) {
+  const response = await ApiFetch.get_withAuth(`/api/posts/${postId}/edit`);
 
-  if (!res.ok) {
-    throw new Error(res.status.toString());
+  if (!response.ok) {
+    throw new Error(response.status.toString());
   }
 
-  return res.json();
+  return response.json();
 }
 
 export function saveTempPost(postId: string, postData: PostData) {
@@ -52,4 +36,47 @@ export function saveTempPost(postId: string, postData: PostData) {
 export function loadTempPost(postId: string): PostData | null {
   const saved = localStorage.getItem(`temp_post_${postId}`);
   return saved ? JSON.parse(saved) : null;
+}
+
+// SSR용 게시물 목록 조회
+export async function getPostList(theme: string, category?: string, page = 1, limit = 10) {
+  try {
+    const url = new URL(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/posts`);
+    url.searchParams.append('theme', theme);
+    if (category) url.searchParams.append('category', category);
+    url.searchParams.append('page', page.toString());
+    url.searchParams.append('limit', limit.toString());
+
+    const response = await ApiFetch.basicGet(url.toString(), {
+      next: { revalidate: 60 }
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch posts');
+    }
+
+    const data = await response.json();
+    return (data.data || []).map((post: any) => ({
+      ...post,
+      id: post._id || post.id
+    }));
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    return [];
+  }
+}
+
+// SSR용 개별 게시물 조회 (조회수 포함)
+export async function getPostWithViewCount(id: string, hasViewed = false): Promise<Post> {
+  const response = await ApiFetch.basicGet(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/posts/${id}`, {
+    headers: {
+      'x-viewed': hasViewed ? 'true' : 'false'
+    },
+    cache: 'no-store'
+  });
+  
+  if (!response.ok) {
+    throw new Error(`게시글 조회 실패, ${response.status}`);
+  }
+  return response.json();
 } 

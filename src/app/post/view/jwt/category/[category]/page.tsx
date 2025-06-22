@@ -3,6 +3,7 @@ import JWTLayout from '../../JWTLayout';
 import JWTList from '../../JWTList';
 import { handleEmptyData } from '@/utils/errorHandling';
 import { getPostList } from '@/app/api/posts/actions/client';
+import { PostInfo } from '@/interfaces/post/types';
 
 interface PageProps {
   params: Promise<{ category: string }>;
@@ -10,7 +11,7 @@ interface PageProps {
 
 export default async function Page({ params }: PageProps) {
   const { category } = await params;
-  const posts = handleEmptyData<Post>(await getPostList('jwt', category));
+  const posts = handleEmptyData<PostInfo>(await getPostList('jwt', category));
 
   return (
     <SidebarWrapper>

@@ -8,17 +8,13 @@ import { useTranslation } from '@/utils/i18n';
 import { sortPosts } from '@/components/features/post/sort/sortPosts';
 import Link from 'next/link';
 
-interface Post extends PostInfo {
-  _id: string;
-}
-
 interface JWTListProps {
-  posts: Post[];
+  posts: PostInfo[];
 }
 
 export default function JWTList({ posts }: JWTListProps) {
   const { t } = useTranslation('post');
-  const [jwtPosts, setJwtPosts] = useState<Post[]>(sortPosts(posts, 'latest'));
+  const [jwtPosts, setJwtPosts] = useState<PostInfo[]>(sortPosts(posts, 'latest'));
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -32,7 +28,11 @@ export default function JWTList({ posts }: JWTListProps) {
         }
         
         const data = await response.json();
-        setJwtPosts(sortPosts(data.data || [], 'latest'));
+        const mappedData = (data.data || []).map((post: any) => ({
+          ...post,
+          id: post._id || post.id
+        }));
+        setJwtPosts(sortPosts(mappedData, 'latest'));
       } catch (error) {
         console.error('게시글을 불러오는데 실패했습니다:', error);
       }
@@ -45,8 +45,8 @@ export default function JWTList({ posts }: JWTListProps) {
     <div className="grid grid-cols-1 gap-6">
       {jwtPosts.map((post) => (
         <Link
-          key={post._id}
-          href={`/post/view/jwt/${post._id}`}
+          key={post.id}
+          href={`/post/view/jwt/${post.id}`}
           className="block transition-transform hover:-translate-y-1"
         >
           <PostCard post={post} />

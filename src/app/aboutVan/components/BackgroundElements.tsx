@@ -13,7 +13,7 @@ export function BackgroundElements() {
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
-
+ 
   return (
     <div className="fixed inset-0 z-0">
       {/* Animated grid background */}

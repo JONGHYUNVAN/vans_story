@@ -38,10 +38,10 @@ export function loadTempPost(postId: string): PostData | null {
   return saved ? JSON.parse(saved) : null;
 }
 
-// SSR용 게시물 목록 조회
+// SSR용 게시물 목록 조회 (직접 백엔드 API 호출)
 export async function getPostList(theme: string, category?: string, page = 1, limit = 10) {
   try {
-    const url = new URL(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/posts`);
+    const url = new URL(`${process.env.POST_API_URL || 'http://localhost:3001/api/v1'}/posts`);
     url.searchParams.append('theme', theme);
     if (category) url.searchParams.append('category', category);
     url.searchParams.append('page', page.toString());
@@ -66,9 +66,9 @@ export async function getPostList(theme: string, category?: string, page = 1, li
   }
 }
 
-// SSR용 개별 게시물 조회 (조회수 포함)
+// SSR용 개별 게시물 조회 (조회수 포함, 직접 백엔드 API 호출)
 export async function getPostWithViewCount(id: string, hasViewed = false): Promise<Post> {
-  const response = await ApiFetch.basicGet(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/posts/${id}`, {
+  const response = await ApiFetch.basicGet(`${process.env.POST_API_URL || 'http://localhost:3001/api/v1'}/posts/${id}`, {
     headers: {
       'x-viewed': hasViewed ? 'true' : 'false'
     },

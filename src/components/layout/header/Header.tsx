@@ -28,7 +28,7 @@ export default function Header({ isStorybook = false }: HeaderProps) {
 
   return (
     <header 
-      className={`${isStorybook ? 'relative' : 'fixed top-0 left-0'} w-full ${isHovered ? 'z-[50]' : 'z-[10]'} transition-all duration-300 ease-in-out`}
+      className={`${isStorybook ? 'relative' : 'fixed top-0 left-0'} w-full ${isHovered ? 'z-[100]' : 'z-[50]'} transition-all duration-300 ease-in-out`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

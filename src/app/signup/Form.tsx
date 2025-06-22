@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useTranslation } from '@/utils/i18n';
 
@@ -68,7 +67,7 @@ export default function SignupForm() {
 
   return (
     <FormProvider {...methods}>
-      <motion.div className="w-full max-w-md bg-white/20 hover:bg-white/50 backdrop-blur-md p-8 rounded-2xl shadow-xl relative transition-all duration-300">
+      <div className="w-full max-w-md bg-white/20 hover:bg-white/50 backdrop-blur-md p-8 rounded-2xl shadow-xl relative transition-all duration-300">
         <div className="absolute inset-2 border-2 border-gray-600/30 hover:border-gray-600/50 rounded-xl transition-colors duration-300" />
         
         <h2 className="text-3xl font-bold text-gray-700 mb-6 text-center relative z-10">Sign Up</h2>
@@ -125,7 +124,7 @@ export default function SignupForm() {
             Sign Up
           </button>
         </form>
-      </motion.div>
+      </div>
     </FormProvider>
   );
 }

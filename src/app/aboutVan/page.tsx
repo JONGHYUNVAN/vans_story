@@ -6,10 +6,14 @@ import { ProjectsSection } from './components/ProjectsSection';
 import { SkillsSection } from './components/SkillsSection';
 import { CertificationsSection } from './components/CertificationSection';
 
-export const metadata = {
-  title: 'About Van - Backend Developer Portfolio',
-  description: '백엔드 개발자 Van의 포트폴리오입니다. 기술 스택, 경험, 프로젝트를 소개합니다.',
-};
+// 메타데이터를 동적으로 생성하는 함수
+export async function generateMetadata() {
+  // 기본값으로 한국어 메타데이터 사용
+  return {
+    title: 'About Van - Backend Developer Portfolio',
+    description: '백엔드 개발자 Van의 포트폴리오입니다. 기술 스택, 경험, 프로젝트를 소개합니다.',
+  };
+}
 
 export default function AboutVanPage() {
   return (

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useTranslation } from '@/utils/i18n';
 
-const experiences = [
+const experiencesKo = [
   {
     id: 1,
     company: '소프트웨어 엔지니어링 부트캠프',
@@ -36,7 +36,6 @@ const experiences = [
     ],
     tech: ['Java', 'Spring Boot', 'JavaScript', 'MySQL', 'Git', 'AWS', 'Docker']
   },
-
   {
     id: 3,
     company: '아키아카',
@@ -69,13 +68,81 @@ const experiences = [
     ],
     tech: ['C#', '.NET Framework', 'WinForms', 'Oracle']
   }
-  
 ];
 
+const experiencesEn = [
+  {
+    id: 1,
+    company: 'Software Engineering Bootcamp',
+    position: 'Backend Development Course Completion',
+    period: '2022.10 - 2023.04',
+    location: 'Seoul, South Korea',
+    description:
+      'Through 6 months of intensive education, I practiced the entire process of Java/Spring-based web application development and learned practical-level skills from backend design, database modeling to deployment.',
+    achievements: [
+      'Spring Boot-based RESTful API design and implementation',
+      'ORM mapping using JPA and relational DB modeling practice',
+      'Development and deployment environment configuration using AWS and Docker',
+      'Acquired practical-oriented backend design skills including TDD, exception handling, and logging'
+    ],
+    tech: ['Java', 'Spring Boot', 'JPA', 'MySQL', 'Git', 'AWS', 'Docker', 'TDD']
+  },
+  {
+    id: 2,
+    company: 'Konkuk University',
+    position: 'Youth Work Experience Program SW Development Course',
+    period: '2024.05 - 2024.09',
+    location: 'Seoul, South Korea',
+    description:
+      'Participated in the SW development course of the Future Tomorrow Work Experience Program hosted by the Ministry of Employment and Labor and the Korea Chamber of Commerce and Industry, strengthening practical development capabilities through team projects and industry mentoring.',
+    achievements: [
+      'Project execution through 2 months of job training and 3 months of field practice',
+      'Team project development and deliverable production',
+      'Experience in Spring-based REST API design and cloud infrastructure configuration',
+      'Enhanced technical capabilities and collaboration skills through industry developer mentoring'
+    ],
+    tech: ['Java', 'Spring Boot', 'JavaScript', 'MySQL', 'Git', 'AWS', 'Docker']
+  },
+  {
+    id: 3,
+    company: 'AKIAKA',
+    position: 'Team A Leader, Meta2day Project Backend Implementation',
+    period: '2024.06 - 2024.09',
+    location: 'Seoul, South Korea',
+    description:
+      'At AKIAKA, which develops public and private archiving solutions, I served as Team A leader overseeing the backend implementation of the Meta2day project, leading the team and performing practical full-stack development.',
+    achievements: [
+      'Project schedule coordination and team member role assignment as Team A leader',
+      'Spring Boot-based backend architecture design and API implementation',
+      'Database modeling and query optimization using MySQL',
+      'Full-stack system development completion through Next.js and NestJS integration'
+    ],
+    tech: ['Java', 'Spring Boot', 'MySQL', 'Git', 'AWS']
+  },
+  {
+    id: 4,
+    company: 'DAEA Information System',
+    position: 'EMR System Maintenance and Form Management',
+    period: '2024.11 - Present',
+    location: 'Suwon, South Korea',
+    description:
+      'At DAEA Information System, a medical information system specialist company within Ajou University Hospital, I am responsible for maintaining C#-based EMR systems and creating and revising medical forms.',
+    achievements: [
+      'C#-based Electronic Medical Record (EMR) system maintenance and functional improvement',
+      'New form creation and revision according to medical field requirements for treatment, nursing, surgery, etc.',
+      'Requirements analysis through collaboration with hospital information management team and users',
+      'Stable system operation support including error correction, UI improvement, and version deployment'
+    ],
+    tech: ['C#', '.NET Framework', 'WinForms', 'Oracle']
+  }
+];
 
 export function ExperienceSection() {
-  const { t } = useTranslation('about');
+  const { t, locale } = useTranslation('about');
   const [selectedIndex, setSelectedIndex] = useState(0);
+
+  // 언어에 따라 데이터 선택
+  const experiences = locale === 'ko' ? experiencesKo : experiencesEn;
 
   return (
     <section className="py-20 border-b border-gray-200 dark:border-gray-800">
@@ -83,10 +150,10 @@ export function ExperienceSection() {
         {/* Section Header */}
         <div className="space-y-4">
           <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white">
-            Experience
+            {t('AboutVan.experience.title')}
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl">
-            부트캠프와 인턴십을 통해 쌓은 개발 경험과 학습 과정을 소개합니다.
+            {t('AboutVan.experience.description')}
           </p>
         </div>
 
@@ -129,7 +196,7 @@ export function ExperienceSection() {
           {/* Achievements */}
           <div className="space-y-3">
             <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
-              주요 성과
+              {t('AboutVan.experience.achievements')}
             </h4>
             <ul className="space-y-2">
               {experiences[selectedIndex].achievements.map((achievement, index) => (
@@ -144,7 +211,7 @@ export function ExperienceSection() {
           {/* Tech Stack */}
           <div className="space-y-3">
             <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
-              사용 기술
+              {t('AboutVan.experience.techUsed')}
             </h4>
             <div className="flex flex-wrap gap-2">
               {experiences[selectedIndex].tech.map((tech) => (

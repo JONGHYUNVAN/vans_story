@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useTranslation } from '@/utils/i18n';
 
-const projects = [
+const projectsKo = [
   {
     id: 1,
     title: 'Van\'s DevBlog',
@@ -104,11 +104,130 @@ const projects = [
   return dateB.getTime() - dateA.getTime();
 });
 
-const categories = ['All', '개인', '팀'];
+const projectsEn = [
+  {
+    id: 1,
+    title: 'Van\'s DevBlog',
+    description: 'A personal tech blog currently deployed. Full-stack development using Next.js and NestJS, implementing JWT authentication, image upload, and AI chat features. It also includes markdown writing functionality using the Tiptap editor.',
+    tech: ['Spring Boot','Kotlin','Next.js', 'Nest.js', 'TypeScript','MariaDB', 'MongoDB', 'Tailwind CSS'],
+    githubUrl: 'https://github.com/JONGHYUNVAN/vans_story',
+    linkUrl: 'https://vans-story.vercel.app/',
+    category: 'Personal',
+    status: 'Deployed',
+    date: '2024.12',
+    impact: 'Applied GitHub Actions CI/CD, Storybook documentation',
+    features: [
+      'JWT-based user authentication system',
+      'Post creation using Tiptap editor',
+      'AI chat modal functionality',
+      'Image upload and optimization',
+      'Multi-language support (Korean/English)',
+      'Component documentation using Storybook'
+    ]
+  },
+  {
+    id: 2,
+    title: 'Meta2day',
+    description: 'A backend development project I participated in as Team A leader at AKIAKA. I designed and implemented a Spring Boot-based backend architecture and produced high-quality results through collaboration with team members.',
+    tech: ['Next.js','Nest.js', 'TypeScript', 'MySQL', 'AWS'],
+    githubUrl: 'https://github.com/JONGHYUNVAN/Meta2day',
+    linkUrl: 'https://meta2day.com/',
+    category: 'Team',
+    status: 'Deployed',
+    date: '2024.09',
+    impact: 'Project leadership as Team A leader, backend architecture design',
+    features: [
+      'Spring Boot-based REST API development',
+      'MySQL database design and optimization',
+      'AWS cloud infrastructure configuration',
+      'Team project management and scheduling'
+    ]
+  },
+  {
+    id: 3,
+    title: 'Library Project',
+    description: 'A library website designed to generate user interest in the site and books, and collect activity data from logged-in users. It implements home, login, my page, ranking, and search features with responsive mobile support.',
+    tech: ['Spring Boot','Java', 'TypeScript', 'CSS', 'JavaScript','MySQL'],
+    githubUrl: 'https://github.com/JONGHYUNVAN/library-project',
+    category: 'Personal',
+    status: 'Completed',
+    date: '2024.08',
+    impact: 'First full-stack development experience',
+    features: [
+      'User authentication and login system',
+      'Book search and ranking functionality',
+      'Personalized my page',
+      'Responsive mobile UI',
+      'User activity data collection'
+    ]
+  },
+  {
+    id: 4,
+    title: 'MovieMovit',
+    description: 'A website that provides movie information and event information using external APIs. Full-stack development using Next.js and NestJS, implementing a platform where users can check various movie-related information and latest events.',
+    tech: ['Next.js', 'NestJS', 'TypeScript', 'External APIs'],
+    githubUrl: 'https://github.com/JONGHYUNVAN/moviemovit',
+    category: 'Personal',
+    status: 'Completed',
+    date: '2024.06',
+    impact: 'Next.js + NestJS full-stack development, external API integration and utilization experience',
+    features: [
+      'Movie information provision using external APIs',
+      'Movie-related event information inquiry',
+      'Next.js-based responsive frontend',
+      'NestJS-based backend API server',
+      'Type safety using TypeScript'
+    ]
+  },
+  {
+    id: 5,
+    title: 'I Pill U',
+    description: 'A personalized supplement service developed as the main project of Code States bootcamp. A personalized healthcare platform that recommends supplements based on users\' health conditions and needs, and manages dosing schedules. I participated as backend sub-leader.',
+    tech: ['Java', 'Spring Boot', 'Spring Security', 'JWT', 'MySQL', 'React'],
+    githubUrl: 'https://github.com/codestates-seb/seb42_main_013',
+    category: 'Team',
+    status: 'Completed',
+    date: '2023.04',
+    impact: 'Bootcamp main project, team leadership experience as backend sub-leader',
+    features: [
+      'Spring Security + JWT-based user authentication',
+      'Personalized supplement recommendation system',
+      'Supplement dosing schedule management (calendar/timeline)',
+      'Supplement information search using Naver Open API',
+      'Automatic supplement registration through barcode recognition',
+      'Mobile-optimized responsive UI'
+    ]
+  }
+].sort((a, b) => {
+  // 날짜를 비교하여 최신순으로 정렬
+  const dateA = new Date(a.date.replace('.', '/'));
+  const dateB = new Date(b.date.replace('.', '/'));
+  return dateB.getTime() - dateA.getTime();
+});
+
+const categoriesKo = ['All', '개인', '팀'];
+const categoriesEn = ['All', 'Personal', 'Team'];
+
+const statusLabelsKo = {
+  'Completed': '완료',
+  'Deployed': '배포중',
+  'InProgress': '진행중'
+};
+
+const statusLabelsEn = {
+  'Completed': 'Completed',
+  'Deployed': 'Deployed',
+  'InProgress': 'In Progress'
+};
 
 export function ProjectsSection() {
-  const { t } = useTranslation('about');
+  const { t, locale } = useTranslation('about');
   const [selectedCategory, setSelectedCategory] = useState('All');
+
+  // 언어에 따라 데이터 선택
+  const projects = locale === 'ko' ? projectsKo : projectsEn;
+  const categories = locale === 'ko' ? categoriesKo : categoriesEn;
+  const statusLabels = locale === 'ko' ? statusLabelsKo : statusLabelsEn;
 
   const filteredProjects = selectedCategory === 'All' 
     ? projects 
@@ -120,10 +239,10 @@ export function ProjectsSection() {
         {/* Section Header */}
         <div className="space-y-4">
           <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white">
-            Projects
+            {t('AboutVan.projects.title')}
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl">
-            직접 기획하고 개발한 프로젝트들입니다. 백엔드 개발을 중심으로 풀스택 역량을 키워가고 있습니다.
+            {t('AboutVan.projects.description')}
           </p>
         </div>
 
@@ -170,7 +289,7 @@ export function ProjectsSection() {
                           ? 'bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300'
                           : 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
                       }`}>
-                        {project.status === 'Completed' ? '완료' : project.status === 'Deployed' ? '배포중' : '진행중'}
+                        {statusLabels[project.status as keyof typeof statusLabels] || project.status}
                       </span>
                     </div>
                   </div>
@@ -209,7 +328,7 @@ export function ProjectsSection() {
                 {project.features && (
                   <div className="space-y-2">
                     <h4 className="text-sm font-medium text-gray-900 dark:text-white">
-                      주요 기능
+                      {locale === 'ko' ? '주요 기능' : 'Key Features'}
                     </h4>
                     <div className="grid md:grid-cols-2 gap-1">
                       {project.features.map((feature, index) => (
@@ -225,14 +344,14 @@ export function ProjectsSection() {
                 {/* Impact */}
                 <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded border-l-4 border-gray-300 dark:border-gray-600">
                   <p className="text-sm text-gray-700 dark:text-gray-300">
-                    <span className="font-medium">성과:</span> {project.impact}
+                    <span className="font-medium">{locale === 'ko' ? '성과:' : 'Impact:'}</span> {project.impact}
                   </p>
                 </div>
 
                 {/* Tech Stack */}
                 <div className="space-y-2">
                   <h4 className="text-sm font-medium text-gray-900 dark:text-white">
-                    사용 기술
+                    {locale === 'ko' ? '사용 기술' : 'Technologies Used'}
                   </h4>
                   <div className="flex flex-wrap gap-2">
                     {project.tech.map((tech) => (

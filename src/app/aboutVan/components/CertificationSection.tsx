@@ -2,7 +2,7 @@
 
 import { useTranslation } from '@/utils/i18n';
 
-const certifications = [
+const certificationsKo = [
   {
     name: 'PCCP 1급',
     fullName: 'Programmers Certified Coding Professional',
@@ -35,8 +35,44 @@ const certifications = [
   }
 ];
 
+const certificationsEn = [
+  {
+    name: 'PCCP Level 1',
+    fullName: 'Programmers Certified Coding Professional',
+    issuer: 'Programmers',
+    date: '2023',
+    description: 'Certification that validates programming skills and algorithm problem-solving abilities',
+    relevance: 'Demonstrates logical thinking and efficient code writing skills required for backend development',
+    icon: '💻',
+    color: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
+  },
+  {
+    name: 'SQLD',
+    fullName: 'SQL Developer',
+    issuer: 'Korea Data Industry Promotion Institute',
+    date: '2025',
+    description: 'SQL Developer certification that validates database design and SQL writing abilities',
+    relevance: 'Demonstrates database design, query optimization, and data modeling capabilities, which are core to backend development',
+    icon: '🗄️',
+    color: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
+  },
+  {
+    name: 'TOEIC 890',
+    fullName: 'Test of English for International Communication',
+    issuer: 'ETS',
+    date: '2024',
+    description: 'Test that measures international English communication abilities',
+    relevance: 'Ability to understand English technical documentation, API documentation, and open source projects',
+    icon: '🌍',
+    color: 'bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-800'
+  }
+];
+
 export function CertificationsSection() {
-  const { t } = useTranslation('about');
+  const { t, locale } = useTranslation('about');
+
+  // 언어에 따라 데이터 선택
+  const certifications = locale === 'ko' ? certificationsKo : certificationsEn;
 
   return (
     <section className="py-20">
@@ -44,10 +80,10 @@ export function CertificationsSection() {
         {/* Section Header */}
         <div className="space-y-4">
           <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white">
-            Certifications
+            {t('AboutVan.certifications.title')}
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl">
-            백엔드 개발 역량을 뒷받침하는 자격증과 성과입니다. 지속적인 학습과 성장을 통해 전문성을 키워가고 있습니다.
+            {t('AboutVan.certifications.description')}
           </p>
         </div>
 
@@ -86,7 +122,6 @@ export function CertificationsSection() {
             </div>
           ))}
         </div>
-
 
       </div>
     </section>

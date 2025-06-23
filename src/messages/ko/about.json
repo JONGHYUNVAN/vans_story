@@ -7,22 +7,57 @@
     },
     "techStack": {
       "title": "기술 스택",
-      "subtitle": "2025년 최신 백엔드 기술 스택으로 혁신적인 솔루션을 만듭니다"
+      "subtitle": "2025년 최신 백엔드 기술 스택으로 혁신적인 솔루션을 만듭니다",
+      "description": "주로 프로젝트를 통해 익힌 기술들입니다.\n지속적으로 학습하며 경험을 쌓고 있습니다.",
+      "commonAdvantages": "🌍 잘 알려진 장점",
+      "myChoice": "⭐ 제가 선택한 이유"
     },
     "education": {
       "title": "학력"
     },
     "experience": {
       "title": "경력",
-      "subtitle": "다양한 환경에서 쌓은 백엔드 개발 경험과 성장 이야기"
+      "subtitle": "다양한 환경에서 쌓은 백엔드 개발 경험과 성장 이야기",
+      "description": "부트캠프와 인턴십을 통해 쌓은 개발 경험과 학습 과정을 소개합니다.",
+      "achievements": "주요 성과",
+      "techUsed": "사용 기술"
     },
     "projects": {
       "title": "주요 프로젝트",
-      "subtitle": "실제 비즈니스 문제를 해결한 프로젝트들을 소개합니다"
+      "subtitle": "실제 비즈니스 문제를 해결한 프로젝트들을 소개합니다",
+      "description": "직접 기획하고 개발한 프로젝트들입니다. 백엔드 개발을 중심으로 풀스택 역량을 키워가고 있습니다.",
+      "categories": {
+        "all": "All",
+        "personal": "개인",
+        "team": "팀"
+      },
+      "status": {
+        "completed": "완료",
+        "deployed": "배포중",
+        "inProgress": "진행중"
+      }
     },
     "skills": {
       "title": "역량 & 전문성",
-      "subtitle": "5년간의 경험으로 쌓은 기술적 역량과 소프트 스킬"
+      "subtitle": "5년간의 경험으로 쌓은 기술적 역량과 소프트 스킬",
+      "description": "백엔드 개발을 중심으로 익힌 기술들과 경험입니다. 지속적으로 학습하며 성장하고 있습니다.",
+      "categories": {
+        "languages": "언어",
+        "databases": "데이터베이스", 
+        "authSecurity": "인증/보안",
+        "devTools": "개발 도구",
+        "cloudDeploy": "클라우드 및 배포",
+        "testDocs": "테스트 및 문서화"
+      }
+    },
+    "hero": {
+      "greeting": "안녕하세요, 👋",
+      "name": "저는 Van입니다",
+      "role": "Backend Developer",
+      "contactInfo": "연락처 정보",
+      "location": "수원, 대한민국",
+      "currentWork": "병원 시스템 개발 (EMR)",
+      "socialLinks": "소셜 링크"
     },
     "interests": {
       "title": "관심사 & 활동"
@@ -31,6 +66,10 @@
       "title": "연락하기",
       "subtitle": "새로운 프로젝트나 협업 기회에 대해 이야기해보세요"
     },
-    "footer": "함께 더 나은 개발자가 되어요! 🚀"
+    "footer": "함께 더 나은 개발자가 되어요! 🚀",
+    "certifications": {
+      "title": "자격증",
+      "description": "백엔드 개발 역량을 뒷받침하는 자격증과 성과입니다. 지속적인 학습과 성장을 통해 전문성을 키워가고 있습니다."
+    }
   }
 } 

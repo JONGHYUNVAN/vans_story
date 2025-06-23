@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from '@/utils/i18n';
 
-const techStack = [
+const techStackKo = [
   {
     name: 'Next.js',
     category: 'Frontend',
@@ -51,15 +51,66 @@ const techStack = [
   }
 ];
 
+const techStackEn = [
+  {
+    name: 'Next.js',
+    category: 'Frontend',
+    icon: '/nextjs.webp',
+    color: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800',
+    hoverColor: 'hover:bg-blue-100 dark:hover:bg-blue-900/40',
+    commonReason: 'A React-based full-stack framework widely used for SEO optimization and performance improvement through SSR/SSG.',
+    myReason: 'I chose it because I can separate image and AI routing functions based on API Routes to operate in a microservice form without additional paid server configuration, and it has built-in static resource optimization features like WebP automatic conversion and Webpack configuration automation.'
+  },
+  {
+    name: 'NestJS',
+    category: 'Backend',
+    icon: '/nestjs.webp',
+    color: 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800',
+    hoverColor: 'hover:bg-red-100 dark:hover:bg-red-900/40',
+    commonReason: 'A TypeScript-based Node.js framework used for building scalable server-side applications through decorators and dependency injection.',
+    myReason: 'I chose it because it can share types with Next.js used in the frontend based on the same TypeScript, and the backend structure is similar to Spring, allowing stable server development with familiar architecture patterns.'
+  },
+  {
+    name: 'Spring',
+    category: 'Backend',
+    icon: '/spring.webp',
+    color: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800',
+    hoverColor: 'hover:bg-green-100 dark:hover:bg-green-900/40',
+    commonReason: 'A Java-based framework that provides enterprise features such as DI, AOP, and transaction management, ensuring strong structural stability and productivity for handling complex business logic.',
+    myReason: 'I chose it as the most widely used backend framework with stability and proven architecture. When used with Kotlin, it can share similar structures and development patterns with NestJS.'
+  },
+  {
+    name: 'MariaDB',
+    category: 'Database',
+    icon: '/mariadb.webp',
+    color: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800',
+    hoverColor: 'hover:bg-blue-100 dark:hover:bg-blue-900/40',
+    commonReason: 'A MySQL-compatible open-source relational database widely used in web applications for high performance and stability.',
+    myReason: 'I chose it because it\'s very similar to MySQL and allows me to use features that are not available in the free version of MySQL.'
+  },
+  {
+    name: 'MongoDB',
+    category: 'Database',
+    icon: '/mongodb.webp',
+    color: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800',
+    hoverColor: 'hover:bg-green-100 dark:hover:bg-green-900/40',
+    commonReason: 'A NoSQL document database used for rapid development and scalability with flexible schema and JSON-like structure.',
+    myReason: 'I chose MongoDB because in the process of storing structured data through Tiptap → Next.js → NestJS, the schema flexibility and JSON-based document storage structure fit well.'
+  }
+];
+
 const categories = ['Frontend', 'Backend', 'Database'];
 
 export function TechStackSection() {
-  const { t } = useTranslation('about');
+  const { t, locale } = useTranslation('about');
   const [hoveredTech, setHoveredTech] = useState<string | null>(null);
   const [typewriterCommonText, setTypewriterCommonText] = useState<string>('');
   const [typewriterMyText, setTypewriterMyText] = useState<string>('');
   const [isTypingCommon, setIsTypingCommon] = useState<boolean>(false);
   const [isTypingMy, setIsTypingMy] = useState<boolean>(false);
+
+  // 언어에 따라 데이터 선택
+  const techStack = locale === 'ko' ? techStackKo : techStackEn;
 
   // Typewriter effect for tech descriptions
   useEffect(() => {
@@ -111,7 +162,7 @@ export function TechStackSection() {
     }, 15); // 15ms per character for faster typing
 
     return () => clearInterval(commonInterval);
-  }, [hoveredTech]);
+  }, [hoveredTech, techStack]);
 
   const getTechsByCategory = (category: string) => {
     return techStack.filter(tech => tech.category === category);
@@ -123,11 +174,10 @@ export function TechStackSection() {
         {/* Section Header */}
         <div className="space-y-4">
           <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white">
-            Tech Stack
+            {t('AboutVan.techStack.title')}
           </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl">
-            주로 프로젝트를 통해 익힌 기술들입니다. <br />
-            지속적으로 학습하며 경험을 쌓고 있습니다.
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl whitespace-pre-line">
+            {t('AboutVan.techStack.description')}
           </p>
         </div>
 
@@ -182,7 +232,7 @@ export function TechStackSection() {
                         <div className="space-y-3 mt-4 pb-3">
                           <div className="p-3 bg-white/50 dark:bg-gray-800/50 rounded">
                             <h5 className="font-medium text-gray-900 dark:text-white mb-1 text-sm">
-                              🌍 잘 알려진 장점
+                              {t('AboutVan.techStack.commonAdvantages')}
                             </h5>
                             <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
                               {hoveredTech === tech.name ? (
@@ -198,9 +248,9 @@ export function TechStackSection() {
                             </p>
                           </div>
                           
-                          <div className="p-3 bg-white/50 dark:bg-gray-800/50 rounded">
+                          <div className="p-3 bg-blue-50/50 dark:bg-blue-900/20 rounded">
                             <h5 className="font-medium text-gray-900 dark:text-white mb-1 text-sm">
-                              💡 채택 이유
+                              {t('AboutVan.techStack.myChoice')}
                             </h5>
                             <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
                               {hoveredTech === tech.name ? (

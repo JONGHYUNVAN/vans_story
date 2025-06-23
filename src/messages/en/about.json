@@ -7,22 +7,57 @@
     },
     "techStack": {
       "title": "Tech Stack",
-      "subtitle": "Creating innovative solutions with cutting-edge backend technologies of 2025"
+      "subtitle": "Creating innovative solutions with cutting-edge backend technologies of 2025",
+      "description": "These are the technologies I've mainly learned through projects.\nI'm continuously learning and gaining experience.",
+      "commonAdvantages": "🌍 Well-known Advantages",
+      "myChoice": "⭐ Why I Chose It"
     },
     "education": {
       "title": "Education"
     },
     "experience": {
       "title": "Experience",
-      "subtitle": "Backend development experience and growth story from various environments"
+      "subtitle": "Backend development experience and growth story from various environments",
+      "description": "Introducing development experience and learning process through bootcamp and internships.",
+      "achievements": "Key Achievements",
+      "techUsed": "Technologies Used"
     },
     "projects": {
       "title": "Featured Projects",
-      "subtitle": "Introducing projects that solved real business problems"
+      "subtitle": "Introducing projects that solved real business problems",
+      "description": "Projects I've directly planned and developed. I'm building full-stack capabilities centered on backend development.",
+      "categories": {
+        "all": "All",
+        "personal": "Personal",
+        "team": "Team"
+      },
+      "status": {
+        "completed": "Completed",
+        "deployed": "Deployed",
+        "inProgress": "In Progress"
+      }
     },
     "skills": {
       "title": "Skills & Expertise",
-      "subtitle": "Technical competencies and soft skills built over 5 years of experience"
+      "subtitle": "Technical competencies and soft skills built over 5 years of experience",
+      "description": "Technologies and experience I've learned focusing on backend development. I'm continuously learning and growing.",
+      "categories": {
+        "languages": "Languages",
+        "databases": "Databases",
+        "authSecurity": "Auth/Security",
+        "devTools": "Dev Tools",
+        "cloudDeploy": "Cloud & Deploy",
+        "testDocs": "Test & Docs"
+      }
+    },
+    "hero": {
+      "greeting": "Hello, 👋",
+      "name": "I'm Van",
+      "role": "Backend Developer",
+      "contactInfo": "Contact Information",
+      "location": "Suwon, South Korea",
+      "currentWork": "Hospital System Development (EMR)",
+      "socialLinks": "Social Links"
     },
     "interests": {
       "title": "Interests & Activities"
@@ -31,6 +66,10 @@
       "title": "Let's Connect",
       "subtitle": "Let's talk about new projects or collaboration opportunities"
     },
-    "footer": "Let's become better developers together! 🚀"
+    "footer": "Let's become better developers together! 🚀",
+    "certifications": {
+      "title": "Certifications",
+      "description": "Certifications and achievements that support backend development capabilities. I'm continuously building expertise through learning and growth."
+    }
   }
 }

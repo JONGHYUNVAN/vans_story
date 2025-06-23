@@ -2,7 +2,7 @@
 
 import { useTranslation } from '@/utils/i18n';
 
-const skillCategories = [
+const skillCategoriesKo = [
   {
     title: '언어',
     skills: ['Java', 'Kotlin', 'TypeScript']
@@ -29,8 +29,38 @@ const skillCategories = [
   }
 ];
 
+const skillCategoriesEn = [
+  {
+    title: 'Languages',
+    skills: ['Java', 'Kotlin', 'TypeScript']
+  },
+  {
+    title: 'Databases',
+    skills: ['MySQL/MariaDB', 'Oracle', 'MongoDB']
+  },
+  {
+    title: 'Auth/Security',
+    skills: ['JWT', 'Spring Security']
+  },
+  {
+    title: 'Dev Tools',
+    skills: ['Git/GitHub', 'GitHub Actions', 'Postman', 'Swagger','Docker']
+  },
+  {
+    title: 'Cloud & Deploy',
+    skills: ['EC2', 'RDS', 'Route53','S3', 'CloudFront']
+  },
+  {
+    title: 'Test & Docs',
+    skills: ['JUnit', 'MockMvc', 'Jest', 'JavaDoc/JSDoc','Storybook', 'Markdown Docs']
+  }
+];
+
 export function SkillsSection() {
-  const { t } = useTranslation('about');
+  const { t, locale } = useTranslation('about');
+
+  // 언어에 따라 데이터 선택
+  const skillCategories = locale === 'ko' ? skillCategoriesKo : skillCategoriesEn;
 
   return (
     <section className="py-20 border-b border-gray-200 dark:border-gray-800">
@@ -38,10 +68,10 @@ export function SkillsSection() {
         {/* Section Header */}
         <div className="space-y-4">
           <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white">
-            Skills
+            {t('AboutVan.skills.title')}
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl">
-            백엔드 개발을 중심으로 익힌 기술들과 경험입니다. 지속적으로 학습하며 성장하고 있습니다.
+            {t('AboutVan.skills.description')}
           </p>
         </div>
 

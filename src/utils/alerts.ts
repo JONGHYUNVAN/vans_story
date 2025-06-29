@@ -1,6 +1,22 @@
 import Swal from 'sweetalert2';
 
 /**
+ * 일반 알림을 표시하는 함수
+ * @param {string} title - 알림의 제목
+ * @param {string} text - 알림의 내용 (선택사항)
+ * @param {'success' | 'error' | 'warning' | 'info'} icon - 알림 아이콘
+ */
+export const showAlert = (title: string, text?: string, icon: 'success' | 'error' | 'warning' | 'info' = 'info') => {
+    Swal.fire({
+        icon: icon,
+        title: title,
+        text: text,
+        showConfirmButton: true,
+        timer: icon === 'success' ? 2000 : undefined
+    });
+};
+
+/**
  * 환영 알림을 표시하는 함수
  * @param {string} title - 알림의 제목
  * @description 

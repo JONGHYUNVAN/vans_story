@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { AuthState } from '@/interfaces/auth/types';
+import { AuthState, OAuthProvider } from '@/interfaces/auth/types';
 import { decodeToken } from '@/utils/decodeToken';
 
 /**
@@ -11,6 +11,10 @@ const initialState: AuthState = {
   isAuthenticated: false,
   isLoading: false,
   error: null,
+  // OAuth 관련 초기값
+  oauthLoading: false,
+  oauthProvider: null,
+  oauthError: null,
 };
 
 /**
@@ -30,6 +34,10 @@ const authSlice = createSlice({
       state.user = null;
       state.isAuthenticated = false;
       state.error = null;
+      // OAuth 상태도 초기화
+      state.oauthLoading = false;
+      state.oauthProvider = null;
+      state.oauthError = null;
     },
 
     /**
@@ -109,6 +117,51 @@ const authSlice = createSlice({
         }
       }
     },
+
+    /**
+     * OAuth 로그인 시작
+     * @param {AuthState} state - 현재 인증 상태
+     * @param {PayloadAction<OAuthProvider>} action - OAuth 제공자
+     * @returns {void}
+     */
+    oauthStart: (state, action) => {
+      state.oauthLoading = true;
+      state.oauthProvider = action.payload;
+      state.oauthError = null;
+    },
+
+    /**
+     * OAuth 로그인 성공
+     * @param {AuthState} state - 현재 인증 상태
+     * @param {PayloadAction<{ email: string; provider: OAuthProvider }>} action - 사용자 정보
+     * @returns {void}
+     */
+    oauthSuccess: (state, action) => {
+      state.user = { email: action.payload.email };
+      state.isAuthenticated = true;
+      state.oauthError = null;
+      state.error = null;
+    },
+
+    /**
+     * OAuth 로그인 실패
+     * @param {AuthState} state - 현재 인증 상태
+     * @param {PayloadAction<string>} action - 에러 메시지
+     * @returns {void}
+     */
+    oauthFailure: (state, action) => {
+      state.oauthError = action.payload;
+    },
+
+    /**
+     * OAuth 로그인 완료 (성공/실패 무관)
+     * @param {AuthState} state - 현재 인증 상태
+     * @returns {void}
+     */
+    oauthFinish: (state) => {
+      state.oauthLoading = false;
+      state.oauthProvider = null;
+    },
   },
 });
 
@@ -120,7 +173,12 @@ export const {
   loginSuccess, 
   loginFailure, 
   loginFinish, 
-  checkAuth 
+  checkAuth,
+  // OAuth 액션들
+  oauthStart,
+  oauthSuccess,
+  oauthFailure,
+  oauthFinish
 } = authSlice.actions;
 
 export default authSlice.reducer;

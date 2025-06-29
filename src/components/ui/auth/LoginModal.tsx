@@ -7,7 +7,7 @@ import { RootState } from '@/store/store';
 import { useAppDispatch } from '@/store/hooks';
 import { closeLoginModal } from '@/store/modal/slice';
 import { authService } from '@/components/features/auth/authService';
-import { loginFailure, loginStart, loginSuccess, loginFinish} from '@/store/auth/slice';
+import { loginFailure, loginStart, loginSuccess, loginFinish, oauthStart, oauthSuccess, oauthFailure, oauthFinish } from '@/store/auth/slice';
 import { useTranslation } from '@/utils/i18n';
 import { showWelcomeAlert } from '@/utils/alerts';
 
@@ -17,6 +17,9 @@ const LoginModal = () => {
   const [passwordError, setPasswordError] = useState('');
   const { t } = useTranslation('');   
   const isLoading = useSelector((state: RootState) => state.auth.isLoading);
+  const oauthLoading = useSelector((state: RootState) => state.auth.oauthLoading);
+  const oauthProvider = useSelector((state: RootState) => state.auth.oauthProvider);
+  const oauthError = useSelector((state: RootState) => state.auth.oauthError);
   const [saveEmail, setSaveEmail] = useState(false);
   const [email, setEmail] = useState('');
 
@@ -72,16 +75,62 @@ const LoginModal = () => {
     }
   };
 
+  /**
+   * Kakao OAuth 로그인 핸들러
+   * @description OAuth 중간 서버로 리다이렉트하여 Kakao 로그인 시작
+   */
   const handleKakaoLogin = () => {
-    // 카카오 로그인 로직 추가
+    try {
+      dispatch(oauthStart('kakao'));
+      
+      // 디버깅: 실제 생성된 URL 확인
+      const frontendUrl = window.location.origin;
+      const oauthUrl = `${process.env.NEXT_PUBLIC_OAUTH_SERVER_URL || 'http://localhost:3004'}/api/auth/kakao/login?frontend_url=${encodeURIComponent(frontendUrl)}`;
+      console.log('🔍 OAuth URL 디버깅:', {
+        frontendUrl,
+        oauthServerUrl: process.env.NEXT_PUBLIC_OAUTH_SERVER_URL,
+        finalUrl: oauthUrl
+      });
+      
+      authService.kakaoLogin();
+    } catch (error) {
+      console.error('Kakao login error:', error);
+      dispatch(oauthFailure('카카오 로그인 중 오류가 발생했습니다.'));
+      dispatch(oauthFinish());
+    }
   };
 
+  /**
+   * Google OAuth 로그인 핸들러
+   * @description OAuth 중간 서버로 리다이렉트하여 Google 로그인 시작
+   */
   const handleGoogleLogin = () => {
-    // 구글 로그인 로직 추가
+    try {
+      dispatch(oauthStart('google'));
+      
+      // 디버깅: 실제 생성된 URL 확인
+      const frontendUrl = window.location.origin;
+      const oauthUrl = `${process.env.NEXT_PUBLIC_OAUTH_SERVER_URL || 'http://localhost:3004'}/api/auth/google/login?frontend_url=${encodeURIComponent(frontendUrl)}`;
+      console.log('🔍 OAuth URL 디버깅:', {
+        frontendUrl,
+        oauthServerUrl: process.env.NEXT_PUBLIC_OAUTH_SERVER_URL,
+        finalUrl: oauthUrl
+      });
+      
+      authService.googleLogin();
+    } catch (error) {
+      console.error('Google login error:', error);
+      dispatch(oauthFailure('구글 로그인 중 오류가 발생했습니다.'));
+      dispatch(oauthFinish());
+    }
   };
 
   const handleCloseModal = () => {
     setPasswordError(''); 
+    // OAuth 상태도 초기화
+    if (oauthLoading) {
+      dispatch(oauthFinish());
+    }
     dispatch(closeLoginModal());
   };
 
@@ -180,6 +229,20 @@ const LoginModal = () => {
                   <p className="text-red-500 text-xl Nanum-Pen-Script mb-4 neon-text-red">{passwordError}</p>
                 )}
 
+                {/* OAuth 에러 메시지 */}
+                {oauthError && (
+                  <p className="text-red-500 text-xl Nanum-Pen-Script mb-4 neon-text-red">{oauthError}</p>
+                )}
+
+                {/* OAuth 로딩 상태 */}
+                {oauthLoading && (
+                  <div className="mb-4 p-3 bg-blue-900/30 rounded-lg border border-blue-500">
+                    <p className="text-blue-300 text-center">
+                      {oauthProvider === 'kakao' ? '카카오' : '구글'} 로그인 처리 중...
+                    </p>
+                  </div>
+                )}
+
                 {/* 로그인 및 회원가입 안내 */}
                 <div className="flex mt-10 items-center justify-center my-5">
                   <div className="flex-grow border-t border-gray-600"></div>
@@ -201,10 +264,14 @@ const LoginModal = () => {
               {/* 소셜 로그인 버튼들 */}
               <ul className="flex justify-center mt-6 space-x-14">
                 <li>
-                  <a 
-                    href="#" 
+                  <button 
                     onClick={handleKakaoLogin} 
-                    className="flex items-center justify-center w-12 h-12 text-2xl text-white transition-transform duration-200 rounded-full social-icon icoKakao"
+                    disabled={oauthLoading || isLoading}
+                    className={`flex items-center justify-center w-12 h-12 text-2xl text-white transition-transform duration-200 rounded-full social-icon icoKakao ${
+                      oauthLoading || isLoading 
+                        ? 'opacity-50 cursor-not-allowed' 
+                        : 'hover:scale-110 cursor-pointer'
+                    }`}
                   >
                     <Image 
                       src="/kakao.webp" 
@@ -214,13 +281,17 @@ const LoginModal = () => {
                       className="rounded-full" 
                       style={{ width: 'auto', height: 'auto' }} 
                     />
-                  </a>
+                  </button>
                 </li>
                 <li>
-                  <a 
-                    href="#" 
+                  <button 
                     onClick={handleGoogleLogin} 
-                    className="flex items-center justify-center w-12 h-12 text-2xl text-white transition-transform duration-200 rounded-full social-icon icoGoogle"
+                    disabled={oauthLoading || isLoading}
+                    className={`flex items-center justify-center w-12 h-12 text-2xl text-white transition-transform duration-200 rounded-full social-icon icoGoogle ${
+                      oauthLoading || isLoading 
+                        ? 'opacity-50 cursor-not-allowed' 
+                        : 'hover:scale-110 cursor-pointer'
+                    }`}
                   >
                     <Image 
                       src="/google.webp" 
@@ -230,7 +301,7 @@ const LoginModal = () => {
                       className="rounded-full" 
                       style={{ width: 30, height: 30 }} 
                     />
-                  </a>
+                  </button>
                 </li>
               </ul>
             </div>

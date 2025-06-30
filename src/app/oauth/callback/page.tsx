@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAppDispatch } from '@/store/hooks';
 import { authService } from '@/components/features/auth/authService';
@@ -12,10 +12,9 @@ import { tokenStorage } from '@/utils/token';
 import type { OAuthProvider } from '@/interfaces/auth/types';
 
 /**
- * OAuth 콜백 처리 페이지
- * @description OAuth 중간 서버에서 리다이렉트된 토큰을 처리하고 로그인을 완료
+ * OAuth 콜백 처리 컴포넌트 (내부)
  */
-export default function OAuthCallbackPage() {
+function OAuthCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
@@ -134,5 +133,31 @@ export default function OAuthCallbackPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+/**
+ * OAuth 콜백 처리 페이지
+ * @description OAuth 중간 서버에서 리다이렉트된 토큰을 처리하고 로그인을 완료
+ */
+export default function OAuthCallbackPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-[#191919]">
+        <div className="text-center">
+          <div className="electric-border rounded-xl p-8">
+            <div className="bg-[#191919] opacity-90 rounded-xl p-6">
+              <h1 className="text-white text-2xl mb-4 neon-text">OAuth 로그인 처리 중...</h1>
+              <div className="flex justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2ecc71]"></div>
+              </div>
+              <p className="text-gray-300 mt-4">잠시만 기다려주세요...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    }>
+      <OAuthCallbackContent />
+    </Suspense>
   );
 } 

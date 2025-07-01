@@ -82,16 +82,7 @@ const LoginModal = () => {
   const handleKakaoLogin = () => {
     try {
       dispatch(oauthStart('kakao'));
-      
-      // 디버깅: 실제 생성된 URL 확인
-      const frontendUrl = window.location.origin;
-      const oauthUrl = `${process.env.NEXT_PUBLIC_OAUTH_SERVER_URL || 'http://localhost:3004'}/api/auth/kakao/login?frontend_url=${encodeURIComponent(frontendUrl)}`;
-      console.log('🔍 OAuth URL 디버깅:', {
-        frontendUrl,
-        oauthServerUrl: process.env.NEXT_PUBLIC_OAUTH_SERVER_URL,
-        finalUrl: oauthUrl
-      });
-      
+           
       authService.kakaoLogin();
     } catch (error) {
       console.error('Kakao login error:', error);
@@ -110,7 +101,7 @@ const LoginModal = () => {
       
       // 디버깅: 실제 생성된 URL 확인
       const frontendUrl = window.location.origin;
-      const oauthUrl = `${process.env.NEXT_PUBLIC_OAUTH_SERVER_URL || 'http://localhost:3004'}/api/auth/google/login?frontend_url=${encodeURIComponent(frontendUrl)}`;
+      const oauthUrl = `${process.env.NEXT_PUBLIC_OAUTH_SERVER_URL}/api/auth/google/login?frontend_url=${encodeURIComponent(frontendUrl)}`;
       console.log('🔍 OAuth URL 디버깅:', {
         frontendUrl,
         oauthServerUrl: process.env.NEXT_PUBLIC_OAUTH_SERVER_URL,

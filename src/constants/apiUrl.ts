@@ -7,7 +7,7 @@ export const API_URLS = {
     CALLBACK: `/api/auth/callback`,  // 프론트엔드 OAuth 콜백 API
   },
   OAUTH: {
-    SERVER_URL: process.env.NEXT_PUBLIC_OAUTH_SERVER_URL || 'http://localhost:3004',
+    SERVER_URL: process.env.NEXT_PUBLIC_OAUTH_SERVER_URL,
     KAKAO_LOGIN: '/api/auth/kakao/login',
     GOOGLE_LOGIN: '/api/auth/google/login',
     VERIFY: '/api/auth/verify',

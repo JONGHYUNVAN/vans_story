@@ -1,9 +1,9 @@
 {
   "AboutVan": {
-    "subtitle": "Hello! I'm Van, a backend developer who loves to code ✨",
+    "subtitle": "Backend Developer solving problems with integrated perspective across multiple languages and technologies. ⚡",
     "greeting": {
       "title": "Nice to meet you! 👋",
-      "description": "Hello! I'm Van, a backend developer who continuously learns and grows. I'm passionate about designing scalable and reliable systems, and solving complex business problems with technical solutions. With 5 years of experience, I've been building systems that satisfy both performance and scalability using modern backend architecture and cloud technologies."
+      "description": "Hello! I'm Van, a backend developer who continuously learns and grows. I have directly planned and developed various projects, implementing backend features required in practice such as JWT-based user authentication, image upload processing, and search functionality. With a strong interest in code quality and system scalability, I have also experienced CI/CD automation using GitHub Actions and ELB-based traffic distribution configuration. I'm currently participating in EMR system development in the medical field."
     },
     "techStack": {
       "title": "Tech Stack",
@@ -39,7 +39,7 @@
     },
     "skills": {
       "title": "Skills & Expertise",
-      "subtitle": "Technical competencies and soft skills built over 5 years of experience",
+      "subtitle": "Technical competencies and soft skills built through various projects and experiences",
       "description": "Technologies and experience I've learned focusing on backend development. I'm continuously learning and growing.",
       "categories": {
         "languages": "Languages",

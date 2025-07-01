@@ -182,7 +182,7 @@ export const oauthUtils = {
    * @returns {string} OAuth 중간 서버 URL
    */
   buildOAuthUrl(provider: OAuthProvider, frontendUrl: string): string {
-    const oauthServerUrl = process.env.NEXT_PUBLIC_OAUTH_SERVER_URL || 'http://localhost:3004';
+    const oauthServerUrl = process.env.NEXT_PUBLIC_OAUTH_SERVER_URL;
     const endpoint = provider === 'kakao' ? '/api/auth/kakao/login' : '/api/auth/google/login';
     
     return `${oauthServerUrl}${endpoint}?frontend_url=${encodeURIComponent(frontendUrl)}`;

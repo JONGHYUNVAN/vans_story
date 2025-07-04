@@ -178,57 +178,11 @@ export const authService = {
     }
   },
 
-  /**
-   * OAuth 콜백 처리 (deprecated - exchangeCodeForToken 사용 권장)
-   * @deprecated 임시 코드 교환 방식으로 변경됨
-   */
-  async handleOAuthCallback(token: string, provider: OAuthProvider) {
-    // 이전 방식과의 호환성을 위해 유지
-    return this.exchangeCodeForToken(token);
-  },
 
-  /**
-   * OAuth 토큰 검증
-   * @param {string} token - 검증할 JWT 토큰
-   * @returns {Promise<Object>} 토큰 검증 결과
-   * @throws {Error} 토큰 검증 실패 시 에러 발생
-   */
-  async verifyOAuthToken(token: string) {
-    const res = await fetch(`${API_URLS.OAUTH.SERVER_URL}${API_URLS.OAUTH.VERIFY}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ token }),
-    });
 
-    if (!res.ok) {
-      throw new Error('Token verification failed');
-    }
 
-    return res.json();
-  },
 
-  /**
-   * OAuth 계정 연결
-   * @param {OAuthProvider} provider - OAuth 제공자 (kakao/google)
-   * @param {string} providerId - OAuth 제공자의 사용자 ID
-   * @returns {Promise<Object>} 연결 결과
-   * @throws {Error} 연결 실패 시 에러 발생
-   * @description 이미 로그인된 사용자가 추가 OAuth 계정을 연결
-   */
-  async linkOAuthAccount(provider: OAuthProvider, providerId: string) {
-    const res = await ApiFetch.post_withAuth(API_URLS.OAUTH.BACKEND_LINK, {
-      provider,
-      providerId
-    });
 
-    if (!res.ok) {
-      throw new Error(`OAuth account linking failed: ${res.status}`);
-    }
-
-    return res.json();
-  },
 
   /**
    * OAuth 계정 연결 해제

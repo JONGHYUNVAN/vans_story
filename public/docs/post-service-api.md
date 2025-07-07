@@ -4,6 +4,11 @@
 
 VansDevBlog는 NestJS 기반의 블로그 포스트 관리 시스템입니다. MongoDB를 사용하여 블로그 포스트를 관리하고, JWT 인증을 통해 보안을 제공합니다.
 
+## 관련 문서
+
+- **[Post Service README](./post-service-readme.md)**: 개발 환경 설정, 프로젝트 구조, 의존성 정보
+- **[Post Service API](./post-service-api.md)**: API 엔드포인트 상세 명세 (현재 문서)
+
 ### 기술 스택
 
 - **프레임워크**: NestJS 11.0.0

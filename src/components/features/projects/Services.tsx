@@ -132,6 +132,11 @@ export default function Services({ services, selectedService, onServiceSelect, s
     
     if (serviceName.includes('Post Service')) {
       links.push({
+        title: 'Post Service README',
+        filePath: '/docs/post-service-readme.md',
+        description: '개발 환경 설정, 프로젝트 구조, 의존성 정보'
+      });
+      links.push({
         title: 'Post Service API 문서',
         filePath: '/docs/post-service-api.md',
         description: '포스트 관리 API 문서'

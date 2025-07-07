@@ -76,58 +76,56 @@ export default function ProjectsPage() {
         {/* Projects Grid */}
         <div className="space-y-8">
           {filteredProjects.map((project) => (
-            <Link
+            <div
               key={project.id}
-              href={`/projects/${project.id === 1 ? 'vansdevblog' : project.id}`}
-              className="block bg-white border border-gray-200 rounded-lg p-6 hover:border-gray-300 hover:shadow-lg transition-all cursor-pointer"
+              className="bg-white border border-gray-200 rounded-lg p-6 hover:border-gray-300 hover:shadow-lg transition-all relative"
             >
               <div className="space-y-4">
                 {/* Project Header */}
                 <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-                  <div className="space-y-1">
-                    <h3 className="text-xl font-bold text-gray-900">
-                      {project.title}
-                    </h3>
-                    <div className="flex items-center gap-3 text-sm text-gray-600">
-                      <span className="px-2 py-1 bg-gray-100 rounded">
-                        {project.category}
-                      </span>
-                      <span>{project.date}</span>
-                      <span className={`px-2 py-1 rounded text-xs ${
-                        project.status === 'Completed'
-                          ? 'bg-green-100 text-green-700'
-                          : project.status === 'Deployed'
-                          ? 'bg-purple-100 text-purple-700'
-                          : 'bg-blue-100 text-blue-700'
-                      }`}>
-                        {statusLabels[project.status as keyof typeof statusLabels] || project.status}
-                      </span>
+                  <Link
+                    href={`/projects/${project.id === 1 ? 'vansdevblog' : project.id}`}
+                    className="flex-1 cursor-pointer"
+                  >
+                    <div className="space-y-1">
+                      <h3 className="text-xl font-bold text-gray-900 hover:text-gray-700 transition-colors">
+                        {project.title}
+                      </h3>
+                      <div className="flex items-center gap-3 text-sm text-gray-600">
+                        <span className="px-2 py-1 bg-gray-100 rounded">
+                          {project.category}
+                        </span>
+                        <span>{project.date}</span>
+                        <span className={`px-2 py-1 rounded text-xs ${
+                          project.status === 'Completed'
+                            ? 'bg-green-100 text-green-700'
+                            : project.status === 'Deployed'
+                            ? 'bg-purple-100 text-purple-700'
+                            : 'bg-blue-100 text-blue-700'
+                        }`}>
+                          {statusLabels[project.status as keyof typeof statusLabels] || project.status}
+                        </span>
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                   
                   {/* Project Links */}
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 flex-shrink-0">
                     {project.githubUrl && (
-                      <a
-                        href={project.githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        onClick={() => window.open(project.githubUrl, '_blank', 'noopener,noreferrer')}
                         className="px-3 py-1 text-sm border border-gray-300 rounded text-gray-700 hover:border-gray-400 transition-colors"
-                        onClick={(e) => e.stopPropagation()}
                       >
                         GitHub
-                      </a>
+                      </button>
                     )}
                     {project.linkUrl && (
-                      <a
-                        href={project.linkUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        onClick={() => window.open(project.linkUrl, '_blank', 'noopener,noreferrer')}
                         className="px-3 py-1 text-sm bg-gray-900 text-white rounded hover:bg-gray-800 transition-colors"
-                        onClick={(e) => e.stopPropagation()}
                       >
                         사이트 방문
-                      </a>
+                      </button>
                     )}
                     
                   </div>
@@ -179,7 +177,7 @@ export default function ProjectsPage() {
                   </div>
                 </div>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
       </div>

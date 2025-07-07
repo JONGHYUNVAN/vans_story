@@ -236,12 +236,20 @@ export default function MarkdownModal({ isOpen, onClose, title, filePath }: Mark
                   hr: () => (
                     <hr className="my-6 border-gray-300" />
                   ),
-                  // 인용구 스타일링
+                                    // 인용구 스타일링
                   blockquote: ({ children }) => (
                     <blockquote className="border-l-4 border-gray-300 pl-4 italic text-gray-600 mb-4">
                       {children}
                     </blockquote>
                   ),
+                  // 이미지 스타일링
+                  img: ({ src, alt }) => (
+                    <img
+                      src={src}
+                      alt={alt}
+                      className="max-w-full h-auto rounded-lg shadow-md my-4 mx-auto block"
+                    />
+                  ),                 
                 }}
               >
                 {content}

@@ -123,6 +123,11 @@ export default function Services({ services, selectedService, onServiceSelect, s
         filePath: '/docs/user-service-security.md',
         description: 'JWT 인증, 권한 관리, API 보안 가이드'
       });
+      links.push({
+        title: 'User Service OAuth 설계 문서',
+        filePath: '/docs/user-service-oauth.md',
+        description: 'OAuth 도메인 설계 및 플로우 상세 가이드'
+      });
     }
     
     if (serviceName.includes('Post Service')) {

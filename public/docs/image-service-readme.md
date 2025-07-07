@@ -1,9 +1,12 @@
-# Vans DevBlog Image API Route
+# 이미지 업로드 서비스
 
-이 프로젝트는 Next.js 기반의 API 서버로, 이미지 업로드 및 AWS S3 저장 기능을 제공합니다.  
-클라이언트에서 전송한 이미지 파일을 WebP 형식으로 변환한 후, AWS S3에 업로드하여 이미지 URL을 반환합니다.
+## 개요
+
+Next.js 기반의 API 서버로, 이미지 업로드 및 AWS S3 저장 기능을 제공합니다. 클라이언트에서 전송한 이미지 파일을 WebP 형식으로 변환한 후, AWS S3에 업로드하여 이미지 URL을 반환하는 현대적이고 효율적인 이미지 처리 서비스입니다.
 
 ## 목차
+
+- [개요](#개요)
 - [프로젝트 구조](#프로젝트-구조)
 - [주요 기능](#주요-기능)
 - [API 엔드포인트](#api-엔드포인트)
@@ -55,7 +58,7 @@ vans_devblog_image/
 
 ### 에러 처리
 - **ImageProcessingError**: 이미지 변환 관련 에러 (26가지 세부 상황)
-- **S3UploadError**: AWS S3 업로드 관련 에러 (9가지 세부 상황)  
+- **S3UploadError**: AWS S3 업로드 관련 에러 (9가지 세부 상황)
 - **ValidationError**: 입력값 검증 관련 에러 (9가지 세부 상황)
 
 ## API 엔드포인트
@@ -119,6 +122,16 @@ AWS_S3_BUCKET=your-bucket-name
 NEXT_PUBLIC_API_URL=http://localhost:3000
 ```
 
+### 환경 변수 설명
+
+| 변수명 | 필수 | 설명 |
+|--------|------|------|
+| `AWS_ACCESS_KEY_ID` | 필수 | AWS 액세스 키 ID |
+| `AWS_SECRET_ACCESS_KEY` | 필수 | AWS 시크릿 액세스 키 |
+| `AWS_REGION` | 필수 | AWS 리전 (예: ap-northeast-2) |
+| `AWS_S3_BUCKET` | 필수 | S3 버킷 이름 |
+| `NEXT_PUBLIC_API_URL` | 선택 | API 서버 URL (개발/프로덕션 구분) |
+
 ## 설치 및 실행
 
 ### 1. 의존성 설치
@@ -146,7 +159,7 @@ npm run docs
 
 ### 프로덕션 의존성
 - **Next.js 15.3.1**: React 기반 풀스택 프레임워크
-- **React 19.0.0**: UI 라이브러리  
+- **React 19.0.0**: UI 라이브러리
 - **Sharp 0.34.1**: 고성능 이미지 처리 라이브러리
 - **AWS SDK 3.803.0**: S3 클라이언트 및 요청 서명
 - **Multer 1.4.5**: 멀티파트 파일 업로드 처리
@@ -156,7 +169,7 @@ npm run docs
 - **TypeScript 5**: 정적 타입 검사
 - **ESLint 9**: 코드 품질 검사
 - **TypeDoc 0.28.5**: API 문서 자동 생성
-- **@types/*** : TypeScript 타입 정의
+- **@types/***: TypeScript 타입 정의
 
 ## 사용 예제
 
@@ -185,23 +198,166 @@ if (result.success) {
 }
 ```
 
+### React 컴포넌트 예제
+```tsx
+import { useState } from 'react';
+
+export default function ImageUploader() {
+  const [uploading, setUploading] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+
+  const handleUpload = async (file: File) => {
+    setUploading(true);
+    
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        setImageUrl(result.imageUrl);
+      } else {
+        console.error('업로드 실패:', result.error);
+      }
+    } catch (error) {
+      console.error('네트워크 오류:', error);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <div>
+      <input
+        type="file"
+        accept="image/*"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) handleUpload(file);
+        }}
+        disabled={uploading}
+      />
+      
+      {uploading && <p>업로드 중...</p>}
+      
+      {imageUrl && (
+        <div>
+          <p>업로드 완료!</p>
+          <img src={imageUrl} alt="업로드된 이미지" style={{ maxWidth: '300px' }} />
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
 ## WebP 변환 옵션
 
 ### 품질 설정 가이드
 - **90-100%**: 최고 품질 (포트폴리오, 아트워크)
-- **80-90%**: 고품질 (일반 웹사이트 이미지)  
+- **80-90%**: 고품질 (일반 웹사이트 이미지)
 - **70-80%**: 균형 (블로그, 상품 이미지)
 - **50-70%**: 압축 우선 (썸네일, 아이콘)
 
 ### 지원하는 변환 옵션
 - `quality`: 1-100 (기본값: 80)
 - `width`: 출력 너비 (선택사항)
-- `height`: 출력 높이 (선택사항)  
+- `height`: 출력 높이 (선택사항)
 - `preserveMetadata`: 메타데이터 보존 여부 (기본값: false)
+
+### WebP 변환 설정 커스터마이징
+```typescript
+// webpConverter.ts에서 설정 변경
+const webpOptions = {
+  quality: 85,          // 품질 (1-100)
+  effort: 6,            // 압축 노력도 (0-6, 높을수록 더 압축)
+  lossless: false,      // 무손실 압축 여부
+  nearLossless: false,  // 거의 무손실 압축 여부
+  smartSubsample: true, // 스마트 서브샘플링
+};
+```
+
+### 이미지 최적화 팁
+1. **적절한 품질 선택**: 용도에 맞는 품질 설정
+2. **크기 조정**: 필요한 크기로 리사이징하여 파일 크기 줄이기
+3. **메타데이터 제거**: 불필요한 메타데이터 제거로 파일 크기 최소화
+4. **포맷 선택**: WebP는 JPEG 대비 25-35% 작은 파일 크기
 
 ## 에러 처리
 
-### 주요 에러 유형
-1. **ImageProcessingError**: 이미지 변환 실패, 지원하지 않는 형식, 메모리 부족 등
-2. **S3UploadError**: AWS 인증 실패, 네트워크 오류, 권한 부족 등
-3. **ValidationError**: 필수 필드 누락, 파일 크기 초과, 잘못된 형식 등
+### 에러 타입별 대응 방법
+
+#### ImageProcessingError
+```typescript
+// 이미지 처리 관련 에러
+try {
+  const result = await convertToWebP(buffer);
+} catch (error) {
+  if (error instanceof ImageProcessingError) {
+    console.error('이미지 처리 실패:', error.message);
+    // 사용자에게 친화적인 에러 메시지 표시
+  }
+}
+```
+
+#### S3UploadError
+```typescript
+// S3 업로드 관련 에러
+try {
+  const uploadResult = await uploadToS3(buffer, fileName);
+} catch (error) {
+  if (error instanceof S3UploadError) {
+    console.error('S3 업로드 실패:', error.message);
+    // 재시도 로직 또는 대체 저장소 사용
+  }
+}
+```
+
+#### ValidationError
+```typescript
+// 입력 검증 관련 에러
+try {
+  validateFile(file);
+} catch (error) {
+  if (error instanceof ValidationError) {
+    console.error('파일 검증 실패:', error.message);
+    // 사용자에게 올바른 파일 형식 안내
+  }
+}
+```
+
+### 일반적인 에러 상황
+
+1. **파일 크기 초과**
+   - 원인: 5MB를 초과하는 파일 업로드
+   - 해결: 파일 크기 확인 후 압축 또는 리사이징
+
+2. **지원하지 않는 형식**
+   - 원인: HEIC, BMP 등 지원하지 않는 이미지 형식
+   - 해결: 지원하는 형식(JPEG, PNG, GIF, WebP, TIFF, AVIF)으로 변환
+
+3. **AWS 인증 실패**
+   - 원인: 잘못된 AWS 자격 증명 또는 권한 부족
+   - 해결: 환경 변수 확인 및 IAM 권한 설정
+
+4. **네트워크 타임아웃**
+   - 원인: 대용량 파일 업로드 시 네트워크 지연
+   - 해결: 타임아웃 시간 증가 또는 파일 크기 제한
+
+### 로깅 및 모니터링
+```typescript
+// 상세한 에러 로깅
+console.error('Upload Error:', {
+  error: error.message,
+  fileName: file.name,
+  fileSize: file.size,
+  timestamp: new Date().toISOString(),
+  userAgent: request.headers['user-agent']
+});
+```

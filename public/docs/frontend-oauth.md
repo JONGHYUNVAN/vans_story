@@ -1,20 +1,18 @@
-# OAuth 구현 문서
+# OAuth 프론트엔드 구현 가이드
 
-## 📋 목차
+![OAuth Diagram](/docs/Oauth_diagram.png)
+
+## 개요
+
+이 프로젝트는 OAuth 2.0 기반의 소셜 로그인 기능을 구현하고 있습니다. Kakao와 Google OAuth 제공자를 지원하며, 중간 서버를 통한 안전한 인증 플로우를 사용합니다.
+
+## 목차
 
 - [개요](#개요)
 - [지원 OAuth 제공자](#지원-oauth-제공자)
 - [아키텍처](#아키텍처)
-  - [인증 플로우](#인증-플로우)
 - [파일 구조](#파일-구조)
-  - [핵심 파일들](#핵심-파일들)
 - [주요 컴포넌트](#주요-컴포넌트)
-  - [OAuth 유틸리티](#1-oauth-유틸리티)
-  - [인증 서비스](#2-인증-서비스)
-  - [OAuth 콜백 처리](#3-oauth-콜백-처리)
-  - [OAuth 콜백 API](#4-oauth-콜백-api)
-  - [로그인 모달](#5-로그인-모달)
-  - [OAuth 계정 관리](#6-oauth-계정-관리)
 - [타입 정의](#타입-정의)
 - [상태 관리](#상태-관리)
 - [환경 변수](#환경-변수)
@@ -23,18 +21,8 @@
 - [보안 고려사항](#보안-고려사항)
 - [에러 처리](#에러-처리)
 - [개발 가이드](#개발-가이드)
-  - [현재 구현 상태](#현재-구현-상태)
-  - [새로운 OAuth 제공자 추가](#새로운-oauth-제공자-추가)
-  - [개발 시 주의사항](#개발-시-주의사항)
-  - [로컬 개발 환경 설정](#로컬-개발-환경-설정)
 - [트러블슈팅](#트러블슈팅)
 - [참고 자료](#참고-자료)
-
----
-
-## 개요
-
-이 프로젝트는 OAuth 2.0 기반의 소셜 로그인 기능을 구현하고 있습니다. Kakao와 Google OAuth 제공자를 지원하며, 중간 서버를 통한 안전한 인증 플로우를 사용합니다.
 
 ## 지원 OAuth 제공자
 
@@ -97,11 +85,12 @@ src/
 
 ## 주요 컴포넌트
 
-### 1. OAuth 유틸리티 (`src/utils/oauth.ts`)
+### 1. OAuth 유틸리티 (src/utils/oauth.ts)
 
 OAuth 관련 유틸리티 함수들을 제공합니다.
 
-#### 주요 함수:
+#### 주요 함수
+
 - `generateState()`: OAuth 상태 파라미터 생성
 - `validateState()`: OAuth 상태 파라미터 검증
 - `extractCallbackData()`: URL 파라미터에서 콜백 데이터 추출 (Query Parameter 방식)
@@ -113,22 +102,24 @@ OAuth 관련 유틸리티 함수들을 제공합니다.
 - `buildFragmentRedirectUrl()`: Fragment 방식 리다이렉트 URL 생성
 - `buildOAuthUrl()`: OAuth 중간 서버 URL 생성
 
-### 2. 인증 서비스 (`src/components/features/auth/authService.ts`)
+### 2. 인증 서비스 (src/components/features/auth/authService.ts)
 
 OAuth 로그인 및 계정 관리 기능을 제공합니다.
 
-#### 주요 함수:
+#### 주요 함수
+
 - `kakaoLogin()`: 카카오 로그인 시작
 - `googleLogin()`: 구글 로그인 시작
 - `exchangeCodeForToken()`: 임시 코드를 JWT 토큰으로 교환
 - `unlinkOAuthAccount()`: OAuth 계정 연결 해제
 - `getLinkedOAuthAccounts()`: 연결된 OAuth 계정 목록 조회
 
-### 3. OAuth 콜백 처리 (`src/app/oauth/callback/page.tsx`)
+### 3. OAuth 콜백 처리 (src/app/oauth/callback/page.tsx)
 
 OAuth 제공자에서 리다이렉트된 사용자를 처리합니다.
 
-#### 처리 과정:
+#### 처리 과정
+
 1. URL 파라미터와 Fragment에서 OAuth 콜백 데이터 추출 (`extractCallbackDataUnified` 사용)
 2. 에러 체크 및 처리
 3. 모드 확인 (로그인/계정연결)
@@ -136,37 +127,41 @@ OAuth 제공자에서 리다이렉트된 사용자를 처리합니다.
 5. 토큰 저장 및 로그인 상태 업데이트
 6. 환영 메시지 표시 및 메인 페이지로 리다이렉트
 
-### 4. OAuth 콜백 API (`src/app/api/auth/callback/route.ts`)
+### 4. OAuth 콜백 API (src/app/api/auth/callback/route.ts)
 
 프론트엔드에서 받은 임시 코드를 백엔드로 전달하여 JWT 토큰을 획득합니다.
 
-#### 처리 과정:
+#### 처리 과정
+
 1. 클라이언트에서 임시 코드 수신
 2. 백엔드 서버로 임시 코드 전송
 3. 백엔드에서 JWT 토큰 수신
 4. 토큰을 클라이언트에 반환
 
-### 5. 로그인 모달 (`src/components/ui/auth/LoginModal.tsx`)
+### 5. 로그인 모달 (src/components/ui/auth/LoginModal.tsx)
 
 OAuth 로그인 UI를 제공합니다.
 
-#### 기능:
+#### 기능
+
 - 카카오/구글 로그인 버튼
 - 로딩 상태 표시
 - 에러 메시지 표시
 - 일반 로그인 폼
 
-### 6. OAuth 계정 관리 (`src/components/ui/auth/OAuthAccountManager.tsx`)
+### 6. OAuth 계정 관리 (src/components/ui/auth/OAuthAccountManager.tsx)
 
 연결된 OAuth 계정 관리 기능을 제공합니다.
 
-#### 기능:
+#### 기능
+
 - 연결된 계정 목록 표시 (`getLinkedOAuthAccounts()` 사용)
 - 새로운 계정 연결 시도 (OAuth 중간 서버로 리다이렉트, 하지만 실제 연결은 미구현)
 - 기존 계정 연결 해제 (`unlinkOAuthAccount()` 사용)
 - 제공자별 아이콘 표시
 
-#### 실제 동작:
+#### 실제 동작
+
 - **계정 연결**: `handleLinkAccount()` 함수는 OAuth 중간 서버로 리다이렉트만 합니다.
 - **계정 해제**: `handleUnlinkAccount()` 함수는 실제로 `authService.unlinkOAuthAccount()`를 호출합니다.
 - **계정 연결 완료**: OAuth 콜백 페이지에서 계정 연결 모드는 "아직 미구현"으로 처리됩니다.
@@ -200,157 +195,160 @@ export interface LinkedOAuthAccount {
 
 ## 상태 관리
 
-Redux Toolkit을 사용하여 OAuth 상태를 관리합니다.
+Redux Toolkit을 사용하여 인증 상태를 관리합니다.
 
-### 상태 구조
-```typescript
-interface AuthState {
-  // OAuth 관련 상태
-  oauthLoading: boolean;
-  oauthProvider: OAuthProvider | null;
-  oauthError: string | null;
-}
-```
+### 주요 상태
 
-### 액션들
+- `isAuthenticated`: 로그인 여부
+- `user`: 사용자 정보
+- `oauthLoading`: OAuth 로그인 진행 중 여부
+- `oauthError`: OAuth 에러 정보
+
+### 주요 액션
+
 - `oauthStart`: OAuth 로그인 시작
 - `oauthSuccess`: OAuth 로그인 성공
 - `oauthFailure`: OAuth 로그인 실패
-- `oauthFinish`: OAuth 로그인 완료
 
 ## 환경 변수
 
+### 필수 환경 변수
+
 ```env
-NEXT_PUBLIC_OAUTH_SERVER_URL=https://oauth-server.example.com
-AUTH_API_URL=http://localhost:8080
+NEXT_PUBLIC_OAUTH_SERVICE_URL=http://localhost:3004
+NEXT_PUBLIC_BACKEND_URL=http://localhost:8080
 ```
+
+### 설정 방법
+
+1. `.env.local` 파일을 생성합니다.
+2. 위 환경 변수들을 설정합니다.
+3. 각 서비스의 URL을 실제 배포 환경에 맞게 수정합니다.
 
 ## API 엔드포인트
 
-### 프론트엔드 API
-- `POST /api/auth/callback`: OAuth 콜백 처리 (임시 코드 → JWT 토큰)
-
 ### 백엔드 API
-- `POST /oauth/exchange`: 임시 코드를 JWT 토큰으로 교환 (프론트엔드 API를 통해 간접 호출)
+
+- `POST /api/auth/callback`: 임시 코드를 JWT 토큰으로 교환
+- `GET /api/v1/oauth/accounts`: 연결된 OAuth 계정 목록 조회
 - `DELETE /api/v1/oauth/unlink`: OAuth 계정 연결 해제
-- `GET /api/v1/oauth/linked`: 연결된 OAuth 계정 목록 조회
 
 ### OAuth 중간 서버 API
-- `GET /api/auth/kakao/login`: 카카오 로그인 시작
+
 - `GET /api/auth/google/login`: 구글 로그인 시작
+- `GET /api/auth/kakao/login`: 카카오 로그인 시작
 
 ## 다국어 지원
 
-한국어와 영어 메시지를 지원합니다.
+### 지원 언어
+
+- 한국어 (ko)
+- 영어 (en)
 
 ### 메시지 파일
+
 - `src/messages/ko/auth.json`: 한국어 메시지
 - `src/messages/en/auth.json`: 영어 메시지
 
+### 사용 방법
+
+```typescript
+import { useTranslations } from 'next-intl';
+
+const t = useTranslations('auth');
+const loginButtonText = t('login.oauth.google');
+```
+
 ## 보안 고려사항
 
-1. **상태 파라미터 검증**: CSRF 공격 방지를 위한 상태 파라미터 사용
-2. **임시 코드 방식**: 직접 토큰 노출 방지를 위한 임시 코드 교환 방식
-3. **토큰 만료 시간**: 1시간 제한으로 보안 강화
-4. **쿠키 보안**: HttpOnly 쿠키를 통한 리프레시 토큰 관리
+### 1. State 파라미터 검증
+
+OAuth 인증 과정에서 CSRF 공격을 방지하기 위해 state 파라미터를 사용합니다.
+
+### 2. 토큰 안전 저장
+
+- Access Token: 로컬 스토리지에 저장
+- Refresh Token: HTTP-Only 쿠키로 관리
+
+### 3. 중간 서버 사용
+
+OAuth 토큰을 직접 프론트엔드에서 처리하지 않고, 중간 서버를 통해 안전하게 처리합니다.
 
 ## 에러 처리
 
-### 일반적인 에러 코드
-- `access_denied`: 사용자가 로그인 취소
-- `invalid_request`: 잘못된 요청
-- `invalid_client`: 클라이언트 설정 오류
-- `invalid_grant`: 인증 코드 무효
-- `expired_token`: 토큰 만료
-- `server_error`: 서버 오류
-- `temporarily_unavailable`: 서비스 일시 중단
+### 주요 에러 타입
 
-### 에러 메시지 처리
-OAuth 유틸리티의 `getErrorMessage()` 함수를 통해 사용자 친화적인 에러 메시지를 제공합니다.
+- `invalid_request`: 잘못된 요청
+- `access_denied`: 사용자가 인증 거부
+- `unauthorized_client`: 인증되지 않은 클라이언트
+- `unsupported_response_type`: 지원하지 않는 응답 타입
+- `invalid_scope`: 잘못된 권한 범위
+- `server_error`: 서버 오류
+- `temporarily_unavailable`: 일시적으로 사용 불가
+
+### 에러 처리 방법
+
+```typescript
+if (error) {
+  const errorMessage = getErrorMessage(error, provider);
+  toast.error(errorMessage);
+  return;
+}
+```
 
 ## 개발 가이드
 
 ### 현재 구현 상태
 
-#### 구현 완료된 기능:
-- OAuth 로그인 (Kakao, Google)
-- JWT 토큰 교환
-- 상태 관리 (Redux)
-- 에러 처리
-- 다국어 지원
-- 토큰 저장 및 인증 상태 관리
-
-#### 미구현 기능:
-- OAuth 계정 연결 기능 완료 (UI와 리다이렉트는 구현되었지만, 콜백 처리에서 실제 연결 로직은 미구현)
-
-#### 구현 완료된 기능:
-- OAuth 계정 연결 해제 (UI와 API 호출 완전 구현됨)
-- OAuth 계정 목록 조회 (UI와 API 호출 완전 구현됨)
-- 다중 OAuth 계정 관리 UI (실제 연결 완료는 미구현)
+- **로그인**: 완전히 구현됨
+- **계정 연결**: UI는 있지만 실제 연결 로직 미구현
+- **계정 해제**: 완전히 구현됨
 
 ### 새로운 OAuth 제공자 추가
 
-1. **타입 정의 수정**
-   ```typescript
-   export type OAuthProvider = 'kakao' | 'google' | 'naver';
-   ```
-
-2. **OAuth 유틸리티 함수 수정**
-   - `getProviderDisplayName()`: 새 제공자 표시명 추가
-   - `buildOAuthUrl()`: 새 제공자 엔드포인트 추가
-
-3. **UI 컴포넌트 수정**
-   - 로그인 모달에 새 제공자 버튼 추가
-   - 아이콘 이미지 추가
-
-4. **API 서비스 수정**
-   - `authService`에 새 제공자 로그인 함수 추가
+1. `OAuthProvider` 타입에 새 제공자 추가
+2. `authService.ts`에 로그인 함수 추가
+3. 로그인 모달에 버튼 추가
+4. 메시지 파일에 번역 추가
 
 ### 개발 시 주의사항
 
-#### 실제 구현된 플로우:
-1. **로그인**: `kakaoLogin()` / `googleLogin()` → OAuth 중간 서버 → 콜백 페이지 → `exchangeCodeForToken()` → 완료
-2. **계정 연결**: `handleLinkAccount()` → OAuth 중간 서버 → 콜백 페이지 → "미구현" 메시지
-3. **계정 해제**: `handleUnlinkAccount()` → `unlinkOAuthAccount()` → 완료
-4. **계정 조회**: `fetchLinkedAccounts()` → `getLinkedOAuthAccounts()` → 완료
+- 모든 OAuth 관련 URL은 HTTPS를 사용해야 합니다.
+- 로컬 개발 시에는 OAuth 제공자에서 localhost를 허용하도록 설정해야 합니다.
+- 환경 변수가 올바르게 설정되어 있는지 확인하세요.
 
 ### 로컬 개발 환경 설정
 
-1. **환경 변수 설정**
-   ```env
-   NEXT_PUBLIC_OAUTH_SERVER_URL=http://localhost:3001
-   AUTH_API_URL=http://localhost:8080
-   ```
-
-2. **OAuth 중간 서버 실행**
-   OAuth 중간 서버를 별도로 실행해야 합니다.
-
-3. **백엔드 서버 실행**
-   JWT 토큰 교환을 위한 백엔드 서버를 실행해야 합니다.
+1. OAuth 제공자에서 애플리케이션을 등록합니다.
+2. 로컬 개발용 리다이렉트 URL을 등록합니다.
+3. 환경 변수를 설정합니다.
+4. 개발 서버를 시작합니다.
 
 ## 트러블슈팅
 
-### 자주 발생하는 문제들
+### 자주 발생하는 문제
 
-1. **CORS 에러**
-   - OAuth 서버에서 프론트엔드 도메인 허용 확인
-   - 백엔드 서버에서 CORS 설정 확인
-
-2. **토큰 교환 실패**
-   - 임시 코드 유효성 확인
-   - 백엔드 서버 연결 상태 확인
-
-3. **상태 파라미터 검증 실패**
-   - 시간 동기화 확인
-   - 상태 파라미터 생성 로직 확인
-
-4. **리다이렉트 URL 불일치**
-   - OAuth 제공자 설정에서 리다이렉트 URL 확인
+1. **OAuth 로그인 버튼 클릭 시 아무 반응이 없음**
    - 환경 변수 설정 확인
+   - 브라우저 콘솔에서 에러 메시지 확인
+
+2. **OAuth 콜백 페이지에서 에러 발생**
+   - URL 파라미터에서 error 확인
+   - 네트워크 탭에서 API 호출 상태 확인
+
+3. **토큰 교환 실패**
+   - 백엔드 서버 상태 확인
+   - 임시 코드 만료 여부 확인
+
+### 디버깅 팁
+
+- 브라우저 개발자 도구의 네트워크 탭을 활용하세요.
+- 콘솔에서 에러 메시지를 확인하세요.
+- OAuth 제공자의 개발자 콘솔에서 로그를 확인하세요.
 
 ## 참고 자료
 
 - [OAuth 2.0 RFC](https://tools.ietf.org/html/rfc6749)
-- [Kakao Developers OAuth](https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api)
-- [Google OAuth 2.0](https://developers.google.com/identity/protocols/oauth2)
-- [Next.js Authentication](https://nextjs.org/docs/authentication) 
+- [Kakao 로그인 API 문서](https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api)
+- [Google OAuth 2.0 문서](https://developers.google.com/identity/protocols/oauth2)
+- [Next.js 인증 가이드](https://nextjs.org/docs/authentication) 

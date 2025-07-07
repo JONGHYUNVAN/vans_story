@@ -51,12 +51,12 @@
       }
     },
     "hero": {
-      "greeting": "Hello, 👋",
-      "name": "I'm Van",
-      "role": "Backend Developer",
+      "greeting": "Building Scalable Systems",
+      "name": "Backend Engineer Van",
+      "role": "System Architecture • API Design • Database Optimization",
       "contactInfo": "Contact Information",
       "location": "Suwon, South Korea",
-      "currentWork": "Hospital System Development (EMR)",
+      "currentWork": "EMR System Architecture Design & Optimization",
       "socialLinks": "Social Links"
     },
     "interests": {

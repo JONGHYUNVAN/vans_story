@@ -1,8 +1,14 @@
-# OAuth 중간 서버 (OAuth Intermediate Server)
+# OAuth 중간 서버
 
-Next.js 15.3.3 기반의 OAuth 인증 중간 서버입니다. 프론트엔드와 백엔드 사이에서 OAuth 인증 플로우를 처리합니다.
+![OAuth Diagram](/docs/Oauth_diagram.png)
+
+## 개요
+
+Next.js 15.3.3 기반의 OAuth 인증 중간 서버입니다. 프론트엔드와 백엔드 사이에서 OAuth 인증 플로우를 처리하며, 보안성과 확장성을 고려하여 설계되었습니다.
 
 ## 목차
+
+- [개요](#개요)
 - [주요 기능](#주요-기능)
 - [기술 스택](#기술-스택)
 - [API 엔드포인트](#api-엔드포인트)
@@ -155,7 +161,7 @@ pnpm install
 `.env.local` 파일을 생성 후 다음 변수들을 설정하세요:
 
 ```env
-# ===== 필수 환경변수 =====
+# 필수 환경변수
 
 # Google OAuth 설정 (Google Cloud Console에서 발급)
 GOOGLE_CLIENT_ID=your_google_client_id
@@ -173,7 +179,7 @@ KAKAO_CLIENT_SECRET=your_kakao_client_secret
 BACKEND_SERVER_URL=http://localhost:8000                   # 백엔드 API 서버 주소
 FRONTEND_URL=http://localhost:3001                         # 프론트엔드 앱 주소
 
-# ===== 선택적 환경변수 =====
+# 선택적 환경변수
 
 # CORS 설정 (기본값: FRONTEND_URL 사용)
 CORS_ORIGIN=http://localhost:3001                          # CORS 허용 도메인
@@ -186,61 +192,39 @@ OAUTH_PROVIDER_DOMAINS=https://accounts.google.com,https://oauth2.googleapis.com
 
 | 변수명 | 필수여부 | 설명 |
 |--------|----------|------|
-| `GOOGLE_CLIENT_ID` | ✅ 필수 | Google OAuth 클라이언트 ID |
-| `GOOGLE_CLIENT_SECRET` | ✅ 필수 | Google OAuth 클라이언트 시크릿 |
-| `KAKAO_CLIENT_ID` | ✅ 필수 | Kakao OAuth 클라이언트 ID |
-| `KAKAO_CLIENT_SECRET` | ✅ 필수 | Kakao OAuth 클라이언트 시크릿 |
-| `BACKEND_SERVER_URL` | ✅ 필수 | OAuth 로그인 요청을 처리할 백엔드 서버 주소 |
-| `FRONTEND_URL` | ✅ 필수 | 인증 완료 후 리다이렉트할 프론트엔드 주소 |
-| `CORS_ORIGIN` | ⚪ 선택 | CORS 요청을 허용할 도메인 (기본값: `FRONTEND_URL`) |
-| `OAUTH_PROVIDER_DOMAINS` | ⚪ 선택 | OAuth 제공자 도메인들, 쉼표로 구분 (기본값: 빈 배열) |
+| `GOOGLE_CLIENT_ID` | 필수 | Google OAuth 클라이언트 ID |
+| `GOOGLE_CLIENT_SECRET` | 필수 | Google OAuth 클라이언트 시크릿 |
+| `KAKAO_CLIENT_ID` | 필수 | Kakao OAuth 클라이언트 ID |
+| `KAKAO_CLIENT_SECRET` | 필수 | Kakao OAuth 클라이언트 시크릿 |
+| `BACKEND_SERVER_URL` | 필수 | OAuth 로그인 요청을 처리할 백엔드 서버 주소 |
+| `FRONTEND_URL` | 필수 | 인증 완료 후 리다이렉트할 프론트엔드 주소 |
+| `CORS_ORIGIN` | 선택 | CORS 요청을 허용할 도메인 (기본값: `FRONTEND_URL`) |
+| `OAUTH_PROVIDER_DOMAINS` | 선택 | OAuth 제공자 도메인들, 쉼표로 구분 (기본값: 빈 배열) |
 
 #### 개발환경 예시
 ```env
 # 개발환경 설정 예시
-GOOGLE_CLIENT_ID=123456789-abcdef.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=GOCSPX-abcdef123456789
-KAKAO_CLIENT_ID=1234567890abcdef1234567890abcdef
-KAKAO_CLIENT_SECRET=abcdef1234567890abcdef1234567890
-# Google 콜백: http://localhost:3004/api/auth/google/callback
-# Kakao 콜백: http://localhost:3004/api/auth/kakao/callback
-BACKEND_SERVER_URL=http://localhost:8000
+GOOGLE_CLIENT_ID=123456789-abcdefghijk.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=GOCSPX-abcdefghijklmnopqrstuv
+KAKAO_CLIENT_ID=abcdef1234567890abcdef1234567890
+KAKAO_CLIENT_SECRET=ABCDEFGHIJKLMNOPQRSTUVWXYZ123456
+BACKEND_SERVER_URL=http://localhost:8080
 FRONTEND_URL=http://localhost:3001
 CORS_ORIGIN=http://localhost:3001
-OAUTH_PROVIDER_DOMAINS=https://accounts.google.com,https://oauth2.googleapis.com,https://www.googleapis.com,https://kauth.kakao.com,https://kapi.kakao.com
 ```
-
-#### 프로덕션 환경 예시
-```env
-# 프로덕션 환경 설정 예시
-GOOGLE_CLIENT_ID=123456789-abcdef.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=GOCSPX-abcdef123456789
-KAKAO_CLIENT_ID=1234567890abcdef1234567890abcdef
-KAKAO_CLIENT_SECRET=abcdef1234567890abcdef1234567890
-# Google 콜백: https://api.yourdomain.com/api/auth/google/callback
-# Kakao 콜백: https://api.yourdomain.com/api/auth/kakao/callback
-BACKEND_SERVER_URL=https://backend.yourdomain.com
-FRONTEND_URL=https://yourdomain.com
-CORS_ORIGIN=https://yourdomain.com
-OAUTH_PROVIDER_DOMAINS=https://accounts.google.com,https://oauth2.googleapis.com,https://www.googleapis.com,https://kauth.kakao.com,https://kapi.kakao.com
-```
-
-#### ⚠️ 중요 사항
-- **Google과 Kakao는 각각 다른 OAuth 앱**이므로 별도의 클라이언트 ID/Secret이 필요합니다
-- **OAuth 제공자를 사용하지 않을 경우** 해당 환경변수를 설정하지 않아도 됩니다
-- **OAUTH_PROVIDER_DOMAINS를 설정하지 않으면** OAuth 제공자의 CORS 요청이 차단됩니다
-- **프로덕션 환경**에서는 반드시 HTTPS를 사용해야 합니다
 
 ### 3. 개발 서버 실행
 ```bash
 npm run dev
-# 또는
-yarn dev
-# 또는
-pnpm dev
 ```
 
-서버는 [http://localhost:3004](http://localhost:3004)에서 실행됩니다.
+서버는 `http://localhost:3004`에서 실행됩니다.
+
+### 4. 프로덕션 빌드
+```bash
+npm run build
+npm start
+```
 
 ## 프로젝트 구조
 
@@ -251,172 +235,224 @@ src/
 │       └── auth/
 │           ├── google/
 │           │   ├── login/
-│           │   │   └── route.ts      # Google OAuth 로그인 시작
 │           │   └── callback/
-│           │       └── route.ts      # Google OAuth 콜백 처리
 │           ├── kakao/
 │           │   ├── login/
-│           │   │   └── route.ts      # Kakao OAuth 로그인 시작
 │           │   └── callback/
-│           │       └── route.ts      # Kakao OAuth 콜백 처리
 │           ├── verify/
-│           │   └── route.ts          # 토큰 검증
 │           └── refresh/
-│               └── route.ts          # 토큰 갱신
+├── lib/
+│   ├── oauth-config.ts     # OAuth 설정 관리
+│   ├── oauth-utils.ts      # OAuth 유틸리티 함수
+│   └── types.ts            # 타입 정의
 ├── config/
-│   └── cors.ts                       # CORS 설정 관리
-└── lib/
-    ├── types.ts                      # TypeScript 타입 정의
-    ├── oauth-config.ts               # OAuth 제공자 설정
-    ├── oauth-utils.ts                # OAuth 공통 유틸리티 함수
-    └── utils.ts                      # 일반 유틸리티 함수들
+│   └── cors.ts             # CORS 설정
+└── utils/
+    └── logger.ts           # 로깅 유틸리티
 ```
 
 ## 보안 기능
 
-### CSRF 방지
-- OAuth 요청마다 고유한 `state` 파라미터 생성
-- Base64 인코딩으로 안전한 전송
-- 1시간 후 자동 만료
+### 1. State 파라미터 검증
+CSRF 공격을 방지하기 위해 모든 OAuth 요청에 state 파라미터를 사용하고 검증합니다.
 
-### 안전한 리다이렉트
-- 허용된 도메인 목록 검증
-- 오픈 리다이렉트 취약점 방지
+```typescript
+// State 생성
+const state = generateSecureState({
+  provider: 'google',
+  timestamp: Date.now(),
+  nonce: crypto.randomUUID()
+});
 
-### CORS 보안
-- 환경변수를 통한 허용 도메인 제한
-- 와일드카드(*) 사용 금지로 보안 강화
+// State 검증
+const isValid = validateState(receivedState, expectedState);
+```
 
-### 에러 처리
-- 상세한 에러 코드 및 메시지
-- 민감한 정보 노출 방지
-- 포괄적인 로깅
+### 2. OAuth 토큰 즉시 폐기
+보안을 위해 OAuth 제공자로부터 받은 토큰은 사용자 정보 조회 후 즉시 폐기됩니다.
+
+```typescript
+// 사용자 정보 조회 후 토큰 폐기
+const userInfo = await fetchUserInfo(accessToken);
+await revokeToken(accessToken); // 토큰 즉시 폐기
+```
+
+### 3. 최소 정보 전달
+백엔드 서버에는 OAuth 토큰이 아닌 최소한의 정보만 전달됩니다.
+
+```typescript
+// 백엔드로 전달되는 정보
+const payload = {
+  provider: 'google',
+  providerId: userInfo.id
+};
+```
+
+### 4. 임시 코드 시스템
+5분 만료, 일회용 임시 코드를 사용하여 보안을 강화합니다.
 
 ## OAuth 제공자 설정
 
-### Google OAuth
-1. [Google Cloud Console](https://console.cloud.google.com/)에서 프로젝트 생성
-2. OAuth 2.0 클라이언트 ID 생성
-3. 리다이렉트 URI: `{your-domain}/api/auth/google/callback`
-4. 권한 범위: `openid email profile`
+### Google Cloud Console 설정
 
-### Kakao OAuth
-1. [Kakao Developers](https://developers.kakao.com/)에서 앱 생성
-2. 플랫폼 설정에서 웹 플랫폼 추가
-3. Redirect URI: `{your-domain}/api/auth/kakao/callback`
-4. 권한 범위: `profile_nickname profile_image account_email`
+1. **프로젝트 생성**: Google Cloud Console에서 새 프로젝트 생성
+2. **OAuth 2.0 클라이언트 ID 생성**:
+   - 애플리케이션 유형: 웹 애플리케이션
+   - 승인된 리디렉션 URI: `http://localhost:3004/api/auth/google/callback`
+3. **클라이언트 ID와 시크릿을 환경 변수에 설정**
+
+### Kakao Developers 설정
+
+1. **애플리케이션 등록**: Kakao Developers에서 애플리케이션 생성
+2. **Redirect URI 설정**: `http://localhost:3004/api/auth/kakao/callback`
+3. **동의항목 설정**: 필요한 사용자 정보 권한 설정
+4. **REST API 키를 환경 변수에 설정**
 
 ## 인증 플로우
 
-![인증 플로우](/docs/sequence_diagram.png)
+### 전체 플로우 다이어그램
 
-
-### 백엔드 서버와의 통신 규격
-
-중간 서버는 OAuth 인증 완료 후 다음과 같은 형식으로 백엔드 서버에 요청을 전송합니다:
-
-**요청 엔드포인트:**
 ```
-POST {BACKEND_SERVER_URL}/api/v1/oauth/login
-```
-
-**요청 본문:**
-```json
-{
-  "provider": "google",
-  "providerId": "google_user_12345"
-}
+사용자 클릭
+    ↓
+프론트엔드 → OAuth 중간 서버 → OAuth 제공자
+    ↓                                    ↓
+프론트엔드 ← OAuth 중간 서버 ← OAuth 제공자
+    ↓
+프론트엔드 → 백엔드 서버 (임시 코드 → JWT)
+    ↓
+로그인 완료
 ```
 
-**백엔드 응답 형식:**
-```http
-HTTP/1.1 200 OK
-Content-Type: application/json
+### 상세 단계
 
-{
-  "success": true,
-  "data": {
-    "code": "oauth_temp_abc123def456789..."
-  },
-  "message": "임시 코드가 발급되었습니다."
-}
-```
-
-> **보안 강화 특징:**  
-> - **OAuth 토큰 즉시 폐기**: OAuth 제공자 토큰은 사용자 정보 조회 후 중간 서버에서 즉시 폐기되어 백엔드로 전달되지 않습니다.
-> - **최소 정보 전달**: 백엔드에는 `provider`, `providerId`만 전달하여 보안을 최대화합니다.
-> - **임시 코드 방식**: 백엔드에서 5분 만료, 일회용 임시 코드를 발급하여 토큰 노출 위험을 제거합니다.
-> - **중간 서버 리다이렉트**: 중간 서버에서 임시 코드와 함께 프론트엔드 `/auth/callback` 경로로 직접 리다이렉트합니다.
-> - **안전한 토큰 교환**: 프론트엔드에서 임시 코드로 `/api/v1/oauth/exchange` 엔드포인트를 호출하여 실제 JWT 토큰을 획득합니다.
+1. **로그인 요청**: 사용자가 OAuth 로그인 버튼 클릭
+2. **OAuth 중간 서버로 리다이렉트**: 프론트엔드에서 중간 서버로 이동
+3. **OAuth 제공자로 리다이렉트**: 중간 서버에서 OAuth 제공자로 이동
+4. **사용자 인증**: 사용자가 OAuth 제공자에서 로그인
+5. **인증 코드 전달**: OAuth 제공자가 중간 서버로 인증 코드 전달
+6. **토큰 교환**: 중간 서버가 인증 코드를 액세스 토큰으로 교환
+7. **사용자 정보 조회**: 액세스 토큰으로 사용자 정보 조회
+8. **토큰 폐기**: 보안을 위해 OAuth 토큰 즉시 폐기
+9. **백엔드 요청**: 중간 서버가 백엔드에 최소 정보만 전달
+10. **임시 코드 발급**: 백엔드에서 임시 코드 생성 (5분 만료)
+11. **프론트엔드 리다이렉트**: 임시 코드와 함께 프론트엔드로 리다이렉트
+12. **JWT 토큰 교환**: 프론트엔드가 임시 코드를 JWT 토큰으로 교환
+13. **로그인 완료**: 사용자 로그인 상태 업데이트
 
 ## 테스트
 
+### 단위 테스트
 ```bash
-# Google OAuth 로그인 테스트
-curl -X GET "http://localhost:3004/api/auth/google/login?frontend_url=http://localhost:3001"
-
-# Kakao OAuth 로그인 테스트
-curl -X GET "http://localhost:3004/api/auth/kakao/login?frontend_url=http://localhost:3001"
-
-# 토큰 검증 테스트 (백엔드 서버로 직접 요청)
-curl -X POST "http://localhost:8080/api/auth/verify" \
-  -H "Content-Type: application/json" \
-  -d '{"token":"your-jwt-token"}'
-
-# 토큰 갱신 테스트 (백엔드 서버로 직접 요청)
-curl -X POST "http://localhost:8080/api/auth/refresh" \
-  -H "Content-Type: application/json" \
-  -d '{"refreshToken":"your-refresh-token"}'
+npm run test
 ```
+
+### 통합 테스트
+```bash
+npm run test:integration
+```
+
+### E2E 테스트
+```bash
+npm run test:e2e
+```
+
+### 수동 테스트
+
+1. **Google 로그인 테스트**:
+   ```bash
+   curl -X GET "http://localhost:3004/api/auth/google/login?frontend_url=http://localhost:3001"
+   ```
+
+2. **Kakao 로그인 테스트**:
+   ```bash
+   curl -X GET "http://localhost:3004/api/auth/kakao/login?frontend_url=http://localhost:3001"
+   ```
+
+3. **토큰 검증 테스트**:
+   ```bash
+   curl -X POST "http://localhost:3004/api/auth/verify" \
+     -H "Content-Type: application/json" \
+     -d '{"token":"your_jwt_token"}'
+   ```
 
 ## 성능 최적화
 
-- **HTTP/2 지원**: Next.js 15.3.3의 최신 성능 개선사항 활용
-- **트리 쉐이킹**: 사용하지 않는 코드 자동 제거
-- **타입스크립트**: 컴파일 타임 최적화
-- **Axios 인스턴스**: 연결 재사용 및 타임아웃 설정
+### 1. 응답 시간 최적화
+- OAuth 제공자와의 통신 시간 단축
+- 불필요한 API 호출 최소화
+- 캐싱 전략 적용
+
+### 2. 메모리 사용량 최적화
+- OAuth 토큰 즉시 폐기로 메모리 사용량 감소
+- 임시 데이터 자동 정리
+
+### 3. 네트워크 최적화
+- GZIP 압축 적용
+- Keep-Alive 연결 사용
 
 ## 배포
 
-### Vercel (권장)
+### Vercel 배포
 ```bash
+npm run build
 vercel --prod
 ```
 
-### Docker
+### Docker 배포
 ```dockerfile
-FROM node:20-alpine
+FROM node:18-alpine
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --only=production
 COPY . .
 RUN npm run build
-EXPOSE 3000
+EXPOSE 3004
 CMD ["npm", "start"]
 ```
 
-### 수동 배포
-```bash
-npm run build
-npm start
-```
+### 환경 변수 설정
+배포 시 환경 변수를 반드시 설정해야 합니다:
+- `GOOGLE_CLIENT_ID`
+- `GOOGLE_CLIENT_SECRET`
+- `KAKAO_CLIENT_ID`
+- `KAKAO_CLIENT_SECRET`
+- `BACKEND_SERVER_URL`
+- `FRONTEND_URL`
 
 ## 트러블슈팅
 
-### 일반적인 문제들
+### 자주 발생하는 문제
 
-1. **"OAUTH_CLIENT_ID is not defined"**
-   - `.env.local` 파일의 환경 변수 확인
-   - 서버 재시작 필요
+1. **환경 변수 누락**
+   - 증상: "Missing environment variable" 에러
+   - 해결: `.env.local` 파일에서 누락된 환경 변수 확인 및 설정
 
 2. **CORS 에러**
-   - `CORS_ORIGIN` 환경변수 확인
-   - 프론트엔드 도메인이 정확히 설정되었는지 확인
+   - 증상: "Access-Control-Allow-Origin" 에러
+   - 해결: `CORS_ORIGIN` 환경 변수 확인 및 프론트엔드 도메인 설정
 
-3. **State 파라미터 에러**
-   - 시계 동기화 확인 (1시간 만료)
-   - 브라우저 캐시 클리어
+3. **OAuth 리다이렉트 URI 불일치**
+   - 증상: "redirect_uri_mismatch" 에러
+   - 해결: OAuth 제공자 콘솔에서 리다이렉트 URI 확인 및 수정
 
+4. **토큰 교환 실패**
+   - 증상: "Invalid authorization code" 에러
+   - 해결: 인증 코드 만료 여부 확인, 백엔드 서버 연결 상태 확인
+
+### 디버깅 방법
+
+1. **로그 확인**: 서버 콘솔에서 상세한 로그 확인
+2. **네트워크 탭**: 브라우저 개발자 도구에서 요청/응답 확인
+3. **환경 변수 점검**: 모든 필수 환경 변수 설정 여부 확인
+4. **OAuth 콘솔**: 각 제공자의 개발자 콘솔에서 설정 확인
+
+### 로그 수준 설정
+```env
+LOG_LEVEL=debug  # debug, info, warn, error
+```
+
+디버그 모드에서는 더 상세한 로그가 출력됩니다.
 
 ## 라이선스
 

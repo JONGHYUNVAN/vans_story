@@ -1,22 +1,44 @@
-# OAuth API 문서
+# OAuth 서비스 API 문서
 
-이 문서는 OAuth 중간 서버의 API 엔드포인트에 대한 상세한 설명을 제공합니다.
+![OAuth Diagram](/docs/Oauth_diagram.png)
 
 ## 개요
 
-이 OAuth 서버는 프론트엔드와 백엔드 사이에서 OAuth 인증을 중개하는 역할을 합니다.
-- **지원 제공자**: Google, Kakao
-- **인증 플로우**: Authorization Code Grant
-- **보안**: State 파라미터를 통한 CSRF 방지
+이 문서는 OAuth 중간 서버의 API 엔드포인트에 대한 상세한 설명을 제공합니다. 이 OAuth 서버는 프론트엔드와 백엔드 사이에서 OAuth 인증을 중개하는 역할을 합니다.
 
-## 기본 URL
+## 목차
+
+- [개요](#개요)
+- [기본 정보](#기본-정보)
+- [환경 변수](#환경-변수)
+- [API 엔드포인트](#api-엔드포인트)
+- [인증 플로우](#인증-플로우)
+- [에러 처리](#에러-처리)
+- [보안 고려사항](#보안-고려사항)
+- [개발 가이드](#개발-가이드)
+
+## 기본 정보
+
+### 지원 제공자
+- **Google**: OAuth 2.0 인증
+- **Kakao**: OAuth 2.0 인증
+
+### 인증 플로우
+Authorization Code Grant 방식을 사용합니다.
+
+### 보안 기능
+- State 파라미터를 통한 CSRF 방지
+- OAuth 토큰 즉시 폐기
+- 최소한의 정보만 백엔드로 전달
+
+### 서버 URL
 
 - **개발환경**: `http://localhost:3004`
 - **프로덕션**: `https://your-oauth-server.vercel.app`
 
-## 환경변수
+## 환경 변수
 
-### 필수 환경변수
+### 필수 환경 변수
 
 | 변수명 | 설명 | 예시 |
 |--------|------|------|
@@ -51,13 +73,13 @@ GET /api/auth/google/login?frontend_url=http://localhost:3001
 
 #### 응답
 
-**성공시**: Google 로그인 페이지로 리다이렉트 (302)
+**성공 시**: Google 로그인 페이지로 리다이렉트 (302)
 
 ```
 Location: https://accounts.google.com/oauth/authorize?response_type=code&client_id=...&redirect_uri=...&scope=openid%20email%20profile&state=...
 ```
 
-**실패시**: JSON 응답 (500)
+**실패 시**: JSON 응답 (500)
 
 ```json
 {
@@ -65,8 +87,6 @@ Location: https://accounts.google.com/oauth/authorize?response_type=code&client_
   "details": "Missing GOOGLE_CLIENT_ID environment variable"
 }
 ```
-
----
 
 ### 2. Kakao OAuth 로그인 시작
 
@@ -88,13 +108,13 @@ GET /api/auth/kakao/login?frontend_url=http://localhost:3001
 
 #### 응답
 
-**성공시**: Kakao 로그인 페이지로 리다이렉트 (302)
+**성공 시**: Kakao 로그인 페이지로 리다이렉트 (302)
 
 ```
 Location: https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=...&redirect_uri=...&scope=profile_nickname%20profile_image%20account_email&state=...
 ```
 
-**실패시**: JSON 응답 (500)
+**실패 시**: JSON 응답 (500)
 
 ```json
 {
@@ -102,8 +122,6 @@ Location: https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=.
   "details": "Missing KAKAO_CLIENT_ID environment variable"
 }
 ```
-
----
 
 ### 3. Google OAuth 콜백
 
@@ -132,19 +150,17 @@ Google에서 리다이렉트된 인증 코드를 처리합니다.
 
 #### 응답
 
-**성공시**: 프론트엔드로 리다이렉트 (302)
+**성공 시**: 프론트엔드로 리다이렉트 (302)
 
 ```
 Location: http://localhost:3000/auth/callback?code=oauth_temp_abc123def456...
 ```
 
-**실패시**: 에러 페이지로 리다이렉트 (302)
+**실패 시**: 에러 페이지로 리다이렉트 (302)
 
 ```
 Location: http://localhost:3000/auth/error?error=invalid_state
 ```
-
----
 
 ### 4. Kakao OAuth 콜백
 
@@ -173,19 +189,17 @@ Kakao에서 리다이렉트된 인증 코드를 처리합니다.
 
 #### 응답
 
-**성공시**: 프론트엔드로 리다이렉트 (302)
+**성공 시**: 프론트엔드로 리다이렉트 (302)
 
 ```
 Location: http://localhost:3000/auth/callback?code=oauth_temp_abc123def456...
 ```
 
-**실패시**: 에러 페이지로 리다이렉트 (302)
+**실패 시**: 에러 페이지로 리다이렉트 (302)
 
 ```
 Location: http://localhost:3000/auth/error?error=invalid_state
 ```
-
----
 
 ### 5. 토큰 검증
 
@@ -195,8 +209,8 @@ JWT 토큰의 유효성을 검증합니다.
 
 #### 요청 헤더
 
-```
-Content-Type: application/json
+```http
+Authorization: Bearer <jwt_token>
 ```
 
 #### 요청 본문
@@ -209,23 +223,21 @@ Content-Type: application/json
 
 #### 응답
 
-**성공시** (200):
+**성공 시** (200):
 
 ```json
 {
   "valid": true,
-  "payload": {
-    "userId": "123456789",
+  "user": {
+    "id": "12345",
     "email": "user@example.com",
-    "name": "홍길동",
-    "provider": "google",
-    "iat": 1640995200,
-    "exp": 1641081600
-  }
+    "name": "사용자명"
+  },
+  "expiresAt": "2024-12-31T23:59:59Z"
 }
 ```
 
-**실패시** (401):
+**실패 시** (401):
 
 ```json
 {
@@ -234,236 +246,176 @@ Content-Type: application/json
 }
 ```
 
----
-
 ### 6. 토큰 갱신
 
 **엔드포인트**: `POST /api/auth/refresh`
 
-리프레시 토큰을 사용하여 새로운 액세스 토큰을 발급받습니다.
-
-#### 요청 헤더
-
-```
-Content-Type: application/json
-```
+Refresh Token을 사용하여 새로운 Access Token을 발급합니다.
 
 #### 요청 본문
 
 ```json
 {
-  "refreshToken": "1//0GeSYNAKqhBHyCgYIARAAGA...",
-  "provider": "google"
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 ```
 
 #### 응답
 
-**성공시** (200):
+**성공 시** (200):
 
 ```json
 {
-  "accessToken": "ya29.a0ARrdaM-new-access-token...",
-  "refreshToken": "1//0GeSYNAKqhBHyCgYIARAAGA...",
-  "expiresIn": 3600
+  "success": true,
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "expiresIn": 3600,
+  "tokenType": "Bearer"
 }
 ```
 
-**실패시** (401):
+**실패 시** (401):
 
 ```json
 {
+  "success": false,
   "error": "Invalid refresh token"
 }
 ```
 
-## 에러 코드
+## 인증 플로우
 
-### 일반적인 에러
+### 전체 인증 플로우
 
-| 에러 코드 | 설명 |
-|-----------|------|
-| `missing_parameters` | 필수 파라미터 누락 |
-| `invalid_state` | 잘못되거나 만료된 state 파라미터 |
-| `server_configuration` | 서버 설정 오류 (환경변수 누락) |
-| `callback_processing` | 콜백 처리 중 오류 |
+```
+1. 사용자가 OAuth 로그인 버튼 클릭
+2. 프론트엔드가 OAuth 중간 서버로 리다이렉트
+3. 중간 서버가 OAuth 제공자로 리다이렉트
+4. 사용자가 OAuth 제공자에서 인증
+5. OAuth 제공자가 중간 서버로 리다이렉트 (인증 코드 포함)
+6. 중간 서버가 인증 코드를 액세스 토큰으로 교환
+7. 중간 서버가 사용자 정보를 조회
+8. 중간 서버가 OAuth 토큰을 폐기
+9. 중간 서버가 백엔드에 OAuth 제공자와 사용자 ID 전송
+10. 백엔드가 임시 코드 발급 (5분 만료)
+11. 중간 서버가 프론트엔드로 리다이렉트 (임시 코드 포함)
+12. 프론트엔드가 임시 코드를 JWT 토큰으로 교환
+13. 로그인 완료
+```
 
-### OAuth 제공자별 에러
+### 보안 특징
 
-| 에러 코드 | 설명 |
-|-----------|------|
-| `google_oauth_access_denied` | Google OAuth 접근 거부 |
-| `kakao_oauth_access_denied` | Kakao OAuth 접근 거부 |
+- **OAuth 토큰 즉시 폐기**: 중간 서버에서 사용자 정보 조회 후 토큰 즉시 삭제
+- **최소 정보 전달**: 백엔드에는 OAuth 토큰이 전달되지 않음
+- **임시 코드 사용**: 5분 만료, 일회용 임시 코드로 보안 강화
+- **State 파라미터**: CSRF 공격 방지
 
-## 백엔드 서버 연동
+## 에러 처리
 
-### 백엔드로 전송되는 데이터
+### 공통 에러 코드
 
-OAuth 인증 완료 후 백엔드 서버의 `/api/v1/oauth/login` 엔드포인트로 다음 데이터가 전송됩니다:
+| 에러 코드 | 설명 | HTTP 상태 |
+|-----------|------|-----------|
+| `invalid_request` | 잘못된 요청 | 400 |
+| `invalid_client` | 잘못된 클라이언트 | 401 |
+| `invalid_grant` | 잘못된 인증 코드 | 400 |
+| `unauthorized_client` | 권한이 없는 클라이언트 | 401 |
+| `unsupported_grant_type` | 지원하지 않는 인증 타입 | 400 |
+| `invalid_scope` | 잘못된 권한 범위 | 400 |
+| `access_denied` | 사용자가 인증 거부 | 400 |
+| `server_error` | 서버 오류 | 500 |
+| `temporarily_unavailable` | 일시적으로 사용 불가 | 503 |
+
+### 에러 응답 형식
 
 ```json
 {
-  "provider": "google",
-  "providerId": "123456789"
+  "error": "invalid_request",
+  "error_description": "Missing required parameter: code",
+  "error_uri": "https://tools.ietf.org/html/rfc6749#section-4.1.2.1"
 }
 ```
-
-### 백엔드에서 반환해야 하는 응답 형식
-
-```http
-HTTP/1.1 200 OK
-Content-Type: application/json
-
-{
-  "success": true,
-  "data": {
-    "code": "oauth_temp_abc123def456789..."
-  },
-  "message": "임시 코드가 발급되었습니다."
-}
-```
-
-> **중요**: 백엔드에서 임시 코드를 발급하면, 중간 서버에서 이 코드를 사용하여 프론트엔드로의 리다이렉트 URL을 생성합니다. 임시 코드는 5분 후 자동 만료되며, 일회용입니다. 프론트엔드에서 이 임시 코드로 `/api/v1/oauth/exchange` 엔드포인트를 호출하여 실제 JWT 토큰을 획득합니다.
-
-## CORS 설정
-
-모든 엔드포인트는 CORS를 지원하며, `OPTIONS` 메서드를 통한 preflight 요청을 처리합니다.
 
 ## 보안 고려사항
 
-### State 파라미터
+### 1. OAuth 토큰 관리
 
-- **생성**: Base64로 인코딩된 JSON 객체
-- **내용**: `{ provider, frontendUrl, timestamp }`
-- **만료시간**: 1시간
-- **용도**: CSRF 공격 방지
+- OAuth 액세스 토큰은 사용자 정보 조회 후 즉시 폐기
+- 백엔드에는 OAuth 토큰이 전달되지 않음
+- 임시 코드는 5분 만료, 일회용으로 보안 강화
 
-### 환경변수 보안
+### 2. State 파라미터 검증
 
-- 모든 민감한 정보는 환경변수로 관리
-- 클라이언트 시크릿은 서버에서만 사용
+- 모든 OAuth 요청에 대해 state 파라미터 검증
+- CSRF 공격 방지를 위한 무작위 state 생성
+- 세션 또는 쿠키에 state 저장하여 검증
+
+### 3. 환경 변수 보안
+
+- 클라이언트 시크릿은 서버 환경에만 저장
 - 프로덕션 환경에서는 HTTPS 필수
+- 환경 변수 파일은 버전 관리에서 제외
 
-## 디버깅
+### 4. 리다이렉트 URI 검증
 
-### 환경변수 확인 로그
+- OAuth 제공자에 등록된 리다이렉트 URI만 허용
+- 동적 리다이렉트 URI 사용 금지
+- 화이트리스트 기반 URI 검증
 
-각 API 호출 시 콘솔에 환경변수 로딩 상태가 출력됩니다:
+## 개발 가이드
 
-```
-🔍 [Google Login] 환경변수 로딩 상태:
-  - FRONTEND_URL: ✅ 설정됨 (값: http://localhost:3001)
-  - NEXT_PUBLIC_URL: ✅ 설정됨 (값: http://localhost:3004)
-  - GOOGLE_CLIENT_ID: ✅ 설정됨 (길이: 82자)
-  - 생성된 redirectUri: http://localhost:3004/api/auth/google/callback
-  - 전달받은 frontendUrl: http://localhost:3001
-```
+### 로컬 개발 환경 설정
 
-### 일반적인 문제 해결
+1. **환경 변수 설정**
+   - `.env.local` 파일에 필요한 환경 변수 설정
+   - OAuth 제공자에서 발급받은 클라이언트 ID/시크릿 입력
 
-1. **환경변수 누락**: 콘솔 로그에서 ❌ 표시 확인
-2. **리다이렉트 URI 불일치**: OAuth 제공자 설정과 `NEXT_PUBLIC_URL` 확인
-3. **CORS 에러**: 프론트엔드 도메인이 CORS 설정에 포함되어 있는지 확인
-4. **State 파라미터 에러**: 시간 동기화 및 만료시간 확인
+2. **OAuth 애플리케이션 등록**
+   - Google: [Google Cloud Console](https://console.cloud.google.com/)
+   - Kakao: [Kakao Developers](https://developers.kakao.com/)
 
-## 예시 사용법
+3. **리다이렉트 URI 설정**
+   - Google: `http://localhost:3004/api/auth/google/callback`
+   - Kakao: `http://localhost:3004/api/auth/kakao/callback`
 
-### 프론트엔드에서 OAuth 시작
+### 새로운 OAuth 제공자 추가
 
-```javascript
-// Google 로그인
-window.location.href = 'http://localhost:3004/api/auth/google/login?frontend_url=' + 
-  encodeURIComponent(window.location.origin);
+1. **환경 변수 추가**
+   ```env
+   PROVIDER_CLIENT_ID=your_client_id
+   PROVIDER_CLIENT_SECRET=your_client_secret
+   ```
 
-// Kakao 로그인
-window.location.href = 'http://localhost:3004/api/auth/kakao/login?frontend_url=' + 
-  encodeURIComponent(window.location.origin);
-```
+2. **API 엔드포인트 추가**
+   - `/api/auth/provider/login`
+   - `/api/auth/provider/callback`
 
-### 임시 코드 수신 및 토큰 교환
+3. **사용자 정보 매핑**
+   - 제공자별 사용자 정보 구조에 맞게 매핑
+   - 공통 사용자 정보 형식으로 변환
 
-```javascript
-// URL에서 임시 코드 추출
-const urlParams = new URLSearchParams(window.location.search);
-const code = urlParams.get('code');
+### 테스트 방법
 
-if (code) {
-  // 임시 코드로 실제 JWT 토큰 교환
-  exchangeCodeForToken(code);
-  
-  // URL에서 코드 파라미터 제거
-  window.history.replaceState({}, document.title, window.location.pathname);
-}
+1. **로컬 서버 실행**
+   ```bash
+   npm run dev
+   ```
 
-// 토큰 교환 함수
-async function exchangeCodeForToken(code) {
-  try {
-    const response = await fetch('http://localhost:8080/api/v1/oauth/exchange', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ code }),
-      credentials: 'include' // 쿠키 포함
-    });
+2. **OAuth 로그인 테스트**
+   ```bash
+   curl -X GET "http://localhost:3004/api/auth/google/login?frontend_url=http://localhost:3001"
+   ```
 
-    if (response.ok) {
-      // Authorization 헤더에서 JWT 토큰 추출
-      const authHeader = response.headers.get('authorization');
-      if (authHeader && authHeader.startsWith('Bearer ')) {
-        const token = authHeader.substring(7);
-        localStorage.setItem('authToken', token);
-        console.log('로그인 성공!');
-        
-        // 메인 페이지로 이동
-        window.location.href = '/dashboard';
-      }
-    } else {
-      console.error('토큰 교환 실패:', await response.text());
-    }
-  } catch (error) {
-    console.error('토큰 교환 오류:', error);
-  }
-}
-```
+3. **토큰 검증 테스트**
+   ```bash
+   curl -X POST "http://localhost:3004/api/auth/verify" \
+     -H "Content-Type: application/json" \
+     -d '{"token":"your_jwt_token"}'
+   ```
 
-## 🔒 보안 강화된 OAuth 플로우
+### 디버깅 팁
 
-### ✅ 개선된 보안 효과
-
-1. **JWT 토큰 직접 노출 방지**
-  - 기존: `?token=eyJhbGciOiJIUzI1NiIs...` (위험)
-  - 개선: `?code=oauth_temp_abc123...` (안전)
-
-2. **OAuth 토큰 즉시 폐기**
-  - OAuth 제공자 토큰은 사용자 정보 조회 후 즉시 폐기
-  - 백엔드로 OAuth 토큰이 전달되지 않음
-  - 중간 서버에서 토큰 저장/전달 위험 제거
-
-3. **자동 만료 시스템**
-  - 임시 코드는 5분 후 자동 만료
-  - 일회용 코드로 재사용 불가
-
-4. **서버 로그 보안**
-  - 브라우저/서버 로그에 JWT 토큰 기록 방지
-  - Referer 헤더를 통한 토큰 유출 차단
-
-5. **XSS 공격 방지**
-  - 임시 코드는 단기간만 유효
-  - 실제 JWT는 안전한 교환 과정을 거쳐 획득
-
-### 토큰 검증
-
-```javascript
-async function verifyToken(token) {
-  const response = await fetch('http://localhost:8080/api/auth/verify', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    }
-  });
-  
-  return await response.json();
-}
-```
+- 브라우저 개발자 도구의 네트워크 탭에서 요청/응답 확인
+- 서버 로그에서 OAuth 제공자와의 통신 상태 확인
+- 환경 변수 설정 여부 확인
+- OAuth 제공자 콘솔에서 애플리케이션 설정 확인

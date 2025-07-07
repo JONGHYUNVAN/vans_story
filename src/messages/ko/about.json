@@ -51,12 +51,12 @@
       }
     },
     "hero": {
-      "greeting": "안녕하세요, 👋",
-      "name": "저는 Van입니다",
-      "role": "Backend Developer",
+      "greeting": "확장 가능한 시스템을 설계하는",
+      "name": "Backend Engineer Van",
+      "role": "System Architecture • API Design • Database Optimization",
       "contactInfo": "연락처 정보",
       "location": "수원, 대한민국",
-      "currentWork": "병원 시스템 개발 (EMR)",
+      "currentWork": "EMR 시스템 아키텍처 설계 및 최적화",
       "socialLinks": "소셜 링크"
     },
     "interests": {

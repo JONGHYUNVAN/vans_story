@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslation } from '@/utils/i18n';
+import { useTypewriter } from '@/hooks/useTypewriter';
 
 const socialLinksKo = [
   { name: 'GitHub', url: 'https://github.com/JONGHYUNVAN', icon: '🐱' },
@@ -15,19 +16,52 @@ const socialLinksEn = [
 ];
 
 const heroDataKo = {
-  description: `여러 프로젝트를 직접 기획하고 개발하며, JWT 기반 사용자 인증, 이미지 업로드 처리, 검색 기능 구현 등 실무에서 요구되는 백엔드 기능을 직접 구현해 보았습니다.
-코드 품질과 시스템 확장성에 관심이 많아, GitHub Actions를 활용한 CI/CD 자동화, ELB(Elastic Load Balancer)의 healthcheck 기반 트래픽 분산 구성도 경험했습니다.
-또한 협업과 유지보수성을 중요하게 생각하여, 팀 프로젝트에서는 API 문서를 위한 Swagger 및 각 언어의 Docs 작성, 테스트 코드 작성, GitHub를 통한 협업 경험을 쌓아가고 있습니다.`
+  description: `여러 프로젝트를 직접 기획하고 개발하면서, 
+  자연스럽게 실무에 필요한 백엔드 기술들을 익혀왔습니다.
+  웹 서비스의 여러 기능들을 직접 설계하고 구현해보며, 
+  백엔드 시스템이 어떻게 사용자 경험과 연결되는지를 고민합니다.
+  코드 가독성과 유지보수성에 관심이 많고, 
+  Swagger, readme, JavaDoc, JSDoc 등 여러 문서화 도구를 사용합니다.
+  함께 만드는 프로젝트의 가치에 대해 고민하고 성장할 곳을 찾고 있습니다.`
 };
 
 const heroDataEn = {
-  description: `I have directly planned and developed various projects, implementing backend features required in practice such as JWT-based user authentication, image upload processing, and search functionality.
-With a strong interest in code quality and system scalability, I have also experienced CI/CD automation using GitHub Actions and traffic distribution configuration based on ELB (Elastic Load Balancer) health checks.
-I value collaboration and maintainability, so in team projects, I am building experience in writing API documentation using Swagger, documentation in various languages, test code writing, and collaboration through GitHub.`
+  description: `Through planning and developing various projects, 
+I have naturally learned backend technologies needed in practice.
+By directly designing and implementing various web service features, 
+I think about how backend systems connect to user experience.
+I'm interested in code readability and maintainability, 
+and use various documentation tools like Swagger, readme, JavaDoc, JSDoc.
+I'm looking for a place to grow while thinking about the value of projects we build together.`
 };
 
 export function HeroSection() {
   const { t, locale } = useTranslation('about');
+  
+  const backendTermsKo = [
+    '월요일보다 배포일이 더 무서운',
+    '코드보다 주석이 더 긴',
+    '신(新)기술이 신(神)기술인줄 아는',
+    '테스트 코드만 열심히 짜는',
+    'AI한테 화내는',
+    '카페인으로 동작하는',
+    '내 컴퓨터에선 잘 돌아가는',
+    '작명이 제일 어려운'
+  ];
+
+  const backendTermsEn = [
+    'more afraid of deployment than Monday',
+    'writing more comments than code',
+    'thinking new tech is godly tech',
+    'writing test code diligently',
+    'getting mad at AI',
+    'powered by caffeine',
+    'it works on my machine',
+    'struggling most with naming'
+  ];
+
+  const backendTerms = locale === 'ko' ? backendTermsKo : backendTermsEn;
+  const { text: typewriterText, style: typewriterStyle } = useTypewriter(backendTerms);
 
   // 언어에 따라 데이터 선택
   const socialLinks = locale === 'ko' ? socialLinksKo : socialLinksEn;
@@ -41,14 +75,17 @@ export function HeroSection() {
           {/* Main Title */}
           <div className="space-y-4">
             <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white leading-tight">
-              {t('AboutVan.hero.greeting')}
-              <br />
+              {/* Typewriter Effect for greeting */}
+              <div className="h-[10rem] md:h-[8rem] w-full relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full">
+                  <span style={typewriterStyle}>
+                    {typewriterText}
+                  </span>
+                  <span className="animate-[blink_1s_steps(1)_infinite] text-gray-900 dark:text-white">|</span>
+                </div>
+              </div>
               <span className="text-gray-600 dark:text-gray-300">{t('AboutVan.hero.name')}</span>
             </h1>
-            
-            <p className="text-xl md:text-2xl text-gray-700 dark:text-gray-300 font-light">
-              {t('AboutVan.hero.role')}
-            </p>
           </div>
 
           {/* Description */}

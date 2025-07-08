@@ -82,7 +82,12 @@ export default function Services({ services, selectedService, onServiceSelect, s
 
   // 서비스별 문서 링크 매핑
   const getDocumentLinks = (serviceName: string) => {
-    const links = [];
+    const links: Array<{
+      title: string;
+      filePath: string;
+      description: string;
+      isHtml?: boolean;
+    }> = [];
     
     if (serviceName.includes('Frontend')) {
       links.push({
@@ -128,6 +133,12 @@ export default function Services({ services, selectedService, onServiceSelect, s
         filePath: '/docs/user-service-oauth.md',
         description: 'OAuth 도메인 설계 및 플로우 상세 가이드'
       });
+      links.push({
+        title: 'Kotlin 코드 문서 (Dokka)',
+        filePath: '/docs/kotlin-api/index.html',
+        description: 'Kotlin 백엔드 클래스, 패키지, 함수 문서',
+        isHtml: true
+      });
     }
     
     if (serviceName.includes('Post Service')) {
@@ -140,6 +151,12 @@ export default function Services({ services, selectedService, onServiceSelect, s
         title: 'Post Service API 문서',
         filePath: '/docs/post-service-api.md',
         description: '포스트 관리 API 문서'
+      });
+      links.push({
+        title: 'NestJS 코드 문서 (TypeDoc)',
+        filePath: '/docs/nestjs-api/index.html',
+        description: 'NestJS 백엔드 클래스, 모듈, 인터페이스 문서',
+        isHtml: true
       });
     }
     
@@ -175,10 +192,16 @@ export default function Services({ services, selectedService, onServiceSelect, s
     return links;
   };
 
-  const handleDocumentClick = (title: string, filePath: string) => {
+  const handleDocumentClick = (title: string, filePath: string, isHtml?: boolean) => {
     if (filePath !== '#') {
-      setSelectedDoc({ title, filePath });
-      setModalOpen(true);
+      if (isHtml) {
+        // HTML 문서는 새 탭에서 열기
+        window.open(filePath, '_blank', 'noopener,noreferrer');
+      } else {
+        // 마크다운 문서는 모달에서 열기
+        setSelectedDoc({ title, filePath });
+        setModalOpen(true);
+      }
     }
   };
 
@@ -290,7 +313,7 @@ export default function Services({ services, selectedService, onServiceSelect, s
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleDocumentClick(link.title, link.filePath);
+                                handleDocumentClick(link.title, link.filePath, link.isHtml);
                               }}
                               className={`text-sm font-medium ${colors.linkColor} hover:underline ${
                                 link.filePath === '#' ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'

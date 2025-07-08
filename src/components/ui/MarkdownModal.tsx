@@ -31,7 +31,10 @@ export default function MarkdownModal({ isOpen, onClose, title, filePath }: Mark
 
   useEffect(() => {
     if (isOpen && filePath) {
-      fetchMarkdownContent();
+      // HTML 파일이 아닌 경우에만 fetch
+      if (!filePath.endsWith('.html')) {
+        fetchMarkdownContent();
+      }
     }
   }, [isOpen, filePath]);
 
@@ -52,6 +55,9 @@ export default function MarkdownModal({ isOpen, onClose, title, filePath }: Mark
       setLoading(false);
     }
   };
+
+  // HTML 파일인지 확인
+  const isHtmlFile = filePath.endsWith('.html');
 
   if (!isOpen) return null;
 
@@ -90,11 +96,19 @@ export default function MarkdownModal({ isOpen, onClose, title, filePath }: Mark
             </div>
           )}
           
-          {content && !loading && !error && (
-            <div className="prose prose-lg max-w-none">
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                components={{
+          {((content && !loading && !error) || (isHtmlFile && !loading && !error)) && (
+            <>
+              {isHtmlFile ? (
+                <iframe
+                  src={filePath}
+                  className="w-full h-[calc(90vh-200px)] border-0 rounded-lg"
+                  title={title}
+                />
+              ) : (
+                <div className="prose prose-lg max-w-none">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
                   // 코드 블록 스타일링
                   pre: ({ children }) => (
                     <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto">
@@ -256,8 +270,10 @@ export default function MarkdownModal({ isOpen, onClose, title, filePath }: Mark
               </ReactMarkdown>
             </div>
           )}
-        </div>
-      </div>
+        </>
+      )}
     </div>
-  );
+  </div>
+</div>
+);
 } 

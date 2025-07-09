@@ -1,6 +1,6 @@
 # OAuth 도메인 설계 및 플로우 문서
 
-![OAuth Diagram](/docs/Oauth_diagram.png)
+![OAuth Diagram](/docs/Oauth_diagram.webp)
 
 ## 목차
 - [개요](#개요)

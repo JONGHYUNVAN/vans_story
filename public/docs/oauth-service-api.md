@@ -1,6 +1,6 @@
 # OAuth 서비스 API 문서
 
-![OAuth Diagram](/docs/Oauth_diagram.png)
+![OAuth Diagram](/docs/Oauth_diagram.webp)
 
 ## 개요
 

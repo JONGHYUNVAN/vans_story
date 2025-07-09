@@ -1,6 +1,6 @@
 # OAuth 프론트엔드 구현 가이드
 
-![OAuth Diagram](/docs/Oauth_diagram.png)
+![OAuth Diagram](/docs/Oauth_diagram.webp)
 
 ## 개요
 

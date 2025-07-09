@@ -1,6 +1,6 @@
 # OAuth 중간 서버
 
-![OAuth Diagram](/docs/Oauth_diagram.png)
+![OAuth Diagram](/docs/Oauth_diagram.webp)
 
 ## 개요
 

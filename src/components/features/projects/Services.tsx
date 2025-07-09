@@ -171,6 +171,12 @@ export default function Services({ services, selectedService, onServiceSelect, s
         filePath: '/docs/oauth-service-api.md',
         description: 'OAuth 인증 서비스 API 문서'
       });
+      links.push({
+        title: 'OAuth 코드 문서 (TypeDoc)',
+        filePath: '/docs/oauth-tsdoc/index.html',
+        description: 'OAuth 서비스 클래스, 모듈, 인터페이스 문서',
+        isHtml: true
+      });
     }
     
     if (serviceName.includes('Image')) {
@@ -179,6 +185,12 @@ export default function Services({ services, selectedService, onServiceSelect, s
         filePath: '/docs/image-service-readme.md',
         description: 'AWS S3 이미지 업로드 및 WebP 변환 서비스'
       });
+      links.push({
+        title: 'Image 코드 문서 (TypeDoc)',
+        filePath: '/docs/image-tsdoc/index.html',
+        description: 'Image 서비스 클래스, 모듈, 인터페이스 문서',
+        isHtml: true
+      });
     }
     
     if (serviceName.includes('AI Chat')) {
@@ -186,6 +198,12 @@ export default function Services({ services, selectedService, onServiceSelect, s
         title: 'AI Chat Service README',
         filePath: '/docs/ai-chat-service-readme.md',
         description: 'OpenAI API 기반 ChatGPT 챗봇 서비스'
+      });
+      links.push({
+        title: 'AI Chat 코드 문서 (TypeDoc)',
+        filePath: '/docs/ai-chat-tsdoc/index.html',
+        description: 'AI Chat 서비스 클래스, 모듈, 인터페이스 문서',
+        isHtml: true
       });
     }
     

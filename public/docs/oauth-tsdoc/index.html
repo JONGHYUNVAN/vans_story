@@ -1,0 +1,318 @@
+<!DOCTYPE html><html class="default" lang="en" data-base="./"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Vans DevBlog OAuth 중간 서버 API 문서 - v0.1.0</title><meta name="description" content="Documentation for Vans DevBlog OAuth 중간 서버 API 문서"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script defer src="assets/main.js"></script><script async src="assets/icons.js" id="tsd-icons-script"></script><script async src="assets/search.js" id="tsd-search-script"></script><script async src="assets/navigation.js" id="tsd-nav-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar"><div class="tsd-toolbar-contents container"><a href="index.html" class="title">Vans DevBlog OAuth 중간 서버 API 문서 - v0.1.0</a><div id="tsd-toolbar-links"><a href="https://github.com/vans-dev/vans_devblog_oauth">GitHub</a><a href="https://api.vans-dev.com">API 문서</a></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/><ul role="listbox" id="tsd-search-results"></ul><div id="tsd-search-status" aria-live="polite" aria-atomic="true"><div>Preparing search index...</div></div></dialog><a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-menu"></use></svg></a></div></header><div class="container container-main"><div class="col-content"><div class="tsd-page-title"><h1>Vans DevBlog OAuth 중간 서버 API 문서 - v0.1.0</h1></div><div class="tsd-panel tsd-typography"><h1 id="oauth-중간-서버-oauth-intermediate-server" class="tsd-anchor-link">OAuth 중간 서버 (OAuth Intermediate Server)<a href="#oauth-중간-서버-oauth-intermediate-server" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h1><p>Next.js 15.3.3 기반의 OAuth 인증 중간 서버입니다. 프론트엔드와 백엔드 사이에서 OAuth 인증 플로우를 처리합니다.</p>
+<h2 id="🚀-주요-기능" class="tsd-anchor-link">🚀 주요 기능<a href="#🚀-주요-기능" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><ul>
+<li><strong>OAuth 2.0 지원</strong>: Google, Kakao OAuth 제공자 지원</li>
+<li><strong>보안 강화</strong>: CSRF 방지를 위한 state 파라미터 검증</li>
+<li><strong>OAuth 토큰 보안</strong>: OAuth 토큰 즉시 폐기로 토큰 유출 위험 제거</li>
+<li><strong>최소 정보 전달</strong>: 사용자 ID만 백엔드로 전달하여 보안 최대화</li>
+<li><strong>에러 처리</strong>: 포괄적인 에러 핸들링 및 로깅</li>
+<li><strong>CORS 지원</strong>: 프론트엔드와의 원활한 통신</li>
+<li><strong>타입스크립트</strong>: 완전한 타입 안전성</li>
+<li><strong>상세한 문서화</strong>: JSDoc을 활용한 코드 문서화</li>
+</ul>
+<h2 id="🛠-기술-스택" class="tsd-anchor-link">🛠 기술 스택<a href="#🛠-기술-스택" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><ul>
+<li><strong>Framework</strong>: Next.js 15.3.3</li>
+<li><strong>Runtime</strong>: React 19.0.0</li>
+<li><strong>Language</strong>: TypeScript 5.6.0</li>
+<li><strong>HTTP Client</strong>: Axios 1.7.0</li>
+<li><strong>JWT Handling</strong>: JOSE 5.9.6</li>
+</ul>
+<h2 id="📋-api-엔드포인트" class="tsd-anchor-link">📋 API 엔드포인트<a href="#📋-api-엔드포인트" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><h3 id="1-google-oauth-로그인" class="tsd-anchor-link">1. Google OAuth 로그인<a href="#1-google-oauth-로그인" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><pre><code class="http">GET /api/auth/google/login?frontend_url={url}
+</code><button type="button">Copy</button></pre>
+
+<p><strong>매개변수:</strong></p>
+<ul>
+<li><code>frontend_url</code>: 인증 완료 후 리다이렉트할 프론트엔드 URL (선택사항)</li>
+</ul>
+<p><strong>응답 예시:</strong></p>
+<pre><code class="json"><span class="hl-0">{</span><br/><span class="hl-0">  </span><span class="hl-1">&quot;authUrl&quot;</span><span class="hl-0">: </span><span class="hl-2">&quot;https://accounts.google.com/oauth/authorize?...&quot;</span><span class="hl-0">,</span><br/><span class="hl-0">  </span><span class="hl-1">&quot;message&quot;</span><span class="hl-0">: </span><span class="hl-2">&quot;Google OAuth URL generated successfully&quot;</span><br/><span class="hl-0">}</span>
+</code><button type="button">Copy</button></pre>
+
+<h3 id="2-kakao-oauth-로그인" class="tsd-anchor-link">2. Kakao OAuth 로그인<a href="#2-kakao-oauth-로그인" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><pre><code class="http">GET /api/auth/kakao/login?frontend_url={url}
+</code><button type="button">Copy</button></pre>
+
+<p><strong>매개변수:</strong></p>
+<ul>
+<li><code>frontend_url</code>: 인증 완료 후 리다이렉트할 프론트엔드 URL (선택사항)</li>
+</ul>
+<p><strong>응답 예시:</strong></p>
+<pre><code class="json"><span class="hl-0">{</span><br/><span class="hl-0">  </span><span class="hl-1">&quot;authUrl&quot;</span><span class="hl-0">: </span><span class="hl-2">&quot;https://kauth.kakao.com/oauth/authorize?...&quot;</span><span class="hl-0">,</span><br/><span class="hl-0">  </span><span class="hl-1">&quot;message&quot;</span><span class="hl-0">: </span><span class="hl-2">&quot;Kakao OAuth URL generated successfully&quot;</span><br/><span class="hl-0">}</span>
+</code><button type="button">Copy</button></pre>
+
+<h3 id="3-google-oauth-콜백" class="tsd-anchor-link">3. Google OAuth 콜백<a href="#3-google-oauth-콜백" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><pre><code class="http">GET /api/auth/google/callback?code={code}&state={state}
+</code><button type="button">Copy</button></pre>
+
+<p>Google OAuth 제공자로부터의 콜백을 처리합니다. 자동으로 프론트엔드로 리다이렉트됩니다.</p>
+<h3 id="4-kakao-oauth-콜백" class="tsd-anchor-link">4. Kakao OAuth 콜백<a href="#4-kakao-oauth-콜백" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><pre><code class="http">GET /api/auth/kakao/callback?code={code}&state={state}
+</code><button type="button">Copy</button></pre>
+
+<p>Kakao OAuth 제공자로부터의 콜백을 처리합니다. 자동으로 프론트엔드로 리다이렉트됩니다.</p>
+<p><strong>OAuth 콜백 처리 과정:</strong></p>
+<ol>
+<li>인증 코드를 액세스 토큰으로 교환</li>
+<li>OAuth 토큰으로 사용자 정보 조회</li>
+<li><strong>OAuth 토큰 즉시 폐기</strong> (보안 강화)</li>
+<li>백엔드 서버에 OAuth 제공자, 사용자 ID만 전달</li>
+<li>백엔드에서 사용자 식별 및 임시 코드 발급 (5분 만료, 일회용)</li>
+<li><strong>중간 서버에서 직접 프론트엔드 <code>/auth/callback</code> 경로로 리다이렉트</strong></li>
+<li>프론트엔드에서 임시 코드로 실제 JWT 토큰 획득</li>
+</ol>
+<h3 id="5-토큰-검증" class="tsd-anchor-link">5. 토큰 검증<a href="#5-토큰-검증" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><pre><code class="http">POST /api/auth/verify
+</code><button type="button">Copy</button></pre>
+
+<p><strong>요청 본문:</strong></p>
+<pre><code class="json"><span class="hl-0">{</span><br/><span class="hl-0">  </span><span class="hl-1">&quot;token&quot;</span><span class="hl-0">: </span><span class="hl-2">&quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...&quot;</span><br/><span class="hl-0">}</span>
+</code><button type="button">Copy</button></pre>
+
+<p><strong>응답 예시 (성공):</strong></p>
+<pre><code class="json"><span class="hl-0">{</span><br/><span class="hl-0">  </span><span class="hl-1">&quot;valid&quot;</span><span class="hl-0">: </span><span class="hl-3">true</span><span class="hl-0">,</span><br/><span class="hl-0">  </span><span class="hl-1">&quot;user&quot;</span><span class="hl-0">: {</span><br/><span class="hl-0">    </span><span class="hl-1">&quot;id&quot;</span><span class="hl-0">: </span><span class="hl-2">&quot;12345&quot;</span><span class="hl-0">,</span><br/><span class="hl-0">    </span><span class="hl-1">&quot;email&quot;</span><span class="hl-0">: </span><span class="hl-2">&quot;user@example.com&quot;</span><span class="hl-0">,</span><br/><span class="hl-0">    </span><span class="hl-1">&quot;name&quot;</span><span class="hl-0">: </span><span class="hl-2">&quot;사용자명&quot;</span><br/><span class="hl-0">  },</span><br/><span class="hl-0">  </span><span class="hl-1">&quot;expiresAt&quot;</span><span class="hl-0">: </span><span class="hl-2">&quot;2024-12-31T23:59:59Z&quot;</span><br/><span class="hl-0">}</span>
+</code><button type="button">Copy</button></pre>
+
+<h3 id="6-토큰-갱신" class="tsd-anchor-link">6. 토큰 갱신<a href="#6-토큰-갱신" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><pre><code class="http">POST /api/auth/refresh
+</code><button type="button">Copy</button></pre>
+
+<p><strong>요청 본문:</strong></p>
+<pre><code class="json"><span class="hl-0">{</span><br/><span class="hl-0">  </span><span class="hl-1">&quot;refreshToken&quot;</span><span class="hl-0">: </span><span class="hl-2">&quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...&quot;</span><br/><span class="hl-0">}</span>
+</code><button type="button">Copy</button></pre>
+
+<p><strong>응답 예시:</strong></p>
+<pre><code class="json"><span class="hl-0">{</span><br/><span class="hl-0">  </span><span class="hl-1">&quot;success&quot;</span><span class="hl-0">: </span><span class="hl-3">true</span><span class="hl-0">,</span><br/><span class="hl-0">  </span><span class="hl-1">&quot;accessToken&quot;</span><span class="hl-0">: </span><span class="hl-2">&quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...&quot;</span><span class="hl-0">,</span><br/><span class="hl-0">  </span><span class="hl-1">&quot;refreshToken&quot;</span><span class="hl-0">: </span><span class="hl-2">&quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...&quot;</span><span class="hl-0">,</span><br/><span class="hl-0">  </span><span class="hl-1">&quot;expiresIn&quot;</span><span class="hl-0">: </span><span class="hl-4">3600</span><span class="hl-0">,</span><br/><span class="hl-0">  </span><span class="hl-1">&quot;tokenType&quot;</span><span class="hl-0">: </span><span class="hl-2">&quot;Bearer&quot;</span><br/><span class="hl-0">}</span>
+</code><button type="button">Copy</button></pre>
+
+<h2 id="🔧-설치-및-설정" class="tsd-anchor-link">🔧 설치 및 설정<a href="#🔧-설치-및-설정" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><h3 id="1-의존성-설치" class="tsd-anchor-link">1. 의존성 설치<a href="#1-의존성-설치" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><pre><code class="bash"><span class="hl-5">npm</span><span class="hl-0"> </span><span class="hl-2">install</span><br/><span class="hl-6"># 또는</span><br/><span class="hl-5">yarn</span><span class="hl-0"> </span><span class="hl-2">install</span><br/><span class="hl-6"># 또는</span><br/><span class="hl-5">pnpm</span><span class="hl-0"> </span><span class="hl-2">install</span>
+</code><button type="button">Copy</button></pre>
+
+<h3 id="2-환경-변수-설정" class="tsd-anchor-link">2. 환경 변수 설정<a href="#2-환경-변수-설정" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p><code>.env.local</code> 파일을 생성 후 다음 변수들을 설정하세요:</p>
+<pre><code class="env"># ===== 필수 환경변수 =====
+
+# Google OAuth 설정 (Google Cloud Console에서 발급)
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+# Kakao OAuth 설정 (Kakao Developers에서 발급)
+KAKAO_CLIENT_ID=your_kakao_client_id
+KAKAO_CLIENT_SECRET=your_kakao_client_secret
+
+# OAuth 공통 설정 (각 제공자별로 다른 콜백 URL)
+# Google: http://localhost:3004/api/auth/google/callback
+# Kakao: http://localhost:3004/api/auth/kakao/callback
+
+# 서버 URL 설정
+BACKEND_SERVER_URL=http://localhost:8000                   # 백엔드 API 서버 주소
+FRONTEND_URL=http://localhost:3001                         # 프론트엔드 앱 주소
+
+# ===== 선택적 환경변수 =====
+
+# CORS 설정 (기본값: FRONTEND_URL 사용)
+CORS_ORIGIN=http://localhost:3001                          # CORS 허용 도메인
+
+# OAuth 제공자 도메인 (쉼표로 구분, 설정하지 않으면 OAuth 제공자 요청 차단)
+OAUTH_PROVIDER_DOMAINS=https://accounts.google.com,https://oauth2.googleapis.com,https://www.googleapis.com,https://kauth.kakao.com,https://kapi.kakao.com
+</code><button type="button">Copy</button></pre>
+
+<h4 id="환경변수-상세-설명" class="tsd-anchor-link">환경변수 상세 설명<a href="#환경변수-상세-설명" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><table>
+<thead>
+<tr>
+<th>변수명</th>
+<th>필수여부</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GOOGLE_CLIENT_ID</code></td>
+<td>✅ 필수</td>
+<td>Google OAuth 클라이언트 ID</td>
+</tr>
+<tr>
+<td><code>GOOGLE_CLIENT_SECRET</code></td>
+<td>✅ 필수</td>
+<td>Google OAuth 클라이언트 시크릿</td>
+</tr>
+<tr>
+<td><code>KAKAO_CLIENT_ID</code></td>
+<td>✅ 필수</td>
+<td>Kakao OAuth 클라이언트 ID</td>
+</tr>
+<tr>
+<td><code>KAKAO_CLIENT_SECRET</code></td>
+<td>✅ 필수</td>
+<td>Kakao OAuth 클라이언트 시크릿</td>
+</tr>
+<tr>
+<td><code>BACKEND_SERVER_URL</code></td>
+<td>✅ 필수</td>
+<td>OAuth 로그인 요청을 처리할 백엔드 서버 주소</td>
+</tr>
+<tr>
+<td><code>FRONTEND_URL</code></td>
+<td>✅ 필수</td>
+<td>인증 완료 후 리다이렉트할 프론트엔드 주소</td>
+</tr>
+<tr>
+<td><code>CORS_ORIGIN</code></td>
+<td>⚪ 선택</td>
+<td>CORS 요청을 허용할 도메인 (기본값: <code>FRONTEND_URL</code>)</td>
+</tr>
+<tr>
+<td><code>OAUTH_PROVIDER_DOMAINS</code></td>
+<td>⚪ 선택</td>
+<td>OAuth 제공자 도메인들, 쉼표로 구분 (기본값: 빈 배열)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="개발환경-예시" class="tsd-anchor-link">개발환경 예시<a href="#개발환경-예시" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><pre><code class="env"># 개발환경 설정 예시
+GOOGLE_CLIENT_ID=123456789-abcdef.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=GOCSPX-abcdef123456789
+KAKAO_CLIENT_ID=1234567890abcdef1234567890abcdef
+KAKAO_CLIENT_SECRET=abcdef1234567890abcdef1234567890
+# Google 콜백: http://localhost:3004/api/auth/google/callback
+# Kakao 콜백: http://localhost:3004/api/auth/kakao/callback
+BACKEND_SERVER_URL=http://localhost:8000
+FRONTEND_URL=http://localhost:3001
+CORS_ORIGIN=http://localhost:3001
+OAUTH_PROVIDER_DOMAINS=https://accounts.google.com,https://oauth2.googleapis.com,https://www.googleapis.com,https://kauth.kakao.com,https://kapi.kakao.com
+</code><button type="button">Copy</button></pre>
+
+<h4 id="프로덕션-환경-예시" class="tsd-anchor-link">프로덕션 환경 예시<a href="#프로덕션-환경-예시" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><pre><code class="env"># 프로덕션 환경 설정 예시
+GOOGLE_CLIENT_ID=123456789-abcdef.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=GOCSPX-abcdef123456789
+KAKAO_CLIENT_ID=1234567890abcdef1234567890abcdef
+KAKAO_CLIENT_SECRET=abcdef1234567890abcdef1234567890
+# Google 콜백: https://api.yourdomain.com/api/auth/google/callback
+# Kakao 콜백: https://api.yourdomain.com/api/auth/kakao/callback
+BACKEND_SERVER_URL=https://backend.yourdomain.com
+FRONTEND_URL=https://yourdomain.com
+CORS_ORIGIN=https://yourdomain.com
+OAUTH_PROVIDER_DOMAINS=https://accounts.google.com,https://oauth2.googleapis.com,https://www.googleapis.com,https://kauth.kakao.com,https://kapi.kakao.com
+</code><button type="button">Copy</button></pre>
+
+<h4 id="⚠️-중요-사항" class="tsd-anchor-link">⚠️ 중요 사항<a href="#⚠️-중요-사항" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><ul>
+<li><strong>Google과 Kakao는 각각 다른 OAuth 앱</strong>이므로 별도의 클라이언트 ID/Secret이 필요합니다</li>
+<li><strong>OAuth 제공자를 사용하지 않을 경우</strong> 해당 환경변수를 설정하지 않아도 됩니다</li>
+<li><strong>OAUTH_PROVIDER_DOMAINS를 설정하지 않으면</strong> OAuth 제공자의 CORS 요청이 차단됩니다</li>
+<li><strong>프로덕션 환경</strong>에서는 반드시 HTTPS를 사용해야 합니다</li>
+</ul>
+<h3 id="3-개발-서버-실행" class="tsd-anchor-link">3. 개발 서버 실행<a href="#3-개발-서버-실행" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><pre><code class="bash"><span class="hl-5">npm</span><span class="hl-0"> </span><span class="hl-2">run</span><span class="hl-0"> </span><span class="hl-2">dev</span><br/><span class="hl-6"># 또는</span><br/><span class="hl-5">yarn</span><span class="hl-0"> </span><span class="hl-2">dev</span><br/><span class="hl-6"># 또는</span><br/><span class="hl-5">pnpm</span><span class="hl-0"> </span><span class="hl-2">dev</span>
+</code><button type="button">Copy</button></pre>
+
+<p>서버는 <a href="http://localhost:3004">http://localhost:3004</a>에서 실행됩니다.</p>
+<h2 id="🏗-프로젝트-구조" class="tsd-anchor-link">🏗 프로젝트 구조<a href="#🏗-프로젝트-구조" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><pre><code><span class="hl-7">src</span><span class="hl-0">/</span><br/><span class="hl-0">├── </span><span class="hl-7">app</span><span class="hl-0">/</span><br/><span class="hl-0">│   └── </span><span class="hl-7">api</span><span class="hl-0">/</span><br/><span class="hl-0">│       └── </span><span class="hl-7">auth</span><span class="hl-0">/</span><br/><span class="hl-0">│           ├── </span><span class="hl-7">google</span><span class="hl-0">/</span><br/><span class="hl-0">│           │   ├── </span><span class="hl-7">login</span><span class="hl-0">/</span><br/><span class="hl-0">│           │   │   └── </span><span class="hl-7">route</span><span class="hl-0">.</span><span class="hl-7">ts</span><span class="hl-0">      # </span><span class="hl-7">Google</span><span class="hl-0"> </span><span class="hl-7">OAuth</span><span class="hl-0"> </span><span class="hl-7">로그인</span><span class="hl-0"> </span><span class="hl-7">시작</span><br/><span class="hl-0">│           │   └── </span><span class="hl-7">callback</span><span class="hl-0">/</span><br/><span class="hl-0">│           │       └── </span><span class="hl-7">route</span><span class="hl-0">.</span><span class="hl-7">ts</span><span class="hl-0">      # </span><span class="hl-7">Google</span><span class="hl-0"> </span><span class="hl-7">OAuth</span><span class="hl-0"> </span><span class="hl-7">콜백</span><span class="hl-0"> </span><span class="hl-7">처리</span><br/><span class="hl-0">│           ├── </span><span class="hl-7">kakao</span><span class="hl-0">/</span><br/><span class="hl-0">│           │   ├── </span><span class="hl-7">login</span><span class="hl-0">/</span><br/><span class="hl-0">│           │   │   └── </span><span class="hl-7">route</span><span class="hl-0">.</span><span class="hl-7">ts</span><span class="hl-0">      # </span><span class="hl-7">Kakao</span><span class="hl-0"> </span><span class="hl-7">OAuth</span><span class="hl-0"> </span><span class="hl-7">로그인</span><span class="hl-0"> </span><span class="hl-7">시작</span><br/><span class="hl-0">│           │   └── </span><span class="hl-7">callback</span><span class="hl-0">/</span><br/><span class="hl-0">│           │       └── </span><span class="hl-7">route</span><span class="hl-0">.</span><span class="hl-7">ts</span><span class="hl-0">      # </span><span class="hl-7">Kakao</span><span class="hl-0"> </span><span class="hl-7">OAuth</span><span class="hl-0"> </span><span class="hl-7">콜백</span><span class="hl-0"> </span><span class="hl-7">처리</span><br/><span class="hl-0">│           ├── </span><span class="hl-7">verify</span><span class="hl-0">/</span><br/><span class="hl-0">│           │   └── </span><span class="hl-7">route</span><span class="hl-0">.</span><span class="hl-7">ts</span><span class="hl-0">          # </span><span class="hl-7">토큰</span><span class="hl-0"> </span><span class="hl-7">검증</span><br/><span class="hl-0">│           └── </span><span class="hl-7">refresh</span><span class="hl-0">/</span><br/><span class="hl-0">│               └── </span><span class="hl-7">route</span><span class="hl-0">.</span><span class="hl-7">ts</span><span class="hl-0">          # </span><span class="hl-7">토큰</span><span class="hl-0"> </span><span class="hl-7">갱신</span><br/><span class="hl-0">├── </span><span class="hl-7">config</span><span class="hl-0">/</span><br/><span class="hl-0">│   └── </span><span class="hl-7">cors</span><span class="hl-0">.</span><span class="hl-7">ts</span><span class="hl-0">                       # </span><span class="hl-8">CORS</span><span class="hl-0"> </span><span class="hl-7">설정</span><span class="hl-0"> </span><span class="hl-7">관리</span><br/><span class="hl-0">└── </span><span class="hl-7">lib</span><span class="hl-0">/</span><br/><span class="hl-0">    ├── </span><span class="hl-7">types</span><span class="hl-0">.</span><span class="hl-7">ts</span><span class="hl-0">                      # </span><span class="hl-7">TypeScript</span><span class="hl-0"> </span><span class="hl-7">타입</span><span class="hl-0"> </span><span class="hl-7">정의</span><br/><span class="hl-0">    ├── </span><span class="hl-7">oauth</span><span class="hl-0">-</span><span class="hl-7">config</span><span class="hl-0">.</span><span class="hl-7">ts</span><span class="hl-0">               # </span><span class="hl-7">OAuth</span><span class="hl-0"> </span><span class="hl-7">제공자</span><span class="hl-0"> </span><span class="hl-7">설정</span><br/><span class="hl-0">    ├── </span><span class="hl-7">oauth</span><span class="hl-0">-</span><span class="hl-7">utils</span><span class="hl-0">.</span><span class="hl-7">ts</span><span class="hl-0">                # </span><span class="hl-7">OAuth</span><span class="hl-0"> </span><span class="hl-7">공통</span><span class="hl-0"> </span><span class="hl-7">유틸리티</span><span class="hl-0"> </span><span class="hl-7">함수</span><br/><span class="hl-0">    └── </span><span class="hl-7">utils</span><span class="hl-0">.</span><span class="hl-7">ts</span><span class="hl-0">                      # </span><span class="hl-7">일반</span><span class="hl-0"> </span><span class="hl-7">유틸리티</span><span class="hl-0"> </span><span class="hl-7">함수들</span>
+</code><button>Copy</button></pre>
+
+<h2 id="🔐-보안-기능" class="tsd-anchor-link">🔐 보안 기능<a href="#🔐-보안-기능" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><h3 id="csrf-방지" class="tsd-anchor-link">CSRF 방지<a href="#csrf-방지" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
+<li>OAuth 요청마다 고유한 <code>state</code> 파라미터 생성</li>
+<li>Base64 인코딩으로 안전한 전송</li>
+<li>1시간 후 자동 만료</li>
+</ul>
+<h3 id="안전한-리다이렉트" class="tsd-anchor-link">안전한 리다이렉트<a href="#안전한-리다이렉트" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
+<li>허용된 도메인 목록 검증</li>
+<li>오픈 리다이렉트 취약점 방지</li>
+</ul>
+<h3 id="cors-보안" class="tsd-anchor-link">CORS 보안<a href="#cors-보안" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
+<li>환경변수를 통한 허용 도메인 제한</li>
+<li>와일드카드(*) 사용 금지로 보안 강화</li>
+</ul>
+<h3 id="에러-처리" class="tsd-anchor-link">에러 처리<a href="#에러-처리" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
+<li>상세한 에러 코드 및 메시지</li>
+<li>민감한 정보 노출 방지</li>
+<li>포괄적인 로깅</li>
+</ul>
+<h2 id="🎯-oauth-제공자-설정" class="tsd-anchor-link">🎯 OAuth 제공자 설정<a href="#🎯-oauth-제공자-설정" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><h3 id="google-oauth" class="tsd-anchor-link">Google OAuth<a href="#google-oauth" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ol>
+<li><a href="https://console.cloud.google.com/">Google Cloud Console</a>에서 프로젝트 생성</li>
+<li>OAuth 2.0 클라이언트 ID 생성</li>
+<li>리다이렉트 URI: <code>{your-domain}/api/auth/google/callback</code></li>
+<li>권한 범위: <code>openid email profile</code></li>
+</ol>
+<h3 id="kakao-oauth" class="tsd-anchor-link">Kakao OAuth<a href="#kakao-oauth" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ol>
+<li><a href="https://developers.kakao.com/">Kakao Developers</a>에서 앱 생성</li>
+<li>플랫폼 설정에서 웹 플랫폼 추가</li>
+<li>Redirect URI: <code>{your-domain}/api/auth/kakao/callback</code></li>
+<li>권한 범위: <code>profile_nickname profile_image account_email</code></li>
+</ol>
+<h2 id="🔄-인증-플로우" class="tsd-anchor-link">🔄 인증 플로우<a href="#🔄-인증-플로우" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p><img src="media/sequence_diagram.png" alt="인증 플로우우"></p>
+<h3 id="백엔드-서버와의-통신-규격" class="tsd-anchor-link">백엔드 서버와의 통신 규격<a href="#백엔드-서버와의-통신-규격" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p>중간 서버는 OAuth 인증 완료 후 다음과 같은 형식으로 백엔드 서버에 요청을 전송합니다:</p>
+<p><strong>요청 엔드포인트:</strong></p>
+<pre><code><span class="hl-8">POST</span><span class="hl-0"> {</span><span class="hl-8">BACKEND_SERVER_URL</span><span class="hl-0">}/</span><span class="hl-7">api</span><span class="hl-0">/</span><span class="hl-7">v1</span><span class="hl-0">/</span><span class="hl-7">oauth</span><span class="hl-0">/</span><span class="hl-7">login</span>
+</code><button>Copy</button></pre>
+
+<p><strong>요청 본문:</strong></p>
+<pre><code class="json"><span class="hl-0">{</span><br/><span class="hl-0">  </span><span class="hl-1">&quot;provider&quot;</span><span class="hl-0">: </span><span class="hl-2">&quot;google&quot;</span><span class="hl-0">,</span><br/><span class="hl-0">  </span><span class="hl-1">&quot;providerId&quot;</span><span class="hl-0">: </span><span class="hl-2">&quot;google_user_12345&quot;</span><br/><span class="hl-0">}</span>
+</code><button type="button">Copy</button></pre>
+
+<p><strong>백엔드 응답 형식:</strong></p>
+<pre><code class="http">HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "success": true,
+  "data": {
+    "code": "oauth_temp_abc123def456789..."
+  },
+  "message": "임시 코드가 발급되었습니다."
+}
+</code><button type="button">Copy</button></pre>
+
+<blockquote>
+<p><strong>보안 강화 특징:</strong></p>
+<ul>
+<li><strong>OAuth 토큰 즉시 폐기</strong>: OAuth 제공자 토큰은 사용자 정보 조회 후 중간 서버에서 즉시 폐기되어 백엔드로 전달되지 않습니다.</li>
+<li><strong>최소 정보 전달</strong>: 백엔드에는 <code>provider</code>, <code>providerId</code>만 전달하여 보안을 최대화합니다.</li>
+<li><strong>임시 코드 방식</strong>: 백엔드에서 5분 만료, 일회용 임시 코드를 발급하여 토큰 노출 위험을 제거합니다.</li>
+<li><strong>중간 서버 리다이렉트</strong>: 중간 서버에서 임시 코드와 함께 프론트엔드 <code>/auth/callback</code> 경로로 직접 리다이렉트합니다.</li>
+<li><strong>안전한 토큰 교환</strong>: 프론트엔드에서 임시 코드로 <code>/api/v1/oauth/exchange</code> 엔드포인트를 호출하여 실제 JWT 토큰을 획득합니다.</li>
+</ul>
+</blockquote>
+<h2 id="🧪-테스트" class="tsd-anchor-link">🧪 테스트<a href="#🧪-테스트" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><pre><code class="bash"><span class="hl-6"># Google OAuth 로그인 테스트</span><br/><span class="hl-5">curl</span><span class="hl-0"> </span><span class="hl-3">-X</span><span class="hl-0"> </span><span class="hl-2">GET</span><span class="hl-0"> </span><span class="hl-2">&quot;http://localhost:3004/api/auth/google/login?frontend_url=http://localhost:3001&quot;</span><br/><br/><span class="hl-6"># Kakao OAuth 로그인 테스트</span><br/><span class="hl-5">curl</span><span class="hl-0"> </span><span class="hl-3">-X</span><span class="hl-0"> </span><span class="hl-2">GET</span><span class="hl-0"> </span><span class="hl-2">&quot;http://localhost:3004/api/auth/kakao/login?frontend_url=http://localhost:3001&quot;</span><br/><br/><span class="hl-6"># 토큰 검증 테스트 (백엔드 서버로 직접 요청)</span><br/><span class="hl-5">curl</span><span class="hl-0"> </span><span class="hl-3">-X</span><span class="hl-0"> </span><span class="hl-2">POST</span><span class="hl-0"> </span><span class="hl-2">&quot;http://localhost:8080/api/auth/verify&quot;</span><span class="hl-0"> </span><span class="hl-9">\</span><br/><span class="hl-0">  </span><span class="hl-3">-H</span><span class="hl-0"> </span><span class="hl-2">&quot;Content-Type: application/json&quot;</span><span class="hl-0"> </span><span class="hl-9">\</span><br/><span class="hl-0">  </span><span class="hl-3">-d</span><span class="hl-0"> </span><span class="hl-2">&#39;{&quot;token&quot;:&quot;your-jwt-token&quot;}&#39;</span><br/><br/><span class="hl-6"># 토큰 갱신 테스트 (백엔드 서버로 직접 요청)</span><br/><span class="hl-5">curl</span><span class="hl-0"> </span><span class="hl-3">-X</span><span class="hl-0"> </span><span class="hl-2">POST</span><span class="hl-0"> </span><span class="hl-2">&quot;http://localhost:8080/api/auth/refresh&quot;</span><span class="hl-0"> </span><span class="hl-9">\</span><br/><span class="hl-0">  </span><span class="hl-3">-H</span><span class="hl-0"> </span><span class="hl-2">&quot;Content-Type: application/json&quot;</span><span class="hl-0"> </span><span class="hl-9">\</span><br/><span class="hl-0">  </span><span class="hl-3">-d</span><span class="hl-0"> </span><span class="hl-2">&#39;{&quot;refreshToken&quot;:&quot;your-refresh-token&quot;}&#39;</span>
+</code><button type="button">Copy</button></pre>
+
+<h2 id="📈-성능-최적화" class="tsd-anchor-link">📈 성능 최적화<a href="#📈-성능-최적화" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><ul>
+<li><strong>HTTP/2 지원</strong>: Next.js 15.3.3의 최신 성능 개선사항 활용</li>
+<li><strong>트리 쉐이킹</strong>: 사용하지 않는 코드 자동 제거</li>
+<li><strong>타입스크립트</strong>: 컴파일 타임 최적화</li>
+<li><strong>Axios 인스턴스</strong>: 연결 재사용 및 타임아웃 설정</li>
+</ul>
+<h2 id="🚀-배포" class="tsd-anchor-link">🚀 배포<a href="#🚀-배포" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><h3 id="vercel-권장" class="tsd-anchor-link">Vercel (권장)<a href="#vercel-권장" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><pre><code class="bash"><span class="hl-5">vercel</span><span class="hl-0"> </span><span class="hl-3">--prod</span>
+</code><button type="button">Copy</button></pre>
+
+<h3 id="docker" class="tsd-anchor-link">Docker<a href="#docker" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><pre><code class="dockerfile">FROM node:20-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+RUN npm run build
+EXPOSE 3000
+CMD ["npm", "start"]
+</code><button type="button">Copy</button></pre>
+
+<h3 id="수동-배포" class="tsd-anchor-link">수동 배포<a href="#수동-배포" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><pre><code class="bash"><span class="hl-5">npm</span><span class="hl-0"> </span><span class="hl-2">run</span><span class="hl-0"> </span><span class="hl-2">build</span><br/><span class="hl-5">npm</span><span class="hl-0"> </span><span class="hl-2">start</span>
+</code><button type="button">Copy</button></pre>
+
+<h2 id="🐛-트러블슈팅" class="tsd-anchor-link">🐛 트러블슈팅<a href="#🐛-트러블슈팅" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><h3 id="일반적인-문제들" class="tsd-anchor-link">일반적인 문제들<a href="#일반적인-문제들" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ol>
+<li>
+<p><strong>&quot;OAUTH_CLIENT_ID is not defined&quot;</strong></p>
+<ul>
+<li><code>.env.local</code> 파일의 환경 변수 확인</li>
+<li>서버 재시작 필요</li>
+</ul>
+</li>
+<li>
+<p><strong>CORS 에러</strong></p>
+<ul>
+<li><code>CORS_ORIGIN</code> 환경변수 확인</li>
+<li>프론트엔드 도메인이 정확히 설정되었는지 확인</li>
+</ul>
+</li>
+<li>
+<p><strong>State 파라미터 에러</strong></p>
+<ul>
+<li>시계 동기화 확인 (1시간 만료)</li>
+<li>브라우저 캐시 클리어</li>
+</ul>
+</li>
+</ol>
+<h2 id="📄-라이선스" class="tsd-anchor-link">📄 라이선스<a href="#📄-라이선스" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>MIT License</p>
+<hr>
+<p><strong>개발자</strong>: Vans Dev Blog<br>
+<strong>버전</strong>: 1.0.0<br>
+<strong>마지막 업데이트</strong>: 2025년 6월 25일</p>
+</div></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg><h3>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li></ul></div><div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div><details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg><h3>On This Page</h3></summary><div class="tsd-accordion-details"><a href="#oauth-중간-서버-oauth-intermediate-server"><span>O<wbr/>Auth 중간 서버 (<wbr/>O<wbr/>Auth <wbr/>Intermediate <wbr/>Server)</span></a><ul><li><a href="#🚀-주요-기능"><span>🚀 주요 기능</span></a></li><li><a href="#🛠-기술-스택"><span>🛠 기술 스택</span></a></li><li><a href="#📋-api-엔드포인트"><span>📋 <wbr/>API 엔드포인트</span></a></li><li><ul><li><a href="#1-google-oauth-로그인"><span>1. <wbr/>Google <wbr/>O<wbr/>Auth 로그인</span></a></li><li><a href="#2-kakao-oauth-로그인"><span>2. <wbr/>Kakao <wbr/>O<wbr/>Auth 로그인</span></a></li><li><a href="#3-google-oauth-콜백"><span>3. <wbr/>Google <wbr/>O<wbr/>Auth 콜백</span></a></li><li><a href="#4-kakao-oauth-콜백"><span>4. <wbr/>Kakao <wbr/>O<wbr/>Auth 콜백</span></a></li><li><a href="#5-토큰-검증"><span>5. 토큰 검증</span></a></li><li><a href="#6-토큰-갱신"><span>6. 토큰 갱신</span></a></li></ul></li><li><a href="#🔧-설치-및-설정"><span>🔧 설치 및 설정</span></a></li><li><ul><li><a href="#1-의존성-설치"><span>1. 의존성 설치</span></a></li><li><a href="#2-환경-변수-설정"><span>2. 환경 변수 설정</span></a></li><li><ul><li><a href="#환경변수-상세-설명"><span>환경변수 상세 설명</span></a></li><li><a href="#개발환경-예시"><span>개발환경 예시</span></a></li><li><a href="#프로덕션-환경-예시"><span>프로덕션 환경 예시</span></a></li><li><a href="#⚠️-중요-사항"><span>⚠️ 중요 사항</span></a></li></ul></li><li><a href="#3-개발-서버-실행"><span>3. 개발 서버 실행</span></a></li></ul></li><li><a href="#🏗-프로젝트-구조"><span>🏗 프로젝트 구조</span></a></li><li><a href="#🔐-보안-기능"><span>🔐 보안 기능</span></a></li><li><ul><li><a href="#csrf-방지"><span>CSRF 방지</span></a></li><li><a href="#안전한-리다이렉트"><span>안전한 리다이렉트</span></a></li><li><a href="#cors-보안"><span>CORS 보안</span></a></li><li><a href="#에러-처리"><span>에러 처리</span></a></li></ul></li><li><a href="#🎯-oauth-제공자-설정"><span>🎯 <wbr/>O<wbr/>Auth 제공자 설정</span></a></li><li><ul><li><a href="#google-oauth"><span>Google <wbr/>O<wbr/>Auth</span></a></li><li><a href="#kakao-oauth"><span>Kakao <wbr/>O<wbr/>Auth</span></a></li></ul></li><li><a href="#🔄-인증-플로우"><span>🔄 인증 플로우</span></a></li><li><ul><li><a href="#백엔드-서버와의-통신-규격"><span>백엔드 서버와의 통신 규격</span></a></li></ul></li><li><a href="#🧪-테스트"><span>🧪 테스트</span></a></li><li><a href="#📈-성능-최적화"><span>📈 성능 최적화</span></a></li><li><a href="#🚀-배포"><span>🚀 배포</span></a></li><li><ul><li><a href="#vercel-권장"><span>Vercel (권장)</span></a></li><li><a href="#docker"><span>Docker</span></a></li><li><a href="#수동-배포"><span>수동 배포</span></a></li></ul></li><li><a href="#🐛-트러블슈팅"><span>🐛 트러블슈팅</span></a></li><li><ul><li><a href="#일반적인-문제들"><span>일반적인 문제들</span></a></li></ul></li><li><a href="#📄-라이선스"><span>📄 라이선스</span></a></li></ul></div></details></div><div class="site-menu"><nav id="tsd-sidebar-links" class="tsd-navigation"><a href="https://github.com/vans-dev/vans_devblog_oauth" class="tsd-nav-link">GitHub</a><a href="https://api.vans-dev.com" class="tsd-nav-link">API 문서</a></nav><nav class="tsd-navigation"><a href="modules.html">Vans DevBlog OAuth 중간 서버 API 문서 - v0.1.0</a><ul class="tsd-small-nested-navigation" id="tsd-nav-container"><li>Loading...</li></ul></nav></div></div></div><footer><p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer><div class="overlay"></div></body></html>

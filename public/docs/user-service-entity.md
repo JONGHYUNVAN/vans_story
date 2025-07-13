@@ -7,7 +7,7 @@ User Service의 데이터베이스 엔티티 구조와 관계를 정의합니다
 ## 🏗️ 엔티티 관계도 (ERD)
 
 ### Mermaid ERD
-![user_entity.png](user_entity.png)
+![user_entity.png](/docs/user_entity.png)
 
 
 ### 관계 설명

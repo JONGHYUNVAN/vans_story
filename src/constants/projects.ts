@@ -34,9 +34,7 @@ export const vansDevBlogProject: Project = {
         'JWT 기반 사용자 인증 및 권한 관리',
         'Spring Security를 활용한 보안 설정',
         'MariaDB 기반 사용자 데이터 관리',
-        'CORS 지원 및 API 로깅',
-        'Swagger/OpenAPI 문서화',
-        'CloudType 512MB 환경 최적화'
+        'CORS 지원 및 API 로깅'
       ]
     },
     {
@@ -47,9 +45,7 @@ export const vansDevBlogProject: Project = {
         '게시글 CRUD 및 페이지네이션',
         'MongoDB 기반 게시글 데이터 관리',
         'JWT 기반 인증 가드',
-        'Swagger API 문서화',
-        '테마 및 카테고리별 게시글 분류',
-        'TypeDoc 문서 자동 생성'
+        '테마 및 카테고리별 게시글 분류'
       ]
     },
     {
@@ -86,9 +82,7 @@ export const vansDevBlogProject: Project = {
         'OpenAI GPT-4o-mini 모델 사용',
         'ChatGPT API 연동',
         '사용자 맞춤형 응답 생성',
-        'API 사용량 모니터링',
-        'CORS 지원',
-        '에러 핸들링 및 로깅'
+        'CORS 지원'
       ]
     }
   ],

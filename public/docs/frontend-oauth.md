@@ -20,8 +20,6 @@
 - [다국어 지원](#다국어-지원)
 - [보안 고려사항](#보안-고려사항)
 - [에러 처리](#에러-처리)
-- [개발 가이드](#개발-가이드)
-- [트러블슈팅](#트러블슈팅)
 - [참고 자료](#참고-자료)
 
 ## 지원 OAuth 제공자
@@ -31,56 +29,117 @@
 
 ## 아키텍처
 
-```
-[프론트엔드] → [OAuth 중간 서버] → [백엔드 서버] → [OAuth 제공자]
+```mermaid
+graph TB
+    subgraph "클라이언트 영역"
+        A[프론트엔드<br/>React/Next.js]
+    end
+    
+    subgraph "서버 영역"
+        B[OAuth 중간 서버<br/>Next.js API]
+        C[백엔드 서버<br/>Spring Boot]
+    end
+    
+    subgraph "외부 서비스"
+        D[Kakao OAuth]
+        E[Google OAuth]
+    end
+    
+    A -.->|1. OAuth 로그인 요청| B
+    B -.->|2. OAuth 제공자로 리다이렉트| D
+    B -.->|2. OAuth 제공자로 리다이렉트| E
+    B -.->|4. 임시 코드 받아서 리다이렉트| A
+    A -.->|5. 임시 코드로 토큰 교환| C
+    C -.->|6. JWT 토큰 반환| A
+    
+    style A fill:#e1f5fe,stroke:#0277bd,stroke-width:3px,color:#000000
+    style B fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px,color:#000000
+    style C fill:#fff3e0,stroke:#f57c00,stroke-width:3px,color:#000000
+    style D fill:#ffebee,stroke:#c62828,stroke-width:3px,color:#000000
+    style E fill:#e8f5e8,stroke:#2e7d32,stroke-width:3px,color:#000000
 ```
 
 ### 인증 플로우
 
-1. **로그인 시작**: 사용자가 OAuth 버튼 클릭
-2. **중간 서버 리다이렉트**: OAuth 중간 서버로 이동
-3. **OAuth 제공자 인증**: 사용자가 OAuth 제공자에서 인증
-4. **임시 코드 발급**: 중간 서버가 임시 코드를 프론트엔드로 반환
-5. **토큰 교환**: 프론트엔드가 임시 코드를 백엔드로 전송하여 JWT 토큰 획득
-6. **로그인 완료**: JWT 토큰을 로컬 스토리지에 저장하고 인증 완료
+```mermaid
+sequenceDiagram
+    participant U as 👤 사용자
+    participant F as 💻 프론트엔드
+    participant M as 🔄 OAuth<br/>중간 서버
+    participant P as 🔐 OAuth<br/>제공자
+    participant B as 🗄️ 백엔드<br/>서버
+    
+    Note over U,B: OAuth 로그인 시작
+    U->>F: 1. OAuth 버튼 클릭
+    F->>M: 2. 중간 서버로 리다이렉트
+    
+    Note over M,P: OAuth 인증 과정
+    M->>P: 3. OAuth 제공자로 리다이렉트<br/>(client_id, redirect_uri 포함)
+    P->>U: 4. 로그인 페이지 표시
+    U->>P: 5. 인증 정보 입력 및 승인
+    
+    Note over P,F: 콜백 처리
+    P->>M: 6. 임시 코드와 함께 콜백<br/>(authorization_code)
+    M->>F: 7. 프론트엔드로 리다이렉트<br/>(임시 코드 포함)
+    
+    Note over F,B: 토큰 교환
+    F->>B: 8. 임시 코드로 JWT 토큰 교환<br/>(POST /api/auth/callback)
+    B->>B: 9. 임시 코드 검증 및 사용자 정보 조회
+    B->>F: 10. JWT 토큰 반환
+    
+    Note over F,U: 로그인 완료
+    F->>F: 11. 토큰을 로컬 스토리지에 저장
+    F->>U: 12. 로그인 완료 및 메인 페이지 이동
+    
+    rect rgb(240, 248, 255)
+    Note over U,B: 보안: state 파라미터로 CSRF 방지
+    end
+```
 
 ## 파일 구조
 
 ### 핵심 파일들
 
 ```
-src/
-├── app/
-│   ├── api/
-│   │   └── auth/
-│   │       └── callback/
-│   │           └── route.ts           # OAuth 콜백 API
-│   └── oauth/
-│       └── callback/
-│           └── page.tsx               # OAuth 콜백 페이지
-├── components/
-│   ├── features/
-│   │   └── auth/
-│   │       └── authService.ts         # 인증 서비스
-│   └── ui/
-│       └── auth/
-│           ├── LoginModal.tsx         # 로그인 모달
-│           └── OAuthAccountManager.tsx # OAuth 계정 관리
-├── utils/
-│   └── oauth.ts                       # OAuth 유틸리티
-├── interfaces/
-│   └── auth/
-│       └── types.ts                   # 인증 타입 정의
-├── store/
-│   └── auth/
-│       └── slice.ts                   # 인증 상태 관리
-├── constants/
-│   └── apiUrl.ts                      # API URL 상수
-└── messages/
-    ├── ko/
-    │   └── auth.json                  # 한국어 메시지
-    └── en/
-        └── auth.json                  # 영어 메시지
+vans_story_be/src/main/kotlin/blog/vans_story_be/
+├─ VansStoryBeApplication.kt             # 메인 애플리케이션
+├─ domain/
+│  ├─ user/
+│  │  ├─ controller/UserController.kt    # 사용자 CRUD API
+│  │  ├─ service/UserService.kt          # 사용자 비즈니스 로직
+│  │  ├─ repository/UserRepository.kt    # Exposed DAO
+│  │  ├─ entity/User.kt                  # 사용자 엔티티 + 테이블
+│  │  ├─ entity/Role.kt                  # 권한 Enum
+│  │  ├─ dto/UserDto.kt                  # 요청/응답 DTO
+│  │  └─ mapper/UserMapper.kt            # 객체 변환
+│  ├─ oauth/
+│  │  ├─ controller/OAuthController.kt   # OAuth 연동 API
+│  │  ├─ service/OAuthService.kt         # OAuth 비즈니스 로직
+│  │  ├─ repository/UserOAuthRepository.kt # OAuth 데이터 접근
+│  │  ├─ entity/UserOAuth.kt             # OAuth 연동 엔티티
+│  │  ├─ dto/OAuthDto.kt                 # OAuth DTO
+│  │  └─ mapper/OAuthMapper.kt           # OAuth 객체 변환
+│  ├─ auth/
+│  │  ├─ controller/AuthController.kt    # JWT 인증 API
+│  │  ├─ service/AuthService.kt          # JWT 토큰 관리
+│  │  ├─ jwt/JwtTokenProvider.kt         # JWT 토큰 생성/검증
+│  │  ├─ annotation/RequireApiKey.kt     # API 키 인증 어노테이션
+│  │  ├─ aspect/ApiKeyAspect.kt          # API 키 검증 AOP
+│  │  └─ dto/AuthDto.kt                  # 인증 DTO
+│  └─ base/BaseEntity.kt                 # 공통 엔티티
+├─ config/
+│  ├─ security/SecurityConfig.kt         # Spring Security 설정
+│  ├─ security/CustomUserDetailsService.kt # 사용자 인증 서비스
+│  ├─ database/DatabaseConfig.kt         # Exposed ORM 설정
+│  ├─ cors/CorsConfig.kt                 # CORS 정책
+│  ├─ swagger/SwaggerConfig.kt           # API 문서화 설정
+│  ├─ apiLogger/ApiLoggerConfig.kt       # API 로깅 설정
+│  └─ init/DataInitializer.kt            # 초기 데이터 설정
+├─ global/
+│  ├─ response/ApiResponse.kt            # 통합 응답 형식
+│  ├─ exception/CustomException.kt       # 사용자 정의 예외
+│  └─ mapper/GlobalMapper.kt             # 전역 객체 변환
+└─ post/                                 # 포스트 관련 (별도 기능)
 ```
 
 ## 주요 컴포넌트
@@ -197,6 +256,60 @@ export interface LinkedOAuthAccount {
 
 Redux Toolkit을 사용하여 인증 상태를 관리합니다.
 
+### 인증 상태 플로우
+
+```mermaid
+flowchart TD
+    subgraph "🔴 인증되지 않은 상태"
+        A[Idle<br/>대기 상태]
+        A1[isAuthenticated: false<br/>user: null<br/>oauthLoading: false<br/>oauthError: null]
+    end
+    
+    subgraph "🟡 OAuth 로그인 진행 중"
+        B[OAuth Loading<br/>로그인 처리 중]
+        B1[isAuthenticated: false<br/>user: null<br/>oauthLoading: true<br/>oauthError: null]
+        
+        B2[리다이렉트]
+        B3[콜백 수신]
+        B4[토큰 교환]
+        
+        B --> B2
+        B2 --> B3
+        B3 --> B4
+    end
+    
+    subgraph "🟢 인증 완료 상태"
+        C[Authenticated<br/>로그인 성공]
+        C1[isAuthenticated: true<br/>user: UserInfo<br/>oauthLoading: false<br/>oauthError: null]
+    end
+    
+    subgraph "🔴 에러 상태"
+        D[Error<br/>로그인 실패]
+        D1[isAuthenticated: false<br/>user: null<br/>oauthLoading: false<br/>oauthError: ErrorMessage]
+    end
+    
+    A -->|oauthStart 액션| B
+    B4 -->|oauthSuccess 액션| C
+    B4 -->|oauthFailure 액션| D
+    C -->|logout 액션| A
+    D -->|clearError 액션| A
+    
+    style A fill:#ffebee,stroke:#c62828,stroke-width:3px,color:#000000
+    style A1 fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000000
+    
+    style B fill:#fff8e1,stroke:#f57c00,stroke-width:3px,color:#000000
+    style B1 fill:#ffe0b2,stroke:#f57c00,stroke-width:2px,color:#000000
+    style B2 fill:#ffe0b2,stroke:#f57c00,stroke-width:2px,color:#000000
+    style B3 fill:#ffe0b2,stroke:#f57c00,stroke-width:2px,color:#000000
+    style B4 fill:#ffe0b2,stroke:#f57c00,stroke-width:2px,color:#000000
+    
+    style C fill:#e8f5e8,stroke:#388e3c,stroke-width:3px,color:#000000
+    style C1 fill:#c8e6c9,stroke:#388e3c,stroke-width:2px,color:#000000
+    
+    style D fill:#ffebee,stroke:#d32f2f,stroke-width:3px,color:#000000
+    style D1 fill:#ffcdd2,stroke:#d32f2f,stroke-width:2px,color:#000000
+```
+
 ### 주요 상태
 
 - `isAuthenticated`: 로그인 여부
@@ -276,6 +389,84 @@ OAuth 토큰을 직접 프론트엔드에서 처리하지 않고, 중간 서버�
 
 ## 에러 처리
 
+### 에러 처리 플로우
+
+```mermaid
+flowchart TD
+    subgraph "🔍 콜백 수신 및 검증"
+        A[📨 OAuth 콜백 수신<br/>URL 파라미터 분석]
+        A --> B{❓ 에러 파라미터 확인}
+    end
+    
+    subgraph "✅ 정상 플로우"
+        C[🔐 state 파라미터 검증]
+        C --> C1[📋 임시 코드 추출]
+        C1 --> C2[🔄 백엔드로 토큰 교환 요청]
+        C2 --> C3[💾 JWT 토큰 저장]
+        C3 --> C4[🏠 메인 페이지로 리다이렉트]
+    end
+    
+    subgraph "⚠️ 에러 타입별 처리"
+        D[🔍 에러 타입 분석]
+        
+        F[❌ invalid_request<br/>📝 파라미터 확인 안내]
+        G[🚫 access_denied<br/>👤 사용자 인증 거부<br/>🔄 재시도 안내]
+        H[🔒 unauthorized_client<br/>⚙️ 앱 설정 문제<br/>👨‍💻 개발자 확인 필요]
+        I[📋 unsupported_response_type<br/>⚙️ OAuth 설정 확인]
+        J[🎯 invalid_scope<br/>🔐 권한 범위 설정 확인]
+        K[🔧 server_error<br/>⏱️ 잠시 후 재시도]
+        L[⏳ temporarily_unavailable<br/>🕐 일시적 사용 불가]
+        
+        D --> F
+        D --> G  
+        D --> H
+        D --> I
+        D --> J
+        D --> K
+        D --> L
+    end
+    
+    subgraph "📢 에러 피드백"
+        M[💬 에러 메시지 생성<br/>🌐 다국어 지원]
+        N[🔔 토스트 알림 표시]
+        O[🔙 로그인 페이지로 이동<br/>또는 재시도 버튼 제공]
+    end
+    
+    B -->|✅ 에러 없음| C
+    B -->|❌ 에러 있음| D
+    
+    F --> M
+    G --> M
+    H --> M
+    I --> M
+    J --> M
+    K --> M
+    L --> M
+    
+    M --> N
+    N --> O
+    
+    style A fill:#e3f2fd,stroke:#1976d2,stroke-width:3px,color:#000000
+    style B fill:#fff3e0,stroke:#f57c00,stroke-width:3px,color:#000000
+    style C fill:#e8f5e8,stroke:#388e3c,stroke-width:3px,color:#000000
+    style C1 fill:#e8f5e8,stroke:#388e3c,stroke-width:3px,color:#000000
+    style C2 fill:#e8f5e8,stroke:#388e3c,stroke-width:3px,color:#000000
+    style C3 fill:#e8f5e8,stroke:#388e3c,stroke-width:3px,color:#000000
+    style C4 fill:#e8f5e8,stroke:#388e3c,stroke-width:3px,color:#000000
+    
+    style F fill:#ffebee,stroke:#d32f2f,stroke-width:3px,color:#000000
+    style G fill:#fff8e1,stroke:#f57c00,stroke-width:3px,color:#000000
+    style H fill:#ffebee,stroke:#d32f2f,stroke-width:3px,color:#000000
+    style I fill:#ffebee,stroke:#d32f2f,stroke-width:3px,color:#000000
+    style J fill:#ffebee,stroke:#d32f2f,stroke-width:3px,color:#000000
+    style K fill:#ffe0b2,stroke:#ff8f00,stroke-width:3px,color:#000000
+    style L fill:#ffe0b2,stroke:#ff8f00,stroke-width:3px,color:#000000
+    
+    style M fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px,color:#000000
+    style N fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px,color:#000000
+    style O fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px,color:#000000
+```
+
 ### 주요 에러 타입
 
 - `invalid_request`: 잘못된 요청
@@ -295,56 +486,6 @@ if (error) {
   return;
 }
 ```
-
-## 개발 가이드
-
-### 현재 구현 상태
-
-- **로그인**: 완전히 구현됨
-- **계정 연결**: UI는 있지만 실제 연결 로직 미구현
-- **계정 해제**: 완전히 구현됨
-
-### 새로운 OAuth 제공자 추가
-
-1. `OAuthProvider` 타입에 새 제공자 추가
-2. `authService.ts`에 로그인 함수 추가
-3. 로그인 모달에 버튼 추가
-4. 메시지 파일에 번역 추가
-
-### 개발 시 주의사항
-
-- 모든 OAuth 관련 URL은 HTTPS를 사용해야 합니다.
-- 로컬 개발 시에는 OAuth 제공자에서 localhost를 허용하도록 설정해야 합니다.
-- 환경 변수가 올바르게 설정되어 있는지 확인하세요.
-
-### 로컬 개발 환경 설정
-
-1. OAuth 제공자에서 애플리케이션을 등록합니다.
-2. 로컬 개발용 리다이렉트 URL을 등록합니다.
-3. 환경 변수를 설정합니다.
-4. 개발 서버를 시작합니다.
-
-## 트러블슈팅
-
-### 자주 발생하는 문제
-
-1. **OAuth 로그인 버튼 클릭 시 아무 반응이 없음**
-   - 환경 변수 설정 확인
-   - 브라우저 콘솔에서 에러 메시지 확인
-
-2. **OAuth 콜백 페이지에서 에러 발생**
-   - URL 파라미터에서 error 확인
-   - 네트워크 탭에서 API 호출 상태 확인
-
-3. **토큰 교환 실패**
-   - 백엔드 서버 상태 확인
-   - 임시 코드 만료 여부 확인
-
-### 디버깅 팁
-
-- 브라우저 개발자 도구의 네트워크 탭을 활용하세요.
-- 콘솔에서 에러 메시지를 확인하세요.
-- OAuth 제공자의 개발자 콘솔에서 로그를 확인하세요.
 
 ## 참고 자료
 

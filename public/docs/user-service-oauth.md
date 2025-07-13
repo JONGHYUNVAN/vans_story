@@ -29,13 +29,62 @@
 - **백엔드 서버**: 중간 서버로부터 `provider`와 `providerId`만 받아서 사용자 관리 및 JWT 토큰 발급
 - **기존 인증 시스템**: JWT 기반 인증 시스템과 완전 호환
 
+```mermaid
+graph TB
+    subgraph "🌐 클라이언트 영역"
+        U[👤 사용자]
+        F[🖥️ 프론트엔드<br/>React/Next.js]
+    end
+    
+    subgraph "🔀 중간 서버 영역"
+        M[🔀 OAuth 중간 서버<br/>vans_devblog_oauth]
+        M --> MC[OAuth 설정 관리]
+        M --> MT[임시 코드 생성<br/>5분 만료]
+    end
+    
+    subgraph "🏢 OAuth 제공업체"
+        G[🟢 Google OAuth]
+        K[🟡 Kakao OAuth]
+    end
+    
+    subgraph "🖥️ 백엔드 서버 영역"
+        B[🏛️ User Service<br/>Spring Boot]
+        B --> BA[인증 관리]
+        B --> BU[사용자 관리]
+        B --> BO[OAuth 연동 관리]
+    end
+    
+    subgraph "🗄️ 데이터 저장소"
+        DB[(📊 MariaDB<br/>User & OAuth 데이터)]
+        CACHE[(⚡ Redis<br/>임시 코드 캐시)]
+    end
+    
+    U --> F
+    F <--> M
+    M <--> G
+    M <--> K
+    F <--> B
+    B <--> DB
+    M <--> CACHE
+    
+    classDef userClass fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    classDef serverClass fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
+    classDef oauthClass fill:#fff3e0,stroke:#ff9800,stroke-width:2px
+    classDef dataClass fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px
+    
+    class U,F userClass
+    class M,B,MC,MT,BA,BU,BO serverClass
+    class G,K oauthClass
+    class DB,CACHE dataClass
+```
+
 ## 설계 목표
 
 1. **기존 시스템 유지**: 현재 JWT 인증 시스템을 그대로 활용
 2. **유연한 연동**: 일반 계정과 OAuth 계정 간 자유로운 연결/해제
 3. **다중 OAuth 지원**: 한 사용자가 여러 OAuth 제공업체 계정 연결 가능
 4. **중복 방지**: 같은 OAuth 계정은 하나의 사용자에만 연결
-5. **명시적 연동**: OAuth 로그인은 사전 연동된 계정만 허용 (자동 가입 없음)
+5. **자동 가입 지원**: OAuth 로그인 시 새로운 사용자 자동 생성
 
 ## 데이터 모델
 
@@ -43,12 +92,42 @@
 ```Users (1) ←→ (N) UserOAuths
 ```
 
+```mermaid
+erDiagram
+    USERS {
+        bigint id PK "자동 생성 ID"
+        varchar password "비밀번호 (암호화)"
+        varchar email UK "이메일 (유니크)"
+        varchar nickname UK "닉네임 (유니크)"
+        enum role "Role.USER, Role.ADMIN"
+        datetime created_at "생성 시간"
+        datetime updated_at "수정 시간"
+    }
+    
+    USER_OAUTHS {
+        bigint id PK "자동 생성 ID"
+        bigint user_id FK "Users 테이블 참조"
+        varchar provider "google, kakao"
+        varchar provider_id "OAuth 제공자 사용자 ID"
+        datetime created_at "연동 생성 시간"
+        datetime updated_at "연동 수정 시간"
+    }
+    
+    USERS ||--o{ USER_OAUTHS : "한 사용자는 여러 OAuth 계정 연결 가능"
+    
+    USERS {
+        string role_values "USER(ROLE_USER), ADMIN(ROLE_ADMIN)"
+        string table_name "users"
+        string orm_type "Exposed ORM"
+    }
+```
+
 ### UserOAuth 엔티티
 ```kotlin
 class UserOAuth {
     val id: Long                    // 자동 생성 ID
     val userId: Long               // Users 테이블 참조
-    val provider: String           // OAuth 제공업체 (google, kakao, naver)
+    val provider: String           // OAuth 제공업체 (google, kakao)
     val providerId: String         // OAuth 제공업체의 사용자 ID
     val providerEmail: String?     // OAuth 제공업체 이메일 (현재 미사용)
     val createdAt: LocalDateTime   // 연동 생성 시간
@@ -62,11 +141,17 @@ class UserOAuth {
 
 ## API 엔드포인트 및 플로우
 
-### 1. OAuth 소셜 로그인
+### 1. OAuth 소셜 로그인 (2단계 처리)
+
+#### 1-1. 임시 코드 발급
 > `POST /api/v1/oauth/login`
 
-#### 목적
-중간 서버에서 OAuth 인증을 완료한 후, 백엔드에서 사용자를 식별하고 JWT 토큰을 발급합니다.
+OAuth 인증 정보를 받아 임시 코드를 발급합니다.
+
+#### 1-2. JWT 토큰 교환
+> `POST /api/v1/oauth/exchange`
+
+임시 코드를 실제 JWT 토큰으로 교환합니다.
 
 #### User Flow
 ```
@@ -77,11 +162,56 @@ class UserOAuth {
 🔀 중간 서버 (OAuth 인증 처리)
     ↓ ⟷ OAuth 제공업체 (Google, Kakao 등)
     ↓
-🖥️ 백엔드 (/oauth/login)
+🖥️ 백엔드 (/oauth/login) → 임시 코드 발급
     ↓
-❓ 기존 OAuth 연동 확인
-    ├─ ✅ 기존 연동 → JWT 토큰 발급 → 🎉 로그인 완료
-    └─ ❌ 연동 없음 → ⚠️ 오류 응답 (연동 필요)
+🖥️ 백엔드 (/oauth/exchange) → JWT 토큰 발급
+    ↓
+🎉 로그인 완료 (자동 가입 지원)
+```
+
+```mermaid
+sequenceDiagram
+    participant U as 👤 사용자
+    participant F as 🖥️ 프론트엔드
+    participant M as 🔀 중간 서버
+    participant O as 🏢 OAuth 제공업체
+    participant B as 🏛️ user 백엔드 서버
+    participant DB as 📊 데이터베이스
+    
+    Note over U,DB: 1단계: OAuth 인증 및 임시 코드 발급
+    U->>F: 1. OAuth 로그인 버튼 클릭
+    F->>M: 2. 중간 서버로 리다이렉트
+    M->>O: 3. OAuth 제공업체로 리다이렉트<br/>(client_id, scope)
+    O->>U: 4. 로그인 페이지 표시
+    U->>O: 5. 로그인 인증
+    O->>M: 6. 임시 코드 반환<br/>(authorization_code)
+    M->>F: 7. 중간 서버로 콜백
+    
+    F->>B: 8. POST /api/v1/oauth/login<br/>(provider, providerId)
+    B->>B: 9. OAuth 정보 검증
+    B->>B: 10. 임시 코드 생성<br/>(5분 만료, 일회용)
+    B-->>F: 11. 임시 코드 응답<br/>{"code": "oauth_temp_abc123"}
+    
+    Note over U,DB: 2단계: 임시 코드를 JWT 토큰으로 교환
+    F->>B: 12. POST /api/v1/oauth/exchange<br/>{"code": "oauth_temp_abc123"}
+    B->>B: 13. 임시 코드 검증 및 만료 확인
+    B->>DB: 14. OAuth 연동 정보 조회<br/>(provider + providerId)
+    
+    alt 기존 연동 계정 존재
+        DB-->>B: 15a. 연동된 사용자 정보 반환
+    else 새로운 OAuth 계정
+        B->>DB: 15b. 새 사용자 생성
+        B->>DB: 16b. OAuth 연동 정보 저장
+    end
+    
+    B->>B: 17. JWT 토큰 생성<br/>(Access + Refresh)
+    B->>B: 18. 사용된 임시 코드 삭제
+    B-->>F: 19. 토큰 발급 성공<br/>(Authorization 헤더 + 쿠키)
+    F->>U: 20. 로그인 완료
+    
+    rect rgb(240, 248, 255)
+    Note over U,DB: 보안: 임시 코드 5분 만료 + 일회용 + 자동 가입 지원
+    end
 ```
 
 #### Data Flow
@@ -160,6 +290,57 @@ HTTP/1.1 400 Bad Request
     └─ ✅ 연결 가능 → OAuth 연동 저장
     ↓
 🎉 연결 완료
+```
+
+```mermaid
+sequenceDiagram
+    participant U as 👤 로그인된 사용자
+    participant F as 🖥️ 프론트엔드
+    participant M as 🔀 중간 서버
+    participant O as 🏢 OAuth 제공업체
+    participant B as 🏛️ user 백엔드 서버
+    participant DB as 📊 데이터베이스
+    
+    Note over U,DB: OAuth 계정 연결 플로우
+    
+    U->>F: 1. 설정 페이지 접근<br/>(이미 로그인된 상태)
+    F->>U: 2. 계정 연결 메뉴 표시
+    U->>F: 3. OAuth 계정 연결 요청<br/>(예: 카카오 계정 연결)
+    
+    Note over F,O: OAuth 인증 과정
+    F->>M: 4. 중간 서버로 리다이렉트<br/>(연결 모드)
+    M->>O: 5. OAuth 제공업체로 리다이렉트
+    O->>U: 6. 로그인 페이지 표시
+    U->>O: 7. 로그인 인증 및 권한 승인
+    O->>M: 8. 임시 코드 반환
+    M->>M: 9. 임시 코드 생성 및 저장
+    M->>F: 10. 임시 코드와 함께 리다이렉트
+    
+    Note over F,DB: 백엔드 계정 연결 처리
+    F->>B: 11. POST /oauth/link<br/>(Authorization: Bearer Token)
+    B->>B: 12. JWT 토큰에서 사용자 ID 추출
+    B->>M: 13. 임시 코드 검증
+    M-->>B: 14. providerId 반환
+    
+    Note over B,DB: 중복 연결 체크
+    B->>DB: 15. 중복 연결 체크<br/>(provider + providerId)
+    B->>DB: 16. 사용자 기존 연결 체크<br/>(userId + provider)
+    
+    alt 연결 가능 ✅
+        DB-->>B: 17a. 중복 없음 확인
+        B->>DB: 18a. OAuth 연동 정보 저장<br/>(userId, provider, providerId)
+        DB-->>B: 19a. 저장 완료
+        B-->>F: 20a. 연결 성공 응답<br/>(200 OK)
+        F->>U: 21a. 연결 완료 알림
+    else 이미 연결됨 ❌
+        DB-->>B: 17b. 중복 연결 발견
+        B-->>F: 18b. 연결 실패 응답<br/>(400 Bad Request)
+        F->>U: 19b. 연결 실패 알림<br/>"이미 연결된 계정입니다"
+    end
+    
+    rect rgb(240, 255, 240)
+    Note over U,DB: 보안: 인증된 사용자만 계정 연결 가능
+    end
 ```
 
 #### Data Flow

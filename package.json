@@ -48,6 +48,7 @@
     "js-cookie": "^3.0.5",
     "lowlight": "^3.3.0",
     "lucide-react": "^0.471.1",
+    "mermaid": "^10.6.1",
     "next": "^15.3.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -55,6 +56,7 @@
     "react-icons": "^5.5.0",
     "react-markdown": "^10.1.0",
     "react-redux": "^9.1.2",
+
     "remark-gfm": "^4.0.1",
     "sweetalert2": "^11.22.0",
     "typewriter-effect": "^2.21.0"
@@ -70,6 +72,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+
     "@vitest/browser": "^3.1.1",
     "@vitest/coverage-v8": "^3.1.1",
     "autoprefixer": "^10.4.20",

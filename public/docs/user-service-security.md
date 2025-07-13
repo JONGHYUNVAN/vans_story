@@ -25,6 +25,48 @@ Vans Story Backend는 **JWT 기반 인증**과 **역할 기반 접근 제어(RBA
 [ API Endpoints ]
 ```
 
+```mermaid
+graph TD
+    C[👤 클라이언트] --> H[🔒 HTTPS 연결]
+    H --> CORS[🌐 CORS 필터]
+    CORS --> SC[🛡️ Spring Security 필터 체인]
+    
+    subgraph "Spring Security 필터 체인"
+        SC --> CF[CorsFilter]
+        CF --> CSF[CsrfFilter]
+        CSF --> LF[LogoutFilter]
+        LF --> JWTFilter[🔑 JWT 인증 필터]
+        JWTFilter --> AF[AuthorizationFilter]
+        AF --> EHF[ExceptionHandlingFilter]
+    end
+    
+    JWTFilter --> AUTH[🔐 인증 & 인가 처리]
+    
+    subgraph "인증 & 인가"
+        AUTH --> TOKEN[JWT 토큰 검증]
+        TOKEN --> USER[사용자 정보 추출]
+        USER --> ROLE[역할 기반 권한 확인]
+    end
+    
+    ROLE --> API[🚀 API 엔드포인트]
+    
+    subgraph "API 엔드포인트"
+        API --> PUB[🌐 공개 API<br/>auth/login, auth/refresh]
+        API --> USER_API[👤 사용자 API<br/>users/{id}]
+        API --> ADMIN[👑 관리자 API<br/>users/]
+    end
+    
+    classDef securityClass fill:#ffebee,stroke:#f44336,stroke-width:2px
+    classDef filterClass fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
+    classDef authClass fill:#fff3e0,stroke:#ff9800,stroke-width:2px
+    classDef apiClass fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    
+    class C,H,CORS securityClass
+    class SC,CF,CSF,LF,JWTFilter,AF,EHF filterClass
+    class AUTH,TOKEN,USER,ROLE authClass
+    class API,PUB,USER_API,ADMIN apiClass
+```
+
 ### 주요 보안 기능
 - **JWT 기반 인증/인가**
 - **BCrypt 비밀번호 암호화**
@@ -53,6 +95,49 @@ Header.Payload.Signature
 |-----------|-----------|-----------|------|
 | Access Token | 5시간 (18000초) | Authorization 헤더 | API 접근 인증 |
 | Refresh Token | 7일 (604800초) | HTTP-Only 쿠키 | 토큰 갱신 |
+
+```mermaid
+graph TD
+    subgraph "🔐 토큰 발급 및 저장"
+        LOGIN[👤 사용자 로그인] --> GENERATE[🔑 토큰 생성]
+        GENERATE --> AT[📝 Access Token<br/>5시간 유효<br/>Authorization 헤더]
+        GENERATE --> RT[🍪 Refresh Token<br/>7일 유효<br/>HTTP-Only 쿠키]
+        RT --> DB_STORE[📊 DB 저장]
+    end
+    
+    subgraph "🚀 토큰 사용 및 검증"
+        AT --> API_REQ[🌐 API 요청]
+        API_REQ --> VALIDATE[✅ 토큰 검증]
+        VALIDATE --> VALID{토큰 유효?}
+        VALID -->|유효| SUCCESS[✅ API 응답]
+        VALID -->|만료| EXPIRED[⏰ 토큰 만료]
+    end
+    
+    subgraph "🔄 토큰 갱신"
+        EXPIRED --> REFRESH_REQ[🔄 토큰 갱신 요청]
+        REFRESH_REQ --> RT_VALIDATE[🍪 Refresh Token 검증]
+        RT_VALIDATE --> RT_VALID{Refresh Token 유효?}
+        RT_VALID -->|유효| NEW_TOKENS[🆕 새 토큰 발급]
+        RT_VALID -->|만료| RE_LOGIN[🔒 재로그인 필요]
+        NEW_TOKENS --> GENERATE
+    end
+    
+    subgraph "🗑️ 토큰 정리"
+        LOGOUT[👋 로그아웃] --> REVOKE[🚫 토큰 무효화]
+        REVOKE --> DB_DELETE[📊 DB에서 삭제]
+        CLEANUP[🧹 정기 정리<br/>스케줄러] --> EXPIRED_CLEAN[⏰ 만료된 토큰 삭제]
+    end
+    
+    classDef tokenClass fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
+    classDef processClass fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    classDef errorClass fill:#ffebee,stroke:#f44336,stroke-width:2px
+    classDef cleanupClass fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px
+    
+    class AT,RT,NEW_TOKENS tokenClass
+    class LOGIN,GENERATE,API_REQ,VALIDATE,SUCCESS,REFRESH_REQ,RT_VALIDATE processClass
+    class EXPIRED,RE_LOGIN errorClass
+    class LOGOUT,REVOKE,DB_DELETE,CLEANUP,EXPIRED_CLEAN cleanupClass
+```
 
 #### 토큰 검증 프로세스
 ```kotlin
@@ -96,15 +181,84 @@ enum class Role {
 #### 권한 매트릭스
 | 엔드포인트 | USER | ADMIN | 비인증 |
 |------------|------|-------|--------|
-| `POST /auth/login` | ✅ | ✅ | ✅ |
+| `POST /auth/signup` | ❌ | ❌ | ✅ |
+| `POST /auth/login` | ❌ | ❌ | ✅ |
 | `POST /auth/refresh` | ✅ | ✅ | ✅ |
 | `POST /auth/logout` | ✅ | ✅ | ✅ |
-| `GET /users` | ❌ | ✅ | ❌ |
 | `POST /users` | ❌ | ✅ | ❌ |
+| `GET /users` | ❌ | ✅ | ❌ |
 | `GET /users/{id}` | 본인만 | ✅ | ❌ |
+| `GET /users/email/{email}` | ❌ | ❌ | ✅ |
 | `PATCH /users/{id}` | 본인만 | ✅ | ❌ |
 | `DELETE /users/{id}` | 본인만 | ✅ | ❌ |
-| `GET /users/email/{email}` | ❌ | ❌ | ✅ |
+| `POST /oauth/login` | ❌ | ❌ | ✅ |
+| `POST /oauth/exchange` | ❌ | ❌ | ✅ |
+| `POST /oauth/link` | ✅ | ✅ | ❌ |
+| `DELETE /oauth/unlink` | ✅ | ✅ | ❌ |
+| `GET /oauth/linked` | ✅ | ✅ | ❌ |
+
+```mermaid
+graph TD
+    subgraph "👤 사용자 역할 (실제 Role Enum)"
+        USER[👤 USER<br/>Role.USER<br/>(ROLE_USER)]
+        ADMIN[👑 ADMIN<br/>Role.ADMIN<br/>(ROLE_ADMIN)]
+    end
+    
+    subgraph "🌐 공개 API (비인증)"
+        PUBLIC_SIGNUP[POST /auth/signup<br/>회원가입]
+        PUBLIC_LOGIN[POST /auth/login<br/>로그인]
+        PUBLIC_REFRESH[POST /auth/refresh<br/>토큰 갱신]
+        PUBLIC_LOGOUT[POST /auth/logout<br/>로그아웃]
+        PUBLIC_EMAIL[GET /users/email/{email}<br/>이메일로 닉네임 조회]
+        PUBLIC_OAUTH_LOGIN[POST /oauth/login<br/>OAuth 소셜 로그인]
+        PUBLIC_OAUTH_EXCHANGE[POST /oauth/exchange<br/>임시 코드 -> JWT 교환]
+    end
+    
+    subgraph "🔐 인증 필요 API"
+        AUTH_OAUTH_LINK[POST /oauth/link<br/>OAuth 계정 연결]
+        AUTH_OAUTH_UNLINK[DELETE /oauth/unlink<br/>OAuth 계정 해제]
+        AUTH_OAUTH_LINKED[GET /oauth/linked<br/>연결된 계정 조회]
+        AUTH_USER_SELF[GET/PATCH/DELETE /users/{id}<br/>본인 정보만 접근]
+    end
+    
+    subgraph "👑 관리자 전용 API"
+        ADMIN_USER_CREATE[POST /users<br/>사용자 생성]
+        ADMIN_USER_LIST[GET /users<br/>전체 사용자 조회]
+        ADMIN_USER_ALL[GET/PATCH/DELETE /users/{id}<br/>모든 사용자 정보 접근]
+    end
+    
+    USER --> AUTH_OAUTH_LINK
+    USER --> AUTH_OAUTH_UNLINK
+    USER --> AUTH_OAUTH_LINKED
+    USER --> AUTH_USER_SELF
+    
+    ADMIN --> AUTH_OAUTH_LINK
+    ADMIN --> AUTH_OAUTH_UNLINK
+    ADMIN --> AUTH_OAUTH_LINKED
+    ADMIN --> AUTH_USER_SELF
+    ADMIN --> ADMIN_USER_CREATE
+    ADMIN --> ADMIN_USER_LIST
+    ADMIN --> ADMIN_USER_ALL
+    
+    subgraph "🔒 실제 권한 검증 (Spring Security)"
+        RBAC["@PreAuthorize<br/>hasRole('ADMIN')<br/>or<br/>authentication.principal.id == #id"]
+    end
+    
+    AUTH_USER_SELF --> RBAC
+    ADMIN_USER_ALL --> RBAC
+    
+    classDef userClass fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
+    classDef adminClass fill:#ffebee,stroke:#f44336,stroke-width:2px
+    classDef publicClass fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    classDef authClass fill:#fff3e0,stroke:#ff9800,stroke-width:2px
+    classDef rbacClass fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px
+    
+    class USER,AUTH_USER_SELF userClass
+    class ADMIN,ADMIN_USER_CREATE,ADMIN_USER_LIST,ADMIN_USER_ALL adminClass
+    class PUBLIC_SIGNUP,PUBLIC_LOGIN,PUBLIC_REFRESH,PUBLIC_LOGOUT,PUBLIC_EMAIL,PUBLIC_OAUTH_LOGIN,PUBLIC_OAUTH_EXCHANGE publicClass
+    class AUTH_OAUTH_LINK,AUTH_OAUTH_UNLINK,AUTH_OAUTH_LINKED authClass
+    class RBAC rbacClass
+```
 
 #### 권한 어노테이션
 ```kotlin
@@ -164,6 +318,68 @@ X-API-KEY: your_internal_api_key
 2. 요청 헤더에서 `X-API-KEY` 추출
 3. 설정된 API 키와 비교
 4. 불일치 시 `CustomException` 발생
+
+```mermaid
+flowchart TD
+    A[🌐 HTTP 요청] --> B{화이트리스트 확인}
+    B -->|공개 API| C[✅ 바로 통과]
+    B -->|보호된 API| D[🔐 JWT 토큰 검증]
+    
+    D --> E{토큰 유효성}
+    E -->|유효| F[👤 사용자 정보 추출]
+    E -->|무효/만료| G[❌ 401 Unauthorized]
+    
+    F --> H{API 키 필요?}
+    H -->|불필요| I[🔒 권한 검증]
+    H -->|필요| J[🔑 API 키 검증]
+    
+    J --> K{API 키 유효?}
+    K -->|유효| I
+    K -->|무효| L[❌ 403 Forbidden]
+    
+    I --> M{권한 확인}
+    M -->|권한 있음| N[✅ API 처리]
+    M -->|권한 없음| O[❌ 403 Forbidden]
+    
+    N --> P[📤 응답 반환]
+    
+    subgraph "🔐 인증 단계"
+        D
+        E
+        F
+        G
+    end
+    
+    subgraph "🔑 API 키 검증"
+        J
+        K
+        L
+    end
+    
+    subgraph "🛡️ 권한 검증"
+        I
+        M
+        O
+    end
+    
+    subgraph "📋 화이트리스트"
+        WL["/auth/login<br/>/auth/refresh<br/>/users/email/**<br/>/swagger-ui/**"]
+    end
+    
+    B -.-> WL
+    
+    classDef startClass fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    classDef processClass fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
+    classDef errorClass fill:#ffebee,stroke:#f44336,stroke-width:2px
+    classDef successClass fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    classDef whitelistClass fill:#fff3e0,stroke:#ff9800,stroke-width:2px
+    
+    class A,C startClass
+    class B,D,F,H,I,J,M,N processClass
+    class G,L,O errorClass
+    class P successClass
+    class WL whitelistClass
+```
 
 ---
 

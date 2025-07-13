@@ -1,352 +1,414 @@
-# 개발 가이드
+# 📋 User Service 개발 가이드
 
-## 목차
-- [개발 환경 설정](#개발-환경-설정)
-- [프로젝트 구조](#프로젝트-구조)
-- [개발 워크플로우](#개발-워크플로우)
-- [코딩 컨벤션](#코딩-컨벤션)
-- [테스트 가이드](#테스트-가이드)
-- [디버깅](#디버깅)
-- [문제 해결](#문제-해결)
+## 🚀 개발 환경 구성
 
-## 개발 환경 설정
+### 1. 필수 요구사항
 
-### 1. 필수 도구 설치
+| 분류 | 기술/도구 | 버전 |
+|:---:|:---:|:---:|
+|Runtime | Java | 21 |
+|Framework | Spring Boot | 3.5.0 |
+|Language | Kotlin | 1.9.22 |
+|Database | MariaDB | 10.x |
+|IDE | IntelliJ IDEA | Latest |
 
-#### JDK 21
+### 2. 프로젝트 구조
+
+```
+vans_story_be/
+├── src/
+│   ├── main/
+│   │   ├── kotlin/
+│   │   │   └── blog/vans_story_be/
+│   │   │       ├── config/          # 설정 파일들
+│   │   │       │   ├── database/    # 데이터베이스 설정
+│   │   │       │   ├── security/    # 보안 설정
+│   │   │       │   └── cors/        # CORS 설정
+│   │   │       ├── domain/          # 도메인 별 패키지
+│   │   │       │   ├── user/        # 사용자 관리
+│   │   │       │   ├── auth/        # 인증/인가
+│   │   │       │   └── oauth/       # OAuth 연동
+│   │   │       └── global/          # 전역 설정
+│   │   └── resources/
+│   │       ├── application.yaml     # 메인 설정
+│   │       └── application-prod.yaml # 운영환경 설정
+│   └── test/
+│       ├── kotlin/                  # 테스트 코드
+│       └── resources/
+│           └── application-test.yaml # 테스트 설정
+├── build.gradle                     # 빌드 설정
+└── .env                            # 환경변수 (로컬)
+```
+
+---
+
+## 💾 데이터베이스 설정
+
+### 1. MariaDB 연결 설정
+
+```mermaid
+graph TD
+    A[Application] --> B[HikariCP]
+    B --> C[MariaDB]
+    B --> D[Connection Pool]
+    
+    D --> E[Max Pool Size: 10]
+    D --> F[Min Idle: 5]
+    D --> G[Connection Timeout: 30s]
+    
+    style A fill:#e1f5fe
+    style B fill:#e8f5e9
+    style C fill:#fff3e0
+    style D fill:#f3e5f5
+```
+
+**환경변수 설정 (.env 파일)**
 ```bash
-# Windows (Chocolatey)
-choco install openjdk21
+# 데이터베이스 연결 정보
+VANS_BLOG_DB_HOST=localhost
+VANS_BLOG_DB_PORT=3306
+VANS_BLOG_DB_NAME=devblog
+VANS_BLOG_DB_USERNAME=root
+VANS_BLOG_DB_PASSWORD=your_password
 
-# macOS (Homebrew)
-brew install openjdk@21
+# 관리자 계정 (초기 데이터)
+VANS_BLOG_ADMIN_USERNAME=admin
+VANS_BLOG_ADMIN_PASSWORD=admin1234!
+VANS_BLOG_ADMIN_EMAIL=admin@vans-story.com
 
-# Ubuntu
-sudo apt install openjdk-21-jdk
+# 테스트 계정 (초기 데이터)
+VANS_BLOG_TEST_USERNAME=testuser
+VANS_BLOG_TEST_PASSWORD=Test1234!
+VANS_BLOG_TEST_EMAIL=test@vans-story.com
 ```
 
-#### MariaDB 설치 및 설정
-```bash
-# Windows (Chocolatey)
-choco install mariadb
+### 2. Exposed ORM 설정
 
-# macOS (Homebrew)
-brew install mariadb
-brew services start mariadb
-
-# Ubuntu
-sudo apt install mariadb-server
-sudo systemctl start mariadb
+```mermaid
+graph TD
+    A[DataSourceConfig] --> B[HikariDataSource]
+    B --> C[Database.connect]
+    C --> D[SchemaUtils.create]
+    D --> E[Users Table]
+    D --> F[UserOAuths Table]
+    
+    style A fill:#e1f5fe
+    style B fill:#e8f5e9
+    style C fill:#f3e5f5
+    style D fill:#fff3e0
+    style E fill:#fce4ec
+    style F fill:#f1f8e9
 ```
 
-#### 데이터베이스 초기 설정
-```sql
-# MariaDB 접속
-mysql -u root -p
-
-# 데이터베이스 생성
-CREATE DATABASE vans_story_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
-# 사용자 생성 및 권한 부여
-CREATE USER 'vans_user'@'localhost' IDENTIFIED BY 'your_password';
-GRANT ALL PRIVILEGES ON vans_story_db.* TO 'vans_user'@'localhost';
-FLUSH PRIVILEGES;
-```
-
-### 2. 프로젝트 설정
-
-#### 환경 변수 설정
-프로젝트 루트에 `.env` 파일을 생성:
-
-```env
-# 데이터베이스 설정
-DB_URL=jdbc:mariadb://localhost:3306/vans_story_db
-DB_USERNAME=vans_user
-DB_PASSWORD=your_password
-
-# JWT 설정
-VANS_BLOG_JWT_SECRET_KEY=your_super_secret_jwt_key_at_least_32_characters_long
-VANS_BLOG_JWT_ACCESS_TOKEN_VALIDITY=18000
-VANS_BLOG_JWT_REFRESH_TOKEN_VALIDITY=604800
-
-# 서버 설정
-SERVER_PORT=8080
-LOG_LEVEL=INFO
-SHOW_SQL=true
-GENERATE_DDL=true
-```
-
-#### IDE 설정 (IntelliJ IDEA 권장)
-1. **Kotlin 플러그인** 활성화
-2. **Gradle 자동 새로고침** 활성화
-3. **코드 스타일 설정**:
-   - File > Settings > Editor > Code Style > Kotlin
-   - Scheme: Default 또는 팀 컨벤션
-
-### 3. 프로젝트 실행
-
-```bash
-# 의존성 다운로드
-./gradlew build
-
-# 개발 서버 실행
-./gradlew bootRun
-
-# 또는 IDE에서 VansStoryBeApplication.kt 실행
-```
-
-## 프로젝트 구조
-
-### 아키텍처 개요
-```
-Domain-Driven Design (DDD) + Layered Architecture
-├── Presentation Layer (Controller)
-├── Application Layer (Service)
-├── Domain Layer (Entity, Repository Interface)
-└── Infrastructure Layer (Repository Implementation)
-```
-
-### 핵심 패키지별 역할
-
-#### `config/`
-- **목적**: 애플리케이션 전역 설정
-- **주요 파일**:
-  - `SecurityConfig.kt`: Spring Security 설정
-  - `CorsConfig.kt`: CORS 정책 설정
-  - `SwaggerConfig.kt`: API 문서화 설정
-
-#### `domain/`
-- **목적**: 비즈니스 로직의 핵심
-- **구조**: 각 도메인별로 분리
-  ```
-  domain/
-  ├── auth/     # 인증 도메인
-  ├── user/     # 사용자 도메인
-  └── post/     # 포스트 관련 (현재는 service 디렉토리만 존재)
-  ```
-
-#### `global/`
-- **목적**: 전역적으로 사용되는 유틸리티
-- **주요 구성요소**:
-  - `exception/`: 예외 처리
-  - `response/`: API 응답 표준화
-  - `mapper/`: 객체 변환
-
-### 레이어별 책임
-
-1. **Controller**: HTTP 요청/응답 처리, 입력 검증
-2. **Service**: 비즈니스 로직 구현
-3. **Repository**: 데이터 접근 추상화
-4. **Entity**: 도메인 모델 표현
-
-## 개발 워크플로우
-
-### 1. 브랜치 전략
-```bash
-# 새 기능 개발
-git checkout -b feature/기능명
-git checkout -b feature/user-profile-update
-
-# 버그 수정
-git checkout -b bugfix/버그명
-git checkout -b bugfix/jwt-token-refresh
-
-# 핫픽스
-git checkout -b hotfix/긴급수정명
-```
-
-### 2. 개발 프로세스
-1. **이슈 생성** → GitHub Issues
-2. **브랜치 생성** → feature/기능명
-3. **개발 진행** → 코드 작성 + 테스트
-4. **테스트 실행** → `./gradlew test`
-5. **커밋** → 의미있는 커밋 메시지
-6. **Pull Request** → 코드 리뷰
-7. **머지** → main 브랜치
-
-### 3. 커밋 메시지 컨벤션
-```
-타입(스코프): 제목
-
-본문 (선택사항)
-
-- feat: 새로운 기능 추가
-- fix: 버그 수정
-- docs: 문서 수정
-- style: 코드 포맷팅
-- refactor: 코드 리팩토링
-- test: 테스트 추가/수정
-- chore: 빌드 설정 등
-
-예시:
-feat(auth): JWT 토큰 갱신 기능 추가
-fix(user): 사용자 정보 조회 시 NPE 수정
-docs(readme): API 엔드포인트 문서 업데이트
-```
-
-## 코딩 컨벤션
-
-### Kotlin 컨벤션
+**테이블 자동 생성 설정**
 ```kotlin
-// 1. 클래스명: PascalCase
-class UserService
-
-// 2. 함수명: camelCase
-fun getUserById(id: Long): User
-
-// 3. 변수명: camelCase
-val userName = "van"
-
-// 4. 상수명: UPPER_SNAKE_CASE
-const val MAX_LOGIN_ATTEMPTS = 5
-
-// 5. 널 안전성 활용
-fun processUser(user: User?) {
-    user?.let { 
-        // 안전한 처리
+// DataSourceConfig.kt
+@EventListener(ApplicationReadyEvent::class)
+fun createTables() {
+    Database.connect(dataSource())
+    transaction {
+        SchemaUtils.create(Users, UserOAuths)
     }
 }
 ```
 
-### API 설계 원칙
-```kotlin
-// 1. RESTful URL 설계
-@GetMapping("/api/v1/users/{id}")
-@PostMapping("/api/v1/users")
-@PatchMapping("/api/v1/users/{id}")
-@DeleteMapping("/api/v1/users/{id}")
+### 3. 테스트 데이터베이스 (H2)
 
-// 2. 표준 HTTP 상태 코드 사용
-return ResponseEntity.ok(data)           // 200
-return ResponseEntity.created(uri)       // 201
-return ResponseEntity.noContent()        // 204
-return ResponseEntity.badRequest()       // 400
-
-// 3. 일관된 응답 형식
-ApiResponse.success(data)
-ApiResponse.error("에러 메시지")
+```yaml
+# application-test.yaml
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
 ```
-
-## 테스트 가이드
-
-### 테스트 구조
-```
-src/test/kotlin/
-├── auth/           # 인증 관련 테스트
-├── domain/         # 도메인별 테스트
-└── integration/    # 통합 테스트
-```
-
-### 단위 테스트 작성 예시
-```kotlin
-@Test
-fun `사용자 ID로 사용자 정보를 조회할 수 있다`() {
-    // Given
-    val userId = 1L
-    val expectedUser = User(id = userId, email = "test@example.com")
-    every { userRepository.findById(userId) } returns expectedUser
-
-    // When
-    val result = userService.getUserById(userId)
-
-    // Then
-    result shouldBe expectedUser
-    verify(exactly = 1) { userRepository.findById(userId) }
-}
-```
-
-### 테스트 실행
-```bash
-# 모든 테스트 실행
-./gradlew test
-
-# 특정 테스트 클래스 실행
-./gradlew test --tests "UserServiceTest"
-
-# 특정 테스트 메서드 실행
-./gradlew test --tests "UserServiceTest.사용자_ID로_사용자_정보를_조회할_수_있다"
-
-# 테스트 결과 리포트 확인
-open build/reports/tests/test/index.html
-```
-
-## 디버깅
-
-### 로그 활용
-```kotlin
-// 로거 선언
-private val logger = KotlinLogging.logger {}
-
-// 로그 레벨별 사용
-logger.debug { "디버그 정보: $debugInfo" }
-logger.info { "정보: $info" }
-logger.warn { "경고: $warning" }
-logger.error(exception) { "에러 발생: $errorMessage" }
-```
-
-### 개발 도구 활용
-1. **H2 Console** (테스트 시): http://localhost:8080/h2-console
-2. **Swagger UI**: http://localhost:8080/swagger-ui.html
-3. **Actuator**: http://localhost:8080/actuator/health
-
-## 문제 해결
-
-### 자주 발생하는 문제들
-
-#### 1. 데이터베이스 연결 실패
-```bash
-# 원인: MariaDB 서비스 미실행
-sudo systemctl start mariadb
-
-# 원인: 잘못된 데이터베이스 URL/계정
-# .env 파일의 DB_URL, DB_USERNAME, DB_PASSWORD 확인
-```
-
-#### 2. JWT 토큰 관련 오류
-```bash
-# 원인: VANS_BLOG_JWT_SECRET_KEY 키가 너무 짧음
-# .env 파일에서 VANS_BLOG_JWT_SECRET_KEY를 32자 이상으로 설정
-```
-
-#### 3. 빌드 실패
-```bash
-# Gradle 캐시 정리
-./gradlew clean
-
-# 의존성 재다운로드
-./gradlew build --refresh-dependencies
-```
-
-#### 4. 포트 충돌
-```bash
-# 8080 포트 사용 중인 프로세스 확인
-lsof -i :8080
-
-# 다른 포트 사용 (.env 파일)
-SERVER_PORT=8081
-```
-
-### 도움이 되는 명령어
-```bash
-# 프로젝트 상태 확인
-./gradlew projects
-
-# 의존성 트리 확인
-./gradlew dependencies
-
-# 빌드 정보 확인
-./gradlew buildEnvironment
-
-# 코드 문서 생성
-./gradlew dokkaHtml
-```
-
-
 
 ---
 
-## 추가 리소스
-- [Kotlin 공식 문서](https://kotlinlang.org/docs/)
-- [Spring Boot 공식 문서](https://spring.io/projects/spring-boot)
-- [Exposed 문서](https://github.com/JetBrains/Exposed)
-- [Kotest 문서](https://kotest.io/) 
+## 🔧 개발 환경 실행
+
+### 1. 로컬 개발 환경 실행
+
+```bash
+# 1. 프로젝트 클론 및 이동
+git clone <repository-url>
+cd vans_story_be
+
+# 2. 환경변수 파일 생성
+cp .env.example .env
+# .env 파일 내용 수정
+
+# 3. 데이터베이스 실행 (Docker)
+docker run -d \
+  --name mariadb \
+  -e MYSQL_ROOT_PASSWORD=your_password \
+  -e MYSQL_DATABASE=devblog \
+  -p 3306:3306 \
+  mariadb:10
+
+# 4. 애플리케이션 실행
+./gradlew bootRun
+```
+
+### 2. IDE 설정 (IntelliJ IDEA)
+
+```mermaid
+graph TD
+    A[IntelliJ IDEA] --> B[Kotlin 플러그인]
+    B --> C[Spring Boot 플러그인]
+    C --> D[Database 플러그인]
+    D --> E[.env 플러그인]
+    
+    style A fill:#e1f5fe
+    style B fill:#f3e5f5
+    style C fill:#e8f5e9
+    style D fill:#fff3e0
+    style E fill:#fce4ec
+```
+
+**실행 구성 설정**
+- Main class: `blog.vans_story_be.VansStoryBeApplicationKt`
+- VM options: `-Dspring.profiles.active=dev`
+- Environment variables: `.env` 파일 내용
+
+### 3. 테스트 실행
+
+```bash
+# 전체 테스트 실행
+./gradlew test
+
+# 특정 테스트 실행
+./gradlew test --tests "blog.vans_story_be.domain.auth.*"
+
+# 테스트 커버리지 확인
+./gradlew test jacocoTestReport
+```
+
+---
+
+## 🔐 보안 설정
+
+### 1. JWT 설정
+
+```mermaid
+graph TD
+    A[JWT Provider] --> B[Access Token]
+    A --> C[Refresh Token]
+    
+    B --> D[30분 유효기간]
+    C --> E[7일 유효기간]
+    
+    B --> F[API 인증]
+    C --> G[토큰 갱신]
+    
+    style A fill:#e1f5fe
+    style B fill:#e8f5e9
+    style C fill:#f3e5f5
+    style D fill:#fff3e0
+    style E fill:#fce4ec
+    style F fill:#f1f8e9
+    style G fill:#e8eaf6
+```
+
+**JWT 환경변수**
+```bash
+# JWT 설정
+JWT_SECRET=your-secret-key-minimum-32-characters
+JWT_ACCESS_TOKEN_VALIDITY=1800      # 30분
+JWT_REFRESH_TOKEN_VALIDITY=604800   # 7일
+```
+
+### 2. CORS 설정
+
+```bash
+# CORS 허용 도메인 (쉼표로 구분)
+CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173,https://vans-story.com
+```
+
+### 3. 비밀번호 암호화
+
+```kotlin
+// BCrypt 사용
+@Bean
+fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
+```
+
+---
+
+## 📊 모니터링 및 로깅
+
+### 1. 로깅 설정
+
+```mermaid
+graph TD
+    A[Request] --> B[ApiRequestInterceptor]
+    B --> C[로그 기록]
+    C --> D[MDC 설정]
+    D --> E[응답 완료]
+    
+    style A fill:#e1f5fe
+    style B fill:#e8f5e9
+    style C fill:#f3e5f5
+    style D fill:#fff3e0
+    style E fill:#fce4ec
+```
+
+**로그 레벨 설정**
+```yaml
+logging:
+  level:
+    blog.vans_story_be: DEBUG        # 개발환경
+    org.springframework.security: INFO
+    org.hibernate.SQL: DEBUG
+```
+
+### 2. 성능 모니터링
+
+```bash
+# JVM 메모리 모니터링
+LOG_LEVEL=DEBUG ./gradlew bootRun
+
+# 데이터베이스 쿼리 로그
+SHOW_SQL=true ./gradlew bootRun
+```
+
+---
+
+## 🚀 배포 설정
+
+### 1. 프로덕션 빌드
+
+```bash
+# JAR 파일 생성
+./gradlew bootJar
+
+# 빌드 결과물 확인
+ls -la build/libs/vans-story-be.jar
+```
+
+### 2. 메모리 최적화 (512MB 환경)
+
+```mermaid
+graph TD
+    A[JVM Options] --> B[Heap Size]
+    A --> C[GC 설정]
+    A --> D[기타 최적화]
+    
+    B --> E[Xms: 128MB]
+    B --> F[Xmx: 384MB]
+    
+    C --> G[G1GC]
+    C --> H[StringDeduplication]
+    
+    D --> I[MaxGCPauseMillis]
+    D --> J[DisableExplicitGC]
+    
+    style A fill:#e1f5fe
+    style B fill:#e8f5e9
+    style C fill:#f3e5f5
+    style D fill:#fff3e0
+```
+
+**JVM 옵션 설정**
+```bash
+java -Xms128m -Xmx384m \
+     -XX:+UseG1GC \
+     -XX:+UseStringDeduplication \
+     -XX:MaxGCPauseMillis=200 \
+     -XX:+DisableExplicitGC \
+     -jar vans-story-be.jar
+```
+
+### 3. Docker 설정
+
+```dockerfile
+FROM openjdk:21-jre-slim
+
+COPY build/libs/vans-story-be.jar app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", \
+  "-Xms128m", "-Xmx384m", \
+  "-XX:+UseG1GC", \
+  "-XX:+UseStringDeduplication", \
+  "-jar", "/app.jar"]
+```
+
+---
+
+## 🔍 API 문서화
+
+### 1. Swagger UI 접근
+
+```bash
+# 개발 환경
+http://localhost:8080/swagger-ui.html
+
+# API 문서 JSON
+http://localhost:8080/v3/api-docs
+```
+
+### 2. API 테스트
+
+```mermaid
+graph TD
+    A[Swagger UI] --> B[API 테스트]
+    B --> C[인증 토큰 발급]
+    C --> D[API 호출]
+    D --> E[응답 확인]
+    
+    style A fill:#e1f5fe
+    style B fill:#e8f5e9
+    style C fill:#f3e5f5
+    style D fill:#fff3e0
+    style E fill:#fce4ec
+```
+
+---
+
+## 🛠️ 개발 도구
+
+### 1. 필수 Gradle 태스크
+
+```bash
+# 애플리케이션 실행
+./gradlew bootRun
+
+# 테스트 실행
+./gradlew test
+
+# 빌드
+./gradlew build
+
+# 종속성 확인
+./gradlew dependencies
+
+# 코드 정리
+./gradlew ktlintFormat
+```
+
+### 2. 데이터베이스 도구
+
+```bash
+# MariaDB 클라이언트 접속
+mysql -h localhost -P 3306 -u root -p devblog
+
+# 테이블 확인
+SHOW TABLES;
+DESCRIBE users;
+DESCRIBE user_oauths;
+```
+
+### 3. 환경 변수 관리
+
+```bash
+# .env 파일 예시
+cp .env.example .env
+
+# 환경변수 확인
+echo $VANS_BLOG_DB_HOST
+```
+
+--- 

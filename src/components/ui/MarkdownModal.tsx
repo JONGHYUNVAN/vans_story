@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { MdClose } from 'react-icons/md';
+import MermaidDiagram from './MermaidDiagram';
 
 interface MarkdownModalProps {
   isOpen: boolean;
@@ -115,15 +116,30 @@ export default function MarkdownModal({ isOpen, onClose, title, filePath }: Mark
                       {children}
                     </pre>
                   ),
-                  code: ({ children, className }) => {
+                  code: ({ children, className, ...props }) => {
+                    const match = /language-(\w+)/.exec(className || '');
+                    const language = match ? match[1] : '';
                     const isInline = !className;
+                    
+                    // Mermaid 코드 블록 처리
+                    if (language === 'mermaid' && !isInline) {
+                      return (
+                        <MermaidDiagram 
+                          chart={String(children).replace(/\n$/, '')}
+                          className="my-4"
+                        />
+                      );
+                    }
+                    
+                    // 일반 코드 블록 처리
                     return (
                       <code
                         className={
                           isInline
                             ? 'bg-gray-200 px-1 py-0.5 rounded text-sm'
-                            : 'bg-gray-100 block'
+                            : 'bg-gray-100 px-3 py-2 rounded block overflow-x-auto'
                         }
+                        {...props}
                       >
                         {children}
                       </code>

@@ -178,6 +178,13 @@ export default function Services({ services, selectedService, onServiceSelect, s
         category: '🔧 API 문서'
       });
       links.push({
+        title: 'Swagger API 문서',
+        filePath: '/docs/post-swagger/index.html',
+        description: 'REST API 명세 및 테스트 인터페이스',
+        isHtml: true,
+        category: '🔧 API 문서'
+      });
+      links.push({
         title: 'NestJS 코드 문서 (TypeDoc)',
         filePath: '/docs/nestjs-api/index.html',
         description: 'NestJS 백엔드 클래스, 모듈, 인터페이스 문서',

@@ -8,7 +8,7 @@ import TypewriterSection from '../components/features/home/TypewriterSection';
 
 export default function Home() {
   return (
-    <div className="w-full bg-gray-900">
+    <div className="w-full bg-black">
       <div className="h-[65vh] relative overflow-hidden w-full">
         <BackgroundVideo />
         <div className="absolute inset-0 bg-black/30">

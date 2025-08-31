@@ -21,6 +21,7 @@ export interface PostInfo {
   title: string;
   topic: string;
   description: string;
+  content: string;
   author: string;
   createdAt: string;
   updatedAt: string;

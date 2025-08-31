@@ -27,7 +27,7 @@ export default function RootLayout({
       ${gamjaFlower.variable}
       ${dancingScript.variable}
     `}>
-      <body className="relative">
+      <body className="relative bg-black">
         <StoreProviders>
           <Header />
           <Sidebar />

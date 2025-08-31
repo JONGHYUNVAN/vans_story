@@ -1,17 +1,31 @@
 import { SearchResponse } from '@/types/api/search';
 
-const API_URL = process.env.NEXT_PUBLIC_SEARCH_API_URL || 'http://localhost:8000/api/v1/search';
+// 이제 내부 API 라우트를 호출합니다.
+const API_URL = '/api/search';
 
 /**
- * 검색 API를 호출하여 게시물을 검색합니다.
+ * 내부 검색 API 라우트를 호출하여 게시물을 검색합니다.
  * @param query 검색어
  * @returns 검색 결과 Promise
  */
 export const fetchSearchResults = async (query: string): Promise<SearchResponse> => {
+  if (!query) {
+    // 빈 검색어에 대해서는 API 호출 없이 빈 결과를 반환
+    return {
+      total: 0,
+      page: 1,
+      page_size: 20,
+      total_pages: 0,
+      results: [],
+      aggregations: {},
+    };
+  }
+
   const encodedQuery = encodeURIComponent(query);
-  const url = `${API_URL}/posts?query=${encodedQuery}`;
+  const url = `${API_URL}?query=${encodedQuery}`;
 
   try {
+    // 서버 컴포넌트에서 fetch를 사용하면 자동으로 서버 간 통신이 됩니다.
     const response = await fetch(url, {
       next: {
         revalidate: 3600, // 1시간 캐시

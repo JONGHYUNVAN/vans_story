@@ -4,7 +4,8 @@ import SearchHeader from '@/components/features/search/SearchHeader';
 import { GET as searchApiGET } from '../api/search/route'; // API 라우트 핸들러 직접 임포트
 
 type PageProps = {
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params?: Promise<Record<string, string | string[]>>;
+  searchParams?: Promise<Record<string, string | string[]>>;
 };
 
 /**
@@ -12,7 +13,9 @@ type PageProps = {
  * - URL의 'q' 파라미터를 이용해 검색 API를 호출하고 결과를 표시합니다.
  */
 export default async function SearchPage({ searchParams }: PageProps) {
-  const query = typeof searchParams?.q === 'string' ? searchParams.q : '';
+  const sp = (await searchParams) ?? {};
+  const rawQuery = sp.q;
+  const query = Array.isArray(rawQuery) ? rawQuery[0] : rawQuery ?? '';
 
   return (
     <div className="bg-gray-900 min-h-screen text-white">

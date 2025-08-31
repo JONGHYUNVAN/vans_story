@@ -46,6 +46,7 @@ export function PostPreview({
     id,
     title,
     description,
+    content,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     tags,

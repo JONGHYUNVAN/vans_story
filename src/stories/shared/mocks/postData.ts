@@ -7,17 +7,18 @@ const basePostData: PostInfo = {
   id: '1',
   title: '기본 포스트 제목',
   description: '기본 포스트 설명입니다.',
-  createdAt: '2024-01-01',
-  updatedAt: '2024-01-01',
-  tags: ['tag1', 'tag2'],
+  content: '기본 포스트 내용입니다. Tiptap 에디터에서 작성된 JSON 형식의 데이터가 여기에 들어갑니다.',
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+  tags: ['태그1', '태그2'],
   viewCount: 100,
-  likeCount: 50,
+  likeCount: 10,
   topic: '기본 주제',
-  author: 'VanJS',
-  thumbnail: '/default-thumbnail.webp',
-  theme: 'default',
-  category: 'general',
-  language: 'ko'
+  author: 'Vans',
+  thumbnail: 'https://via.placeholder.com/800x400',
+  theme: 'nextjs',
+  category: 'introduction',
+  language: 'ko',
 };
 
 /**

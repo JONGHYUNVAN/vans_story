@@ -1,7 +1,9 @@
 import { SearchResponse } from '@/types/api/search';
 
-// 이제 내부 API 라우트를 호출합니다.
-const API_URL = '/api/search';
+// 서버 사이드에서 내부 API 호출 시 전체 주소가 필요합니다.
+// 이 값은 환경 변수로 관리하는 것이 가장 좋습니다. (e.g., process.env.NEXT_PUBLIC_APP_URL)
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+const API_URL = `${BASE_URL}/api/search`;
 
 /**
  * 내부 검색 API 라우트를 호출하여 게시물을 검색합니다.
@@ -37,7 +39,9 @@ export const fetchSearchResults = async (query: string): Promise<SearchResponse>
       throw new Error(errorData.message || '검색 결과를 가져오는데 실패했습니다.');
     }
 
-    return await response.json();
+    const data = await response.json();
+    console.log('🔍 Search API Response:', JSON.stringify(data, null, 2));
+    return data;
   } catch (error) {
     console.error('Search API fetch error:', error);
     throw error;

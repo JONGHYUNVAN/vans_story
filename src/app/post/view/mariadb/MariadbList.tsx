@@ -8,17 +8,13 @@ import { PostInfo } from "@/interfaces/post/types";
 import { sortPosts } from '@/components/features/post/sort/sortPosts';
 import Link from 'next/link';
 
-interface Post extends PostInfo {
-  _id: string;
-}
-
 interface MariadbListProps {
-  posts: Post[];
+  posts: PostInfo[];
 }
 
 export default function MariadbList({ posts: initialPosts }: MariadbListProps) {
   const { t } = useTranslation('post');
-  const [posts] = useState<Post[]>(initialPosts);
+  const [posts] = useState<PostInfo[]>(initialPosts);
   const [sortOption, setSortOption] = useState('latest');
   const [visiblePosts, setVisiblePosts] = useState(10);
 
@@ -26,39 +22,36 @@ export default function MariadbList({ posts: initialPosts }: MariadbListProps) {
   const sortedPosts = sortPosts(posts, sortOption);
   const postsToShow = sortedPosts.slice(0, visiblePosts);
 
-  return (
-    <>
-      <div className="flex justify-end mb-8">
-        <select
-          value={sortOption}
-          onChange={(e) => setSortOption(e.target.value)}
-          className="text-center w-36 py-2 bg-black/50 backdrop-blur-sm text-white border border-[#333333] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#333333]"
+  return (<>
+    <div className="flex justify-end mb-8">
+      <select
+        value={sortOption}
+        onChange={(e) => setSortOption(e.target.value)}
+        className="text-center w-36 py-2 bg-black/50 backdrop-blur-sm text-white border border-[#333333] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#333333]"
+      >
+        <option value="latest">{t('post.sort.latest')}</option>
+        <option value="oldest">{t('post.sort.oldest')}</option>
+        <option value="views">{t('post.sort.views')}</option>
+        <option value="likes">{t('post.sort.likes')}</option>
+      </select>
+    </div>
+    <div className="grid grid-cols-1 gap-6">
+      {postsToShow.map((post, index) => (
+        <Link
+          key={post.id}
+          href={`/post/view/mariadb/${post.id}`}
+          className="block transition-transform hover:-translate-y-1"
         >
-          <option value="latest">{t('post.sort.latest')}</option>
-          <option value="oldest">{t('post.sort.oldest')}</option>
-          <option value="views">{t('post.sort.views')}</option>
-          <option value="likes">{t('post.sort.likes')}</option>
-        </select>
-      </div>
-
-      <div className="grid grid-cols-1 gap-6">
-        {postsToShow.map((post, index) => (
-          <Link
-            key={post._id}
-            href={`/post/view/mariadb/${post._id}`}
-            className="block transition-transform hover:-translate-y-1"
-          >
-            <PostCard
-              post={post}
-              renderBadge={() => (
-                <span className="flex items-center justify-center w-10 h-8 rounded-full bg-black/50">
-                  <SiMariadb className="w-7 h-7 text-[#003545]" />
-                </span>
-              )}
-            />
-          </Link>
-        ))}
-      </div>
-    </>
-  );
+          <PostCard
+            post={post}
+            renderBadge={() => (
+              <span className="flex items-center justify-center w-10 h-8 rounded-full bg-gray-200 text-gray-700">
+                <SiMariadb className="w-5 h-5" />
+              </span>
+            )}
+          />
+        </Link>
+      ))}
+    </div>
+  </>);
 } 

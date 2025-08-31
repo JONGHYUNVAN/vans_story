@@ -18,6 +18,7 @@ export interface Highlight {
 export interface SearchResult {
   post_id: string;
   title: string;
+  content: string;
   summary: string;
   slug: string;
   category: string;

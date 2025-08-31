@@ -14,11 +14,11 @@ export default function HomeSidebar() {
   const menuText = t('Sidebar.sidebarMenu');
   
   return (
-    <div 
-      className={`${isOpen ? 'w-64' : 'w-16'} h-full transition-all duration-300`}
-      onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => setIsOpen(false)}
-    >
+    (<div 
+        className={`${isOpen ? 'w-64' : 'w-16'} h-full transition-all duration-300`}
+        onMouseEnter={() => setIsOpen(true)}
+        onMouseLeave={() => setIsOpen(false)}
+      >
       {/* 사이드바 미리보기 영역 - 마우스가 올라가지 않았을 때 보이는 부분 */}
       <div className={`
         absolute left-0 top-0 h-full w-16
@@ -34,7 +34,6 @@ export default function HomeSidebar() {
         </div>
         <MdKeyboardArrowRight className="w-5 h-5 text-gray-300 animate-[bounce-right_1s_infinite]" />
       </div>
-
       {/* 사이드바 본체 - 마우스가 올라갔을 때 보이는 부분 */}
       <div className={`
         absolute top-0 left-0 w-64 h-full
@@ -45,13 +44,13 @@ export default function HomeSidebar() {
           : '-translate-x-64 opacity-0 pointer-events-none'
         }
       `}>
-        <div className="p-4 border-b border-gray-200/50">
-          <Link 
-            href="/" 
+                <div className="p-4 border-b border-gray-200/50">
+          <Link
+            href="/"
             className="flex items-center gap-2 text-xl font-bold text-gray-800"
           >
             <img src="/favicon.ico" alt="logo" className="w-6 h-6" />
-            Van's Dev Blog
+            <span>Van's Dev Blog</span>
           </Link>
         </div>
 
@@ -64,7 +63,7 @@ export default function HomeSidebar() {
               <ul className="space-y-3">
                 {items.map((item) => (
                   <li key={item.path}>
-                    <Link 
+                    <Link
                       href={item.path}
                       className={`
                         flex items-center gap-3 px-4 py-3 rounded-lg
@@ -98,6 +97,6 @@ export default function HomeSidebar() {
           ))}
         </nav>
       </div>
-    </div>
+    </div>)
   );
 } 

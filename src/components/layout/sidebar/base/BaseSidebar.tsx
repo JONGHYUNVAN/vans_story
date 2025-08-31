@@ -74,7 +74,7 @@ export default function BaseSidebar({
   };
 
   return (
-    <div 
+    (<div 
       className="w-64 h-full"
       onMouseEnter={() => {
         if (isSmallScreen) setIsOpen(true);
@@ -101,7 +101,6 @@ export default function BaseSidebar({
         </div>
         <MdKeyboardArrowRight className="w-5 h-5 text-gray-800 animate-[bounce-right_1s_infinite] absolute right-1" />
       </div>
-
       {/* 사이드바 본체 */}
       <div className={`
         absolute top-0 left-0 w-64 h-full
@@ -116,7 +115,7 @@ export default function BaseSidebar({
         {backgroundLayerRenderer && backgroundLayerRenderer()}
         
         <div className={`p-4 border-b ${borderClasses} ${headerBgClasses} ${backgroundLayerRenderer ? 'relative z-10' : ''}`}>
-          <Link 
+          <Link
             href={frameworkPath}
             className={`flex items-center gap-2 text-xl font-bold text-gray-800 transition-colors duration-300 ${headerHoverTextClass}`}
           >
@@ -135,8 +134,8 @@ export default function BaseSidebar({
                 {Object.entries(category.items).map(([itemKey, item]: [string, any]) => {
                   const Icon = getIcon(item.icon);
                   return (
-                    <div key={itemKey} className="space-y-1">
-                      <Link 
+                    (<div key={itemKey} className="space-y-1">
+                      <Link
                         href={item.path}
                         className={`group block px-4 py-1.5 rounded-md transition-all duration-300 ease-in-out ${hoverStyles} ${
                           pathname === item.path ? activeLinkStyles : textColorClasses
@@ -150,7 +149,7 @@ export default function BaseSidebar({
                       <p className={`px-4 py-1 text-xs ${descriptionTextClass} leading-relaxed`}>
                         {item.description}
                       </p>
-                    </div>
+                    </div>)
                   );
                 })}
               </div>
@@ -158,6 +157,6 @@ export default function BaseSidebar({
           ))}
         </nav>
       </div>
-    </div>
+    </div>)
   );
 } 

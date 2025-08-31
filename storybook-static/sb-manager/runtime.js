@@ -53,7 +53,7 @@ var Qa = we((I_, Ya) => {
           "Calling PropTypes validators directly is not supported by the `prop-types` package. Use PropTypes.checkPropTypes() to call them. \
 Read more at http://fb.me/use-check-prop-types"
         );
-        throw d.name = "Invariant Violation", d;
+        throw (d.name = "Invariant Violation", d);
       }
     }
     a(e, "shim"), e.isRequired = e;
@@ -176,7 +176,7 @@ var tl = we((k_, el) => {
           })
         ), c.name = "Invariant Violation";
       }
-      throw c.framesToPop = 1, c;
+      throw (c.framesToPop = 1, c);
     }
   }, "invariant");
   el.exports = fy;
@@ -220,7 +220,7 @@ var Oi = we((Yl, ki) => {
     }
   })(function() {
     var e, t, o;
-    return (/* @__PURE__ */ a(function i(r, n, l) {
+    return (/* @__PURE__ */ (a(function i(r, n, l) {
       function u(p, m) {
         if (!n[p]) {
           if (!r[p]) {
@@ -228,7 +228,7 @@ var Oi = we((Yl, ki) => {
             if (!m && h) return h(p, !0);
             if (c) return c(p, !0);
             var b = new Error("Cannot find module '" + p + "'");
-            throw b.code = "MODULE_NOT_FOUND", b;
+            throw (b.code = "MODULE_NOT_FOUND", b);
           }
           var f = n[p] = { exports: {} };
           r[p][0].call(f.exports, function(y) {
@@ -241,7 +241,7 @@ var Oi = we((Yl, ki) => {
       a(u, "s");
       for (var c = typeof mo == "function" && mo, d = 0; d < l.length; d++) u(l[d]);
       return u;
-    }, "e"))({ 1: [function(i, r, n) {
+    }, "e")))({ 1: [function(i, r, n) {
       r.exports = function(l) {
         if (typeof Map != "function" || l) {
           var u = i("./similar");
@@ -1424,7 +1424,7 @@ Search pattern: "`.concat(f, '"'));
         }, "value") }, { key: "_analyze", value: /* @__PURE__ */ a(function(f, y) {
           var S = this, E = f.key, g = f.arrayIndex, v = g === void 0 ? -1 : g, I = f.value, w = f.record, O = f.index, _ = y.tokenSearchers,
           k = _ === void 0 ? [] : _, T = y.fullSearcher, C = y.resultMap, P = C === void 0 ? {} : C, D = y.results, M = D === void 0 ? [] : D;
-          (/* @__PURE__ */ a(function F(Z, W, Q, H) {
+          (/* @__PURE__ */ (a(function F(Z, W, Q, H) {
             if (W != null) {
               if (typeof W == "string") {
                 var G = !1, z = -1, re = 0;
@@ -1459,7 +1459,7 @@ Check Matches: `.concat(Se)), (G || R.isMatch) && Se) {
                 }
               } else if (c(W)) for (var et = 0, N = W.length; et < N; et += 1) F(et, W[et], Q, H);
             }
-          }, "e"))(v, I, w, O);
+          }, "e")))(v, I, w, O);
         }, "value") }, { key: "_computeScore", value: /* @__PURE__ */ a(function(f) {
           this._log(`
 
@@ -1640,7 +1640,7 @@ Output:
       }, "i");
       e.exports = { get: /* @__PURE__ */ a(function(l, u) {
         var c = [];
-        return (/* @__PURE__ */ a(function d(p, m) {
+        return (/* @__PURE__ */ (a(function d(p, m) {
           if (m) {
             var h = m.indexOf("."), b = m, f = null;
             h !== -1 && (b = m.slice(0, h), f = m.slice(h + 1));
@@ -1649,7 +1649,7 @@ Output:
             else f && d(y, f);
             else c.push(i(y));
           } else c.push(p);
-        }, "e"))(l, u), c;
+        }, "e")))(l, u), c;
       }, "get"), isArray: o, isString: r, isNum: n, toString: i };
     }]);
   });
@@ -1858,12 +1858,12 @@ var Wd = we((gn, yn) => {
       // end _.storageAPI
     }, i = (
       // safely set this up (throws error in IE10/32bit mode for local files)
-      o.Store("local", function() {
+      (o.Store("local", function() {
         try {
           return localStorage;
         } catch {
         }
-      }())
+      }()))
     );
     i.local = i, i._ = o, i.area("session", function() {
       try {
@@ -2234,22 +2234,22 @@ var gt = "toolbar";
 
 // src/toolbar/utils/register-shortcuts.ts
 var Oa = /* @__PURE__ */ a(async (e, t, o) => {
-  o && o.next && await e.setAddonShortcut(gt, {
+  o && o.next && (await e.setAddonShortcut(gt, {
     label: o.next.label,
     defaultShortcut: o.next.keys,
     actionName: `${t}:next`,
     action: o.next.action
-  }), o && o.previous && await e.setAddonShortcut(gt, {
+  })), o && o.previous && (await e.setAddonShortcut(gt, {
     label: o.previous.label,
     defaultShortcut: o.previous.keys,
     actionName: `${t}:previous`,
     action: o.previous.action
-  }), o && o.reset && await e.setAddonShortcut(gt, {
+  })), o && o.reset && (await e.setAddonShortcut(gt, {
     label: o.reset.label,
     defaultShortcut: o.reset.keys,
     actionName: `${t}:reset`,
     action: o.reset.action
-  });
+  }));
 }, "registerShortcuts");
 
 // src/toolbar/hoc/withKeyboardCycle.tsx
@@ -4086,9 +4086,9 @@ var Mo = "unmounted", Mt = "exited", Lt = "entering", uo = "entered", wi = "exit
 onEntered", "onExit", "onExiting", "onExited", "nodeRef"]);
     return (
       // allows for nested Transitions
-      /* @__PURE__ */ s.createElement(Si.Provider, {
-        value: null
-      }, typeof l == "function" ? l(r, O) : s.cloneElement(s.Children.only(l), O))
+      /* @__PURE__ */ (s.createElement(Si.Provider, {
+          value: null
+        }, typeof l == "function" ? l(r, O) : s.cloneElement(s.Children.only(l), O)))
     );
   }, "render"), t;
 }(s.Component);
@@ -4368,7 +4368,7 @@ var Nl = /* @__PURE__ */ a(({ children: e }) => {
 
 // src/manager/components/mobile/navigation/MobileNavigation.tsx
 function Mb(e, t) {
-  let o = { ...e || {} };
+  let o = { ...(e || {}) };
   return Object.values(t).forEach((i) => {
     i.index && Object.assign(o, i.index);
   }), o;
@@ -4488,10 +4488,10 @@ function Wl({
         if (c === n) {
           let f = b.panelPosition === "bottom" ? "bottomPanelHeight" : "rightPanelWidth", y = b.panelPosition === "bottom" ? (
             // @ts-expect-error (non strict)
-            h.view.innerHeight - h.clientY
+            (h.view.innerHeight - h.clientY)
           ) : (
             // @ts-expect-error (non strict)
-            h.view.innerWidth - h.clientX
+            (h.view.innerWidth - h.clientX)
           );
           if (y === b[f])
             return b;
@@ -4511,7 +4511,7 @@ function Wl({
             };
           let S = (
             // @ts-expect-error (non strict)
-            b.panelPosition === "bottom" ? h.view.innerHeight : h.view.innerWidth
+            (b.panelPosition === "bottom" ? h.view.innerHeight : h.view.innerWidth)
           );
           return {
             ...b,
@@ -4827,11 +4827,10 @@ var Ti = _i, Ci = s.memo(
     absolute: n = !0
   }) => {
     let { isDesktop: l, setMobilePanelOpen: u } = ge();
-    return /* @__PURE__ */ s.createElement(
-      Ta,
-      {
+    return (
+      /* @__PURE__ */ (s.createElement(Ta, {
         absolute: n,
-        ...i && e[i] ? { selected: i } : {},
+        ...(i && e[i] ? { selected: i } : {}),
         menuName: "Addons",
         actions: o,
         showToolsWhenEmpty: !0,
@@ -4865,12 +4864,15 @@ ock advanced features."),
           /* @__PURE__ */ s.createElement(je, null)
         )) : /* @__PURE__ */ s.createElement(ee, { onClick: () => u(!1), title: "Close addon panel" }, /* @__PURE__ */ s.createElement(je, null))),
         id: "storybook-panel-root"
-      },
-      Object.entries(e).map(([c, d]) => (
+      }, Object.entries(e).map(([c, d]) => (
         // @ts-expect-error (we know this is broken)
-        /* @__PURE__ */ s.createElement(Ti, { key: c, id: c, title: typeof d.title == "function" ? /* @__PURE__ */ s.createElement(d.title, null) :
-        d.title }, d.render)
+        /* @__PURE__ */ (s.createElement(
+        Ti,
+        { key: c, id: c, title: typeof d.title == "function" ? /* @__PURE__ */ s.createElement(d.title, null) :
+          d.title },
+        d.render
       ))
+      ))))
     );
   }
 );
@@ -5002,11 +5004,11 @@ var Iv = /* @__PURE__ */ a((e, t) => e && t[e] ? `storybook-ref-${e}` : "storybo
 }) => {
   let u = e[i]?.version, c = cu({
     ...r,
-    ...u && { version: u }
+    ...(u && { version: u })
   }), d = Iv(i, e), { current: p } = q({}), m = Object.values(e).filter((h) => h.type === "auto-inject" || h.id === i, {});
   return p["storybook-preview-iframe"] || (p["storybook-preview-iframe"] = to(n, l, {
     ...r,
-    ...u && { version: u },
+    ...(u && { version: u }),
     viewMode: o
   })), m.forEach((h) => {
     let b = `storybook-ref-${h.id}`, f = p[b]?.split("/iframe.html")[0];
@@ -5249,10 +5251,16 @@ bar" }, /* @__PURE__ */ s.createElement(jv, null, /* @__PURE__ */ s.createElemen
   ))), /* @__PURE__ */ s.createElement(ht, null)) : null, /* @__PURE__ */ s.createElement(Eu, { key: "left", list: o })), /* @__PURE__ */ s.
   createElement(Kv, null, /* @__PURE__ */ s.createElement(Eu, { key: "right", list: i })))) : null;
 }, "ToolbarComp")), Eu = s.memo(/* @__PURE__ */ a(function({ list: t }) {
-  return /* @__PURE__ */ s.createElement(s.Fragment, null, t.filter(Boolean).map(({ render: o, id: i, ...r }, n) => (
-    // @ts-expect-error (Converted from ts-ignore)
-    /* @__PURE__ */ s.createElement(o, { key: i || r.key || `f-${n}` })
-  )));
+  return (
+    /* @__PURE__ */ (s.createElement(
+      s.Fragment,
+      null,
+      t.filter(Boolean).map(({ render: o, id: i, ...r }, n) => (
+          // @ts-expect-error (Converted from ts-ignore)
+          /* @__PURE__ */ (s.createElement(o, { key: i || r.key || `f-${n}` }))
+        ))
+    ))
+  );
 }, "Tools"));
 function Wv(e, t) {
   let o = t?.type === "story" && t?.prepared ? t?.parameters : {}, i = "toolbar" in o ? o.toolbar : void 0, { toolbar: r } = He.getConfig(),
@@ -5489,7 +5497,7 @@ function Fu(e, t) {
   if (o || i) {
     let r = Jo(o || {}, i || {}), n = Object.keys(r).map((l, u) => ({
       index: u,
-      ...typeof r[l] == "string" ? { title: r[l] } : r[l],
+      ...(typeof r[l] == "string" ? { title: r[l] } : r[l]),
       id: l
     }));
     return e.filter((l) => {
@@ -6306,22 +6314,22 @@ var Zu = x("div")(({ theme: e }) => ({
   padding: "8px 16px",
   cursor: "pointer",
   borderRadius: "4px",
-  ...t && {
+  ...(t && {
     borderRadius: "4px",
     background: e.base === "dark" ? "rgba(255,255,255,.1)" : e.color.mediumlight,
     "> svg": {
       display: "flex"
     }
-  },
-  ...o && {
+  }),
+  ...(o && {
     cursor: "not-allowed",
     div: {
       color: `${e.color.mediumdark} !important`
     }
-  },
-  ...i && {
+  }),
+  ...(i && {
     background: e.base === "light" ? "#00000011" : "#00000033"
-  },
+  }),
   "&:hover": {
     background: i ? "#00000022" : e.base === "dark" ? "rgba(255,255,255,.1)" : e.color.mediumlight,
     "> svg": {
@@ -6370,10 +6378,10 @@ var Zu = x("div")(({ theme: e }) => ({
   ":focus-visible": {
     outline: "none"
   },
-  ...t && {
+  ...(t && {
     background: "#F9ECEC",
     color: e.color.negativeText
-  },
+  }),
   "&:hover,:focus-visible": {
     background: t ? "#F9ECEC" : e.base === "dark" ? "rgba(255, 255, 255, 0.1)" : e.color.mediumlight,
     "> svg": {
@@ -6462,7 +6470,7 @@ var hc = x(En)(({ theme: e }) => ({
   onNewStory: i,
   errorItemId: r
 }) {
-  let [n, l] = K(null), u = s.useRef(), c = U(() => [...o ?? []].sort((f, y) => {
+  let [n, l] = K(null), u = s.useRef(), c = U(() => [...(o ?? [])].sort((f, y) => {
     let S = f.exportedComponents === null || f.exportedComponents?.length === 0, E = f.storyFileExists, g = y.exportedComponents === null ||
     y.exportedComponents?.length === 0, v = y.storyFileExists;
     return E && !v ? -1 : v && !E || S && !g ? 1 : !S && g ? -1 : 0;
@@ -6502,27 +6510,24 @@ var hc = x(En)(({ theme: e }) => ({
   ), b = A(
     ({ virtualItem: f, selected: y, searchResult: S }) => {
       let E = r === S.filepath, g = y === f.index;
-      return /* @__PURE__ */ s.createElement(
-        Lr,
-        {
+      return (
+        /* @__PURE__ */ (s.createElement(Lr, {
           "aria-expanded": g,
           "aria-controls": `file-list-export-${f.index}`,
           id: `file-list-item-wrapper-${f.index}`
-        },
-        /* @__PURE__ */ s.createElement(
-          ec,
-          {
-            className: "file-list-item",
-            selected: g,
-            error: E,
-            disabled: S.exportedComponents === null || S.exportedComponents?.length === 0
-          },
-          /* @__PURE__ */ s.createElement(rc, { error: E }, /* @__PURE__ */ s.createElement(Qo, null)),
-          /* @__PURE__ */ s.createElement(oc, null, /* @__PURE__ */ s.createElement(nc, { error: E }, S.filepath.split("/").at(-1)), /* @__PURE__ */ s.
-          createElement(ic, null, S.filepath)),
-          g ? /* @__PURE__ */ s.createElement(g0, null) : /* @__PURE__ */ s.createElement(hc, null)
-        ),
-        S?.exportedComponents?.length > 1 && g && /* @__PURE__ */ s.createElement(
+        }, /* @__PURE__ */ s.createElement(
+              ec,
+              {
+                className: "file-list-item",
+                selected: g,
+                error: E,
+                disabled: S.exportedComponents === null || S.exportedComponents?.length === 0
+              },
+              /* @__PURE__ */ s.createElement(rc, { error: E }, /* @__PURE__ */ s.createElement(Qo, null)),
+              /* @__PURE__ */ s.createElement(oc, null, /* @__PURE__ */ s.createElement(nc, { error: E }, S.filepath.split("/").at(-1)), /* @__PURE__ */ s.
+              createElement(ic, null, S.filepath)),
+              g ? /* @__PURE__ */ s.createElement(g0, null) : /* @__PURE__ */ s.createElement(hc, null)
+            ), S?.exportedComponents?.length > 1 && g && /* @__PURE__ */ s.createElement(
           sc,
           {
             role: "region",
@@ -6538,7 +6543,7 @@ var hc = x(En)(({ theme: e }) => ({
           S.exportedComponents?.map((v, I) => {
             let w = r === `${S.filepath}_${I}`, O = I === 0 ? "first" : (
               // @ts-expect-error (non strict)
-              I === S.exportedComponents.length - 1 ? "last" : "middle"
+              (I === S.exportedComponents.length - 1 ? "last" : "middle")
             );
             return /* @__PURE__ */ s.createElement(
               ac,
@@ -6568,7 +6573,7 @@ var hc = x(En)(({ theme: e }) => ({
               /* @__PURE__ */ s.createElement(hc, null)
             );
           })
-        )
+        )))
       );
     },
     [h, r]
@@ -6672,9 +6677,9 @@ var y0 = 418, b0 = x(At)(() => ({
   paddingRight: 28,
   fontSize: 14,
   height: 40,
-  ...e.base === "light" && {
+  ...(e.base === "light" && {
     color: e.color.darkest
-  },
+  }),
   "::placeholder": {
     color: e.color.mediumdark
   },
@@ -7309,9 +7314,16 @@ ready" && /* @__PURE__ */ s.createElement(s.Fragment, null, /* @__PURE__ */ s.cr
   )
 ), V0 = /* @__PURE__ */ a(({ url: e, componentCount: t, leafCount: o }) => {
   let i = De();
-  return /* @__PURE__ */ s.createElement(jt, { href: e.replace(/\/?$/, "/index.html"), target: "_blank" }, /* @__PURE__ */ s.createElement(Xo,
-  { color: i.color.secondary }), /* @__PURE__ */ s.createElement("div", null, /* @__PURE__ */ s.createElement(Vt, null, "View external Story\
-book"), /* @__PURE__ */ s.createElement("div", null, "Explore ", t, " components and ", o, " stories in a new browser tab.")));
+  return (
+    /* @__PURE__ */ (s.createElement(
+      jt,
+      { href: e.replace(/\/?$/, "/index.html"), target: "_blank" },
+      /* @__PURE__ */ s.createElement(Xo,
+        { color: i.color.secondary }),
+      /* @__PURE__ */ s.createElement("div", null, /* @__PURE__ */ s.createElement(Vt, null, "View external Story\
+      book"), /* @__PURE__ */ s.createElement("div", null, "Explore ", t, " components and ", o, " stories in a new browser tab."))
+    ))
+  );
 }, "ReadyMessage"), j0 = /* @__PURE__ */ a(({ url: e }) => {
   let t = De();
   return /* @__PURE__ */ s.createElement(jt, { href: e, target: "_blank" }, /* @__PURE__ */ s.createElement(Hn, { color: t.color.secondary }),
@@ -7333,14 +7345,28 @@ book"), /* @__PURE__ */ s.createElement("div", null, "Explore ", t, " components
 Composition docs"), /* @__PURE__ */ s.createElement("div", null, "Learn how to combine multiple Storybooks into one.")));
 }, "ReadDocsMessage"), U0 = /* @__PURE__ */ a(({ url: e }) => {
   let t = De();
-  return /* @__PURE__ */ s.createElement(jt, { href: e.replace(/\/?$/, "/index.html"), target: "_blank" }, /* @__PURE__ */ s.createElement(go,
-  { color: t.color.negative }), /* @__PURE__ */ s.createElement("div", null, /* @__PURE__ */ s.createElement(Vt, null, "Something went wrong"),
-  /* @__PURE__ */ s.createElement("div", null, "This external Storybook didn't load. Debug it in a new tab now.")));
+  return (
+    /* @__PURE__ */ (s.createElement(
+      jt,
+      { href: e.replace(/\/?$/, "/index.html"), target: "_blank" },
+      /* @__PURE__ */ s.createElement(go,
+        { color: t.color.negative }),
+      /* @__PURE__ */ s.createElement("div", null, /* @__PURE__ */ s.createElement(Vt, null, "Something went wrong"),
+        /* @__PURE__ */ s.createElement("div", null, "This external Storybook didn't load. Debug it in a new tab now."))
+    ))
+  );
 }, "ErrorOccurredMessage"), G0 = /* @__PURE__ */ a(({ url: e }) => {
   let t = De();
-  return /* @__PURE__ */ s.createElement(jt, { href: e.replace(/\/?$/, "/index.html"), target: "_blank" }, /* @__PURE__ */ s.createElement(Gn,
-  { color: t.color.secondary }), /* @__PURE__ */ s.createElement("div", null, /* @__PURE__ */ s.createElement(Vt, null, "Please wait"), /* @__PURE__ */ s.
-  createElement("div", null, "This Storybook is loading.")));
+  return (
+    /* @__PURE__ */ (s.createElement(
+      jt,
+      { href: e.replace(/\/?$/, "/index.html"), target: "_blank" },
+      /* @__PURE__ */ s.createElement(Gn,
+        { color: t.color.secondary }),
+      /* @__PURE__ */ s.createElement("div", null, /* @__PURE__ */ s.createElement(Vt, null, "Please wait"), /* @__PURE__ */ s.
+        createElement("div", null, "This Storybook is loading."))
+    ))
+  );
 }, "LoadingMessage"), q0 = /* @__PURE__ */ a(() => {
   let e = De();
   return /* @__PURE__ */ s.createElement(jt, { href: "https://storybook.js.org/docs/sharing/storybook-composition", target: "_blank" }, /* @__PURE__ */ s.
@@ -8092,9 +8118,8 @@ var sp = [
     let _ = t.type === "docs" ? op : rp, k = Ho(
       Object.values(o || {}).map((P) => P.value)
     ), [T, C] = Bo[k];
-    return /* @__PURE__ */ s.createElement(
-      ip,
-      {
+    return (
+      /* @__PURE__ */ (s.createElement(ip, {
         key: w,
         className: "sidebar-item",
         "data-selected": c,
@@ -8104,25 +8129,21 @@ var sp = [
         "data-nodetype": t.type === "docs" ? "document" : "story",
         "data-highlightable": u,
         onMouseEnter: O.onMouseEnter
-      },
-      /* @__PURE__ */ s.createElement(
-        _,
-        {
-          style: c ? {} : { color: C },
-          href: wc(t, r),
-          id: w,
-          depth: l ? t.depth : t.depth - 1,
-          onClick: (P) => {
-            P.preventDefault(), b(t.id), S && E(!1);
-          },
-          ...t.type === "docs" && { docsMode: n }
-        },
-        t.renderLabel?.(t, f) || t.name
-      ),
-      c && /* @__PURE__ */ s.createElement(cx, { asChild: !0 }, /* @__PURE__ */ s.createElement("a", { href: "#storybook-preview-wrapper" },
-      "Skip to canvas")),
-      O.node,
-      T ? /* @__PURE__ */ s.createElement(
+      }, /* @__PURE__ */ s.createElement(
+            _,
+            {
+              style: c ? {} : { color: C },
+              href: wc(t, r),
+              id: w,
+              depth: l ? t.depth : t.depth - 1,
+              onClick: (P) => {
+                P.preventDefault(), b(t.id), S && E(!1);
+              },
+              ...(t.type === "docs" && { docsMode: n })
+            },
+            t.renderLabel?.(t, f) || t.name
+          ), c && /* @__PURE__ */ s.createElement(cx, { asChild: !0 }, /* @__PURE__ */ s.createElement("a", { href: "#storybook-preview-wrapper" },
+      "Skip to canvas")), O.node, T ? /* @__PURE__ */ s.createElement(
         zo,
         {
           "aria-label": `Test status: ${k.replace("status-value:", "")}`,
@@ -8132,7 +8153,7 @@ var sp = [
           selectedItem: c
         },
         T
-      ) : null
+      ) : null))
     );
   }
   if (t.type === "root")
@@ -8313,24 +8334,21 @@ dot" })))
       let M = S[C.id], F = M.every((Z) => w[Z]);
       return (
         // @ts-expect-error (TODO)
-        /* @__PURE__ */ s.createElement(
-          hx,
-          {
-            api: h,
-            key: P,
-            item: C,
-            refId: i,
-            collapsedData: v,
-            isOrphan: !1,
-            isDisplayed: !0,
-            isSelected: d === T,
-            isExpanded: !!w[T],
-            setExpanded: O,
-            isFullyExpanded: F,
-            expandableDescendants: M,
-            onSelectStoryId: p
-          }
-        )
+        /* @__PURE__ */ (s.createElement(hx, {
+          api: h,
+          key: P,
+          item: C,
+          refId: i,
+          collapsedData: v,
+          isOrphan: !1,
+          isDisplayed: !0,
+          isSelected: d === T,
+          isExpanded: !!w[T],
+          setExpanded: O,
+          isFullyExpanded: F,
+          expandableDescendants: M,
+          onSelectStoryId: p
+        }))
       );
     }
     let D = !C.parent || I[T].every((M) => w[M]);
@@ -8606,11 +8624,11 @@ var qi = x(ee)(({ highlighted: e, theme: t, isMobile: o }) => ({
   overflow: "visible",
   marginTop: 0,
   zIndex: 1,
-  ...o && {
+  ...(o && {
     width: 36,
     height: 36
-  },
-  ...e && {
+  }),
+  ...(e && {
     "&:before, &:after": {
       content: '""',
       position: "absolute",
@@ -8632,7 +8650,7 @@ var qi = x(ee)(({ highlighted: e, theme: t, isMobile: o }) => ({
     "&:hover:after, &:focus-visible:after": {
       boxShadow: `0 0 0 2px ${Te(0.88, t.color.secondary)}`
     }
-  }
+  })
 })), Sx = x.div({
   display: "flex",
   gap: 6
@@ -8909,7 +8927,7 @@ a(Dx, "getA11yStatusMessage");
 function kp(e, t) {
   return e = Array.isArray(e) ? (
     /* istanbul ignore next (preact) */
-    e[0]
+    (e[0])
   ) : e, !e && t ? t : e;
 }
 a(kp, "unwrapArray");
@@ -9307,7 +9325,7 @@ Bx = /* @__PURE__ */ Object.freeze({
         I.onPress;
         var k = I.index, T = I.item, C = T === void 0 ? (
           /* istanbul ignore next */
-          void 0
+          (void 0)
         ) : T, P = ke(I, jx);
         k === void 0 ? (n.items.push(C), k = n.items.indexOf(C)) : n.items[k] = C;
         var D = "onClick", M = _, F = (v = {
@@ -9532,7 +9550,7 @@ move", d), m.addEventListener("touchend", p), this.cleanup = function() {
     }, "selectedItemChanged"),
     environment: (
       /* istanbul ignore next (ssr) */
-      typeof window > "u" ? void 0 : window
+      (typeof window > "u" ? void 0 : window)
     ),
     stateReducer: /* @__PURE__ */ a(function(o, i) {
       return i;
@@ -9654,7 +9672,7 @@ var Wo = {
   scrollIntoView: Mp,
   environment: (
     /* istanbul ignore next (ssr) */
-    typeof window > "u" ? void 0 : window
+    (typeof window > "u" ? void 0 : window)
   )
 };
 function lt(e, t, o) {
@@ -11137,79 +11155,75 @@ var { document: II } = se, Vs = 50, SI = {
   ), { isMobile: I } = ge();
   return (
     // @ts-expect-error (non strict)
-    /* @__PURE__ */ s.createElement(
-      qt,
-      {
-        initialInputValue: n,
-        stateReducer: v,
-        itemToString: (w) => w?.item?.name || "",
-        scrollIntoView: (w) => zt(w),
-        onSelect: E,
-        onInputValueChange: g
-      },
-      ({
-        isOpen: w,
-        openMenu: O,
+    /* @__PURE__ */ (s.createElement(qt, {
+      initialInputValue: n,
+      stateReducer: v,
+      itemToString: (w) => w?.item?.name || "",
+      scrollIntoView: (w) => zt(w),
+      onSelect: E,
+      onInputValueChange: g
+    }, ({
+      isOpen: w,
+      openMenu: O,
+      closeMenu: _,
+      inputValue: k,
+      clearSelection: T,
+      getInputProps: C,
+      getItemProps: P,
+      getLabelProps: D,
+      getMenuProps: M,
+      getRootProps: F,
+      highlightedIndex: Z
+    }) => {
+      let W = k ? k.trim() : "", Q = W ? S(W) : [], H = !W && r();
+      H && H.length && (Q = H.reduce((R, { storyId: B, refId: L }) => {
+        let $ = o.hash[L];
+        if ($ && $.index && $.index[B]) {
+          let J = $.index[B], ie = J.type === "story" ? $.index[J.parent] : J;
+          R.some((te) => te.item.refId === L && te.item.id === ie.id) || R.push({ item: Wi(ie, o.hash[L]), matches: [], score: 0 });
+        }
+        return R;
+      }, []));
+      let G = "storybook-explorer-searchfield", z = C({
+        id: G,
+        ref: d,
+        required: !0,
+        type: "search",
+        placeholder: p,
+        onFocus: /* @__PURE__ */ a(() => {
+          O(), m("Type to find...");
+        }, "onFocus"),
+        onBlur: /* @__PURE__ */ a(() => m("Find components"), "onBlur"),
+        onKeyDown: /* @__PURE__ */ a((R) => {
+          R.key === "Escape" && k.length === 0 && d.current.blur();
+        }, "onKeyDown")
+      }), re = D({
+        htmlFor: G
+      });
+      return /* @__PURE__ */ s.createElement(s.Fragment, null, /* @__PURE__ */ s.createElement(EI, { ...re }, "Search for components"), /* @__PURE__ */ s.
+      createElement(wI, null, /* @__PURE__ */ s.createElement(
+        TI,
+        {
+          ...F({ refKey: "" }, { suppressRefError: !0 }),
+          isMobile: I,
+          className: "search-field"
+        },
+        /* @__PURE__ */ s.createElement(CI, null, /* @__PURE__ */ s.createElement(So, null)),
+        /* @__PURE__ */ s.createElement(_I, { ...z, isMobile: I }),
+        !I && i && !w && /* @__PURE__ */ s.createElement(kI, null, f === "\u2318 K" ? /* @__PURE__ */ s.createElement(s.Fragment, null, /* @__PURE__ */ s.
+        createElement(OI, null, "\u2318"), "K") : f),
+        /* @__PURE__ */ s.createElement(PI, null, w && /* @__PURE__ */ s.createElement(ee, { onClick: () => T() }, /* @__PURE__ */ s.createElement(
+        je, null)), u)
+      ), l), /* @__PURE__ */ s.createElement(AI, { tabIndex: 0, id: "storybook-explorer-menu" }, t({
+        query: W,
+        results: Q,
+        isBrowsing: !w && II.activeElement !== d.current,
         closeMenu: _,
-        inputValue: k,
-        clearSelection: T,
-        getInputProps: C,
-        getItemProps: P,
-        getLabelProps: D,
         getMenuProps: M,
-        getRootProps: F,
+        getItemProps: P,
         highlightedIndex: Z
-      }) => {
-        let W = k ? k.trim() : "", Q = W ? S(W) : [], H = !W && r();
-        H && H.length && (Q = H.reduce((R, { storyId: B, refId: L }) => {
-          let $ = o.hash[L];
-          if ($ && $.index && $.index[B]) {
-            let J = $.index[B], ie = J.type === "story" ? $.index[J.parent] : J;
-            R.some((te) => te.item.refId === L && te.item.id === ie.id) || R.push({ item: Wi(ie, o.hash[L]), matches: [], score: 0 });
-          }
-          return R;
-        }, []));
-        let G = "storybook-explorer-searchfield", z = C({
-          id: G,
-          ref: d,
-          required: !0,
-          type: "search",
-          placeholder: p,
-          onFocus: /* @__PURE__ */ a(() => {
-            O(), m("Type to find...");
-          }, "onFocus"),
-          onBlur: /* @__PURE__ */ a(() => m("Find components"), "onBlur"),
-          onKeyDown: /* @__PURE__ */ a((R) => {
-            R.key === "Escape" && k.length === 0 && d.current.blur();
-          }, "onKeyDown")
-        }), re = D({
-          htmlFor: G
-        });
-        return /* @__PURE__ */ s.createElement(s.Fragment, null, /* @__PURE__ */ s.createElement(EI, { ...re }, "Search for components"), /* @__PURE__ */ s.
-        createElement(wI, null, /* @__PURE__ */ s.createElement(
-          TI,
-          {
-            ...F({ refKey: "" }, { suppressRefError: !0 }),
-            isMobile: I,
-            className: "search-field"
-          },
-          /* @__PURE__ */ s.createElement(CI, null, /* @__PURE__ */ s.createElement(So, null)),
-          /* @__PURE__ */ s.createElement(_I, { ...z, isMobile: I }),
-          !I && i && !w && /* @__PURE__ */ s.createElement(kI, null, f === "\u2318 K" ? /* @__PURE__ */ s.createElement(s.Fragment, null, /* @__PURE__ */ s.
-          createElement(OI, null, "\u2318"), "K") : f),
-          /* @__PURE__ */ s.createElement(PI, null, w && /* @__PURE__ */ s.createElement(ee, { onClick: () => T() }, /* @__PURE__ */ s.createElement(
-          je, null)), u)
-        ), l), /* @__PURE__ */ s.createElement(AI, { tabIndex: 0, id: "storybook-explorer-menu" }, t({
-          query: W,
-          results: Q,
-          isBrowsing: !w && II.activeElement !== d.current,
-          closeMenu: _,
-          getMenuProps: M,
-          getItemProps: P,
-          highlightedIndex: Z
-        })));
-      }
-    )
+      })));
+    }))
   );
 }, "Search"));
 
@@ -11443,7 +11457,7 @@ ow, 0 1px 2px 0 rgba(0, 0, 0, 0.05), 0px -5px 20px 10px ${r.background.app})`,
     animation: `${jI} 3s linear infinite`,
     background: t ? (
       // Hardcoded colors to prevent themes from messing with them (orange+gold, secondary+seafoam)
-      "conic-gradient(transparent 90deg, #FC521F 150deg, #FFAE00 210deg, transparent 270deg)"
+      ("conic-gradient(transparent 90deg, #FC521F 150deg, #FFAE00 210deg, transparent 270deg)")
     ) : "conic-gradient(transparent 90deg, #029CFD 150deg, #37D5D3 210deg, transparent 270deg)",
     opacity: 1,
     willChange: "auto"
@@ -11595,7 +11609,7 @@ ow, 0 1px 2px 0 rgba(0, 0, 0, 0.05), 0px -5px 20px 10px ${r.background.app})`,
           `No render function found for test provider with id '${D}', skipping...`
         ), null);
       }))
-    ), /* @__PURE__ */ s.createElement(qI, { ...T ? { onClick: /* @__PURE__ */ a((C) => O(C), "onClick") } : {} }, /* @__PURE__ */ s.createElement(
+    ), /* @__PURE__ */ s.createElement(qI, { ...(T ? { onClick: /* @__PURE__ */ a((C) => O(C), "onClick") } : {}) }, /* @__PURE__ */ s.createElement(
     YI, null, T && /* @__PURE__ */ s.createElement(
       ve,
       {
@@ -12288,7 +12302,7 @@ var wS = {
     () => [
       [
         c,
-        ...e.whatsNewData?.status === "SUCCESS" ? [h] : [],
+        ...(e.whatsNewData?.status === "SUCCESS" ? [h] : []),
         d,
         b
       ],

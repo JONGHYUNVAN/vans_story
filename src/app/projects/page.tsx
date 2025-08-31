@@ -44,7 +44,7 @@ export default function ProjectsPage() {
     : projects.filter(project => project.category === selectedCategory);
 
   return (
-    <div className="min-h-screen bg-black py-12">
+    (<div className="min-h-screen bg-black py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12 bg-gray-800 p-8 rounded-lg">
@@ -181,6 +181,6 @@ export default function ProjectsPage() {
           ))}
         </div>
       </div>
-    </div>
+    </div>)
   );
 } 

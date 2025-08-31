@@ -63,13 +63,12 @@ export default function MarkdownModal({ isOpen, onClose, title, filePath }: Mark
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    (<div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* 배경 오버레이 */}
       <div 
         className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
         onClick={onClose}
       />
-      
       {/* 모달 컨테이너 */}
       <div className="relative bg-white rounded-lg shadow-2xl w-full max-w-7xl max-h-[90vh] mx-4 sm:mx-6 lg:mx-8 flex flex-col">
         {/* 헤더 */}
@@ -124,10 +123,10 @@ export default function MarkdownModal({ isOpen, onClose, title, filePath }: Mark
                     // Mermaid 코드 블록 처리
                     if (language === 'mermaid' && !isInline) {
                       return (
-                        <MermaidDiagram 
-                          chart={String(children).replace(/\n$/, '')}
-                          className="my-4"
-                        />
+                        (<MermaidDiagram 
+                            chart={String(children).replace(/\n$/, '')}
+                            className="my-4"
+                          />)
                       );
                     }
                     
@@ -290,6 +289,6 @@ export default function MarkdownModal({ isOpen, onClose, title, filePath }: Mark
       )}
     </div>
   </div>
-</div>
-);
+    </div>)
+  );
 } 

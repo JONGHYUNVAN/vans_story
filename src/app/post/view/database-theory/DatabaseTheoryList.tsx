@@ -1,6 +1,7 @@
 'use client';
 
-import { TbDatabase } from 'react-icons/tb';
+import { FaDatabase } from 'react-icons/fa';
+import { TbSql } from 'react-icons/tb';
 import PostCard from '../../../../components/ui/post/postcard/database-theory/PostCard';
 import { useTranslation } from '@/utils/i18n';
 import { PostInfo } from "@/interfaces/post/types";
@@ -22,16 +23,20 @@ export default function DatabaseTheoryList({ posts }: Props) {
   return (
     <div className="grid grid-cols-1 gap-6">
       {sortedPosts.map(post => (
-        <Link 
-          key={post._id}
-          href={`/post/view/database-theory/${post._id}`}
+        <Link
+          key={post.id}
+          href={`/post/view/database-theory/${post.id}`}
           className="block transition-transform hover:-translate-y-1"
         >
           <PostCard
             post={post}
             renderBadge={() => (
               <span className="flex items-center justify-center w-10 h-8 rounded-full bg-gray-200 text-gray-700">
-                <TbDatabase className="w-5 h-5" />
+                {post.topic === 'SQL' ? (
+                  <FaDatabase className="w-5 h-5" />
+                ) : (
+                  <TbSql className="w-5 h-5" />
+                )}
               </span>
             )}
           />

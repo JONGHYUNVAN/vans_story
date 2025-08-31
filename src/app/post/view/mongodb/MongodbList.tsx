@@ -21,16 +21,16 @@ export default function MongodbList({ posts }: MongodbListProps) {
   return (
     <div className="grid grid-cols-1 gap-6">
       {sortedPosts.map(post => (
-        <Link 
-          key={post._id}
-          href={`/post/view/mongodb/${post._id}`}
+        <Link
+          key={post.id}
+          href={`/post/view/mongodb/${post.id}`}
           className="block transition-transform hover:-translate-y-1"
         >
           <PostCard
             post={post}
             renderBadge={() => (
-              <span className="flex items-center justify-center w-10 h-8 rounded-full bg-black/50 backdrop-blur-sm">
-                <SiMongodb className="w-7 h-7 text-[#B17B4F]" />
+              <span className="flex items-center justify-center w-10 h-8 rounded-full bg-gray-200 text-gray-700">
+                <SiMongodb className="w-5 h-5" />
               </span>
             )}
           />

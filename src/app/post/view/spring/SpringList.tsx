@@ -18,7 +18,7 @@ export default function SpringList({ posts }: SpringListProps) {
   return (
     <div className="grid grid-cols-1 gap-6">
       {sortedPosts.map(post => (
-        <Link 
+        <Link
           key={post.id}
           href={`/post/view/spring/${post.id}`}
           className="block transition-transform hover:-translate-y-1"
@@ -26,8 +26,8 @@ export default function SpringList({ posts }: SpringListProps) {
           <PostCard
             post={post}
             renderBadge={() => (
-              <span className="flex items-center justify-center w-10 h-8 rounded-full bg-black/50 backdrop-blur-sm">
-                <SiSpring className="w-7 h-7 text-[#6DB33F]" />
+              <span className="flex items-center justify-center w-10 h-8 rounded-full bg-gray-200 text-gray-700">
+                <SiSpring className="w-5 h-5" />
               </span>
             )}
           />

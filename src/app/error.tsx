@@ -23,7 +23,7 @@ export default function Error({
 
   if (is404Error) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white relative overflow-hidden">
+      (<div className="flex flex-col items-center justify-center min-h-screen bg-black text-white relative overflow-hidden">
         {/* 배경 패턴 */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
@@ -31,13 +31,11 @@ export default function Error({
             backgroundSize: '30px 30px'
           }} />
         </div>
-        
         {/* 애니메이션 효과 */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-radial from-yellow-500/10 via-transparent to-transparent animate-pulse" style={{ animationDuration: '4s' }} />
           <div className="absolute inset-0 bg-gradient-radial from-blue-500/10 via-transparent to-transparent animate-pulse" style={{ animationDuration: '6s', animationDelay: '2s' }} />
         </div>
-        
         <div className="relative z-10 max-w-4xl mx-auto p-8 backdrop-blur-sm bg-black/30 rounded-lg border border-yellow-800/30 shadow-2xl">
           <div className="text-center space-y-6">
             <div className="flex justify-center items-center">
@@ -62,8 +60,8 @@ export default function Error({
             </p>
             
             <div className="pt-6 flex flex-col md:flex-row gap-4 justify-center">
-              <Link 
-                href="/" 
+              <Link
+                href="/"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-yellow-600/30 hover:bg-yellow-600/50 text-white transition-all duration-300 border border-yellow-600/30"
               >
                 <FaHome />
@@ -78,12 +76,12 @@ export default function Error({
             </div>
           </div>
         </div>
-      </div>
+      </div>)
     );
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white relative overflow-hidden">
+    (<div className="flex flex-col items-center justify-center min-h-screen bg-black text-white relative overflow-hidden">
       {/* 배경 패턴 */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0" style={{
@@ -91,13 +89,11 @@ export default function Error({
           backgroundSize: '30px 30px'
         }} />
       </div>
-      
       {/* 애니메이션 효과 */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-radial from-purple-500/5 via-transparent to-transparent animate-pulse" style={{ animationDuration: '4s' }} />
         <div className="absolute inset-0 bg-gradient-radial from-blue-500/5 via-transparent to-transparent animate-pulse" style={{ animationDuration: '6s', animationDelay: '2s' }} />
       </div>
-      
       <div className="relative z-10 max-w-4xl mx-auto p-8 backdrop-blur-sm bg-black/30 rounded-lg border border-gray-800 shadow-2xl">
         <div className="text-center space-y-6">
           <BiError className="w-32 h-32 mx-auto text-red-500/80" />
@@ -116,8 +112,8 @@ export default function Error({
               다시 시도
             </button>
             
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-all duration-300 border border-white/10"
             >
               <FaHome />
@@ -143,6 +139,6 @@ export default function Error({
           )}
         </div>
       </div>
-    </div>
+    </div>)
   );
 } 

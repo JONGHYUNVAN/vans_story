@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const SEARCH_API_URL = process.env.SEARCH_API_URL || 'http://localhost:8000/api/v1/search';
+const SEARCH_API_URL = process.env.SEARCH_API_URL || 'http://127.0.0.1:8000/api/v1/search';
 
 /**
  * 게시물 검색을 위한 API 라우트 핸들러 (BFF 프록시)
@@ -20,7 +20,7 @@ export async function GET(request: Request) {
     }
 
     const encodedQuery = encodeURIComponent(query);
-    const externalUrl = `${SEARCH_API_URL}/posts?query=${encodedQuery}`;
+    const externalUrl = `${SEARCH_API_URL}/posts/?query=${encodedQuery}`;
     
     // 서버 환경에서 외부 API 호출
     const response = await fetch(externalUrl, {

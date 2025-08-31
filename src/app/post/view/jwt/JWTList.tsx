@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { SiJsonwebtokens } from 'react-icons/si';
 import { API_URLS } from '@/constants/apiUrl';
 import { PostInfo } from "@/interfaces/post/types";
 import PostCard from '../../../../components/ui/post/postcard/jwt/PostCard';
@@ -42,16 +43,23 @@ export default function JWTList({ posts }: JWTListProps) {
   }, []);
 
   return (
-    <div className="grid grid-cols-1 gap-6">
+    (<div className="grid grid-cols-1 gap-6">
       {jwtPosts.map((post) => (
         <Link
           key={post.id}
           href={`/post/view/jwt/${post.id}`}
           className="block transition-transform hover:-translate-y-1"
         >
-          <PostCard post={post} />
+          <PostCard
+            post={post}
+            renderBadge={() => (
+              <span className="flex items-center justify-center w-10 h-8 rounded-full bg-gray-200 text-gray-700">
+                <SiJsonwebtokens className="w-5 h-5" />
+              </span>
+            )}
+          />
         </Link>
       ))}
-    </div>
+    </div>)
   );
 } 

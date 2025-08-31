@@ -20,11 +20,11 @@ export default function AlgorithmList({ posts }: Props) {
   const sortedPosts = sortPosts(posts, 'latest');
 
   return (
-    <div className="grid grid-cols-1 gap-6">
+    (<div className="grid grid-cols-1 gap-6">
       {sortedPosts.map(post => (
-        <Link 
-          key={post._id}
-          href={`/post/view/algorithm/${post._id}`}
+        <Link
+          key={post.id}
+          href={`/post/view/algorithm/${post.id}`}
           className="block transition-transform hover:-translate-y-1"
         >
           <PostCard
@@ -41,6 +41,6 @@ export default function AlgorithmList({ posts }: Props) {
           />
         </Link>
       ))}
-    </div>
+    </div>)
   );
 } 

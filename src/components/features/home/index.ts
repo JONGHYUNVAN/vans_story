@@ -10,4 +10,4 @@
 export { default as BackgroundVideo } from './BackgroundVideo';
 export { default as BlogTitle } from './BlogTitle';
 export { default as TypewriterText } from './TypewriterText';
-export { default as MainContent } from './MainContent'; 
+export { default as SearchSection } from './SearchSection'; 

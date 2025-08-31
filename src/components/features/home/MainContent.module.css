@@ -1,8 +1,0 @@
-/* 
- * 40px 간격의 흰색 그리드 패턴 배경
- */
-.bgGridPattern {
-  background-image: linear-gradient(to right, rgb(255, 255, 255) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(255, 255, 255) 1px, transparent 1px);
-  background-size: 40px 40px;
-} 

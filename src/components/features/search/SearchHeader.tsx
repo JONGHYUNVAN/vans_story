@@ -1,44 +1,25 @@
-'use client';
-
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useState, useEffect } from 'react';
 import { FaSearch } from 'react-icons/fa';
+import { handleSearch } from '@/app/search/actions';
 
 interface SearchHeaderProps {
   query: string;
 }
 
 /**
- * 검색 결과 페이지의 헤더 컴포넌트
+ * 검색 결과 페이지의 헤더 컴포넌트 (서버 액션 사용)
  * - 검색창과 검색어 정보를 표시합니다.
  */
 export default function SearchHeader({ query }: SearchHeaderProps) {
-  const [searchQuery, setSearchQuery] = useState(query);
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  useEffect(() => {
-    setSearchQuery(query);
-  }, [query]);
-
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      const newParams = new URLSearchParams(searchParams.toString());
-      newParams.set('q', searchQuery.trim());
-      router.push(`/search?${newParams.toString()}`);
-    }
-  };
-
   return (
     <header className="mb-8">
-      <form onSubmit={handleSearch} className="relative flex items-center mb-4">
+      <form action={handleSearch} className="relative flex items-center mb-4">
         <input
           type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          name="q"
+          defaultValue={query} // defaultValue를 사용하여 서버에서 전달된 초기값 설정
           placeholder="다시 검색..."
           className="w-full bg-gray-800 border border-gray-700 rounded-lg text-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 px-4 py-3"
+          required
         />
         <button
           type="submit"

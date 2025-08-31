@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { withFullscreen, withRedux } from '../../shared/decorators/index';
 
 // 홈 페이지 컴포넌트들 import
-import { BackgroundVideo, BlogTitle, MainContent } from '@/components/features/home';
+import { BackgroundVideo, BlogTitle, SearchSection } from '@/components/features/home';
 import TypewriterSection from '@/components/features/home/TypewriterSection';
 import TypewriterText from '@/components/features/home/TypewriterText';
 
@@ -16,7 +16,7 @@ import TypewriterText from '@/components/features/home/TypewriterText';
  * - **배경 비디오**: 자동 재생되는 풀스크린 배경 비디오
  * - **타이핑 효과**: 동적으로 변하는 텍스트와 커서 애니메이션
  * - **브랜드 아이덴티티**: 일관된 디자인과 색상 체계
- * - **기술 스택 표시**: 시각적으로 매력적인 기술 스택 소개
+ * - **검색 기능**: 홈페이지의 핵심 기능인 검색창
  * - **반응형 디자인**: 모든 디바이스에서 완벽한 표시
  * 
  * ## 사용법
@@ -25,7 +25,7 @@ import TypewriterText from '@/components/features/home/TypewriterText';
  * <BackgroundVideo />
  * <BlogTitle />
  * <TypewriterSection />
- * <MainContent />
+ * <SearchSection />
  * ```
  */
 const meta: Meta = {
@@ -53,7 +53,7 @@ type Story = StoryObj;
  * **특징**: 
  * - 전체 화면 비디오 배경
  * - 중앙 정렬된 타이틀과 타이핑 효과
- * - 하단 기술 스택 소개 영역
+ * - 하단 검색 기능 영역
  * - 어두운 오버레이로 텍스트 가독성 향상
  */
 export const FullHomePage: Story = {
@@ -68,14 +68,14 @@ export const FullHomePage: Story = {
           </div>
         </div>
       </div>
-      <MainContent />
+      <SearchSection />
     </>
   ),
   decorators: [withFullscreen],
   parameters: {
     docs: {
       description: {
-        story: '완전한 홈 페이지 컴포넌트입니다. 비디오 배경, 타이틀, 타이핑 효과, 기술 스택 소개가 모두 포함되어 있습니다.'
+        story: '완전한 홈 페이지 컴포넌트입니다. 비디오 배경, 타이틀, 타이핑 효과, 검색 기능이 모두 포함되어 있습니다.'
       }
     }
   }
@@ -207,24 +207,22 @@ export const TypewriterTextComponent: Story = {
 };
 
 /**
- * ## 메인 콘텐츠
+ * ## 검색 섹션
  * 
- * **배경**: 다크 그레이 + 그리드 패턴  
- * **구성**: 소개 텍스트 + 기술 스택 태그  
- * **카드**: 그레이 배경의 둥근 카드 형태  
+ * **배경**: 다크 그레이  
+ * **구성**: 검색 입력 필드 + 검색 버튼  
+ * **기능**: 서버 액션을 통한 검색 페이지 이동  
  * **특징**: 
- * - 그리드 패턴 배경으로 기술적 느낌
- * - 기술 스택별 아이콘과 호버 효과
- * - 카드 형태의 깔끔한 레이아웃
- * - 다국어 지원 (i18n)
- * - 단계별 정보 표시 (인사말 → 기술 소개 → 마무리)
+ * - 깔끔하고 직관적인 검색 UI
+ * - Next.js 15 서버 액션 사용
+ * - 키보드 접근성 및 포커스 상태 지원
  */
-export const MainContentComponent: Story = {
-  render: () => <MainContent />,
+export const SearchSectionComponent: Story = {
+  render: () => <SearchSection />,
   parameters: {
     docs: {
       description: {
-        story: '메인 콘텐츠 컴포넌트입니다. 블로그 소개와 기술 스택 정보를 카드 형태로 표시합니다.'
+        story: '홈 페이지의 검색 섹션 컴포넌트입니다. 서버 액션을 사용하여 검색을 수행합니다.'
       }
     }
   }
@@ -275,14 +273,14 @@ export const AllHomeComponents: Story = {
         </div>
       </div>
 
-      {/* 메인 콘텐츠 */}
+      {/* 검색 섹션 */}
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <div className="p-4 bg-gray-100 border-b">
-          <h3 className="font-semibold text-gray-700">메인 콘텐츠</h3>
-          <p className="text-sm text-gray-500">소개글과 기술 스택</p>
+          <h3 className="font-semibold text-gray-700">검색 섹션</h3>
+          <p className="text-sm text-gray-500">블로그 검색 기능</p>
         </div>
         <div className="p-0">
-          <MainContent />
+          <SearchSection />
         </div>
       </div>
     </div>

@@ -1,11 +1,48 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import { handleSearch } from '@/app/search/actions';
 
 /**
- * 홈페이지 검색 섹션 컴포넌트 (서버 액션 사용)
+ * 홈페이지 검색 섹션 컴포넌트 (서버 액션 + 클라이언트 상태 관리)
  * - 사용자가 검색어를 입력하고 검색을 실행할 수 있는 UI를 제공합니다.
  * - 폼 제출 시 서버 액션을 통해 /search 경로로 이동시킵니다.
+ * - API에서 인기 검색어를 동적으로 가져옵니다.
  */
 export default function SearchSection() {
+  const [popularSearches, setPopularSearches] = useState<string[]>([]);
+
+  // API에서 인기 검색어 가져오기
+  useEffect(() => {
+    const fetchPopularSearches = async () => {
+      try {
+        const response = await fetch('/api/search/popular');
+        if (response.ok) {
+          const data = await response.json();
+          console.log('🔍 Frontend - Received data:', data);
+          if (data.popular_searches && Array.isArray(data.popular_searches)) {
+            // 객체 배열에서 query 필드 추출하고 중복 제거
+            const uniqueSearches = [...new Set(
+              data.popular_searches
+                .filter((item: any) => item && typeof item.query === 'string')
+                .map((item: any) => item.query.trim())
+                .filter((query: string) => query.length > 0)
+            )];
+            
+            if (uniqueSearches.length > 0) {
+              setPopularSearches(uniqueSearches as string[]);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch popular searches:', error);
+        // 기본값 유지
+      }
+    };
+
+    fetchPopularSearches();
+  }, []);
+
   return (
          <section className="relative w-full py-20 pb-32 bg-black overflow-hidden">
       
@@ -69,7 +106,7 @@ export default function SearchSection() {
             <input
               type="text"
               name="q"
-              placeholder="React, TypeScript, Docker, Kubernetes..."
+              placeholder="Spring Boot, JWT , Database, algorithm..."
               className="w-full bg-transparent text-lg text-white placeholder-gray-500 focus:outline-none px-4 py-6
                          placeholder:text-gray-500 placeholder:text-base"
               required
@@ -103,9 +140,9 @@ export default function SearchSection() {
           <div className="mt-8 text-center">
             <p className="text-gray-500 text-sm mb-3">인기 검색어</p>
             <div className="flex flex-wrap justify-center gap-2">
-              {['React', 'TypeScript', 'Next.js', 'Docker', 'Kubernetes', 'Spring Boot'].map((tag) => (
+              {popularSearches.map((tag, index) => (
                 <span
-                  key={tag}
+                  key={`${tag}-${index}`}
                   className="px-3 py-1 bg-gray-800/50 text-gray-300 text-sm rounded-full border border-gray-700/50
                            hover:bg-gray-700/50 hover:border-gray-600/50 transition-all duration-200 cursor-pointer"
                 >

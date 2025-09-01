@@ -27,7 +27,7 @@ export async function GET(request: Request) {
 
 
     const encodedQuery = encodeURIComponent(query);
-    const externalUrl = `${SEARCH_API_URL}/api/v1/search/posts/?query=${encodedQuery}`;
+    const externalUrl = `${SEARCH_API_URL}/api/v1/search/posts/?query=${encodedQuery}&language=all&page=1&page_size=20&sort=relevance`;
     
     console.log('🔍 Search API - Development mode, searching external API:', externalUrl);
     

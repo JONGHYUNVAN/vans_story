@@ -10,9 +10,10 @@ export interface Author {
 }
 
 export interface Highlight {
-  title?: string;
-  content?: string;
-  summary?: string;
+  title?: string[];
+  description?: string[];
+  content?: string[];
+  summary?: string[];
 }
 
 export interface SearchResult {

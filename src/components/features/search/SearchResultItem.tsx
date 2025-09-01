@@ -18,8 +18,9 @@ export default function SearchResultItem({ item }: SearchResultItemProps) {
     />
   );
 
-  // 백엔드에서 오는 content 스니펫(HTML 포함)을 사용하고, \n을 <br>로 변경
-  const contentHtml = (item.content || '').replace(/\n/g, '<br />');
+  // 하이라이트된 description 또는 일반 content 사용
+  const highlightedContent = item.highlight?.description?.[0] || item.content || item.summary || '';
+  const contentHtml = highlightedContent.replace(/\n/g, '<br />');
   const content = (
     <p
       className="text-gray-400 mt-2"

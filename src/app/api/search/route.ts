@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const SEARCH_API_URL = process.env.SEARCH_API_URL || 'http://127.0.0.1:8000/api/v1/search';
+const SEARCH_API_URL = process.env.SEARCH_API_URL || 'https://port-0-vans-devblog-django-m7fb3ua7b5f728d5.sel4.cloudtype.app';
 
 // 운영 환경에서 환경 변수 체크
 if (process.env.NODE_ENV === 'production' && !process.env.SEARCH_API_URL) {
@@ -24,21 +24,10 @@ export async function GET(request: Request) {
       );
     }
 
-    // 운영 환경에서는 검색 서버 연결 오류 반환
-    if (process.env.NODE_ENV === 'production') {
-      console.log('🔍 Search API - Production mode, returning connection error for query:', query);
-      return NextResponse.json(
-        { 
-          message: '검색 서버에 연결할 수 없습니다. 서버가 실행 중인지 확인해주세요.'+process.env.SEARCH_API_URL,
-          results: [],
-          total: 0
-        },
-        { status: 503 }
-      );
-    }
+
 
     const encodedQuery = encodeURIComponent(query);
-    const externalUrl = `${SEARCH_API_URL}/posts/?query=${encodedQuery}`;
+    const externalUrl = `${SEARCH_API_URL}/api/v1/search/posts/?query=${encodedQuery}`;
     
     console.log('🔍 Search API - Development mode, searching external API:', externalUrl);
     

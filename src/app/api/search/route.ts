@@ -24,12 +24,25 @@ export async function GET(request: Request) {
       );
     }
 
+    // 운영 환경에서는 검색 서버 연결 오류 반환
+    if (process.env.NODE_ENV === 'production') {
+      console.log('🔍 Search API - Production mode, returning connection error for query:', query);
+      return NextResponse.json(
+        { 
+          message: '검색 서버에 연결할 수 없습니다. 서버가 실행 중인지 확인해주세요.'+process.env.SEARCH_API_URL,
+          results: [],
+          total: 0
+        },
+        { status: 503 }
+      );
+    }
+
     const encodedQuery = encodeURIComponent(query);
     const externalUrl = `${SEARCH_API_URL}/posts/?query=${encodedQuery}`;
     
-    console.log('Searching external API:', externalUrl);
+    console.log('🔍 Search API - Development mode, searching external API:', externalUrl);
     
-    // 서버 환경에서 외부 API 호출
+    // 개발 환경에서만 외부 API 호출
     const response = await fetch(externalUrl, {
       headers: {
         'Content-Type': 'application/json',

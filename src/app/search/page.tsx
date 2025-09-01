@@ -43,8 +43,18 @@ async function SearchResultContent({ query }: { query: string }) {
     
     // API 핸들러를 직접 호출 (네트워크 요청 없음)
     const response = await searchApiGET(request);
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      return (
+        <div className="text-center py-10 bg-gray-800 rounded-lg">
+          <p className="text-red-400">{errorData.message || '검색 중 오류가 발생했습니다.'}</p>
+          <p className="text-gray-400 mt-2">잠시 후 다시 시도해주세요.</p>
+        </div>
+      );
+    }
+    
     const data = await response.json();
-
     return <SearchResultList results={data.results || []} total={data.total || 0} />;
   } catch (error) {
     console.error('Search API call error:', error);

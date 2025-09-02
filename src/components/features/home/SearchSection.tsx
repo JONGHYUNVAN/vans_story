@@ -46,39 +46,8 @@ export default function SearchSection() {
   return (
          <section className="relative w-full py-20 pb-32 bg-black overflow-hidden">
       
-      {/* 별 효과 */}
-      <div className="absolute inset-0">
-        <div className="absolute top-3/4 left-1/4 w-1 h-1 bg-white rounded-full animate-pulse"></div>
-        <div className="absolute top-2/3 right-1/3 w-0.5 h-0.5 bg-blue-300 rounded-full animate-pulse delay-1000"></div>
-        <div className="absolute bottom-3/4 left-1/2 w-0.5 h-0.5 bg-purple-300 rounded-full animate-pulse delay-2000"></div>
-        <div className="absolute top-1/2 right-1/4 w-1 h-1 bg-yellow-200 rounded-full animate-pulse delay-1500"></div>
-        
-                 {/* 추가 별들 - 더 부드러운 색상과 고른 분포 */}
-         <div className="absolute top-2/6 left-1/6 w-1 h-1 bg-white/40 rounded-full animate-pulse delay-500"></div>
-         <div className="absolute top-2/3 right-1/6 w-0.5 h-0.5 bg-blue-200/50 rounded-full animate-pulse delay-1500"></div>
-         <div className="absolute bottom-2/3 left-1/3 w-1 h-1 bg-purple-200/40 rounded-full animate-pulse delay-3000"></div>
-         <div className="absolute top-3/4 right-1/2 w-0.5 h-0.5 bg-cyan-200/50 rounded-full animate-pulse delay-2500"></div>
-         
-         <div className="absolute top-4/5 right-1/5 w-0.5 h-0.5 bg-white/60 rounded-full animate-pulse delay-700"></div>
-         <div className="absolute bottom-1/5 left-1/5 w-1 h-1 bg-blue-200/60 rounded-full animate-pulse delay-1200"></div>
-         <div className="absolute top-4/5 right-2/5 w-0.5 h-0.5 bg-purple-200/60 rounded-full animate-pulse delay-1800"></div>
-         
-         <div className="absolute top-5/8 left-1/3 w-1 h-1 bg-white/30 rounded-full animate-pulse delay-400"></div>
-         <div className="absolute top-5/6 right-1/4 w-0.5 h-0.5 bg-blue-200/40 rounded-full animate-pulse delay-1600"></div>
-         <div className="absolute bottom-1/6 left-2/3 w-1 h-1 bg-purple-200/50 rounded-full animate-pulse delay-2200"></div>
-         <div className="absolute top-7/12 right-1/3 w-0.5 h-0.5 bg-white/50 rounded-full animate-pulse delay-900"></div>
-         
-         <div className="absolute top-3/5 left-1/8 w-1 h-1 bg-blue-200/40 rounded-full animate-pulse delay-1100"></div>
-         <div className="absolute bottom-2/5 right-1/8 w-0.5 h-0.5 bg-purple-200/50 rounded-full animate-pulse delay-1900"></div>
-         <div className="absolute top-7/8 left-1/2 w-1 h-1 bg-white/40 rounded-full animate-pulse delay-2800"></div>
-         <div className="absolute bottom-1/8 right-1/2 w-0.5 h-0.5 bg-blue-200/50 rounded-full animate-pulse delay-1400"></div>
-         
-         {/* 하단 별들 추가 */}
-         <div className="absolute bottom-1/4 left-1/6 w-0.5 h-0.5 bg-white/40 rounded-full animate-pulse delay-800"></div>
-         <div className="absolute bottom-1/5 right-1/6 w-1 h-1 bg-blue-200/50 rounded-full animate-pulse delay-1300"></div>
-         <div className="absolute bottom-1/6 left-1/4 w-0.5 h-0.5 bg-purple-200/40 rounded-full animate-pulse delay-1700"></div>
-         <div className="absolute bottom-1/8 right-1/3 w-1 h-1 bg-white/30 rounded-full animate-pulse delay-2100"></div>
-      </div>
+      {/* 별 효과 - Tailwind + globals.css 버전 */}
+      <div className="absolute inset-0 stars-container"></div>
       
              <div className="container mx-auto px-4 relative z-10">
          <div className="max-w-4xl mx-auto pt-24">

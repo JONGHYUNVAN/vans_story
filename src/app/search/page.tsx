@@ -1,10 +1,6 @@
 import { Suspense } from 'react';
 import SearchHeader from '@/components/features/search/SearchHeader';
-import dynamic from 'next/dynamic';
-
-const SearchResultContent = dynamic(() => import('../../components/features/search/SearchResultContent'), {
-  ssr: false
-});
+import SearchResultContent from '@/components/features/search/SearchResultContent';
 
 type PageProps = {
   params?: Promise<Record<string, string | string[]>>;

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { handleSearch } from '@/app/search/actions';
 import { ApiFetch } from '@/app/api/apiFetch/apiFetch';
+import { useRouter } from 'next/navigation';
 
 /**
  * 홈페이지 검색 섹션 컴포넌트 (서버 액션 + 클라이언트 상태 관리)
@@ -12,6 +13,7 @@ import { ApiFetch } from '@/app/api/apiFetch/apiFetch';
  */
 export default function SearchSection() {
   const [popularSearches, setPopularSearches] = useState<string[]>([]);
+  const router = useRouter();
 
   // API에서 인기 검색어 가져오기
   useEffect(() => {
@@ -44,13 +46,14 @@ export default function SearchSection() {
     fetchPopularSearches();
   }, []);
 
+  // 인기 검색어 클릭 핸들러
+  const handlePopularSearchClick = (searchTerm: string) => {
+    router.push(`/search?q=${encodeURIComponent(searchTerm)}`);
+  };
+
   return (
          <section className="relative w-full py-20 pb-32 bg-black overflow-hidden">
-      
-      {/* 별 효과 - Tailwind + globals.css 버전 */}
-      <div className="absolute inset-0 stars-container"></div>
-      
-             <div className="container mx-auto px-4 relative z-10">
+             <div className="container mx-auto px-4">
          <div className="max-w-4xl mx-auto pt-24">
           <form
             action={handleSearch}
@@ -111,13 +114,15 @@ export default function SearchSection() {
             <p className="text-gray-500 text-sm mb-3">인기 검색어</p>
             <div className="flex flex-wrap justify-center gap-2">
               {popularSearches.map((tag, index) => (
-                <span
+                <button
                   key={`${tag}-${index}`}
+                  onClick={() => handlePopularSearchClick(tag)}
                   className="px-3 py-1 bg-gray-800/50 text-gray-300 text-sm rounded-full border border-gray-700/50
-                           hover:bg-gray-700/50 hover:border-gray-600/50 transition-all duration-200 cursor-pointer"
+                           hover:bg-gray-700/50 hover:border-gray-600/50 hover:text-white transition-all duration-200 cursor-pointer
+                           focus:outline-none focus:ring-2 focus:ring-blue-500/50 active:scale-95"
                 >
                   {tag}
-                </span>
+                </button>
               ))}
             </div>
           </div>

@@ -30,7 +30,7 @@ export default function SearchResultItem({ item }: SearchResultItemProps) {
 
   return (
     (<Link
-      href={`/post/${item.slug}`}
+      href={`/post/view/${item.post_id}`}
       className="block bg-gray-800 p-6 rounded-lg border border-gray-700 hover:border-blue-500 transition-colors group"
     >
       {title}

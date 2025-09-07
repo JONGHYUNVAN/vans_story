@@ -1,7 +1,10 @@
-import SearchResultList from '@/components/features/search/SearchResultList';
 import { Suspense } from 'react';
 import SearchHeader from '@/components/features/search/SearchHeader';
-import { GET as searchApiGET } from '../api/search/route'; // API 라우트 핸들러 직접 임포트
+import dynamic from 'next/dynamic';
+
+const SearchResultContent = dynamic(() => import('../../components/features/search/SearchResultContent'), {
+  ssr: false
+});
 
 type PageProps = {
   params?: Promise<Record<string, string | string[]>>;
@@ -10,7 +13,7 @@ type PageProps = {
 
 /**
  * 검색 결과 페이지
- * - URL의 'q' 파라미터를 이용해 검색 API를 호출하고 결과를 표시합니다.
+ * - URL의 'q' 파라미터를 이용해 검색 결과를 표시합니다.
  */
 export default async function SearchPage({ searchParams }: PageProps) {
   const sp = (await searchParams) ?? {};
@@ -29,43 +32,6 @@ export default async function SearchPage({ searchParams }: PageProps) {
   );
 }
 
-/**
- * 검색 결과를 실제로 렌더링하는 컴포넌트
- */
-async function SearchResultContent({ query }: { query: string }) {
-  if (!query) {
-    return <SearchResultList results={[]} total={0} />;
-  }
-
-  try {
-    // 가짜 Request 객체 생성
-    const request = new Request(`http://localhost/api/search?query=${encodeURIComponent(query)}`);
-    
-    // API 핸들러를 직접 호출 (네트워크 요청 없음)
-    const response = await searchApiGET(request);
-    
-    if (!response.ok) {
-      const errorData = await response.json();
-      return (
-        <div className="text-center py-10 bg-gray-800 rounded-lg">
-          <p className="text-red-400">{errorData.message || '검색 중 오류가 발생했습니다.'}</p>
-          <p className="text-gray-400 mt-2">잠시 후 다시 시도해주세요.</p>
-        </div>
-      );
-    }
-    
-    const data = await response.json();
-    return <SearchResultList results={data.results || []} total={data.total || 0} />;
-  } catch (error) {
-    console.error('Search API call error:', error);
-    return (
-      <div className="text-center py-10 bg-gray-800 rounded-lg">
-        <p className="text-red-400">검색 결과를 불러오는 중 오류가 발생했습니다.</p>
-        <p className="text-gray-400 mt-2">잠시 후 다시 시도해주세요.</p>
-      </div>
-    );
-  }
-}
 
 /** 스켈레톤 UI */
 function SearchResultListSkeleton() {

@@ -167,4 +167,23 @@ export class ApiFetch {
   static async delete_withAuth(url: string, options: RequestInit = {}): Promise<Response> {
     return this.authFetch(url, { ...options, method: 'DELETE' });
   }
+
+  // ==================== Search 메서드들 ====================
+  
+  /**
+   * 게시물 검색 (토큰 없음)
+   * @param query 검색어
+   * @param options 추가 옵션
+   */
+  static async searchPosts(query: string, options: RequestInit = {}): Promise<Response> {
+    const encodedQuery = encodeURIComponent(query);
+    return this.basicGet(`/api/search?query=${encodedQuery}`, options);
+  }
+
+  /**
+   * 인기 검색어 조회 (토큰 없음)
+   */
+  static async getPopularSearches(options: RequestInit = {}): Promise<Response> {
+    return this.basicGet('/api/search/popular', options);
+  }
 } 

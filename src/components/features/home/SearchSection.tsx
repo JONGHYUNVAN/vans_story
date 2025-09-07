@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { handleSearch } from '@/app/search/actions';
+import { ApiFetch } from '@/app/api/apiFetch/apiFetch';
 
 /**
  * 홈페이지 검색 섹션 컴포넌트 (서버 액션 + 클라이언트 상태 관리)
@@ -16,7 +17,7 @@ export default function SearchSection() {
   useEffect(() => {
     const fetchPopularSearches = async () => {
       try {
-        const response = await fetch('/api/search/popular');
+        const response = await ApiFetch.getPopularSearches();
         if (response.ok) {
           const data = await response.json();
           console.log('🔍 Frontend - Received data:', data);

@@ -21,19 +21,16 @@ export interface SearchResult {
   title: string;
   content: string;
   summary: string;
-  slug: string;
+  theme: string;        // 실제 데이터에 있는 필드
   category: string;
   tags: string[];
   author: Author;
   updated_date: string;
   view_count: number;
   like_count: number;
-  comment_count: number;
-  is_published: boolean;
   language: string;
   reading_time: number;
   featured_image: string;
-  search_boost: number;
   score: number;
   highlight: Highlight;
 }

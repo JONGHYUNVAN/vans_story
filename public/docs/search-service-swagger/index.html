@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf8" />
+  <title>VansDevBlog Search Service API</title>
+  <!-- needed for adaptive design -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+  <script src="https://cdn.redocly.com/redoc/v2.5.0/bundles/redoc.standalone.js"></script>
+</head>
+<body>
+  <div id="redoc-container"></div>
+  <script>
+    Redoc.init('./swagger.json', {
+      scrollYOffset: 60,
+      hideDownloadButton: false,
+      hideHostname: false,
+      hideLoading: false,
+      nativeScrollbars: false,
+      disableSearch: false,
+      onlyRequiredInSamples: false,
+      sortPropsAlphabetically: false,
+      showObjectSchemaExamples: true,
+      menuToggle: true,
+      theme: {
+        colors: {
+          primary: {
+            main: '#2c3e50'
+          }
+        },
+        typography: {
+          fontSize: '14px',
+          lineHeight: '1.5em',
+          code: {
+            fontSize: '13px',
+            fontFamily: 'Consolas, "Liberation Mono", Menlo, Courier, monospace'
+          },
+          headings: {
+            fontFamily: 'Montserrat, sans-serif',
+            fontWeight: '400'
+          }
+        },
+        spacing: {
+          unit: 5,
+          sectionHorizontal: 40,
+          sectionVertical: 40
+        },
+        breakpoints: {
+          medium: '50rem',
+          large: '85.5rem',
+          xlarge: '120rem'
+        }
+      }
+    }, document.getElementById('redoc-container'));
+  </script>
+</body>
+</html>

@@ -18,19 +18,21 @@ export default function Services({ services, selectedService, onServiceSelect, s
   // 서비스를 역할별로 분류
   const serviceCategories = [
     {
-      title: '🖥️ Frontend',
+      title: 'Frontend',
       services: services.filter(service => service.name.includes('Frontend')),
       colorTheme: 'blue'
     },
     {
-      title: '🛠️ Backend Services',
+      title: 'Backend Services',
       services: services.filter(service => 
-        service.name.includes('User Service') || service.name.includes('Post Service')
+        service.name.includes('User Service') || 
+        service.name.includes('Post Service') || 
+        service.name.includes('Search Service')
       ),
       colorTheme: 'green'
     },
     {
-      title: '🔧 API Services',
+      title: 'API Services',
       services: services.filter(service => 
         service.name.includes('OAuth') || 
         service.name.includes('Image') || 
@@ -95,25 +97,25 @@ export default function Services({ services, selectedService, onServiceSelect, s
         title: 'Frontend README',
         filePath: '/docs/frontend-readme.md',
         description: '프로젝트 개요 및 기능 소개',
-        category: '📚 개발 가이드'
+        category: '개발 가이드'
       });
       links.push({
         title: 'Frontend API 문서',
         filePath: '/docs/frontend-api.md',
         description: 'Frontend API 엔드포인트 및 사용법',
-        category: '🔧 API 문서'
+        category: 'API 문서'
       });
       links.push({
         title: 'OAuth 구현 문서',
         filePath: '/docs/frontend-oauth.md',
         description: 'OAuth 인증 구현 상세 가이드',
-        category: '🛡️ 보안'
+        category: '보안'
       });
       links.push({
         title: 'Redux 상태 관리 문서',
         filePath: '/docs/frontend-redux.md',
         description: 'Redux를 사용한 상태 관리 구현 가이드',
-        category: '🏗️ 아키텍처'
+        category: '아키텍처'
       });
     }
     
@@ -122,45 +124,45 @@ export default function Services({ services, selectedService, onServiceSelect, s
         title: 'User Service 개발 가이드',
         filePath: '/docs/user-service-dev.md',
         description: '개발 환경 설정 및 가이드',
-        category: '📚 개발 가이드'
+        category: '개발 가이드'
       });
       links.push({
         title: 'User Service API 가이드',
         filePath: '/docs/user-service-api.md',
         description: '아키텍처, 인증 시스템, 설계 원칙',
-        category: '🔧 API 문서'
+        category: 'API 문서'
       });
       links.push({
         title: 'Swagger API 문서',
         filePath: '/docs/user-swagger/index.html',
         description: 'REST API 명세 및 테스트 인터페이스',
         isHtml: true,
-        category: '🔧 API 문서'
+        category: 'API 문서'
       });
       links.push({
         title: 'User Service OAuth 설계 문서',
         filePath: '/docs/user-service-oauth.md',
         description: 'OAuth 도메인 설계 및 플로우 상세 가이드',
-        category: '🏗️ 아키텍처'
+        category: '아키텍처'
       });
       links.push({
         title: 'User Service 엔티티 구조 (ERD)',
         filePath: '/docs/user-service-entity.md',
         description: '데이터베이스 엔티티 구조 및 관계 정의',
-        category: '🏗️ 아키텍처'
+        category: '아키텍처'
       });
       links.push({
         title: 'User Service 보안 가이드',
         filePath: '/docs/user-service-security.md',
         description: 'JWT 인증, 권한 관리, API 보안 가이드',
-        category: '🛡️ 보안'
+        category: '보안'
       });
       links.push({
         title: 'Kotlin 코드 문서 (Dokka)',
         filePath: '/docs/kotlin-api/index.html',
         description: 'Kotlin 백엔드 클래스, 패키지, 함수 문서',
         isHtml: true,
-        category: '📖 코드 문서'
+        category: '코드 문서'
       });
     }
     
@@ -169,27 +171,27 @@ export default function Services({ services, selectedService, onServiceSelect, s
         title: 'Post Service README',
         filePath: '/docs/post-service-readme.md',
         description: '개발 환경 설정, 프로젝트 구조, 의존성 정보',
-        category: '📚 개발 가이드'
+        category: '개발 가이드'
       });
       links.push({
         title: 'Post Service API 문서',
         filePath: '/docs/post-service-api.md',
         description: '포스트 관리 API 문서',
-        category: '🔧 API 문서'
+        category: 'API 문서'
       });
       links.push({
         title: 'Swagger API 문서',
-        filePath: '/docs/post-swagger/index.html',
+        filePath: '/docs/nestjs-swagger/index.html',
         description: 'REST API 명세 및 테스트 인터페이스',
         isHtml: true,
-        category: '🔧 API 문서'
+        category: 'API 문서'
       });
       links.push({
         title: 'NestJS 코드 문서 (TypeDoc)',
         filePath: '/docs/nestjs-api/index.html',
         description: 'NestJS 백엔드 클래스, 모듈, 인터페이스 문서',
         isHtml: true,
-        category: '📖 코드 문서'
+        category: '코드 문서'
       });
     }
     
@@ -198,20 +200,20 @@ export default function Services({ services, selectedService, onServiceSelect, s
         title: 'OAuth Service README',
         filePath: '/docs/oauth-service-readme.md',
         description: 'OAuth 중간 서버 개요 및 설정 가이드',
-        category: '📚 개발 가이드'
+        category: '개발 가이드'
       });
       links.push({
         title: 'OAuth Service API 문서',
         filePath: '/docs/oauth-service-api.md',
         description: 'OAuth 인증 서비스 API 문서',
-        category: '🔧 API 문서'
+        category: 'API 문서'
       });
       links.push({
         title: 'OAuth 코드 문서 (TypeDoc)',
         filePath: '/docs/oauth-tsdoc/index.html',
         description: 'OAuth 서비스 클래스, 모듈, 인터페이스 문서',
         isHtml: true,
-        category: '📖 코드 문서'
+        category: '코드 문서'
       });
     }
     
@@ -220,14 +222,14 @@ export default function Services({ services, selectedService, onServiceSelect, s
         title: 'Image Service README',
         filePath: '/docs/image-service-readme.md',
         description: 'AWS S3 이미지 업로드 및 WebP 변환 서비스',
-        category: '📚 개발 가이드'
+        category: '개발 가이드'
       });
       links.push({
         title: 'Image 코드 문서 (TypeDoc)',
         filePath: '/docs/image-tsdoc/index.html',
         description: 'Image 서비스 클래스, 모듈, 인터페이스 문서',
         isHtml: true,
-        category: '📖 코드 문서'
+        category: '코드 문서'
       });
     }
     
@@ -236,14 +238,48 @@ export default function Services({ services, selectedService, onServiceSelect, s
         title: 'AI Chat Service README',
         filePath: '/docs/ai-chat-service-readme.md',
         description: 'OpenAI API 기반 ChatGPT 챗봇 서비스',
-        category: '📚 개발 가이드'
+        category: '개발 가이드'
       });
       links.push({
         title: 'AI Chat 코드 문서 (TypeDoc)',
         filePath: '/docs/ai-chat-tsdoc/index.html',
         description: 'AI Chat 서비스 클래스, 모듈, 인터페이스 문서',
         isHtml: true,
-        category: '📖 코드 문서'
+        category: '코드 문서'
+      });
+    }
+    
+    if (serviceName.includes('Search Service')) {
+      links.push({
+        title: 'Search Service README',
+        filePath: '/docs/search-service-readme.md',
+        description: 'Django Elasticsearch 기반 고성능 검색 서비스',
+        category: '개발 가이드'
+      });
+      links.push({
+        title: 'Search Service Swagger API 문서',
+        filePath: '/docs/search-service-swagger/index.html',
+        description: 'Django REST Framework 기반 검색 API 문서',
+        isHtml: true,
+        category: 'API 문서'
+      });
+      links.push({
+        title: 'Search Service 아키텍처 문서',
+        filePath: '/docs/search-service-architecture.md',
+        description: 'Elasticsearch 아키텍처 및 설계 원칙',
+        category: '아키텍처'
+      });
+      links.push({
+        title: 'Search Service 설치 가이드',
+        filePath: '/docs/search-service-installation.md',
+        description: '환경 설정 및 설치 가이드',
+        category: '개발 가이드'
+      });
+      links.push({
+        title: 'Search Service 빠른 시작',
+        filePath: '/docs/search-service-quickstart.md',
+        description: '빠른 시작 가이드 및 기본 사용법',
+        category: '개발 가이드'
       });
     }
     
@@ -375,11 +411,11 @@ export default function Services({ services, selectedService, onServiceSelect, s
 
                         // 카테고리 순서 정의
                         const categoryOrder = [
-                          '📚 개발 가이드',
-                          '🔧 API 문서', 
-                          '🏗️ 아키텍처',
-                          '🛡️ 보안',
-                          '📖 코드 문서'
+                          '개발 가이드',
+                          'API 문서', 
+                          '아키텍처',
+                          '보안',
+                          '코드 문서'
                         ];
 
                         return categoryOrder

@@ -84,19 +84,34 @@ export const vansDevBlogProject: Project = {
         '사용자 맞춤형 응답 생성',
         'CORS 지원'
       ]
+    },
+    {
+      name: 'Backend - Search Service (Django)',
+      description: 'Django 기반 고성능 검색 엔진 서비스',
+      tech: ['Django', 'Python', 'Elasticsearch', 'Redis', 'MongoDB'],
+      features: [
+        'Elasticsearch 기반 전문 검색 (Full-text search)',
+        'Nori 한국어 분석기 지원으로 정확한 한국어 검색',
+        '실시간 자동완성 및 검색 제안 시스템',
+        'Redis 캐시를 통한 고성능 검색 결과 제공',
+        '카테고리, 태그, 날짜 범위 기반 스마트 필터링',
+        '인기 검색어 트래킹 및 통계 수집',
+        'Swagger/OpenAPI 자동 문서화',
+        '마이크로서비스 아키텍처로 독립적 배포'
+      ]
     }
   ],
   architecture: {
     description: '마이크로서비스 아키텍처로 각 서비스가 독립적으로 배포되며 직접 통신합니다.',
     benefits: [
       '각 서비스별 독립적인 배포 및 관리 (각 백엔드 서버 및 db, 프론트엔드 서버, 각 api 라우트 서버)',
-      '다양한 기술 스택 학습 및 적용 (Spring Boot , NestJS , Next.js)',
+      '다양한 기술 스택 학습 및 적용 (Spring Boot, NestJS, Django, Next.js)',
       '한 서버 장애 발생시에도 나머지 서비스는 정상 동작',
-      '서비스별 최적화된 데이터베이스 선택 (MariaDB, MongoDB)',
+      '서비스별 최적화된 데이터베이스 선택 (MariaDB, MongoDB, Elasticsearch)',
       '기능별 코드 분리로 유지보수성 향상',
       '개인 프로젝트 내에서 풀스택 개발 경험 확장'
     ]
   },
   impact: '마이크로서비스 아키텍처 설계 및 구현, 독립적인 서비스 배포, 확장성 있는 시스템 구축',
-  totalTech: ['Next.js', 'Spring Boot', 'Kotlin', 'NestJS', 'TypeScript', 'MariaDB', 'MongoDB', 'AWS S3', 'OpenAI API', 'JWT', 'OAuth 2.0', 'Tailwind CSS', 'Sharp', 'Storybook']
+  totalTech: ['Next.js', 'Spring Boot', 'Kotlin', 'NestJS', 'Django', 'Python', 'TypeScript', 'MariaDB', 'MongoDB', 'Elasticsearch', 'Redis', 'AWS S3', 'OpenAI API', 'JWT', 'OAuth 2.0', 'Tailwind CSS', 'Sharp', 'Storybook']
 }; 

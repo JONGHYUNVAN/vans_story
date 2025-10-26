@@ -1,7 +1,8 @@
 export interface Post {
     thumbnail: string;
     title: string;
-    theme: string;
+    mainCategory: string;
+    subCategory: string;
     topic: string;
     content: string;
     author: string;
@@ -28,8 +29,8 @@ export interface PostInfo {
   tags: string[];
   viewCount: number;
   likeCount: number;
-  theme: string;
-  category: string;
+  mainCategory: string;
+  subCategory: string;
   thumbnail: string;
   language: string;
 }

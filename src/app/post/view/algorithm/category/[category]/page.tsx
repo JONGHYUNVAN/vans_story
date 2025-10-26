@@ -7,7 +7,7 @@ interface PageProps {
 }
 
 async function getPosts(category: string) {
-  const response = await fetch(`${API_URLS.POST.LIST}?theme=algorithm&category=${category}&page=1&limit=10`, {
+  const response = await fetch(`${API_URLS.POST.LIST}?mainCategory=algorithm&subCategory=${category}&page=1&limit=10`, {
     next: { revalidate: 0 }
   });
 

@@ -20,7 +20,7 @@ export default function JWTList({ posts }: JWTListProps) {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch(`${API_URLS.POST.LIST}?theme=jwt&page=1&limit=10`, {
+        const response = await fetch(`${API_URLS.POST.LIST}?mainCategory=jwt&page=1&limit=10`, {
           next: { revalidate: 0 }
         });
         

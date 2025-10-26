@@ -204,7 +204,7 @@ export const NestJS: Story = {
         description: 'NestJS를 활용한 확장 가능한 마이크로서비스 아키텍처 설계와 구현 방법을 알아봅니다.',
         tags: ['NestJS', 'Microservices', 'TypeScript', 'Architecture'],
         topic: 'NestJS Advanced',
-        theme: 'nestjs'
+        mainCategory: 'nestjs'
       })} />
     </div>
   ),
@@ -237,7 +237,7 @@ export const MariaDB: Story = {
         description: 'MariaDB의 성능을 극대화하기 위한 인덱스 설계와 쿼리 최적화 기법을 다룹니다.',
         tags: ['MariaDB', 'Performance', 'Indexing', 'Database'],
         topic: 'MariaDB Optimization',
-        theme: 'mariadb'
+        mainCategory: 'mariadb'
       })} />
     </div>
   ),
@@ -270,7 +270,7 @@ export const JWT: Story = {
         description: 'JWT(JSON Web Token)를 활용한 안전한 인증 시스템 구축과 보안 고려사항을 알아봅니다.',
         tags: ['JWT', 'Security', 'Authentication', 'Token'],
         topic: 'Security & Authentication',
-        theme: 'jwt'
+        mainCategory: 'jwt'
       })} />
     </div>
   ),
@@ -303,7 +303,7 @@ export const New: Story = {
         description: '최신 개발 트렌드와 새로운 기술들을 소개하는 포스트입니다.',
         tags: ['Trends', 'Technology', 'Development', 'New'],
         topic: 'Tech Trends 2024',
-        theme: 'new'
+        mainCategory: 'new'
       })} />
     </div>
   ),
@@ -356,7 +356,7 @@ export const AllPostCards: Story = {
           title: 'NestJS 마이크로서비스 아키텍처',
           description: 'NestJS 마이크로서비스 구축 가이드',
           tags: ['NestJS', 'Microservices'],
-          theme: 'nestjs'
+          mainCategory: 'nestjs'
         })} />
       </div>
       
@@ -366,7 +366,7 @@ export const AllPostCards: Story = {
           title: 'MariaDB 성능 최적화',
           description: 'MariaDB 인덱스와 쿼리 최적화',
           tags: ['MariaDB', 'Performance'],
-          theme: 'mariadb'
+          mainCategory: 'mariadb'
         })} />
       </div>
       
@@ -376,7 +376,7 @@ export const AllPostCards: Story = {
           title: 'JWT 보안 인증 전략',
           description: 'JWT 토큰 기반 안전한 인증',
           tags: ['JWT', 'Security'],
-          theme: 'jwt'
+          mainCategory: 'jwt'
         })} />
       </div>
       
@@ -386,7 +386,7 @@ export const AllPostCards: Story = {
           title: '새로운 기술 트렌드',
           description: '최신 개발 동향과 트렌드',
           tags: ['Trends', 'New'],
-          theme: 'new'
+          mainCategory: 'new'
         })} />
       </div>
     </div>

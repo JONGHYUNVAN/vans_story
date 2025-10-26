@@ -15,6 +15,8 @@
       "inputTopic": "Enter topic",
       "inputDescription": "Enter description",
       "inputTags": "Enter tags (comma separated)",
+      "selectMainCategory": "Select main category",
+      "selectSubCategory": "Select sub category",
       "selectTheme": "Select theme",
       "selectCategory": "Select category",
       "inputThumbnail": "Enter thumbnail URL",

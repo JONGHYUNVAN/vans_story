@@ -54,8 +54,8 @@ export function PostPreview({
     likeCount: 0,
     topic,
     author: '미리보기',
-    theme,
-    category,
+    mainCategory: theme,
+    subCategory: category,
     thumbnail,
     language
   }

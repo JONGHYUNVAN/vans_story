@@ -16,8 +16,8 @@ const basePostData: PostInfo = {
   topic: '기본 주제',
   author: 'Vans',
   thumbnail: 'https://via.placeholder.com/800x400',
-  theme: 'nextjs',
-  category: 'introduction',
+  mainCategory: 'nextjs',
+  subCategory: 'introduction',
   language: 'ko',
 };
 
@@ -38,8 +38,8 @@ export const createPostData = {
     likeCount: 112,
     topic: 'Algorithm Deep Dive',
     thumbnail: '/algorithm.webp',
-    theme: 'algorithm',
-    category: 'data-structures',
+    mainCategory: 'algorithm',
+    subCategory: 'data-structures',
     ...overrides
   }),
 
@@ -56,8 +56,8 @@ export const createPostData = {
     likeCount: 89,
     topic: 'Spring Boot 3.0 & GraalVM',
     thumbnail: '/spring.webp',
-    theme: 'spring',
-    category: 'backend',
+    mainCategory: 'spring',
+    subCategory: 'backend',
     ...overrides
   }),
 
@@ -74,8 +74,8 @@ export const createPostData = {
     likeCount: 156,
     topic: 'Next.js 14 New Features',
     thumbnail: '/nextjs.webp',
-    theme: 'nextjs',
-    category: 'frontend',
+    mainCategory: 'nextjs',
+    subCategory: 'frontend',
     ...overrides
   }),
 
@@ -92,8 +92,8 @@ export const createPostData = {
     likeCount: 67,
     topic: 'MongoDB Advanced',
     thumbnail: '/mongodb.webp',
-    theme: 'mongodb',
-    category: 'database',
+    mainCategory: 'mongodb',
+    subCategory: 'database',
     ...overrides
   }),
 
@@ -110,8 +110,8 @@ export const createPostData = {
     likeCount: 102,
     topic: 'Docker Optimization',
     thumbnail: '/docker.webp',
-    theme: 'docker',
-    category: 'devops',
+    mainCategory: 'docker',
+    subCategory: 'devops',
     ...overrides
   }),
 

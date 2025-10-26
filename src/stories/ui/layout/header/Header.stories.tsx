@@ -6,7 +6,7 @@ import React from 'react';
 import Header from '@/components/layout/header/Header';
 import LanguageSelector from '@/components/layout/header/LanguageSelector';
 import AuthButtons from '@/components/layout/header/AuthButtons';
-import { PostHeader } from '@/app/post/new/components/PostHeader';
+// import { PostHeader } from '@/app/post/new/components/PostHeader'; // 제거됨
 
 // ViewPostHeader를 위한 모킹된 래퍼 컴포넌트 (Next.js 라우터 없이 작동)
 function MockedViewPostHeader({ postId }: { postId: string }) {
@@ -52,7 +52,7 @@ function MockedViewPostHeader({ postId }: { postId: string }) {
  * 각 페이지의 목적에 맞는 헤더를 선택하여 사용하면 됩니다.
  * ```tsx
  * <Header />                    // 메인 헤더
- * <PostHeader />                // 포스트 작성/편집 헤더
+ * <PostForm />                  // 포스트 작성/편집 (통합 컴포넌트)
  * <ViewPostHeader />            // 포스트 보기 헤더
  * ```
  */
@@ -134,16 +134,29 @@ export const PostEditorHeader: Story = {
           <p className="text-sm text-gray-500">임시저장과 발행 기능</p>
         </div>
         <div style={{ height: '200px', position: 'relative' }}>
-          <PostHeader 
-            postData={undefined}
-            onSubmit={async (e) => {
-              e.preventDefault();
-              alert('게시글이 발행되었습니다!');
-            }}
-            onTempSave={() => {
-              alert('임시저장되었습니다!');
-            }}
-          />
+          <div className="border-b border-gray-100/10 bg-black/80 backdrop-blur-md sticky top-0 z-50">
+            <div className="container mx-auto px-4">
+              <div className="h-16 flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <h1 className="text-xl text-white font-gamjaFlower">포스트 작성</h1>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button 
+                    className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+                    onClick={() => alert('임시저장되었습니다!')}
+                  >
+                    임시저장
+                  </button>
+                  <button 
+                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                    onClick={() => alert('게시글이 발행되었습니다!')}
+                  >
+                    발행
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
           <div className="pt-20 p-4 text-center">
             <p className="text-gray-600">
               포스트 작성/편집 시 사용되는 헤더입니다.
@@ -281,14 +294,29 @@ export const AllHeaders: Story = {
           <p className="text-sm text-gray-500">임시저장과 발행 기능</p>
         </div>
         <div className="relative h-20">
-          <PostHeader 
-            postData={undefined}
-            onSubmit={async (e) => {
-              e.preventDefault();
-              alert('게시글 발행!');
-            }}
-            onTempSave={() => alert('임시저장!')}
-          />
+          <div className="border-b border-gray-100/10 bg-black/80 backdrop-blur-md sticky top-0 z-50">
+            <div className="container mx-auto px-4">
+              <div className="h-16 flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <h1 className="text-xl text-white font-gamjaFlower">포스트 편집</h1>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button 
+                    className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+                    onClick={() => alert('임시저장!')}
+                  >
+                    임시저장
+                  </button>
+                  <button 
+                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                    onClick={() => alert('게시글 발행!')}
+                  >
+                    발행
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

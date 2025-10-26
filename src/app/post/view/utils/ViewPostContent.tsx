@@ -8,7 +8,8 @@ export function ViewPostContent({ post }: { post: Post }) {
       <div className="flex items-center justify-between text-sm text-gray-500 mb-8">
         <div className="flex items-center gap-4">
           <span>작성자: {post.author}</span>
-          <span>테마: {post.theme}</span>
+          <span>메인 카테고리: {post.mainCategory}</span>
+          <span>하위 카테고리: {post.subCategory}</span>
         </div>
         <div className="flex items-center gap-4">
           <span>작성일: {post.createdAt}</span>

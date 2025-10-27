@@ -191,19 +191,20 @@ export class ApiFetch {
    * 자동완성 검색어 조회 (토큰 없음)
    * @param query 검색어 (최소 2글자)
    * @param limit 결과 개수 (기본값: 10)
+   * @param language 언어 설정 (기본값: 'all')
    * @param options 추가 옵션
    */
   static async getAutocompleteSuggestions(
     query: string, 
     limit: number = 10, 
+    language: string = 'all',
     options: RequestInit = {}
   ): Promise<Response> {
     if (!query || query.trim().length < 2) {
-      // 클라이언트에서 빈 결과 반환
+      // 클라이언트에서 빈 결과 반환 (백엔드 응답 구조에 맞춤)
       return new Response(JSON.stringify({
         suggestions: [],
-        query: query?.trim() || '',
-        total: 0
+        query: query?.trim() || ''
       }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' }
@@ -211,6 +212,6 @@ export class ApiFetch {
     }
     
     const encodedQuery = encodeURIComponent(query.trim());
-    return this.basicGet(`/api/search/autocomplete?query=${encodedQuery}&limit=${limit}`, options);
+    return this.basicGet(`/api/search/autocomplete?query=${encodedQuery}&language=${language}&limit=${limit}`, options);
   }
 } 

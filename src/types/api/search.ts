@@ -45,7 +45,7 @@ export interface SearchResponse {
 }
 
 /**
- * 자동완성 제안 항목
+ * 자동완성 제안 항목 (프론트엔드에서 사용)
  */
 export interface AutocompleteSuggestion {
   text: string;
@@ -55,7 +55,15 @@ export interface AutocompleteSuggestion {
 }
 
 /**
- * 자동완성 API 응답
+ * 백엔드 자동완성 API 응답 (실제 응답 구조)
+ */
+export interface AutocompleteApiResponse {
+  suggestions: string[];
+  query: string;
+}
+
+/**
+ * 프론트엔드에서 사용하는 자동완성 응답 (변환된 구조)
  */
 export interface AutocompleteResponse {
   suggestions: AutocompleteSuggestion[];

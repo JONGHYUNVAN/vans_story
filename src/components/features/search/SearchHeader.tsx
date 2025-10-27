@@ -33,35 +33,46 @@ export default function SearchHeader({ query }: SearchHeaderProps) {
   };
 
   return (
-    <header className="mb-8">
-      <form onSubmit={handleFormSubmit} className="relative flex items-center mb-4">
-        <AutocompleteInput
-          value={searchQuery}
-          onChange={setSearchQuery}
-          onSelect={handleAutocompleteSelect}
-          placeholder="다시 검색..."
-          className="flex-1"
-          inputClassName="w-full bg-gray-800 border border-gray-700 rounded-lg text-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 px-4 py-3 pr-16"
-          dropdownClassName="border-gray-600 bg-gray-800"
-          minLength={2}
-          limit={8}
-          debounceMs={300}
-        />
+    <header className="mb-12">
+      {/* 검색창 */}
+      <form onSubmit={handleFormSubmit} className="relative flex items-center mb-8">
+        <div className="relative flex-1 group">
+          <AutocompleteInput
+            value={searchQuery}
+            onChange={setSearchQuery}
+            onSelect={handleAutocompleteSelect}
+            placeholder="다시 검색..."
+            className="flex-1"
+            inputClassName="w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 px-6 py-4 pr-16 transition-all duration-300 hover:bg-white/15 hover:border-white/30"
+            dropdownClassName="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl mt-2 overflow-hidden"
+            minLength={2}
+            limit={8}
+            debounceMs={300}
+          />
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+        </div>
         <button
           type="submit"
-          className="absolute right-2 px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-colors focus:outline-none"
+          className="absolute right-3 p-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold rounded-xl hover:from-purple-600 hover:to-blue-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-400/50 shadow-lg hover:shadow-purple-500/25 transform hover:scale-105"
           aria-label="검색 실행"
         >
-          <FaSearch />
+          <FaSearch className="w-4 h-4" />
         </button>
       </form>
+
+      {/* 검색 결과 제목 */}
       {query && (
-        <h1 className="text-2xl font-bold">
-          <span className="text-gray-400">'</span>
-          <span className="text-blue-400">{query}</span>
-          <span className="text-gray-400">'</span>
-          <span className="text-gray-300">에 대한 검색 결과</span>
-        </h1>
+        <div className="text-center">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent mb-2">
+            검색 결과
+          </h1>
+          <p className="text-xl text-white/80">
+            <span className="text-white/60">"</span>
+            <span className="font-semibold text-purple-300">{query}</span>
+            <span className="text-white/60">"</span>
+            <span className="text-white/70"> 에 대한 결과입니다</span>
+          </p>
+        </div>
       )}
     </header>
   );

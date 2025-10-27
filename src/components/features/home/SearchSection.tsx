@@ -99,8 +99,8 @@ export default function SearchSection() {
               placeholder="Spring Boot, JWT, Database, algorithm..."
               className="flex-1"
               inputClassName="w-full bg-transparent text-lg text-white placeholder-gray-500 focus:outline-none px-4 py-6
-                           placeholder:text-gray-500 placeholder:text-base border-0"
-              dropdownClassName="mt-2 border-gray-600 bg-gray-800/95 backdrop-blur-sm"
+                           placeholder:text-gray-500 placeholder:text-base border-0 rounded-2xl"
+              dropdownClassName=""
               minLength={2}
               limit={8}
               debounceMs={300}

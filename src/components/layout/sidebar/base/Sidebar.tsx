@@ -13,7 +13,7 @@ export default function Sidebar() {
   const SidebarComponent = currentTheme ? THEME_SIDEBARS[currentTheme as keyof typeof THEME_SIDEBARS] : MainSidebar;
 
   return (
-    <aside className="fixed left-0 top-0 h-full z-[30] overflow-hidden">
+    <aside className="fixed left-0 top-0 h-full z-[30] hover:z-[110] overflow-hidden transition-all duration-300">
       <SidebarComponent />
     </aside>
   );

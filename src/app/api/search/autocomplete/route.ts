@@ -15,6 +15,7 @@ export async function GET(request: NextRequest) {
     
     const query = searchParams.get('query');
     const limit = searchParams.get('limit') || '10';
+    const language = searchParams.get('language') || 'all';
     const token = headersList.get('Authorization');
 
     if (!query || query.trim().length === 0) {
@@ -36,7 +37,7 @@ export async function GET(request: NextRequest) {
     // 환경변수 설정 (다른 API들과 동일한 패턴)
     const searchApiUrl = process.env.SEARCH_API_URL || 'http://localhost:8000';
     const encodedQuery = encodeURIComponent(query.trim());
-    const fullUrl = `${searchApiUrl}/api/v1/search/autocomplete/?query=${encodedQuery}&limit=${limit}`;
+    const fullUrl = `${searchApiUrl}/api/v1/search/autocomplete/?query=${encodedQuery}&language=${language}&limit=${limit}`;
     
     const response = await fetch(fullUrl, {
       headers: {

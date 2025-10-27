@@ -19,6 +19,34 @@ module.exports = {
           '60%': { transform: 'rotate(10deg)' },
           '70%': { transform: 'rotate(0deg)' },
           '100%': { transform: 'rotate(0deg)' }
+        },
+        shimmer: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' }
+        },
+        'fade-in-up': {
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(20px)'
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateY(0)'
+          }
+        },
+        'fade-in': {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' }
+        },
+        'scale-in': {
+          '0%': {
+            opacity: '0',
+            transform: 'scale(0.9)'
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'scale(1)'
+          }
         }
       },
       fontFamily: {
@@ -27,7 +55,11 @@ module.exports = {
         handwriting: ['var(--font-gamja)', 'var(--font-dancing)', 'cursive'],
       },
       animation: {
-        wave: 'wave 1.5s infinite'
+        wave: 'wave 1.5s infinite',
+        shimmer: 'shimmer 2s infinite',
+        'fade-in-up': 'fade-in-up 0.6s ease-out forwards',
+        'fade-in': 'fade-in 0.4s ease-out forwards',
+        'scale-in': 'scale-in 0.4s ease-out forwards'
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

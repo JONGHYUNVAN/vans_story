@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { ApiFetch } from '@/app/api/apiFetch/apiFetch';
-import { AutocompleteResponse, AutocompleteSuggestion } from '@/types/api/search';
+import { AutocompleteResponse, AutocompleteSuggestion, AutocompleteApiResponse } from '@/types/api/search';
 
 interface UseAutocompleteOptions {
   /** 디바운스 지연 시간 (ms) */
@@ -11,6 +11,10 @@ interface UseAutocompleteOptions {
   minLength?: number;
   /** 자동완성 활성화 여부 */
   enabled?: boolean;
+  /** 언어 설정 */
+  language?: string;
+  /** 제안 선택 시 호출되는 콜백 */
+  onSelect?: (suggestion: AutocompleteSuggestion) => void;
 }
 
 interface UseAutocompleteReturn {
@@ -43,7 +47,9 @@ export function useAutocomplete({
   debounceMs = 300,
   limit = 10,
   minLength = 2,
-  enabled = true
+  enabled = true,
+  language = 'all',
+  onSelect
 }: UseAutocompleteOptions = {}): UseAutocompleteReturn {
   const [suggestions, setSuggestions] = useState<AutocompleteSuggestion[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -54,6 +60,27 @@ export function useAutocomplete({
   
   const debounceTimeoutRef = useRef<NodeJS.Timeout>();
   const abortControllerRef = useRef<AbortController>();
+
+  // 백엔드 응답을 프론트엔드 구조로 변환하는 함수
+  const transformApiResponse = useCallback((apiResponse: AutocompleteApiResponse, originalQuery: string): AutocompleteResponse => {
+    const suggestions: AutocompleteSuggestion[] = apiResponse.suggestions.map((text, index) => ({
+      text,
+      type: 'query' as const, // 현재는 모든 제안을 'query' 타입으로 처리
+      score: 1 - (index * 0.1), // 순서에 따라 점수 부여 (첫 번째가 가장 높음)
+      highlight: text.toLowerCase().includes(originalQuery.toLowerCase()) 
+        ? text.replace(
+            new RegExp(`(${originalQuery})`, 'gi'), 
+            '<mark>$1</mark>'
+          )
+        : undefined
+    }));
+
+    return {
+      suggestions,
+      query: apiResponse.query,
+      total: suggestions.length
+    };
+  }, []);
 
   // 자동완성 API 호출 함수
   const fetchSuggestions = useCallback(async (query: string) => {
@@ -78,6 +105,7 @@ export function useAutocomplete({
       const response = await ApiFetch.getAutocompleteSuggestions(
         query, 
         limit, 
+        language,
         { signal: abortControllerRef.current.signal }
       );
 
@@ -85,9 +113,11 @@ export function useAutocomplete({
         throw new Error('자동완성 요청이 실패했습니다.');
       }
 
-      const data: AutocompleteResponse = await response.json();
-      setSuggestions(data.suggestions || []);
-      setIsOpen(data.suggestions.length > 0);
+      const apiData: AutocompleteApiResponse = await response.json();
+      const transformedData = transformApiResponse(apiData, query);
+      
+      setSuggestions(transformedData.suggestions || []);
+      setIsOpen(transformedData.suggestions.length > 0);
       setHighlightedIndex(-1);
     } catch (err: any) {
       if (err.name !== 'AbortError') {
@@ -99,7 +129,7 @@ export function useAutocomplete({
     } finally {
       setIsLoading(false);
     }
-  }, [enabled, limit, minLength]);
+  }, [enabled, limit, minLength, language, transformApiResponse]);
 
   // 디바운스된 검색어 업데이트
   const updateQuery = useCallback((query: string) => {
@@ -121,7 +151,11 @@ export function useAutocomplete({
     setIsOpen(false);
     setSuggestions([]);
     setHighlightedIndex(-1);
-  }, []);
+    // 외부 콜백 호출
+    if (onSelect) {
+      onSelect(suggestion);
+    }
+  }, [onSelect]);
 
   // 키보드 네비게이션
   const handleKeyDown = useCallback((event: React.KeyboardEvent) => {

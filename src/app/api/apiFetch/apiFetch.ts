@@ -186,4 +186,31 @@ export class ApiFetch {
   static async getPopularSearches(options: RequestInit = {}): Promise<Response> {
     return this.basicGet('/api/search/popular', options);
   }
+
+  /**
+   * 자동완성 검색어 조회 (토큰 없음)
+   * @param query 검색어 (최소 2글자)
+   * @param limit 결과 개수 (기본값: 10)
+   * @param options 추가 옵션
+   */
+  static async getAutocompleteSuggestions(
+    query: string, 
+    limit: number = 10, 
+    options: RequestInit = {}
+  ): Promise<Response> {
+    if (!query || query.trim().length < 2) {
+      // 클라이언트에서 빈 결과 반환
+      return new Response(JSON.stringify({
+        suggestions: [],
+        query: query?.trim() || '',
+        total: 0
+      }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    
+    const encodedQuery = encodeURIComponent(query.trim());
+    return this.basicGet(`/api/search/autocomplete?query=${encodedQuery}&limit=${limit}`, options);
+  }
 } 

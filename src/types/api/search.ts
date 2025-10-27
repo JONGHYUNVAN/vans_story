@@ -43,3 +43,22 @@ export interface SearchResponse {
   results: SearchResult[];
   aggregations: Record<string, any>;
 }
+
+/**
+ * 자동완성 제안 항목
+ */
+export interface AutocompleteSuggestion {
+  text: string;
+  type: 'query' | 'title' | 'category' | 'tag';
+  score: number;
+  highlight?: string;
+}
+
+/**
+ * 자동완성 API 응답
+ */
+export interface AutocompleteResponse {
+  suggestions: AutocompleteSuggestion[];
+  query: string;
+  total: number;
+}

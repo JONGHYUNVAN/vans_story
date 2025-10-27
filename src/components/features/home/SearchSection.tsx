@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { handleSearch } from '@/app/search/actions';
 import { ApiFetch } from '@/app/api/apiFetch/apiFetch';
 import { useRouter } from 'next/navigation';
+import { AutocompleteInput } from '@/components/ui/AutocompleteInput';
+import { AutocompleteSuggestion } from '@/types/api/search';
 
 /**
  * 홈페이지 검색 섹션 컴포넌트 (서버 액션 + 클라이언트 상태 관리)
@@ -13,6 +15,7 @@ import { useRouter } from 'next/navigation';
  */
 export default function SearchSection() {
   const [popularSearches, setPopularSearches] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
 
   // API에서 인기 검색어 가져오기
@@ -51,12 +54,25 @@ export default function SearchSection() {
     router.push(`/search?q=${encodeURIComponent(searchTerm)}`);
   };
 
+  // 자동완성 제안 선택 핸들러
+  const handleAutocompleteSelect = (suggestion: AutocompleteSuggestion) => {
+    router.push(`/search?q=${encodeURIComponent(suggestion.text)}`);
+  };
+
+  // 폼 제출 핸들러
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
   return (
          <section className="relative w-full py-20 pb-32 bg-black overflow-hidden">
              <div className="container mx-auto px-4">
          <div className="max-w-4xl mx-auto pt-24">
           <form
-            action={handleSearch}
+            onSubmit={handleFormSubmit}
             className="group relative flex items-center bg-gray-800/30 rounded-2xl shadow-2xl border border-gray-700/50 backdrop-blur-xl 
                        transition-all duration-500 hover:bg-gray-800/40 focus-within:border-blue-500/50 focus-within:ring-4 focus-within:ring-blue-500/20
                        hover:shadow-blue-500/10"
@@ -76,13 +92,18 @@ export default function SearchSection() {
                 />
               </svg>
             </div>
-            <input
-              type="text"
-              name="q"
-              placeholder="Spring Boot, JWT , Database, algorithm..."
-              className="w-full bg-transparent text-lg text-white placeholder-gray-500 focus:outline-none px-4 py-6
-                         placeholder:text-gray-500 placeholder:text-base"
-              required
+            <AutocompleteInput
+              value={searchQuery}
+              onChange={setSearchQuery}
+              onSelect={handleAutocompleteSelect}
+              placeholder="Spring Boot, JWT, Database, algorithm..."
+              className="flex-1"
+              inputClassName="w-full bg-transparent text-lg text-white placeholder-gray-500 focus:outline-none px-4 py-6
+                           placeholder:text-gray-500 placeholder:text-base border-0"
+              dropdownClassName="mt-2 border-gray-600 bg-gray-800/95 backdrop-blur-sm"
+              minLength={2}
+              limit={8}
+              debounceMs={300}
             />
             <button
               type="submit"

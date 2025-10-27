@@ -1,5 +1,11 @@
+'use client';
+
+import { useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import { handleSearch } from '@/app/search/actions';
+import { AutocompleteInput } from '@/components/ui/AutocompleteInput';
+import { AutocompleteSuggestion } from '@/types/api/search';
+import { useRouter } from 'next/navigation';
 
 interface SearchHeaderProps {
   query: string;
@@ -10,16 +16,36 @@ interface SearchHeaderProps {
  * - 검색창과 검색어 정보를 표시합니다.
  */
 export default function SearchHeader({ query }: SearchHeaderProps) {
+  const [searchQuery, setSearchQuery] = useState(query);
+  const router = useRouter();
+
+  // 자동완성 제안 선택 핸들러
+  const handleAutocompleteSelect = (suggestion: AutocompleteSuggestion) => {
+    router.push(`/search?q=${encodeURIComponent(suggestion.text)}`);
+  };
+
+  // 폼 제출 핸들러
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
   return (
     <header className="mb-8">
-      <form action={handleSearch} className="relative flex items-center mb-4">
-        <input
-          type="text"
-          name="q"
-          defaultValue={query} // defaultValue를 사용하여 서버에서 전달된 초기값 설정
+      <form onSubmit={handleFormSubmit} className="relative flex items-center mb-4">
+        <AutocompleteInput
+          value={searchQuery}
+          onChange={setSearchQuery}
+          onSelect={handleAutocompleteSelect}
           placeholder="다시 검색..."
-          className="w-full bg-gray-800 border border-gray-700 rounded-lg text-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 px-4 py-3"
-          required
+          className="flex-1"
+          inputClassName="w-full bg-gray-800 border border-gray-700 rounded-lg text-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 px-4 py-3 pr-16"
+          dropdownClassName="border-gray-600 bg-gray-800"
+          minLength={2}
+          limit={8}
+          debounceMs={300}
         />
         <button
           type="submit"

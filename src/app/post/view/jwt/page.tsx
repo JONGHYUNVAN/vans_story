@@ -1,5 +1,5 @@
-import { getPostList } from '@/app/api/posts/actions/client';
-import { SidebarWrapper } from '../utils/SidebarWrapper';
+import { getPostList } from '@/lib/posts/client-actions';
+import { SidebarWrapper } from '../components/SidebarWrapper';
 import JWTLayout from './JWTLayout';
 import JWTList from './JWTList';
 

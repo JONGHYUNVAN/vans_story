@@ -1,9 +1,9 @@
 import { Viewer } from '@/components/features/post/viewer/Viewer';
 import { Post } from '@/interfaces/post/types';
 import NestjsLayout from '../NestjsLayout';
-import { SidebarWrapper } from '../../utils/SidebarWrapper';
-import { getPostWithViewCount } from '@/app/api/posts/actions/client';
-import { ViewCountHandler } from '../../utils/ViewCountHandler';
+import { SidebarWrapper } from '../../components/SidebarWrapper';
+import { getPostWithViewCount } from '@/lib/posts/client-actions';
+import { ViewCountHandler } from '../../components/ViewCountHandler';
 
 interface PageProps {
   params: Promise<{ id: string }>;

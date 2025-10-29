@@ -46,3 +46,4 @@ export async function sendChatMessageDirect(chatData: ChatRequest): Promise<Chat
   
   return response.json();
 }
+

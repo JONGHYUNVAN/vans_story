@@ -17,7 +17,7 @@ import { useImageUploadAndReplace } from '@/hooks/useImageUploadAndReplace'
 import { API_URLS } from '@/constants/apiUrl'
 import { tokenStorage } from '@/utils/token'
 import { ApiFetch } from '@/lib/apiFetch'
-import { getPostForEdit, saveTempPost } from '@/app/api/posts/actions/client'
+import { getPostForEdit, saveTempPost } from '@/lib/posts/client-actions'
 
 export interface UsePostOptions {
   mode: 'create' | 'edit'

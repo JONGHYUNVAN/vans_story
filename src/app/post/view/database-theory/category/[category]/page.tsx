@@ -1,7 +1,7 @@
 import DatabaseTheoryList from '../../DatabaseTheoryList';
 import DatabaseTheoryLayout from '../../DatabaseTheoryLayout';
-import { SidebarWrapper } from '../../../utils/SidebarWrapper';
-import { getPostList } from '@/app/api/posts/actions/client';
+import { SidebarWrapper } from '../../../components/SidebarWrapper';
+import { getPostList } from '@/lib/posts/client-actions';
 
 interface PageProps {
   params: Promise<{ category: string }>;

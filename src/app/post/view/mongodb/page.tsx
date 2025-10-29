@@ -1,6 +1,6 @@
-import { getPostList } from '@/app/api/posts/actions/client';
+import { getPostList } from '@/lib/posts/client-actions';
 import MongodbLayout from './MongodbLayout';
-import { SidebarWrapper } from '../utils/SidebarWrapper';
+import { SidebarWrapper } from '../components/SidebarWrapper';
 import MongodbList from './MongodbList';
 
 export default async function Page() {

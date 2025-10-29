@@ -1,7 +1,7 @@
 import { API_URLS } from '@/constants/apiUrl';
 import SpringList from '@/app/post/view/spring/SpringList';
 import SpringLayout from '@/app/post/view/spring/SpringLayout';
-import { SidebarWrapper } from '@/app/post/view/utils/SidebarWrapper';
+import { SidebarWrapper } from '@/app/post/view/components/SidebarWrapper';
 
 interface PageProps {
   params: Promise<{ category: string }>;

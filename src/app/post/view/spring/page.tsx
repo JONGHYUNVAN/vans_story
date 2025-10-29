@@ -1,7 +1,7 @@
-import { getPostList } from '@/app/api/posts/actions/client';
+import { getPostList } from '@/lib/posts/client-actions';
 import SpringList from './SpringList';
 import SpringLayout from './SpringLayout';
-import { SidebarWrapper } from '../utils/SidebarWrapper';
+import { SidebarWrapper } from '../components/SidebarWrapper';
 
 
 

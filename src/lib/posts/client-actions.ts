@@ -79,4 +79,5 @@ export async function getPostWithViewCount(id: string, hasViewed = false): Promi
     throw new Error(`게시글 조회 실패, ${response.status}`);
   }
   return response.json();
-} 
+}
+

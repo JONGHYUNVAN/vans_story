@@ -3,8 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Send, Bot, User, AlertCircle, Loader2, Move, GripHorizontal } from 'lucide-react';
-import { sendChatMessage } from '@/app/api/ai/actions/client';
-import type { ChatRequest } from '@/app/api/ai/actions/client';
+import { sendChatMessage, type ChatRequest } from '@/lib/ai/client-actions';
 
 interface AiChatModalProps {
   isOpen: boolean;

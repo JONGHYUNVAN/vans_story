@@ -1,6 +1,6 @@
-import { getPostList } from '@/app/api/posts/actions/client';
+import { getPostList } from '@/lib/posts/client-actions';
 import MariadbLayout from './MariadbLayout';
-import { SidebarWrapper } from '../utils/SidebarWrapper';
+import { SidebarWrapper } from '../components/SidebarWrapper';
 import MariadbList from './MariadbList';
 
 export default async function Page() {

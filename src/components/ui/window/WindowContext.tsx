@@ -37,13 +37,9 @@ interface WindowManagerProviderProps {
 }
 
 export function WindowManagerProvider({ children, persistKey = 'windows-state' }: WindowManagerProviderProps) {
-  const [windows, setWindows] = useState<Map<string, WindowConfig>>(new Map())
-  const [activeWindowId, setActiveWindowId] = useState<string | null>(null)
-  const [highestZIndex, setHighestZIndex] = useState(1000)
-
-  // localStorage에서 상태 복원 (초기 마운트 시에만)
-  useEffect(() => {
-    if (typeof window === 'undefined') return
+  const [windows, setWindows] = useState<Map<string, WindowConfig>>(() => {
+    // 초기 상태를 설정할 때 localStorage에서 복원 시도
+    if (typeof window === 'undefined') return new Map()
     
     try {
       const saved = localStorage.getItem(persistKey)
@@ -55,15 +51,46 @@ export function WindowManagerProvider({ children, persistKey = 'windows-state' }
           restoredWindows.set(id, config as WindowConfig)
         })
         
-        setWindows(restoredWindows)
-        setActiveWindowId(parsed.activeWindowId || null)
-        setHighestZIndex(parsed.highestZIndex || 1000)
+        return restoredWindows
       }
     } catch (error) {
       console.error('Failed to restore window state:', error)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []) // 초기 마운트 시에만 실행
+    
+    return new Map()
+  })
+  
+  const [activeWindowId, setActiveWindowId] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null
+    
+    try {
+      const saved = localStorage.getItem(persistKey)
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        return parsed.activeWindowId || null
+      }
+    } catch (error) {
+      console.error('Failed to restore active window:', error)
+    }
+    
+    return null
+  })
+  
+  const [highestZIndex, setHighestZIndex] = useState(() => {
+    if (typeof window === 'undefined') return 1000
+    
+    try {
+      const saved = localStorage.getItem(persistKey)
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        return parsed.highestZIndex || 1000
+      }
+    } catch (error) {
+      console.error('Failed to restore highest z-index:', error)
+    }
+    
+    return 1000
+  })
 
   // localStorage에 상태 저장
   useEffect(() => {

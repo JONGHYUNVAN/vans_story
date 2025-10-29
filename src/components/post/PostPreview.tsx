@@ -62,6 +62,15 @@ export function PostPreview({
   showCard = true,
   showLayout = true
 }: PostPreviewProps) {
+  // post가 유효한 객체인지 확인
+  if (!post || typeof post !== 'object') {
+    return (
+      <div className="mt-4 p-4 bg-red-100 border border-red-400 rounded">
+        <p className="text-red-800">유효하지 않은 포스트 데이터입니다.</p>
+      </div>
+    )
+  }
+
   // 필수 데이터 검증
   if (!post.title || !post.content || !post.mainCategory) {
     return (
@@ -76,13 +85,18 @@ export function PostPreview({
     )
   }
 
+  // content가 문자열이 아닌 경우 변환
+  const contentStr = typeof post.content === 'string' 
+    ? post.content 
+    : JSON.stringify(post.content)
+
   // PostInfo로 변환 (기존 컴포넌트들과 호환성을 위해)
   const postInfo: PostInfo = {
     id: post.id || 'preview',
     title: post.title!,
     topic: post.topic || '',
     description: post.description || '',
-    content: post.content!,
+    content: contentStr,
     author: post.author || '미리보기',
     createdAt: post.createdAt || new Date().toISOString(),
     updatedAt: post.updatedAt || new Date().toISOString(),
@@ -109,7 +123,7 @@ export function PostPreview({
           {showLayout && (
             <LayoutComponent title={post.title!} isPreview>
               <div className="prose max-w-none text-white">
-                {isViewerMounted && <Viewer content={post.content!} />}
+                {isViewerMounted && <Viewer content={contentStr} />}
               </div>
             </LayoutComponent>
           )}
@@ -133,7 +147,7 @@ export function PostPreview({
               ))}
             </div>
           )}
-          {isViewerMounted && <Viewer content={post.content!} />}
+          {isViewerMounted && <Viewer content={contentStr} />}
         </div>
       )}
     </div>

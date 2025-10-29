@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
-import { API_URLS } from '@/constants/apiUrl';
+import { createErrorResponse, createSuccessResponse } from '@/lib/errorHandler';
 
 export type ChatRequest = {
   message: string;
@@ -18,13 +18,16 @@ export async function POST(request: NextRequest) {
 
     // 메시지 데이터 검증
     if (!body.message || body.message.trim() === '') {
-      return NextResponse.json(
-        { error: '메시지 내용이 필요합니다.' },
-        { status: 400 }
+      return createErrorResponse(
+        400,
+        '메시지 내용이 필요합니다.'
       );
     }
 
-    const res = await fetch(`${process.env.AI_API_URL}/chat`, {
+    const aiApiUrl = process.env.AI_API_URL || 'http://localhost:3003';
+    console.log('🔄 AI API 호출:', `${aiApiUrl}/chat`);
+
+    const res = await fetch(`${aiApiUrl}/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -41,13 +44,15 @@ export async function POST(request: NextRequest) {
 
     if (!res.ok) {
       const errorData = await res.json().catch(() => null);
-      return NextResponse.json(
-        { error: errorData?.message || '채팅 메시지 전송에 실패했습니다.' },
-        { status: res.status }
+      console.error('❌ AI API 호출 실패:', res.status, errorData);
+      return createErrorResponse(
+        res.status,
+        errorData?.message || errorData?.error || '채팅 메시지 전송에 실패했습니다.'
       );
     }
 
     const data = await res.json();
+    console.log('✅ AI 채팅 메시지 전송 성공');
     
     // 3003번 포트 응답 형식을 우리 형식으로 매핑
     const mappedResponse = {
@@ -58,12 +63,12 @@ export async function POST(request: NextRequest) {
       timestamp: new Date().toISOString(),
     };
     
-    return NextResponse.json(mappedResponse);
+    return createSuccessResponse(mappedResponse);
   } catch (error) {
-    console.error('Error sending chat message:', error);
-    return NextResponse.json(
-      { error: '서버 오류가 발생했습니다.' },
-      { status: 500 }
+    console.error('❌ AI API 오류:', error);
+    return createErrorResponse(
+      500,
+      '서버 오류가 발생했습니다.'
     );
   }
 } 

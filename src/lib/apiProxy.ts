@@ -16,6 +16,8 @@ export type ProxyConfig = {
   revalidate?: number;
   /** 인증 필요 여부 */
   requireAuth?: boolean;
+  /** 추가 헤더 */
+  additionalHeaders?: HeadersInit;
   /** 성공 로그 메시지 */
   successLog?: string;
   /** 에러 발생 시 기본 메시지 */
@@ -81,7 +83,7 @@ export async function proxyGet(
 
     console.log('🔄 API 호출:', fullUrl);
 
-    const requestHeaders = await buildHeaders(config.requireAuth || false);
+    const requestHeaders = await buildHeaders(config.requireAuth || false, config.additionalHeaders);
 
     const response = await fetch(fullUrl, {
       method: 'GET',
@@ -129,7 +131,7 @@ export async function proxyPost(
 
     console.log('🔄 POST API 호출:', fullUrl);
 
-    const requestHeaders = await buildHeaders(config.requireAuth || false);
+    const requestHeaders = await buildHeaders(config.requireAuth || false, config.additionalHeaders);
 
     const response = await fetch(fullUrl, {
       method: 'POST',
@@ -178,7 +180,7 @@ export async function proxyPatch(
 
     console.log('🔄 PATCH API 호출:', fullUrl);
 
-    const requestHeaders = await buildHeaders(config.requireAuth || false);
+    const requestHeaders = await buildHeaders(config.requireAuth || false, config.additionalHeaders);
 
     const response = await fetch(fullUrl, {
       method: 'PATCH',
@@ -226,7 +228,7 @@ export async function proxyDelete(
 
     console.log('🔄 DELETE API 호출:', fullUrl);
 
-    const requestHeaders = await buildHeaders(config.requireAuth || false);
+    const requestHeaders = await buildHeaders(config.requireAuth || false, config.additionalHeaders);
 
     const response = await fetch(fullUrl, {
       method: 'DELETE',

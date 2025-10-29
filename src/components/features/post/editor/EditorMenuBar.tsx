@@ -208,15 +208,15 @@ export function EditorMenuBar({ localImages, setLocalImages }: {
   if (!editor) return null;
 
   return (
-    <div className={`bg-white border-b border-gray-200 ${isSticky ? 'sticky top-16 z-50 shadow-md' : ''}`}>
-      <div className="flex flex-wrap items-center gap-1 p-1">
+    <div className={`bg-gray-800 border-b border-gray-600 ${isSticky ? 'sticky top-16 z-50 shadow-md' : ''}`}>
+      <div className="flex flex-wrap items-center gap-1 p-2">
         {/* 스타일 버튼들 */}
         <div className="flex items-center gap-1 p-1">
           <button
             type="button"
             onClick={() => editor.chain().focus().toggleBold().run()}
-            className={`p-2 rounded hover:bg-gray-100 ${
-              activeStates.bold ? 'bg-gray-100' : ''
+            className={`p-2 rounded text-gray-900 hover:bg-gray-700 ${
+              activeStates.bold ? 'bg-gray-700' : ''
             }`}
             title="굵게 (Ctrl+B)"
           >
@@ -225,8 +225,8 @@ export function EditorMenuBar({ localImages, setLocalImages }: {
           <button
             type="button"
             onClick={() => editor.chain().focus().toggleItalic().run()}
-            className={`p-2 rounded hover:bg-gray-100 ${
-              activeStates.italic ? 'bg-gray-100' : ''
+            className={`p-2 rounded text-gray-900 hover:bg-gray-700 ${
+              activeStates.italic ? 'bg-gray-700' : ''
             }`}
             title="기울임 (Ctrl+I)"
           >
@@ -235,8 +235,8 @@ export function EditorMenuBar({ localImages, setLocalImages }: {
           <button
             type="button"
             onClick={() => editor.chain().focus().toggleUnderline().run()}
-            className={`p-2 rounded hover:bg-gray-100 ${
-              activeStates.underline ? 'bg-gray-100' : ''
+            className={`p-2 rounded text-gray-900 hover:bg-gray-700 ${
+              activeStates.underline ? 'bg-gray-700' : ''
             }`}
             title="밑줄 (Ctrl+U)"
           >
@@ -245,8 +245,8 @@ export function EditorMenuBar({ localImages, setLocalImages }: {
           <button
             type="button"
             onClick={() => editor.chain().focus().toggleStrike().run()}
-            className={`p-2 rounded hover:bg-gray-100 ${
-              activeStates.strike ? 'bg-gray-100' : ''
+            className={`p-2 rounded text-gray-900 hover:bg-gray-700 ${
+              activeStates.strike ? 'bg-gray-700' : ''
             }`}
             title="취소선"
           >
@@ -257,8 +257,8 @@ export function EditorMenuBar({ localImages, setLocalImages }: {
           <button
             type="button"
             onClick={() => editor.chain().focus().setTextAlign('left').run()}
-            className={`p-2 rounded hover:bg-gray-100 ${
-              editor.isActive({ textAlign: 'left' }) ? 'bg-gray-100' : ''
+            className={`p-2 rounded text-gray-900 hover:bg-gray-700 ${
+              editor.isActive({ textAlign: 'left' }) ? 'bg-gray-700' : ''
             }`}
             title="왼쪽 정렬"
           >
@@ -267,8 +267,8 @@ export function EditorMenuBar({ localImages, setLocalImages }: {
           <button
             type="button"
             onClick={() => editor.chain().focus().setTextAlign('center').run()}
-            className={`p-2 rounded hover:bg-gray-100 ${
-              editor.isActive({ textAlign: 'center' }) ? 'bg-gray-100' : ''
+            className={`p-2 rounded text-gray-900 hover:bg-gray-700 ${
+              editor.isActive({ textAlign: 'center' }) ? 'bg-gray-700' : ''
             }`}
             title="가운데 정렬"
           >
@@ -277,8 +277,8 @@ export function EditorMenuBar({ localImages, setLocalImages }: {
           <button
             type="button"
             onClick={() => editor.chain().focus().setTextAlign('right').run()}
-            className={`p-2 rounded hover:bg-gray-100 ${
-              editor.isActive({ textAlign: 'right' }) ? 'bg-gray-100' : ''
+            className={`p-2 rounded text-gray-900 hover:bg-gray-700 ${
+              editor.isActive({ textAlign: 'right' }) ? 'bg-gray-700' : ''
             }`}
             title="오른쪽 정렬"
           >
@@ -287,8 +287,8 @@ export function EditorMenuBar({ localImages, setLocalImages }: {
           <button
             type="button"
             onClick={() => editor.chain().focus().setTextAlign('justify').run()}
-            className={`p-2 rounded hover:bg-gray-100 ${
-              editor.isActive({ textAlign: 'justify' }) ? 'bg-gray-100' : ''
+            className={`p-2 rounded text-gray-900 hover:bg-gray-700 ${
+              editor.isActive({ textAlign: 'justify' }) ? 'bg-gray-700' : ''
             }`}
             title="양쪽 정렬"
           >
@@ -301,7 +301,7 @@ export function EditorMenuBar({ localImages, setLocalImages }: {
           <div className="relative">
             <select
               onChange={(e) => handlePresetChange(e.target.value)}
-              className="h-9 px-2 border border-gray-200 focus:outline-none rounded-b [&>option]:p-2"
+              className="h-9 px-2 border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 rounded [&>option]:p-2 [&>option]:bg-gray-700"
               value={preset}>
               <option value="h1" style={{ fontSize: '40px', fontWeight: 'bold' }}>제목1</option>
               <option value="h2" style={{ fontSize: '24px', fontWeight: 'bold' }}>제목2</option>
@@ -316,7 +316,7 @@ export function EditorMenuBar({ localImages, setLocalImages }: {
           <div className="relative">
             <select
               onChange={(e) => setFontSize(e.target.value)}
-              className="h-9 px-2 rounded border border-gray-200 focus:outline-none"
+              className="h-9 px-2 rounded border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 [&>option]:bg-gray-700"
               value={fontSize}
             >
               {FONT_SIZES.map((size) => (
@@ -332,7 +332,7 @@ export function EditorMenuBar({ localImages, setLocalImages }: {
             <select
               value={selectedFont}
               onChange={(e) => setSelectedFont(e.target.value)}
-              className="h-9 px-2 rounded border border-gray-200 focus:outline-none"
+              className="h-9 px-2 rounded border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 [&>option]:bg-gray-700"
             >
               {editor.isActive('codeBlock') ? 
               FONTS_BY_LANGUAGE['co'].map(font => (
@@ -418,8 +418,8 @@ export function EditorMenuBar({ localImages, setLocalImages }: {
             <button
               type="button"
               onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-              className={`p-2 rounded hover:bg-gray-100 transition-colors ${
-                editor.isActive('codeBlock') ? 'bg-gray-100' : ''
+              className={`p-2 rounded text-gray-900 hover:bg-gray-700 transition-colors ${
+                editor.isActive('codeBlock') ? 'bg-gray-700' : ''
               }`}
               title="코드 블록"
             >
@@ -460,7 +460,7 @@ export function EditorMenuBar({ localImages, setLocalImages }: {
               editor.chain().focus().toggleBulletList().run()
             }}
             className={`p-1 hover:bg-gray-100 rounded ${
-              editor.isActive('bulletList') ? 'bg-gray-100' : ''
+              editor.isActive('bulletList') ? 'bg-gray-700' : ''
             }`}
             title="글머리 기호"
           >
@@ -470,8 +470,8 @@ export function EditorMenuBar({ localImages, setLocalImages }: {
           <button
             type="button"
             onClick={() => editor.chain().focus().toggleOrderedList().run()}
-            className={`p-2 rounded hover:bg-gray-100 ${
-              editor.isActive('orderedList') ? 'bg-gray-100' : ''
+            className={`p-2 rounded text-gray-900 hover:bg-gray-700 ${
+              editor.isActive('orderedList') ? 'bg-gray-700' : ''
             }`}
             title="번호 매기기"
           >
@@ -481,8 +481,8 @@ export function EditorMenuBar({ localImages, setLocalImages }: {
           <button
             type="button"
             onClick={() => editor.chain().focus().toggleBlockquote().run()}
-            className={`p-2 rounded hover:bg-gray-100 ${
-              editor.isActive('blockquote') ? 'bg-gray-100' : ''
+            className={`p-2 rounded text-gray-900 hover:bg-gray-700 ${
+              editor.isActive('blockquote') ? 'bg-gray-700' : ''
             }`}
             title="인용구"
           >

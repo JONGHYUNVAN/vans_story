@@ -52,12 +52,10 @@ export function Editor({ initialContent = '', onChange, readonly = false, localI
     <EditorProvider value={editor}>
       <div className="relative">
         <EditorMenuBar localImages={localImages} setLocalImages={setLocalImages} />
-        <div className="prose max-w-none">
-          <EditorContent 
-            editor={editor} 
-            className="min-h-[60vh] border border-gray-200 rounded-lg p-4 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent"
-          />
-        </div>
+        <EditorContent 
+          editor={editor} 
+          className="prose prose-invert max-w-none min-h-[500px] border border-gray-600 rounded-lg p-4 bg-gray-700 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent"
+        />
         <EditorBubbleMenu />
       </div>
     </EditorProvider>

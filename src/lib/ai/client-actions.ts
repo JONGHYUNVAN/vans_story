@@ -25,10 +25,14 @@ export async function sendChatMessage(chatData: ChatRequest): Promise<ChatRespon
   
   if (!response.ok) {
     const error = await response.json().catch(() => null);
-    throw new Error(error?.error || '채팅 메시지 전송에 실패했습니다.');
+    const errorMessage = error?.error?.message || error?.error || error?.message || '채팅 메시지 전송에 실패했습니다.';
+    throw new Error(errorMessage);
   }
   
-  return response.json();
+  const responseData = await response.json();
+  
+  // BFF 프록시에서 { success: true, data: {...} } 구조로 반환
+  return responseData.success && responseData.data ? responseData.data : responseData;
 }
 
 /**
@@ -41,9 +45,13 @@ export async function sendChatMessageDirect(chatData: ChatRequest): Promise<Chat
   
   if (!response.ok) {
     const error = await response.json().catch(() => null);
-    throw new Error(error?.error || '채팅 메시지 전송에 실패했습니다.');
+    const errorMessage = error?.error?.message || error?.error || error?.message || '채팅 메시지 전송에 실패했습니다.';
+    throw new Error(errorMessage);
   }
   
-  return response.json();
+  const responseData = await response.json();
+  
+  // BFF 프록시에서 { success: true, data: {...} } 구조로 반환
+  return responseData.success && responseData.data ? responseData.data : responseData;
 }
 

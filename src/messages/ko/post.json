@@ -11,6 +11,7 @@
     "by": "by. {author}",
     "create": {
       "title": "새 글 작성하기",
+      "description": "새로운 포스트를 작성해보세요",
       "inputTitle": "제목을 입력하세요",
       "inputTopic": "주제를 입력하세요",
       "inputDescription": "설명을 입력하세요",
@@ -25,6 +26,7 @@
       "edit": "편집",
       "preview": "미리보기",
       "submit": "등록",
+      "submitting": "작성 중...",
       "tempSave": "임시저장",
       "validation": "모든 필수 항목을 입력해주세요.",
       "tempSaveSuccess": "임시저장되었습니다.",
@@ -34,8 +36,22 @@
       "titlePlaceholder": "제목을 입력하세요"
     },
     "edit": {
-      "submit": "게시",
-      "tempSave": "임시저장"
+      "title": "포스트 편집",
+      "description": "포스트를 수정해보세요",
+      "editMode": "편집",
+      "previewMode": "미리보기",
+      "submit": "수정",
+      "submitting": "수정 중...",
+      "tempSave": "임시저장",
+      "unsavedChanges": "저장되지 않은 변경사항이 있습니다"
+    },
+    "form": {
+      "basicInfo": "기본 정보",
+      "content": "내용",
+      "preview": "미리보기",
+      "actions": "작업",
+      "tempSave": "임시저장",
+      "status": "상태"
     },
     "updateError": {
       "default": "게시글 업데이트 실패"

@@ -146,7 +146,7 @@ export function PostForm({
           <div className="mb-6">
             <h1 className="text-3xl font-bold mb-2">
               {mode === 'create' 
-                ? (t('post.create.title') || '새 포스트 작성')
+                ? (t('post.create.title') || '새 글 작성하기')
                 : (t('post.edit.title') || '포스트 편집')
               }
             </h1>
@@ -165,60 +165,55 @@ export function PostForm({
           />
 
           <form onSubmit={handleFormSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* 왼쪽: 입력 폼 */}
-              <div className="space-y-6">
-                {/* 폼 입력 필드들 */}
-                <div className="bg-gray-800 p-6 rounded-lg">
+            {/* 기본 정보 */}
+            <div className="bg-gray-800 p-6 rounded-lg">
+              <h2 className="text-xl font-semibold mb-4">
+                {t('post.form.basicInfo') || '기본 정보'}
+              </h2>
+              <PostFormInputs
+                data={formData}
+                onChange={updateFormData}
+                availableSubCategories={subCategories}
+                selectedSubCategory={selectedSubCategory}
+                onSubCategoryChange={setSelectedSubCategory}
+                errors={errors}
+                disabled={isSaving}
+              />
+            </div>
+
+            {/* 에디터 / 미리보기 */}
+            <div className="bg-gray-800 p-6 rounded-lg">
+              {viewMode === 'edit' ? (
+                <>
                   <h2 className="text-xl font-semibold mb-4">
-                    {t('post.form.basicInfo') || '기본 정보'}
+                    {t('post.form.content') || '내용'}
                   </h2>
-                  <PostFormInputs
-                    data={formData}
-                    onChange={updateFormData}
-                    availableSubCategories={subCategories}
-                    selectedSubCategory={selectedSubCategory}
-                    onSubCategoryChange={setSelectedSubCategory}
-                    errors={errors}
-                    disabled={isSaving}
+                  <Editor
+                    editorRef={editorRef}
+                    initialContent={formData.content || ''}
+                    onChange={(content) => updateFormData('content', content)}
+                    localImages={localImages}
+                    setLocalImages={setLocalImages}
                   />
-                </div>
+                </>
+              ) : (
+                <>
+                  <h2 className="text-xl font-semibold mb-4">
+                    {t('post.form.preview') || '미리보기'}
+                  </h2>
+                  <PostPreview
+                    post={formData}
+                    isViewerMounted={isViewerMounted}
+                    showCard={true}
+                    showLayout={true}
+                  />
+                </>
+              )}
+            </div>
 
-                {/* 에디터 (편집 모드일 때만) */}
-                {viewMode === 'edit' && (
-                  <div className="bg-gray-800 p-6 rounded-lg">
-                    <h2 className="text-xl font-semibold mb-4">
-                      {t('post.form.content') || '내용'}
-                    </h2>
-                    <Editor
-                      editorRef={editorRef}
-                      initialContent={formData.content || ''}
-                      onChange={(content) => updateFormData('content', content)}
-                      localImages={localImages}
-                      setLocalImages={setLocalImages}
-                    />
-                  </div>
-                )}
-              </div>
-
-              {/* 오른쪽: 미리보기 및 액션 */}
-              <div className="space-y-6">
-                {/* 미리보기 */}
-                {viewMode === 'preview' && (
-                  <div className="bg-gray-800 p-6 rounded-lg">
-                    <h2 className="text-xl font-semibold mb-4">
-                      {t('post.form.preview') || '미리보기'}
-                    </h2>
-                    <PostPreview
-                      post={formData}
-                      isViewerMounted={isViewerMounted}
-                      showCard={true}
-                      showLayout={true}
-                    />
-                  </div>
-                )}
-
-                {/* 액션 버튼들 */}
+            {/* 액션 버튼 및 상태 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* 액션 버튼들 */}
                 <div className="bg-gray-800 p-6 rounded-lg">
                   <h2 className="text-xl font-semibold mb-4">
                     {t('post.form.actions') || '작업'}
@@ -239,8 +234,8 @@ export function PostForm({
                         </span>
                       ) : (
                         mode === 'create' 
-                          ? (t('post.create.submit') || '포스트 작성')
-                          : (t('post.edit.submit') || '포스트 수정')
+                          ? (t('post.create.submit') || '등록')
+                          : (t('post.edit.submit') || '수정')
                       )}
                     </button>
 
@@ -283,7 +278,6 @@ export function PostForm({
                     <div>변경사항: {hasUnsavedChanges ? '있음' : '없음'}</div>
                   </div>
                 </div>
-              </div>
             </div>
           </form>
         </div>

@@ -63,6 +63,16 @@ export function useAutocomplete({
 
   // 백엔드 응답을 프론트엔드 구조로 변환하는 함수
   const transformApiResponse = useCallback((apiResponse: AutocompleteApiResponse, originalQuery: string): AutocompleteResponse => {
+    // 방어 코드: suggestions가 배열이 아니거나 없는 경우
+    if (!apiResponse || !Array.isArray(apiResponse.suggestions)) {
+      console.error('Invalid API response:', apiResponse);
+      return {
+        suggestions: [],
+        query: originalQuery,
+        total: 0
+      };
+    }
+
     const suggestions: AutocompleteSuggestion[] = apiResponse.suggestions.map((text, index) => ({
       text,
       type: 'query' as const, // 현재는 모든 제안을 'query' 타입으로 처리
@@ -77,7 +87,7 @@ export function useAutocomplete({
 
     return {
       suggestions,
-      query: apiResponse.query,
+      query: apiResponse.query || originalQuery,
       total: suggestions.length
     };
   }, []);
@@ -113,7 +123,14 @@ export function useAutocomplete({
         throw new Error('자동완성 요청이 실패했습니다.');
       }
 
-      const apiData: AutocompleteApiResponse = await response.json();
+      const responseData = await response.json();
+      console.log('🔍 Autocomplete API Response:', responseData);
+      
+      // BFF 프록시에서 { success: true, data: { suggestions, query } } 구조로 반환
+      const apiData: AutocompleteApiResponse = responseData.success && responseData.data 
+        ? responseData.data 
+        : responseData;
+      
       const transformedData = transformApiResponse(apiData, query);
       
       setSuggestions(transformedData.suggestions || []);

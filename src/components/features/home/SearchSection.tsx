@@ -24,8 +24,12 @@ export default function SearchSection() {
       try {
         const response = await ApiFetch.getPopularSearches();
         if (response.ok) {
-          const data = await response.json();
-          console.log('🔍 Frontend - Received data:', data);
+          const responseData = await response.json();
+          console.log('🔍 Frontend - Received data:', responseData);
+          
+          // BFF 프록시에서 { success: true, data: {...} } 구조로 반환
+          const data = responseData.success && responseData.data ? responseData.data : responseData;
+          
           if (data.popular_searches && Array.isArray(data.popular_searches)) {
             // 객체 배열에서 query 필드 추출하고 중복 제거
             const uniqueSearches = [...new Set(

@@ -11,6 +11,7 @@
     "by": "by. {author}",
     "create": {
       "title": "Create New Post",
+      "description": "Start writing your new post",
       "inputTitle": "Enter title",
       "inputTopic": "Enter topic",
       "inputDescription": "Enter description",
@@ -25,6 +26,7 @@
       "edit": "Edit",
       "preview": "Preview",
       "submit": "Submit",
+      "submitting": "Submitting...",
       "tempSave": "Save as draft",
       "validation": "Please fill in all required fields.",
       "tempSaveSuccess": "Saved as draft.",
@@ -34,8 +36,22 @@
       "titlePlaceholder": "Enter title"
     },
     "edit": {
-      "submit": "Publish",
-      "tempSave": "Save Draft"
+      "title": "Edit Post",
+      "description": "Make changes to your post",
+      "editMode": "Edit",
+      "previewMode": "Preview",
+      "submit": "Update",
+      "submitting": "Updating...",
+      "tempSave": "Save Draft",
+      "unsavedChanges": "You have unsaved changes"
+    },
+    "form": {
+      "basicInfo": "Basic Information",
+      "content": "Content",
+      "preview": "Preview",
+      "actions": "Actions",
+      "tempSave": "Save Draft",
+      "status": "Status"
     },
     "updateError": {
       "default": "Failed to update post"

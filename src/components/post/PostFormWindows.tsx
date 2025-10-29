@@ -55,7 +55,7 @@ function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave }: Pos
     enableValidation: true,
   })
 
-  // 초기 윈도우들 생성
+  // 초기 윈도우들 생성 (마운트 시 한 번만)
   useEffect(() => {
     // 약간의 지연을 두고 윈도우 생성 (localStorage 복원 이후)
     const timer = setTimeout(() => {
@@ -117,7 +117,8 @@ function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave }: Pos
     }, 100) // 100ms 지연
 
     return () => clearTimeout(timer)
-  }, [windows, createWindow]) // windows가 변경될 때도 체크
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // 마운트 시에만 실행
 
   // 커스텀 제출 핸들러
   const handleFormSubmit = async (e: React.FormEvent) => {

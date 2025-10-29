@@ -41,7 +41,7 @@ export function WindowManagerProvider({ children, persistKey = 'windows-state' }
   const [activeWindowId, setActiveWindowId] = useState<string | null>(null)
   const [highestZIndex, setHighestZIndex] = useState(1000)
 
-  // localStorage에서 상태 복원
+  // localStorage에서 상태 복원 (초기 마운트 시에만)
   useEffect(() => {
     if (typeof window === 'undefined') return
     
@@ -62,7 +62,8 @@ export function WindowManagerProvider({ children, persistKey = 'windows-state' }
     } catch (error) {
       console.error('Failed to restore window state:', error)
     }
-  }, [persistKey])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // 초기 마운트 시에만 실행
 
   // localStorage에 상태 저장
   useEffect(() => {

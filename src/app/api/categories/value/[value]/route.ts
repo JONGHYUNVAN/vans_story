@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from 'next/server';
  */
 
 type RouteContext = {
-  params: { value: string };
+  params: Promise<{ value: string }>;
 };
 
 // GET /api/categories/value/[value] - 값으로 카테고리 조회
@@ -15,7 +15,7 @@ export async function GET(
   context: RouteContext
 ) {
   try {
-    const { value } = context.params;
+    const { value } = await context.params;
     
     if (!value) {
       return NextResponse.json(

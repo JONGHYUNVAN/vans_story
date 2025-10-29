@@ -13,6 +13,7 @@ export default function MongoDBSidebar() {
     <BaseSidebar
       // 기본 정보
       frameworkName="MongoDB"                     // 사이드바 헤더에 표시될 이름
+      frameworkValue="mongodb"                    // DB에서 조회할 프레임워크 값
       frameworkIcon={SiMongodb}                   // 헤더 아이콘 (MongoDB)
       frameworkColor="#C19A6B"                    // 아이콘 색상 (MongoDB 브라운)
       frameworkPath="/post/view/mongodb"          // 헤더 클릭 시 이동할 경로

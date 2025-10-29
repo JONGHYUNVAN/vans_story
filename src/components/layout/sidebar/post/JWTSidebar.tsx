@@ -13,6 +13,7 @@ export default function JWTSidebar() {
     <BaseSidebar
       // 기본 정보
       frameworkName="JWT"                         // 사이드바 헤더에 표시될 이름
+      frameworkValue="jwt"                        // DB에서 조회할 프레임워크 값
       frameworkIcon={MdSecurity}                  // 헤더 아이콘 (보안 아이콘)
       frameworkColor="#1E4D2B"                    // 아이콘 색상 (다크 그린)
       frameworkPath="/post/view/jwt"              // 헤더 클릭 시 이동할 경로

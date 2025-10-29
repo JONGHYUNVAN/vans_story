@@ -13,6 +13,7 @@ export default function NextSidebar() {
     <BaseSidebar
       // 기본 정보
       frameworkName="Nextjs"                      // 사이드바 헤더에 표시될 이름
+      frameworkValue="nextjs"                     // DB에서 조회할 프레임워크 값
       frameworkIcon={SiNextdotjs}                 // 헤더 아이콘 (Next.js)
       frameworkColor="#000000"                    // 아이콘 색상 (블랙)
       frameworkPath="/post/view/nextjs"           // 헤더 클릭 시 이동할 경로

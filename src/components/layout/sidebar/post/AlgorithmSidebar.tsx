@@ -14,6 +14,7 @@ export default function AlgorithmSidebar() {
     <BaseSidebar
       // 기본 정보
       frameworkName="Algorithm"                    // 사이드바 헤더에 표시될 이름
+      frameworkValue="algorithm"                  // DB에서 조회할 프레임워크 값
       frameworkIcon={RiCodeBoxLine}               // 헤더 아이콘
       frameworkColor="#6B7280"                    // 아이콘 색상 (회색)
       frameworkPath="/post/view/algorithm"        // 헤더 클릭 시 이동할 경로

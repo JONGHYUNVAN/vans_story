@@ -26,4 +26,10 @@ export const API_URLS = {
   AI: {
     SEND: `/api/ai`,
   },
+  CATEGORY: {
+    LIST: `/api/categories`,
+    GROUPED: `/api/categories/grouped`,
+    BY_ID: `/api/categories`,
+    BY_VALUE: `/api/categories/value`,
+  },
 } as const; 

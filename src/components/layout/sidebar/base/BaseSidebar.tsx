@@ -4,9 +4,12 @@ import { usePathname } from 'next/navigation';
 import { MdKeyboardArrowRight } from 'react-icons/md';
 import { useTranslation } from '@/utils/i18n';
 import { IconType } from 'react-icons';
+import { useFrameworkCategories } from '@/hooks/useFrameworkCategories';
+import { getIconComponent } from '@/utils/iconMapping';
 
 interface BaseSidebarProps {
   frameworkName: string;        // 'Next', 'Nest', 'Spring'
+  frameworkValue: string;       // 'nextjs', 'nestjs', 'spring' - DB에서 조회할 값
   frameworkIcon: IconType;      // SiNextdotjs, SiNestjs, SiSpring
   frameworkColor: string;       // '#000000', '#E0234E', '#6DB33F'
   frameworkPath: string;        // '/post/view/nextjs', '/post/view/nestjs', '/post/view/spring'
@@ -29,6 +32,7 @@ interface BaseSidebarProps {
 
 export default function BaseSidebar({
   frameworkName,
+  frameworkValue,
   frameworkIcon: FrameworkIcon,
   frameworkColor,
   frameworkPath,
@@ -51,6 +55,9 @@ export default function BaseSidebar({
   const [isOpen, setIsOpen] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(true);
   const pathname = usePathname();
+  
+  // DB에서 서브카테고리 가져오기
+  const { subCategories, isLoading, error } = useFrameworkCategories(frameworkValue);
 
   // 화면 크기 감지
   useEffect(() => {
@@ -125,36 +132,81 @@ export default function BaseSidebar({
         </div>
 
         <nav className={`px-3 py-4 overflow-y-auto max-h-[calc(100vh-80px)] ${backgroundLayerRenderer ? 'relative z-10' : ''}`}>
-          {Object.entries(t(`${frameworkName}.categories`)).map(([categoryKey, category]: [string, any]) => (
-            <div key={categoryKey} className="mb-8">
+          {isLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="text-sm text-gray-500">카테고리 로딩 중...</div>
+            </div>
+          ) : error ? (
+            <div className="px-4 py-2 text-sm text-red-400">
+              카테고리 로드 실패. 기본 카테고리를 표시합니다.
+            </div>
+          ) : null}
+          
+          {/* DB에서 가져온 서브카테고리 또는 폴백으로 하드코딩된 카테고리 */}
+          {subCategories.length > 0 ? (
+            <div className="mb-8">
               <h2 className={`mb-4 px-4 text-sm font-semibold tracking-wide ${categoryTitleClass} uppercase`}>
-                {category.title}
+                {frameworkName} 카테고리
               </h2>
               <div className="space-y-3">
-                {Object.entries(category.items).map(([itemKey, item]: [string, any]) => {
-                  const Icon = getIcon(item.icon);
+                {subCategories.map((subCategory) => {
+                  const categoryPath = `${frameworkPath}/${subCategory.value}`;
                   return (
-                    (<div key={itemKey} className="space-y-1">
+                    <div key={subCategory.value} className="space-y-1">
                       <Link
-                        href={item.path}
+                        href={categoryPath}
                         className={`group block px-4 py-1.5 rounded-md transition-all duration-300 ease-in-out ${hoverStyles} ${
-                          pathname === item.path ? activeLinkStyles : textColorClasses
+                          pathname === categoryPath ? activeLinkStyles : textColorClasses
                         }`}
                       >
                         <span className="transition-colors duration-300 group-hover:text-white flex items-center gap-2">
-                          {iconRenderer(Icon, item.color)}
-                          {item.title}
+                          {iconRenderer(FrameworkIcon, frameworkColor)}
+                          {subCategory.label}
                         </span>
                       </Link>
-                      <p className={`px-4 py-1 text-xs ${descriptionTextClass} leading-relaxed`}>
-                        {item.description}
-                      </p>
-                    </div>)
+                      {subCategory.description && (
+                        <p className={`px-4 py-1 text-xs ${descriptionTextClass} leading-relaxed`}>
+                          {subCategory.description}
+                        </p>
+                      )}
+                    </div>
                   );
                 })}
               </div>
             </div>
-          ))}
+          ) : (
+            // 폴백: 하드코딩된 카테고리 (API 실패 시 또는 데이터가 없을 때)
+            Object.entries(t(`${frameworkName}.categories`)).map(([categoryKey, category]: [string, any]) => (
+              <div key={categoryKey} className="mb-8">
+                <h2 className={`mb-4 px-4 text-sm font-semibold tracking-wide ${categoryTitleClass} uppercase`}>
+                  {category.title}
+                </h2>
+                <div className="space-y-3">
+                  {Object.entries(category.items).map(([itemKey, item]: [string, any]) => {
+                    const Icon = getIcon(item.icon);
+                    return (
+                      (<div key={itemKey} className="space-y-1">
+                        <Link
+                          href={item.path}
+                          className={`group block px-4 py-1.5 rounded-md transition-all duration-300 ease-in-out ${hoverStyles} ${
+                            pathname === item.path ? activeLinkStyles : textColorClasses
+                          }`}
+                        >
+                          <span className="transition-colors duration-300 group-hover:text-white flex items-center gap-2">
+                            {iconRenderer(Icon, item.color)}
+                            {item.title}
+                          </span>
+                        </Link>
+                        <p className={`px-4 py-1 text-xs ${descriptionTextClass} leading-relaxed`}>
+                          {item.description}
+                        </p>
+                      </div>)
+                    );
+                  })}
+                </div>
+              </div>
+            ))
+          )}
         </nav>
       </div>
     </div>)

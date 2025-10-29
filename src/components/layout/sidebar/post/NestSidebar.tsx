@@ -12,6 +12,7 @@ export default function NestSidebar() {
     <BaseSidebar
       // 기본 정보
       frameworkName="Nestjs"                      // 사이드바 헤더에 표시될 이름
+      frameworkValue="nestjs"                     // DB에서 조회할 프레임워크 값
       frameworkIcon={SiNestjs}                    // 헤더 아이콘 (NestJS)
       frameworkColor="#E0234E"                    // 아이콘 색상 (NestJS 빨간색)
       frameworkPath="/post/view/nestjs"           // 헤더 클릭 시 이동할 경로

@@ -12,6 +12,7 @@ export default function SpringSidebar() {
     <BaseSidebar
       // 기본 정보
       frameworkName="Spring"                      // 사이드바 헤더에 표시될 이름
+      frameworkValue="spring"                     // DB에서 조회할 프레임워크 값
       frameworkIcon={SiSpring}                    // 헤더 아이콘 (Spring)
       frameworkColor="#6DB33F"                    // 아이콘 색상 (Spring 그린)
       frameworkPath="/post/view/spring"           // 헤더 클릭 시 이동할 경로

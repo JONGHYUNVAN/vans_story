@@ -13,6 +13,7 @@ export default function MariaDBSidebar() {
     <BaseSidebar
       // 기본 정보
       frameworkName="MariaDB"                     // 사이드바 헤더에 표시될 이름
+      frameworkValue="mariadb"                    // DB에서 조회할 프레임워크 값
       frameworkIcon={SiMariadb}                   // 헤더 아이콘 (MariaDB)
       frameworkColor="#2A3034"                    // 아이콘 색상 (MariaDB 다크 그레이)
       frameworkPath="/post/view/mariadb"          // 헤더 클릭 시 이동할 경로

@@ -214,4 +214,60 @@ export class ApiFetch {
     const encodedQuery = encodeURIComponent(query.trim());
     return this.basicGet(`/api/search/autocomplete?query=${encodedQuery}&language=${language}&limit=${limit}`, options);
   }
+
+  // ==================== 카테고리 API 메서드들 ====================
+
+  /**
+   * 모든 카테고리 목록 조회
+   * @param activeOnly - 활성화된 카테고리만 조회할지 여부
+   * @param options - fetch 옵션
+   * @returns Promise<Response>
+   */
+  static async getCategories(
+    activeOnly: boolean = true,
+    options: RequestInit = {}
+  ): Promise<Response> {
+    const queryParam = activeOnly ? '?activeOnly=true' : '';
+    return this.basicGet(`${API_URLS.CATEGORY.LIST}${queryParam}`, options);
+  }
+
+  /**
+   * 그룹별 카테고리 조회
+   * @param activeOnly - 활성화된 카테고리만 조회할지 여부
+   * @param options - fetch 옵션
+   * @returns Promise<Response>
+   */
+  static async getCategoriesGrouped(
+    activeOnly: boolean = true,
+    options: RequestInit = {}
+  ): Promise<Response> {
+    const queryParam = activeOnly ? '?activeOnly=true' : '';
+    return this.basicGet(`${API_URLS.CATEGORY.GROUPED}${queryParam}`, options);
+  }
+
+  /**
+   * ID로 특정 카테고리 조회
+   * @param id - 카테고리 ID
+   * @param options - fetch 옵션
+   * @returns Promise<Response>
+   */
+  static async getCategoryById(
+    id: string,
+    options: RequestInit = {}
+  ): Promise<Response> {
+    return this.basicGet(`${API_URLS.CATEGORY.BY_ID}/${id}`, options);
+  }
+
+  /**
+   * 값으로 특정 카테고리 조회
+   * @param value - 카테고리 값 (예: 'nextjs', 'spring')
+   * @param options - fetch 옵션
+   * @returns Promise<Response>
+   */
+  static async getCategoryByValue(
+    value: string,
+    options: RequestInit = {}
+  ): Promise<Response> {
+    return this.basicGet(`${API_URLS.CATEGORY.BY_VALUE}/${value}`, options);
+  }
 } 

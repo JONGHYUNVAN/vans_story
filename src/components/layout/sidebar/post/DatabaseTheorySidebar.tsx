@@ -14,6 +14,7 @@ export default function DatabaseTheorySidebar() {
     <BaseSidebar
       // 기본 정보
       frameworkName="DatabaseTheory"              // 사이드바 헤더에 표시될 이름
+      frameworkValue="database-theory"            // DB에서 조회할 프레임워크 값
       frameworkIcon={TbDatabase}                  // 헤더 아이콘 (데이터베이스)
       frameworkColor="#2563EB"                    // 아이콘 색상 (파란색)
       frameworkPath="/post/view/database-theory"  // 헤더 클릭 시 이동할 경로

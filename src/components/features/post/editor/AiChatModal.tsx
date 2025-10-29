@@ -207,15 +207,16 @@ export function AiChatModal({ isOpen, onClose, onInsertText }: AiChatModalProps)
   const modalContent = (
     <div 
       ref={modalRef}
-      className="fixed bg-white rounded-lg shadow-2xl flex flex-col border-2 border-gray-200 relative"
+      className="bg-white rounded-lg shadow-2xl flex flex-col border-2 border-gray-200"
       style={{
+        position: 'fixed',
         top: '80px',
         right: '24px',
         transform: `translate(${position.x}px, ${position.y}px)`,
         cursor: isDragging ? 'grabbing' : 'default',
         width: `${size.width}px`,
         height: `${size.height}px`,
-        zIndex: 9999, // 매우 높은 z-index로 설정
+        zIndex: 9999,
       }}
       onKeyDown={(e) => e.stopPropagation()}
       onWheel={(e) => e.stopPropagation()}

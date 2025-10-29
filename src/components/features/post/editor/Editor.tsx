@@ -50,12 +50,14 @@ export function Editor({ initialContent = '', onChange, readonly = false, localI
 
   return (
     <EditorProvider value={editor}>
-      <div className="relative">
+      <div className="flex flex-col h-full">
         <EditorMenuBar localImages={localImages} setLocalImages={setLocalImages} />
-        <EditorContent 
-          editor={editor} 
-          className="prose prose-invert max-w-none min-h-[500px] border border-gray-600 rounded-lg p-4 bg-gray-700 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent"
-        />
+        <div className="flex-1 min-h-0">
+          <EditorContent 
+            editor={editor} 
+            className="prose prose-gray max-w-none h-full border border-gray-300 rounded-lg p-4 bg-white focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 overflow-auto"
+          />
+        </div>
         <EditorBubbleMenu />
       </div>
     </EditorProvider>

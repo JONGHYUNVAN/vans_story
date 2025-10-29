@@ -1,6 +1,8 @@
-import { API_URLS } from '../../../constants/apiUrl';
-import { authService } from '../../../components/features/auth/authService';
+import { API_URLS } from '../constants/apiUrl';
+import { authService } from '../components/features/auth/authService';
 import { tokenStorage } from '@/utils/token';
+import { API_CONFIG } from '@/config/apiConfig';
+import { extractErrorMessage } from '@/lib/errorExtractor';
 
 /**
  * API 요청을 위한 래퍼 클래스
@@ -16,7 +18,7 @@ export class ApiFetch {
   private static async basicFetch(url: string, options: RequestInit = {}): Promise<Response> {
     return fetch(url, {
       headers: {
-        'Content-Type': 'application/json',
+        ...API_CONFIG.HEADERS.JSON,
         ...options.headers,
       },
       ...options,
@@ -56,7 +58,7 @@ export class ApiFetch {
     
     // 기본 헤더 설정
     const headers = {
-      'Content-Type': 'application/json',
+      ...API_CONFIG.HEADERS.JSON,
       ...(token && { 'Authorization': `Bearer ${token}` }),
       ...options.headers,
     };
@@ -79,20 +81,12 @@ export class ApiFetch {
             'Authorization': `Bearer ${newToken}`,
           },
         });
-      } catch (error: any) {
-        // refresh 실패 시 서버 메시지 추출
-        let errorMessage = '세션이 만료되었습니다. 다시 로그인해주세요.';
-        if (error instanceof Error && error.message) {
-          errorMessage = error.message;
-        } else if (typeof error === 'string') {
-          errorMessage = error;
-        } else if (error && error.response) {
-          // 서버에서 받은 에러 메시지 추출 시도
-          try {
-            const data = await error.response.json();
-            if (data?.message) errorMessage = data.message;
-          } catch {}
-        }
+      } catch (error) {
+        // refresh 실패 시 에러 메시지 추출
+        const errorMessage = extractErrorMessage(
+          error,
+          '세션이 만료되었습니다. 다시 로그인해주세요.'
+        );
         await authService.logout();
         throw new Error(errorMessage);
       }
@@ -135,14 +129,14 @@ export class ApiFetch {
   /**
    * Auth GET 요청 (토큰 포함)
    */
-  static async get_withAuth(url: string, options: RequestInit = {}): Promise<Response> {
+  static async getWithAuth(url: string, options: RequestInit = {}): Promise<Response> {
     return this.authFetch(url, { ...options, method: 'GET' });
   }
 
   /**
    * Auth POST 요청 (토큰 포함)
    */
-  static async post_withAuth(url: string, data: any, options: RequestInit = {}): Promise<Response> {
+  static async postWithAuth(url: string, data: any, options: RequestInit = {}): Promise<Response> {
     return this.authFetch(url, {
       ...options,
       method: 'POST',
@@ -153,7 +147,7 @@ export class ApiFetch {
   /**
    * Auth PATCH 요청 (토큰 포함)
    */
-  static async patch_withAuth(url: string, data: any, options: RequestInit = {}): Promise<Response> {
+  static async patchWithAuth(url: string, data: any, options: RequestInit = {}): Promise<Response> {
     return this.authFetch(url, {
       ...options,
       method: 'PATCH',
@@ -164,7 +158,7 @@ export class ApiFetch {
   /**
    * Auth DELETE 요청 (토큰 포함)
    */
-  static async delete_withAuth(url: string, options: RequestInit = {}): Promise<Response> {
+  static async deleteWithAuth(url: string, options: RequestInit = {}): Promise<Response> {
     return this.authFetch(url, { ...options, method: 'DELETE' });
   }
 
@@ -189,29 +183,31 @@ export class ApiFetch {
 
   /**
    * 자동완성 검색어 조회 (토큰 없음)
-   * @param query 검색어 (최소 2글자)
-   * @param limit 결과 개수 (기본값: 10)
-   * @param language 언어 설정 (기본값: 'all')
+   * @param query 검색어 (최소 길이: API_CONFIG.SEARCH.MIN_QUERY_LENGTH)
+   * @param limit 결과 개수 (기본값: API_CONFIG.SEARCH.DEFAULT_LIMIT)
+   * @param language 언어 설정 (기본값: API_CONFIG.SEARCH.DEFAULT_LANGUAGE)
    * @param options 추가 옵션
    */
   static async getAutocompleteSuggestions(
     query: string, 
-    limit: number = 10, 
-    language: string = 'all',
+    limit: number = API_CONFIG.SEARCH.DEFAULT_LIMIT, 
+    language: string = API_CONFIG.SEARCH.DEFAULT_LANGUAGE,
     options: RequestInit = {}
   ): Promise<Response> {
-    if (!query || query.trim().length < 2) {
+    const trimmedQuery = query?.trim() || '';
+    
+    if (trimmedQuery.length < API_CONFIG.SEARCH.MIN_QUERY_LENGTH) {
       // 클라이언트에서 빈 결과 반환 (백엔드 응답 구조에 맞춤)
       return new Response(JSON.stringify({
         suggestions: [],
-        query: query?.trim() || ''
+        query: trimmedQuery
       }), {
         status: 200,
-        headers: { 'Content-Type': 'application/json' }
+        headers: API_CONFIG.HEADERS.JSON
       });
     }
     
-    const encodedQuery = encodeURIComponent(query.trim());
+    const encodedQuery = encodeURIComponent(trimmedQuery);
     return this.basicGet(`/api/search/autocomplete?query=${encodedQuery}&language=${language}&limit=${limit}`, options);
   }
 
@@ -270,4 +266,5 @@ export class ApiFetch {
   ): Promise<Response> {
     return this.basicGet(`${API_URLS.CATEGORY.BY_VALUE}/${value}`, options);
   }
-} 
+}
+

@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { ApiFetch } from '@/app/api/apiFetch/apiFetch';
+import { ApiFetch } from '@/lib/apiFetch';
 import { 
   Category, 
   GroupedCategories, 

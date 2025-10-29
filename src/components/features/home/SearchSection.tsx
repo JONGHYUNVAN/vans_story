@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { handleSearch } from '@/app/search/actions';
-import { ApiFetch } from '@/app/api/apiFetch/apiFetch';
+import { ApiFetch } from '@/lib/apiFetch';
 import { useRouter } from 'next/navigation';
 import { AutocompleteInput } from '@/components/ui/AutocompleteInput';
 import { AutocompleteSuggestion } from '@/types/api/search';

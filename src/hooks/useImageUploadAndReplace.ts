@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { ApiFetch } from '@/app/api/apiFetch/apiFetch'
+import { ApiFetch } from '@/lib/apiFetch'
 import { API_URLS } from '@/constants/apiUrl';
 
 /**

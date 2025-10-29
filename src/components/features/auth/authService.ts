@@ -1,5 +1,5 @@
 import { tokenStorage } from '@/utils/token';
-import { ApiFetch } from '@/app/api/apiFetch/apiFetch';
+import { ApiFetch } from '@/lib/apiFetch';
 import { API_URLS } from '@/constants/apiUrl';
 import { oauthUtils } from '@/utils/oauth';
 import type { OAuthProvider, OAuthUserInfo } from '@/interfaces/auth/types';
@@ -70,7 +70,7 @@ export const authService = {
    * @throws {Error} 로그아웃 실패 시 에러 발생
    */
   async logout() {
-    const res = await ApiFetch.post_withAuth('/api/auth/logout', {}, {
+    const res = await ApiFetch.postWithAuth('/api/auth/logout', {}, {
       credentials: 'include',
     });
 
@@ -217,7 +217,7 @@ export const authService = {
    * @description 현재 사용자에게 연결된 모든 OAuth 계정을 조회
    */
   async getLinkedOAuthAccounts() {
-    const res = await ApiFetch.get_withAuth(API_URLS.OAUTH.BACKEND_LINKED);
+    const res = await ApiFetch.getWithAuth(API_URLS.OAUTH.BACKEND_LINKED);
 
     if (!res.ok) {
       throw new Error(`Failed to fetch linked OAuth accounts: ${res.status}`);

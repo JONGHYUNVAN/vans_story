@@ -1,9 +1,9 @@
 import type { PostEditData } from '@/types/post';
 import { Post } from '@/interfaces/post/types';
-import { ApiFetch } from '../../apiFetch/apiFetch';
+import { ApiFetch } from '@/lib/apiFetch';
 
 export async function updatePost(postId: string, postData: PostEditData) {
-  const response = await ApiFetch.patch_withAuth(`/api/posts/${postId}`, postData);
+  const response = await ApiFetch.patchWithAuth(`/api/posts/${postId}`, postData);
   
   if (!response.ok) {
     const error = await response.json().catch(() => null);
@@ -14,7 +14,7 @@ export async function updatePost(postId: string, postData: PostEditData) {
 }
 
 export async function getPostForEdit(postId: string) {
-  const response = await ApiFetch.get_withAuth(`/api/posts/${postId}/edit`);
+  const response = await ApiFetch.getWithAuth(`/api/posts/${postId}/edit`);
 
   if (!response.ok) {
     throw new Error(response.status.toString());

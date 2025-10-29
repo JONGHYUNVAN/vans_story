@@ -1,4 +1,4 @@
-import { ApiFetch } from '../../apiFetch/apiFetch';
+import { ApiFetch } from '@/lib/apiFetch';
 
 export type ChatRequest = {
   message: string;
@@ -21,7 +21,7 @@ export type ChatResponse = {
  * @returns Promise<ChatResponse>
  */
 export async function sendChatMessage(chatData: ChatRequest): Promise<ChatResponse> {
-  const response = await ApiFetch.post_withAuth('/api/ai/chat', chatData);
+  const response = await ApiFetch.postWithAuth('/api/ai/chat', chatData);
   
   if (!response.ok) {
     const error = await response.json().catch(() => null);

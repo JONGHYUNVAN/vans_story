@@ -1,4 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
+import { API_CONFIG } from '@/config/apiConfig';
+import { proxyGet } from '@/lib/apiProxy';
 
 /**
  * 카테고리 API 라우트 핸들러 (BFF 프록시)
@@ -7,33 +9,11 @@ import { NextRequest, NextResponse } from 'next/server';
 
 // GET /api/categories - 카테고리 목록 조회
 export async function GET(request: NextRequest) {
-  try {
-    // URL 파라미터 전달
-    const { searchParams } = new URL(request.url);
-    const apiUrl = process.env.POST_API_URL || 'http://localhost:3001/api/v1';
-    const queryString = searchParams.toString();
-    const fullUrl = queryString ? `${apiUrl}/categories?${queryString}` : `${apiUrl}/categories`;
-
-    console.log('🔄 카테고리 API 호출:', fullUrl);
-
-    const res = await fetch(fullUrl, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      next: { revalidate: 300 } // 5분 캐시 (카테고리는 자주 변경되지 않음)
-    });
-
-    if (!res.ok) {
-      console.error('❌ 카테고리 API 호출 실패:', res.status, res.statusText);
-      return new NextResponse(null, { status: res.status });
-    }
-
-    const data = await res.json();
-    console.log('✅ 카테고리 데이터 조회 성공:', data.length, '개');
-    
-    return NextResponse.json(data);
-  } catch (error) {
-    console.error('❌ 카테고리 API 오류:', error);
-    return new NextResponse(null, { status: 500 });
-  }
+  return proxyGet(request, {
+    baseUrl: process.env.POST_API_URL || API_CONFIG.ENV_DEFAULTS.POST_API_URL,
+    path: '/categories',
+    revalidate: API_CONFIG.CACHE.CATEGORY,
+    successLog: '카테고리 데이터 조회 성공',
+    errorMessage: '카테고리 목록 조회에 실패했습니다.',
+  });
 }

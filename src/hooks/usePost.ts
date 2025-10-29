@@ -16,7 +16,7 @@ import { useSubCategories } from '@/hooks/useSubCategories'
 import { useImageUploadAndReplace } from '@/hooks/useImageUploadAndReplace'
 import { API_URLS } from '@/constants/apiUrl'
 import { tokenStorage } from '@/utils/token'
-import { ApiFetch } from '@/app/api/apiFetch/apiFetch'
+import { ApiFetch } from '@/lib/apiFetch'
 import { getPostForEdit, saveTempPost } from '@/app/api/posts/actions/client'
 
 export interface UsePostOptions {
@@ -264,9 +264,9 @@ export function usePost({
       
       let response
       if (mode === 'create') {
-        response = await ApiFetch.post_withAuth(API_URLS.POST.CREATE, submitData)
+        response = await ApiFetch.postWithAuth(API_URLS.POST.CREATE, submitData)
       } else {
-        response = await ApiFetch.post_withAuth(`${API_URLS.POST.UPDATE}/${postId}`, submitData)
+        response = await ApiFetch.postWithAuth(`${API_URLS.POST.UPDATE}/${postId}`, submitData)
       }
       
       if (response.ok) {

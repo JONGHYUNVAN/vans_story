@@ -32,5 +32,5 @@ export function FormWindowContent(props: FormWindowContentProps) {
 }
 
 // 기본 아이콘
-export const FormWindowIcon = <FileText size={14} />
+export const FormWindowIcon = () => <FileText size={14} />
 

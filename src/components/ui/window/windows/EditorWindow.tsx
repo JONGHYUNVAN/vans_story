@@ -39,5 +39,5 @@ export function EditorWindowContent({
 }
 
 // 기본 아이콘
-export const EditorWindowIcon = <Edit3 size={14} />
+export const EditorWindowIcon = () => <Edit3 size={14} />
 

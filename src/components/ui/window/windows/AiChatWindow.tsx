@@ -245,5 +245,5 @@ export function AiChatWindowContent({ onInsertText }: AiChatWindowContentProps) 
 }
 
 // 기본 아이콘
-export const AiChatWindowIcon = <Bot size={14} />
+export const AiChatWindowIcon = () => <Bot size={14} />
 

@@ -59,5 +59,5 @@ export function PreviewWindowContent({
 }
 
 // 기본 아이콘
-export const PreviewWindowIcon = <Eye size={14} />
+export const PreviewWindowIcon = () => <Eye size={14} />
 

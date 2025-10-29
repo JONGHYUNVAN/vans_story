@@ -241,7 +241,7 @@ export default function PostCard<T extends BasePost>({
           <span>{t('post.likes', { count: post.likeCount })}</span>
         </div>
         <div className="flex items-center gap-2">
-          {post.tags.map(tag => (
+          {post.tags?.map(tag => (
             <span 
               key={tag}
               className="px-2 py-1 bg-[#1E4D2B]/10 text-gray-300 rounded-full text-xs border border-[#FF3333]/20"

@@ -277,7 +277,6 @@ function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave }: Pos
       {/* 미리보기 윈도우 */}
       <Window id="preview-window">
         <PreviewWindowContent
-          key={JSON.stringify(formData)}
           post={formData}
           showCard={true}
           showLayout={true}

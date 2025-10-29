@@ -1,6 +1,6 @@
 'use client'
 
-import { PostForm } from '@/components/post/PostForm'
+import { PostFormWindows } from '@/components/post/PostFormWindows'
 
 interface PostEditPageProps {
   params: Promise<{
@@ -12,7 +12,7 @@ export default async function PostEditPage({ params }: PostEditPageProps) {
   const { id } = await params
   
   return (
-    <PostForm 
+    <PostFormWindows 
       mode="edit"
       initialData={{ id }}
       onSubmit={async (data) => {

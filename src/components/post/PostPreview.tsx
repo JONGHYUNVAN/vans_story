@@ -15,6 +15,8 @@ import MariadbPostCard from '../ui/post/postcard/mariadb/PostCard'
 import MongodbPostCard from '../ui/post/postcard/mongodb/PostCard'
 import SpringPostCard from '../ui/post/postcard/spring/PostCard'
 import DatabaseTheoryPostCard from '../ui/post/postcard/database-theory/PostCard'
+import DockerPostCard from '../ui/post/postcard/docker/PostCard'
+import JWTPostCard from '../ui/post/postcard/jwt/PostCard'
 
 // Layout 컴포넌트들 import
 import AlgorithmLayout from '../../app/post/view/algorithm/AlgorithmLayout'
@@ -24,6 +26,8 @@ import MariadbLayout from '../../app/post/view/mariadb/MariadbLayout'
 import MongodbLayout from '../../app/post/view/mongodb/MongodbLayout'
 import SpringLayout from '../../app/post/view/spring/SpringLayout'
 import DatabaseTheoryLayout from '../../app/post/view/database-theory/DatabaseTheoryLayout'
+import DockerLayout from '../../app/post/view/docker/DockerLayout'
+import JWTLayout from '../../app/post/view/jwt/JWTLayout'
 
 // 카테고리별 컴포넌트 매핑
 const POST_CARD_COMPONENTS = {
@@ -34,6 +38,8 @@ const POST_CARD_COMPONENTS = {
   mariadb: MariadbPostCard,
   mongodb: MongodbPostCard,
   spring: SpringPostCard,
+  docker: DockerPostCard,
+  jwt: JWTPostCard,
 } as const
 
 const LAYOUT_COMPONENTS = {
@@ -44,6 +50,8 @@ const LAYOUT_COMPONENTS = {
   mariadb: MariadbLayout,
   mongodb: MongodbLayout,
   spring: SpringLayout,
+  docker: DockerLayout,
+  jwt: JWTLayout,
 } as const
 
 type SupportedMainCategory = keyof typeof POST_CARD_COMPONENTS

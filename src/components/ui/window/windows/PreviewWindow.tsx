@@ -7,10 +7,10 @@
 import React, { useState, useEffect } from 'react'
 import { Eye } from 'lucide-react'
 import { PostPreview } from '@/components/post/PostPreview'
-import { PostData } from '@/types/post'
+import { BasePost } from '@/types/post'
 
 interface PreviewWindowContentProps {
-  post: Partial<PostData>
+  post: Partial<BasePost>
   showCard?: boolean
   showLayout?: boolean
 }

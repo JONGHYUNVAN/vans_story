@@ -16,9 +16,10 @@ interface WindowProps {
   id: string
   children: React.ReactNode
   className?: string
+  icon?: React.ReactNode  // icon을 props로 받을 수 있도록 추가
 }
 
-export function Window({ id, children, className = '' }: WindowProps) {
+export function Window({ id, children, className = '', icon: iconProp }: WindowProps) {
   const {
     getWindow,
     closeWindow,
@@ -56,7 +57,8 @@ export function Window({ id, children, className = '' }: WindowProps) {
   // windowConfig가 없거나 닫혀있으면 조기 리턴 (모든 Hook 호출 후)
   const isOpen = windowConfig?.isOpen ?? false
   const title = windowConfig?.title ?? ''
-  const icon = windowConfig?.icon
+  // props로 전달된 icon을 우선 사용, 없으면 config의 icon 사용
+  const icon = iconProp ?? windowConfig?.icon
   const position = windowConfig?.position ?? { x: 0, y: 0 }
   const size = windowConfig?.size ?? { width: 400, height: 300 }
   const state = windowConfig?.state ?? 'normal'

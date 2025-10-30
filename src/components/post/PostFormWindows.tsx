@@ -207,7 +207,7 @@ function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave }: Pos
       </div>
 
       {/* 폼 윈도우 */}
-      <Window id="form-window">
+      <Window id="form-window" icon={<FormWindowIcon />}>
         <form onSubmit={handleFormSubmit} className="h-full flex flex-col">
           <div className="flex-1 overflow-auto">
             <FormWindowContent
@@ -265,7 +265,7 @@ function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave }: Pos
       </Window>
 
       {/* 에디터 윈도우 */}
-      <Window id="editor-window">
+      <Window id="editor-window" icon={<EditorWindowIcon />}>
         <EditorWindowContent
           editorRef={editorRef}
           initialContent={formData.content || ''}
@@ -276,7 +276,7 @@ function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave }: Pos
       </Window>
 
       {/* 미리보기 윈도우 */}
-      <Window id="preview-window">
+      <Window id="preview-window" icon={<PreviewWindowIcon />}>
         <PreviewWindowContent
           post={formData}
           showCard={true}
@@ -285,7 +285,7 @@ function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave }: Pos
       </Window>
 
       {/* AI 채팅 윈도우 */}
-      <Window id="ai-chat-window">
+      <Window id="ai-chat-window" icon={<AiChatWindowIcon />}>
         <AiChatWindowContent onInsertText={handleInsertTextToEditor} />
       </Window>
 

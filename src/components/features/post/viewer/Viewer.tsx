@@ -46,10 +46,21 @@ lowlight.register('yaml', yaml)
 lowlight.register('bash', bash)
 lowlight.register('markdown', markdown)
 
-export function Viewer({ content }: { content: string }) {
+export function Viewer({ content }: { content: string | object }) {
+  // content가 문자열이면 JSON 파싱 시도, 객체면 그대로 사용
+  const parsedContent = typeof content === 'string' 
+    ? (() => {
+        try {
+          return JSON.parse(content)
+        } catch {
+          return content // 파싱 실패 시 원본 문자열 사용
+        }
+      })()
+    : content
+
   const editor = useEditor({
     extensions: EditorExtensions,
-    content,
+    content: parsedContent,
     editable: false,
     immediatelyRender: false,
   })

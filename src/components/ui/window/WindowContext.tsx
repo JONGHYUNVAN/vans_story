@@ -40,6 +40,9 @@ interface WindowManagerProviderProps {
 const STORAGE_VERSION = '2.0.0' // icon 제거 후 버전
 
 export function WindowManagerProvider({ children, persistKey = 'windows-state' }: WindowManagerProviderProps) {
+  // 환경에 따라 다른 키 사용 (개발/프로덕션 분리)
+  const envPrefix = process.env.NODE_ENV === 'production' ? 'prod' : 'dev'
+  const fullPersistKey = `${envPrefix}-${persistKey}`
   // 초기값은 항상 빈 상태로 시작 (SSR/CSR 일치)
   const [windows, setWindows] = useState<Map<string, WindowConfig>>(new Map())
   const [activeWindowId, setActiveWindowId] = useState<string | null>(null)
@@ -51,14 +54,14 @@ export function WindowManagerProvider({ children, persistKey = 'windows-state' }
     setIsHydrated(true)
     
     try {
-      const saved = localStorage.getItem(persistKey)
+      const saved = localStorage.getItem(fullPersistKey)
       if (saved) {
         const parsed = JSON.parse(saved)
         
         // ✅ 버전 체크 - 이전 버전이면 초기화
         if (parsed.version !== STORAGE_VERSION) {
-          console.log('localStorage version mismatch, clearing...')
-          localStorage.removeItem(persistKey)
+          console.log(`[${envPrefix}] localStorage version mismatch, clearing...`)
+          localStorage.removeItem(fullPersistKey)
           return
         }
         
@@ -86,9 +89,9 @@ export function WindowManagerProvider({ children, persistKey = 'windows-state' }
     } catch (error) {
       console.error('Failed to restore window state:', error)
       // 복원 실패 시 localStorage 초기화
-      localStorage.removeItem(persistKey)
+      localStorage.removeItem(fullPersistKey)
     }
-  }, [persistKey])
+  }, [fullPersistKey, envPrefix])
 
   // localStorage에 상태 저장 (hydration 완료 후에만)
   useEffect(() => {
@@ -103,15 +106,16 @@ export function WindowManagerProvider({ children, persistKey = 'windows-state' }
       
       const state = {
         version: STORAGE_VERSION, // ✅ 버전 정보 추가
+        environment: envPrefix, // 환경 정보 추가
         windows: Object.fromEntries(serializableWindows),
         activeWindowId,
         highestZIndex
       }
-      localStorage.setItem(persistKey, JSON.stringify(state))
+      localStorage.setItem(fullPersistKey, JSON.stringify(state))
     } catch (error) {
       console.error('Failed to save window state:', error)
     }
-  }, [windows, activeWindowId, highestZIndex, persistKey, isHydrated])
+  }, [windows, activeWindowId, highestZIndex, fullPersistKey, isHydrated, envPrefix])
 
   const createWindow = useCallback((config: Omit<WindowConfig, 'zIndex' | 'isActive' | 'isOpen'>) => {
     setWindows(prev => {

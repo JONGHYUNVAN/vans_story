@@ -85,18 +85,14 @@ export function PostPreview({
     )
   }
 
-  // content가 문자열이 아닌 경우 변환
-  const contentStr = typeof post.content === 'string' 
-    ? post.content 
-    : JSON.stringify(post.content)
-
+  // ✅ content는 원본 그대로 사용 (객체 또는 문자열)
   // PostInfo로 변환 (기존 컴포넌트들과 호환성을 위해)
   const postInfo: PostInfo = {
     id: post.id || 'preview',
     title: post.title!,
     topic: post.topic || '',
     description: post.description || '',
-    content: contentStr,
+    content: post.content!, // ✅ 객체든 문자열이든 그대로 전달
     author: post.author || '미리보기',
     createdAt: post.createdAt || new Date().toISOString(),
     updatedAt: post.updatedAt || new Date().toISOString(),
@@ -123,7 +119,7 @@ export function PostPreview({
           {showLayout && (
             <LayoutComponent title={post.title!} isPreview>
               <div className="prose max-w-none text-white">
-                {isViewerMounted && <Viewer content={contentStr} />}
+                {isViewerMounted && <Viewer content={post.content!} />}
               </div>
             </LayoutComponent>
           )}
@@ -147,7 +143,7 @@ export function PostPreview({
               ))}
             </div>
           )}
-          {isViewerMounted && <Viewer content={contentStr} />}
+          {isViewerMounted && <Viewer content={post.content!} />}
         </div>
       )}
     </div>

@@ -22,7 +22,7 @@ export interface PostInfo {
   title: string;
   topic: string;
   description: string;
-  content: string;
+  content: string | object; // Tiptap JSON 객체 또는 문자열 (호환성)
   author: string;
   createdAt: string;
   updatedAt: string;

@@ -9,8 +9,8 @@ import { Edit3 } from 'lucide-react'
 import { Editor } from '@/components/features/post/editor/Editor'
 
 interface EditorWindowContentProps {
-  editorRef?: React.MutableRefObject<any>
-  initialContent?: any
+  editorRef?: React.MutableRefObject<unknown>
+  initialContent?: unknown
   onChange?: (json: object) => void
   localImages: Map<string, File>
   setLocalImages: React.Dispatch<React.SetStateAction<Map<string, File>>>

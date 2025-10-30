@@ -129,7 +129,7 @@ export function WindowManagerProvider({ children, persistKey = 'windows-state' }
       return newWindows
     })
     
-    setHighestZIndex(prev => prev + 1)
+    setHighestZIndex((prev: number) => prev + 1)
     setActiveWindowId(config.id)
   }, [highestZIndex])
 

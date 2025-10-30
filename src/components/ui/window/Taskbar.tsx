@@ -11,10 +11,22 @@ import { WindowConfig } from './types'
 interface TaskbarButtonProps {
   window: WindowConfig
   onClick: () => void
+  onDragStart: (e: React.DragEvent) => void
+  onDragOver: (e: React.DragEvent) => void
+  onDrop: (e: React.DragEvent) => void
+  isDragging: boolean
 }
 
-function TaskbarButton({ window: win, onClick }: TaskbarButtonProps) {
+function TaskbarButton({ window: win, onClick, onDragStart, onDragOver, onDrop, isDragging }: TaskbarButtonProps) {
   const [showPreview, setShowPreview] = useState(false)
+
+  // 상태 텍스트 결정
+  const getStateText = () => {
+    if (!win.isOpen) return '닫힘'
+    if (win.state === 'minimized') return '최소화됨'
+    if (win.state === 'maximized') return '최대화됨'
+    return '일반'
+  }
 
   return (
     <div
@@ -22,19 +34,24 @@ function TaskbarButton({ window: win, onClick }: TaskbarButtonProps) {
       onMouseEnter={() => setShowPreview(true)}
       onMouseLeave={() => setShowPreview(false)}
       role="listitem"
+      draggable
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
     >
       <button
         onClick={onClick}
         className={`
           h-12 px-4 flex items-center justify-center gap-2
-          rounded-md transition-all duration-150
-          ${win.isActive 
+          rounded-md transition-all duration-100
+          ${win.isOpen && win.isActive 
             ? 'bg-gray-200/80 border-b-2 border-blue-500' 
             : 'hover:bg-gray-100/50 border-b-2 border-transparent'
           }
-          ${win.state === 'minimized' ? 'opacity-50' : ''}
+          ${!win.isOpen ? 'opacity-40' : win.state === 'minimized' ? 'opacity-60' : ''}
+          ${isDragging ? 'opacity-30 scale-95' : ''}
         `}
-        aria-label={`${win.title} - ${win.state === 'minimized' ? '최소화됨' : win.state === 'maximized' ? '최대화됨' : '일반'}`}
+        aria-label={`${win.title} - ${getStateText()}`}
         aria-pressed={win.isActive}
       >
         {/* 아이콘 */}
@@ -48,6 +65,11 @@ function TaskbarButton({ window: win, onClick }: TaskbarButtonProps) {
         <span className="text-xs text-gray-800 hidden xl:inline max-w-[120px] truncate">
           {win.title}
         </span>
+
+        {/* 닫힌 상태 표시 점 */}
+        {!win.isOpen && (
+          <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-gray-400" />
+        )}
       </button>
 
       {/* 호버 프리뷰 */}
@@ -64,8 +86,7 @@ function TaskbarButton({ window: win, onClick }: TaskbarButtonProps) {
             {win.title}
           </div>
           <div className="text-[10px] text-gray-600">
-            {win.state === 'minimized' ? '최소화됨' : 
-             win.state === 'maximized' ? '최대화됨' : '일반'}
+            {getStateText()}
           </div>
           
           {/* 화살표 */}
@@ -85,23 +106,69 @@ interface TaskbarProps {
 }
 
 export function Taskbar({ className = '' }: TaskbarProps) {
-  const { windows, focusWindow, restoreWindow } = useWindowManager()
+  const { windows, focusWindow, restoreWindow, openWindow, minimizeWindow, windowOrder, reorderWindows } = useWindowManager()
+  const [draggedId, setDraggedId] = useState<string | null>(null)
 
-  // 열려있는 윈도우들만 필터링
-  const openWindows = Array.from(windows.values()).filter(w => w.isOpen)
+  // windowOrder에 따라 윈도우 정렬
+  const orderedWindows = windowOrder
+    .map(id => windows.get(id))
+    .filter((win): win is WindowConfig => win !== undefined)
 
   const handleWindowClick = (win: WindowConfig) => {
-    if (win.state === 'minimized') {
+    // 닫힌 윈도우는 열기
+    if (!win.isOpen) {
+      openWindow(win.id)
+    }
+    // 최소화된 윈도우는 복원
+    else if (win.state === 'minimized') {
       restoreWindow(win.id)
-    } else if (win.isActive) {
-      // 이미 활성 상태면 최소화 (선택사항)
-      // minimizeWindow(win.id)
-    } else {
+    }
+    // 이미 활성 상태면 최소화
+    else if (win.isActive) {
+      minimizeWindow(win.id)
+    }
+    // 그 외에는 포커스
+    else {
       focusWindow(win.id)
     }
   }
 
-  if (openWindows.length === 0) {
+  const handleDragStart = (id: string) => (e: React.DragEvent) => {
+    setDraggedId(id)
+    e.dataTransfer.effectAllowed = 'move'
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+  }
+
+  const handleDrop = (targetId: string) => (e: React.DragEvent) => {
+    e.preventDefault()
+    
+    if (!draggedId || draggedId === targetId) {
+      setDraggedId(null)
+      return
+    }
+
+    const draggedIndex = windowOrder.indexOf(draggedId)
+    const targetIndex = windowOrder.indexOf(targetId)
+
+    if (draggedIndex === -1 || targetIndex === -1) {
+      setDraggedId(null)
+      return
+    }
+
+    // 새로운 순서 계산
+    const newOrder = [...windowOrder]
+    newOrder.splice(draggedIndex, 1)
+    newOrder.splice(targetIndex, 0, draggedId)
+
+    reorderWindows(newOrder)
+    setDraggedId(null)
+  }
+
+  if (orderedWindows.length === 0) {
     return null
   }
 
@@ -109,7 +176,7 @@ export function Taskbar({ className = '' }: TaskbarProps) {
     <div 
       className={`
         fixed bottom-0 left-0 right-0 h-12
-        bg-white/70 backdrop-blur-2xl
+        bg-white/80
         border-t border-gray-300/50
         shadow-[0_-4px_16px_rgba(0,0,0,0.08)]
         flex items-center justify-center
@@ -120,11 +187,15 @@ export function Taskbar({ className = '' }: TaskbarProps) {
       aria-label="작업표시줄"
     >
       <div className="flex items-center gap-1" role="list">
-        {openWindows.map((win) => (
+        {orderedWindows.map((win) => (
           <TaskbarButton
             key={win.id}
             window={win}
             onClick={() => handleWindowClick(win)}
+            onDragStart={handleDragStart(win.id)}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop(win.id)}
+            isDragging={draggedId === win.id}
           />
         ))}
       </div>

@@ -6,11 +6,22 @@
 
 import React, { useEffect, useRef, useState, useCallback } from 'react'
 import { createPortal } from 'react-dom'
-import { motion, AnimatePresence } from 'framer-motion'
 import { TitleBar } from './TitleBar'
 import { ResizeHandles } from './ResizeHandle'
 import { useWindowManager } from './WindowContext'
 import { Position, Size, ResizeDirection } from './types'
+
+// Throttle 함수 - 성능 최적화
+function throttle<T extends (...args: any[]) => void>(func: T, limit: number): T {
+  let inThrottle: boolean
+  return function(this: any, ...args: any[]) {
+    if (!inThrottle) {
+      func.apply(this, args)
+      inThrottle = true
+      setTimeout(() => inThrottle = false, limit)
+    }
+  } as T
+}
 
 interface WindowProps {
   id: string
@@ -108,7 +119,8 @@ export function Window({ id, children, className = '', icon: iconProp }: WindowP
   useEffect(() => {
     if (!isDragging) return
 
-    const handleMouseMove = (e: MouseEvent) => {
+    // Throttle로 성능 최적화 (16ms = 60fps)
+    const handleMouseMove = throttle((e: MouseEvent) => {
       const deltaX = e.clientX - dragStartRef.current.x
       const deltaY = e.clientY - dragStartRef.current.y
 
@@ -128,7 +140,7 @@ export function Window({ id, children, className = '', icon: iconProp }: WindowP
       }
 
       updateWindowPosition(id, { x: newX, y: newY })
-    }
+    }, 16)
 
     const handleMouseUp = (e: MouseEvent) => {
       setIsDragging(false)
@@ -180,7 +192,8 @@ export function Window({ id, children, className = '', icon: iconProp }: WindowP
   useEffect(() => {
     if (!isResizing) return
 
-    const handleMouseMove = (e: MouseEvent) => {
+    // Throttle로 성능 최적화 (16ms = 60fps)
+    const handleMouseMove = throttle((e: MouseEvent) => {
       const { direction, x: startX, y: startY, width: startWidth, height: startHeight, windowX, windowY } = resizeStartRef.current
       const deltaX = e.clientX - startX
       const deltaY = e.clientY - startY
@@ -210,7 +223,7 @@ export function Window({ id, children, className = '', icon: iconProp }: WindowP
       if (newX !== windowX || newY !== windowY) {
         updateWindowPosition(id, { x: newX, y: newY })
       }
-    }
+    }, 16)
 
     const handleMouseUp = () => {
       setIsResizing(false)
@@ -270,68 +283,61 @@ export function Window({ id, children, className = '', icon: iconProp }: WindowP
     )
   }
 
-  const windowElement = (
-    <AnimatePresence mode="wait">
-      {!isMinimized && (
-        <motion.div
-          ref={windowRef}
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.9 }}
-          transition={{ duration: 0.15, ease: 'easeOut' }}
-          className={`
-            fixed flex flex-col
-            bg-white/70 backdrop-blur-2xl
-            rounded-xl overflow-hidden
-            shadow-[0_8px_32px_rgba(0,0,0,0.12)]
-            border border-gray-300/30
-            ${isActive ? 'ring-1 ring-blue-400/40' : ''}
-            ${isDragging ? 'cursor-grabbing' : ''}
-            ${isResizing ? 'select-none' : ''}
-            ${className}
-          `}
-          style={{
-            left: `${actualPosition.x}px`,
-            top: `${actualPosition.y}px`,
-            width: `${actualSize.width}px`,
-            height: `${actualSize.height}px`,
-            zIndex,
-          }}
-          onClick={handleWindowClick}
-          role="dialog"
-          aria-label={title}
-          aria-modal="false"
-          tabIndex={-1}
-        >
-          {/* 타이틀바 */}
-          <TitleBar
-            title={title}
-            icon={icon}
-            isActive={isActive}
-            isMaximized={isMaximized}
-            onMinimize={minimizable ? () => minimizeWindow(id) : undefined}
-            onMaximize={maximizable ? () => toggleWindowState(id) : undefined}
-            onClose={closable ? () => closeWindow(id) : undefined}
-            onMouseDown={handleDragStart}
-            onDoubleClick={handleTitleBarDoubleClick}
-            minimizable={minimizable}
-            maximizable={maximizable}
-            closable={closable}
-          />
+  const windowElement = !isMinimized ? (
+    <div
+      ref={windowRef}
+      className={`
+        fixed flex flex-col
+        bg-white/90
+        rounded-lg overflow-hidden
+        shadow-lg
+        border border-gray-300/50
+        ${isActive ? 'ring-1 ring-blue-400/60' : ''}
+        ${isDragging ? 'cursor-grabbing transition-none' : 'transition-shadow'}
+        ${isResizing ? 'select-none transition-none' : ''}
+        ${className}
+      `}
+      style={{
+        left: `${actualPosition.x}px`,
+        top: `${actualPosition.y}px`,
+        width: `${actualSize.width}px`,
+        height: `${actualSize.height}px`,
+        zIndex,
+        willChange: isDragging || isResizing ? 'transform' : 'auto',
+      }}
+      onClick={handleWindowClick}
+      role="dialog"
+      aria-label={title}
+      aria-modal="false"
+      tabIndex={-1}
+    >
+      {/* 타이틀바 */}
+      <TitleBar
+        title={title}
+        icon={icon}
+        isActive={isActive}
+        isMaximized={isMaximized}
+        onMinimize={minimizable ? () => minimizeWindow(id) : undefined}
+        onMaximize={maximizable ? () => toggleWindowState(id) : undefined}
+        onClose={closable ? () => closeWindow(id) : undefined}
+        onMouseDown={handleDragStart}
+        onDoubleClick={handleTitleBarDoubleClick}
+        minimizable={minimizable}
+        maximizable={maximizable}
+        closable={closable}
+      />
 
-          {/* 컨텐츠 영역 */}
-          <div className="flex-1 overflow-auto bg-white/60">
-            {children}
-          </div>
+      {/* 컨텐츠 영역 */}
+      <div className="flex-1 overflow-auto bg-white/80">
+        {children}
+      </div>
 
-          {/* 리사이즈 핸들 */}
-          {!isMaximized && resizable && (
-            <ResizeHandles onResizeStart={handleResizeStart} />
-          )}
-        </motion.div>
+      {/* 리사이즈 핸들 */}
+      {!isMaximized && resizable && (
+        <ResizeHandles onResizeStart={handleResizeStart} />
       )}
-    </AnimatePresence>
-  )
+    </div>
+  ) : null
 
   if (typeof window === 'undefined') return null
 

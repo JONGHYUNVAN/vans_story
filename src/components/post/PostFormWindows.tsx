@@ -55,7 +55,7 @@ function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave }: Pos
     enableValidation: true,
   })
 
-  // 초기 윈도우들 생성 (마운트 시 한 번만)
+  // 초기 윈도우 생성 (마운트 시에만 한 번)
   useEffect(() => {
     // 약간의 지연을 두고 윈도우 생성 (localStorage 복원 이후)
     const timer = setTimeout(() => {
@@ -87,7 +87,7 @@ function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave }: Pos
         })
       }
 
-      // 미리보기 윈도우
+      // 미리보기 윈도우 - 닫힌 상태로 시작 (작업표시줄에서 열 수 있음)
       if (!windows.has('preview-window')) {
         createWindow({
           id: 'preview-window',
@@ -97,11 +97,12 @@ function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave }: Pos
           position: { x: 100, y: 100 },
           size: { width: 900, height: 800 },
           minSize: { width: 600, height: 400 },
-          state: 'minimized', // 기본적으로 최소화
+          state: 'normal',
+          isOpen: false, // 기본적으로 닫힌 상태
         })
       }
 
-      // AI 채팅 윈도우
+      // AI 채팅 윈도우 - 닫힌 상태로 시작 (작업표시줄에서 열 수 있음)
       if (!windows.has('ai-chat-window')) {
         createWindow({
           id: 'ai-chat-window',
@@ -111,7 +112,8 @@ function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave }: Pos
           position: { x: 150, y: 150 },
           size: { width: 450, height: 600 },
           minSize: { width: 350, height: 400 },
-          state: 'minimized', // 기본적으로 최소화
+          state: 'normal',
+          isOpen: false, // 기본적으로 닫힌 상태
         })
       }
     }, 100) // 100ms 지연

@@ -8,7 +8,7 @@ import React, { createContext, useContext, useState, useCallback, useEffect } fr
 import { WindowConfig, WindowManagerState, Position, Size, WindowState } from './types'
 
 interface WindowManagerContextValue extends WindowManagerState {
-  createWindow: (config: Omit<WindowConfig, 'zIndex' | 'isActive' | 'isOpen'>) => void
+  createWindow: (config: Omit<WindowConfig, 'zIndex' | 'isActive' | 'isOpen'> & { isOpen?: boolean }) => void
   closeWindow: (id: string) => void
   minimizeWindow: (id: string) => void
   maximizeWindow: (id: string) => void
@@ -19,6 +19,9 @@ interface WindowManagerContextValue extends WindowManagerState {
   updateWindowState: (id: string, state: WindowState) => void
   getWindow: (id: string) => WindowConfig | undefined
   toggleWindowState: (id: string) => void
+  openWindow: (id: string) => void
+  windowOrder: string[]
+  reorderWindows: (newOrder: string[]) => void
 }
 
 const WindowManagerContext = createContext<WindowManagerContextValue | null>(null)
@@ -45,6 +48,7 @@ export function WindowManagerProvider({ children, persistKey = 'windows-state' }
   const fullPersistKey = `${envPrefix}-${persistKey}`
   // 초기값은 항상 빈 상태로 시작 (SSR/CSR 일치)
   const [windows, setWindows] = useState<Map<string, WindowConfig>>(new Map())
+  const [windowOrder, setWindowOrder] = useState<string[]>([]) // 작업표시줄 아이콘 순서
   const [activeWindowId, setActiveWindowId] = useState<string | null>(null)
   const [highestZIndex, setHighestZIndex] = useState(1000)
   const [isHydrated, setIsHydrated] = useState(false)
@@ -85,6 +89,11 @@ export function WindowManagerProvider({ children, persistKey = 'windows-state' }
         if (parsed.highestZIndex) {
           setHighestZIndex(parsed.highestZIndex)
         }
+        
+        // windowOrder 복원
+        if (parsed.windowOrder && Array.isArray(parsed.windowOrder)) {
+          setWindowOrder(parsed.windowOrder)
+        }
       }
     } catch (error) {
       console.error('Failed to restore window state:', error)
@@ -109,15 +118,16 @@ export function WindowManagerProvider({ children, persistKey = 'windows-state' }
         environment: envPrefix, // 환경 정보 추가
         windows: Object.fromEntries(serializableWindows),
         activeWindowId,
-        highestZIndex
+        highestZIndex,
+        windowOrder
       }
       localStorage.setItem(fullPersistKey, JSON.stringify(state))
     } catch (error) {
       console.error('Failed to save window state:', error)
     }
-  }, [windows, activeWindowId, highestZIndex, fullPersistKey, isHydrated, envPrefix])
+  }, [windows, activeWindowId, highestZIndex, windowOrder, fullPersistKey, isHydrated, envPrefix])
 
-  const createWindow = useCallback((config: Omit<WindowConfig, 'zIndex' | 'isActive' | 'isOpen'>) => {
+  const createWindow = useCallback((config: Omit<WindowConfig, 'zIndex' | 'isActive' | 'isOpen'> & { isOpen?: boolean }) => {
     setWindows(prev => {
       const newWindows = new Map(prev)
       const newZIndex = highestZIndex + 1
@@ -125,8 +135,8 @@ export function WindowManagerProvider({ children, persistKey = 'windows-state' }
       const windowConfig: WindowConfig = {
         ...config,
         zIndex: newZIndex,
-        isActive: true,
-        isOpen: true,
+        isActive: config.isOpen !== false, // isOpen이 false가 아니면 활성화
+        isOpen: config.isOpen ?? true, // 기본값은 true
         resizable: config.resizable ?? true,
         draggable: config.draggable ?? true,
         closable: config.closable ?? true,
@@ -138,8 +148,18 @@ export function WindowManagerProvider({ children, persistKey = 'windows-state' }
       return newWindows
     })
     
+    // windowOrder에 추가 (이미 존재하지 않으면)
+    setWindowOrder(prev => {
+      if (!prev.includes(config.id)) {
+        return [...prev, config.id]
+      }
+      return prev
+    })
+    
     setHighestZIndex((prev: number) => prev + 1)
-    setActiveWindowId(config.id)
+    if (config.isOpen !== false) {
+      setActiveWindowId(config.id)
+    }
   }, [highestZIndex])
 
   const closeWindow = useCallback((id: string) => {
@@ -147,7 +167,8 @@ export function WindowManagerProvider({ children, persistKey = 'windows-state' }
       const newWindows = new Map(prev)
       const window = newWindows.get(id)
       if (window) {
-        newWindows.set(id, { ...window, isOpen: false })
+        // 윈도우를 숨김 (isOpen: false), 작업표시줄에서 다시 열 수 있도록
+        newWindows.set(id, { ...window, isOpen: false, state: 'normal' })
       }
       return newWindows
     })
@@ -279,6 +300,32 @@ export function WindowManagerProvider({ children, persistKey = 'windows-state' }
     }
   }, [windows, restoreWindow, maximizeWindow])
 
+  const openWindow = useCallback((id: string) => {
+    const newZIndex = highestZIndex + 1
+    setWindows(prev => {
+      const newWindows = new Map(prev)
+      const window = newWindows.get(id)
+      if (window) {
+        newWindows.set(id, { ...window, isOpen: true, isActive: true, state: 'normal', zIndex: newZIndex })
+        
+        // 다른 모든 윈도우를 비활성화
+        newWindows.forEach((w, wId) => {
+          if (wId !== id && w.isActive) {
+            newWindows.set(wId, { ...w, isActive: false })
+          }
+        })
+      }
+      return newWindows
+    })
+    
+    setHighestZIndex(newZIndex)
+    setActiveWindowId(id)
+  }, [highestZIndex])
+
+  const reorderWindows = useCallback((newOrder: string[]) => {
+    setWindowOrder(newOrder)
+  }, [])
+
   const value: WindowManagerContextValue = {
     windows,
     activeWindowId,
@@ -294,6 +341,9 @@ export function WindowManagerProvider({ children, persistKey = 'windows-state' }
     updateWindowState,
     getWindow,
     toggleWindowState,
+    openWindow,
+    windowOrder,
+    reorderWindows,
   }
 
   return (

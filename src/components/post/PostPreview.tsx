@@ -3,6 +3,7 @@
  * 새로운 타입 시스템을 사용하며 다양한 미리보기 모드 지원
  */
 
+import React from 'react'
 import { PostInfo } from "@/interfaces/post/types"
 import { PostPreviewProps, toPostInfo } from '@/types/post'
 import { Viewer } from '../features/post/viewer/Viewer'
@@ -56,7 +57,33 @@ const LAYOUT_COMPONENTS = {
 
 type SupportedMainCategory = keyof typeof POST_CARD_COMPONENTS
 
-export function PostPreview({
+// 성능 최적화를 위한 비교 함수
+function arePropsEqual(
+  prevProps: PostPreviewProps,
+  nextProps: PostPreviewProps
+): boolean {
+  const prevPost = prevProps.post
+  const nextPost = nextProps.post
+  
+  return (
+    prevPost.id === nextPost.id &&
+    prevPost.title === nextPost.title &&
+    prevPost.content === nextPost.content &&
+    prevPost.mainCategory === nextPost.mainCategory &&
+    prevPost.subCategory === nextPost.subCategory &&
+    prevPost.topic === nextPost.topic &&
+    prevPost.description === nextPost.description &&
+    prevPost.thumbnail === nextPost.thumbnail &&
+    prevPost.author === nextPost.author &&
+    prevPost.language === nextPost.language &&
+    JSON.stringify(prevPost.tags) === JSON.stringify(nextPost.tags) &&
+    prevProps.isViewerMounted === nextProps.isViewerMounted &&
+    prevProps.showCard === nextProps.showCard &&
+    prevProps.showLayout === nextProps.showLayout
+  )
+}
+
+export const PostPreview = React.memo(function PostPreview({
   post,
   isViewerMounted = true,
   showCard = true,
@@ -148,4 +175,4 @@ export function PostPreview({
       )}
     </div>
   )
-}
+}, arePropsEqual)

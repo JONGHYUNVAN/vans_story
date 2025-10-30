@@ -4,7 +4,7 @@
 
 'use client'
 
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Eye } from 'lucide-react'
 import { PostPreview } from '@/components/post/PostPreview'
 import { BasePost } from '@/types/post'
@@ -26,20 +26,8 @@ export function PreviewWindowContent({
     setIsViewerMounted(true)
   }, [])
 
-  // post 객체를 memoize하여 불필요한 리렌더링 방지
-  const memoizedPost = useMemo(() => post, [
-    post.id,
-    post.title,
-    post.content,
-    post.mainCategory,
-    post.subCategory,
-    post.topic,
-    post.description,
-    post.tags,
-    post.thumbnail,
-    post.author,
-    post.language,
-  ])
+  // useMemo 제거: 실시간 반영이 더 중요
+  // post가 변경될 때마다 즉시 업데이트
 
   return (
     <div className="h-full overflow-auto bg-gray-50/80">
@@ -63,7 +51,7 @@ export function PreviewWindowContent({
         </div>
         
         <PostPreview
-          post={memoizedPost}
+          post={post}
           isViewerMounted={isViewerMounted}
           showCard={showCard}
           showLayout={showLayout}

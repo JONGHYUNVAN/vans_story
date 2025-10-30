@@ -18,6 +18,7 @@ interface WindowManagerContextValue extends WindowManagerState {
   updateWindowSize: (id: string, size: Size) => void
   updateWindowState: (id: string, state: WindowState) => void
   getWindow: (id: string) => WindowConfig | undefined
+  getDefaultConfig: (id: string) => Omit<WindowConfig, 'zIndex' | 'isActive'> | undefined
   toggleWindowState: (id: string) => void
   openWindow: (id: string) => void
   windowOrder: string[]
@@ -49,6 +50,8 @@ export function WindowManagerProvider({ children, persistKey = 'windows-state' }
   // 초기값은 항상 빈 상태로 시작 (SSR/CSR 일치)
   const [windows, setWindows] = useState<Map<string, WindowConfig>>(new Map())
   const [windowOrder, setWindowOrder] = useState<string[]>([]) // 작업표시줄 아이콘 순서
+  // 윈도우 기본 설정 저장 (닫힌 후 다시 열 때 사용)
+  const [defaultConfigs, setDefaultConfigs] = useState<Map<string, Omit<WindowConfig, 'zIndex' | 'isActive'>>>(new Map())
   const [activeWindowId, setActiveWindowId] = useState<string | null>(null)
   const [highestZIndex, setHighestZIndex] = useState(1000)
   const [isHydrated, setIsHydrated] = useState(false)
@@ -69,13 +72,16 @@ export function WindowManagerProvider({ children, persistKey = 'windows-state' }
           return
         }
         
-        // windows 복원
+        // windows 복원 (isOpen: true인 것만)
         if (parsed.windows) {
           const restoredWindows = new Map<string, WindowConfig>()
           Object.entries(parsed.windows).forEach(([id, config]) => {
             // ✅ icon 속성 제거 (직렬화된 객체이므로 사용 불가)
             const { icon, ...rest } = config as WindowConfig
-            restoredWindows.set(id, rest as WindowConfig)
+            // ✅ isOpen이 true인 윈도우만 복원 (닫힌 윈도우는 defaultConfig로만 유지)
+            if (rest.isOpen) {
+              restoredWindows.set(id, rest as WindowConfig)
+            }
           })
           setWindows(restoredWindows)
         }
@@ -148,6 +154,22 @@ export function WindowManagerProvider({ children, persistKey = 'windows-state' }
       return newWindows
     })
     
+    // 기본 설정 저장 (닫힌 후 다시 열 때 사용)
+    setDefaultConfigs(prev => {
+      const newConfigs = new Map(prev)
+      const defaultConfig = {
+        ...config,
+        isOpen: config.isOpen ?? true,
+        resizable: config.resizable ?? true,
+        draggable: config.draggable ?? true,
+        closable: config.closable ?? true,
+        minimizable: config.minimizable ?? true,
+        maximizable: config.maximizable ?? true,
+      }
+      newConfigs.set(config.id, defaultConfig)
+      return newConfigs
+    })
+    
     // windowOrder에 추가 (이미 존재하지 않으면)
     setWindowOrder(prev => {
       if (!prev.includes(config.id)) {
@@ -163,13 +185,11 @@ export function WindowManagerProvider({ children, persistKey = 'windows-state' }
   }, [highestZIndex])
 
   const closeWindow = useCallback((id: string) => {
+    // 윈도우를 완전히 삭제 (메모리 확보)
+    // windowOrder는 유지되어 작업표시줄에 남음
     setWindows(prev => {
       const newWindows = new Map(prev)
-      const window = newWindows.get(id)
-      if (window) {
-        // 윈도우를 숨김 (isOpen: false), 작업표시줄에서 다시 열 수 있도록
-        newWindows.set(id, { ...window, isOpen: false, state: 'normal' })
-      }
+      newWindows.delete(id)
       return newWindows
     })
     
@@ -289,6 +309,10 @@ export function WindowManagerProvider({ children, persistKey = 'windows-state' }
     return windows.get(id)
   }, [windows])
 
+  const getDefaultConfig = useCallback((id: string) => {
+    return defaultConfigs.get(id)
+  }, [defaultConfigs])
+
   const toggleWindowState = useCallback((id: string) => {
     const window = windows.get(id)
     if (!window) return
@@ -305,22 +329,38 @@ export function WindowManagerProvider({ children, persistKey = 'windows-state' }
     setWindows(prev => {
       const newWindows = new Map(prev)
       const window = newWindows.get(id)
+      
       if (window) {
+        // 이미 존재하는 윈도우 - 단순히 열기
         newWindows.set(id, { ...window, isOpen: true, isActive: true, state: 'normal', zIndex: newZIndex })
-        
-        // 다른 모든 윈도우를 비활성화
-        newWindows.forEach((w, wId) => {
-          if (wId !== id && w.isActive) {
-            newWindows.set(wId, { ...w, isActive: false })
+      } else {
+        // 삭제된 윈도우 - defaultConfig로 재생성
+        const defaultConfig = defaultConfigs.get(id)
+        if (defaultConfig) {
+          const windowConfig: WindowConfig = {
+            ...defaultConfig,
+            zIndex: newZIndex,
+            isActive: true,
+            isOpen: true,
+            state: 'normal',
           }
-        })
+          newWindows.set(id, windowConfig)
+        }
       }
+      
+      // 다른 모든 윈도우를 비활성화
+      newWindows.forEach((w, wId) => {
+        if (wId !== id && w.isActive) {
+          newWindows.set(wId, { ...w, isActive: false })
+        }
+      })
+      
       return newWindows
     })
     
     setHighestZIndex(newZIndex)
     setActiveWindowId(id)
-  }, [highestZIndex])
+  }, [highestZIndex, defaultConfigs])
 
   const reorderWindows = useCallback((newOrder: string[]) => {
     setWindowOrder(newOrder)
@@ -340,6 +380,7 @@ export function WindowManagerProvider({ children, persistKey = 'windows-state' }
     updateWindowSize,
     updateWindowState,
     getWindow,
+    getDefaultConfig,
     toggleWindowState,
     openWindow,
     windowOrder,

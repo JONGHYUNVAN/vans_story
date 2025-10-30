@@ -106,30 +106,37 @@ interface TaskbarProps {
 }
 
 export function Taskbar({ className = '' }: TaskbarProps) {
-  const { windows, focusWindow, restoreWindow, openWindow, minimizeWindow, windowOrder, reorderWindows } = useWindowManager()
+  const { windows, focusWindow, restoreWindow, openWindow, minimizeWindow, windowOrder, reorderWindows, getDefaultConfig } = useWindowManager()
   const [draggedId, setDraggedId] = useState<string | null>(null)
 
-  // windowOrder에 따라 윈도우 정렬
-  const orderedWindows = windowOrder
-    .map(id => windows.get(id))
-    .filter((win): win is WindowConfig => win !== undefined)
+  // windowOrder에 따라 작업표시줄 아이템 생성
+  // 닫힌 윈도우는 window 객체가 없지만 windowOrder와 defaultConfig에는 남아있음
+  const taskbarItems = windowOrder.map(id => ({
+    id,
+    window: windows.get(id),
+    defaultConfig: getDefaultConfig(id),
+    isClosed: !windows.has(id)
+  }))
 
-  const handleWindowClick = (win: WindowConfig) => {
-    // 닫힌 윈도우는 열기
-    if (!win.isOpen) {
-      openWindow(win.id)
-    }
-    // 최소화된 윈도우는 복원
-    else if (win.state === 'minimized') {
-      restoreWindow(win.id)
-    }
-    // 이미 활성 상태면 최소화
-    else if (win.isActive) {
-      minimizeWindow(win.id)
-    }
-    // 그 외에는 포커스
-    else {
-      focusWindow(win.id)
+  const handleWindowClick = (id: string, win?: WindowConfig) => {
+    console.log('[Taskbar] Window clicked:', { id, hasWindow: !!win, state: win?.state, isOpen: win?.isOpen })
+    
+    if (!win || !win.isOpen) {
+      // 닫힌 윈도우 - 다시 열기
+      console.log('[Taskbar] Opening closed window:', id)
+      openWindow(id)
+    } else if (win.state === 'minimized') {
+      // 최소화된 윈도우는 복원
+      console.log('[Taskbar] Restoring minimized window:', id)
+      restoreWindow(id)
+    } else if (win.isActive) {
+      // 이미 활성 상태면 최소화
+      console.log('[Taskbar] Minimizing active window:', id)
+      minimizeWindow(id)
+    } else {
+      // 그 외에는 포커스
+      console.log('[Taskbar] Focusing window:', id)
+      focusWindow(id)
     }
   }
 
@@ -168,7 +175,7 @@ export function Taskbar({ className = '' }: TaskbarProps) {
     setDraggedId(null)
   }
 
-  if (orderedWindows.length === 0) {
+  if (taskbarItems.length === 0) {
     return null
   }
 
@@ -187,17 +194,30 @@ export function Taskbar({ className = '' }: TaskbarProps) {
       aria-label="작업표시줄"
     >
       <div className="flex items-center gap-1" role="list">
-        {orderedWindows.map((win) => (
-          <TaskbarButton
-            key={win.id}
-            window={win}
-            onClick={() => handleWindowClick(win)}
-            onDragStart={handleDragStart(win.id)}
-            onDragOver={handleDragOver}
-            onDrop={handleDrop(win.id)}
-            isDragging={draggedId === win.id}
-          />
-        ))}
+        {taskbarItems.map(({ id, window: win, defaultConfig, isClosed }) => {
+          // 닫힌 윈도우는 defaultConfig로 표시
+          const displayWindow = win || (defaultConfig ? {
+            ...defaultConfig,
+            zIndex: 0,
+            isActive: false,
+            isOpen: false,
+          } : null)
+          
+          // displayWindow가 없으면 건너뛰기 (defaultConfig가 없는 경우)
+          if (!displayWindow) return null
+          
+          return (
+            <TaskbarButton
+              key={id}
+              window={displayWindow as WindowConfig}
+              onClick={() => handleWindowClick(id, win)}
+              onDragStart={handleDragStart(id)}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop(id)}
+              isDragging={draggedId === id}
+            />
+          )
+        })}
       </div>
     </div>
   )

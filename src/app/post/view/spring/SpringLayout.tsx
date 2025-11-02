@@ -63,7 +63,9 @@ export default function SpringLayout({
           )}
 
           {/* 컨텐츠 */}
-          {children}
+          <div className="relative z-10 text-white">
+            {children}
+          </div>
         </div>
       </div>
     </div>

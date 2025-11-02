@@ -82,6 +82,8 @@ export interface PostUpdateData extends Partial<PostCreateData> {
 export interface MainCategoryOption {
   value: string
   label: string
+  icon?: any  // IconType (react-icons) 또는 string (이미지 경로)
+  color?: string
 }
 
 /**

@@ -1,8 +1,9 @@
 'use client'
 import { BubbleMenu } from '@tiptap/react'
-import { Bold, Italic, Underline, Palette, Type } from 'lucide-react'
+import { Bold, Italic, Underline, Palette, Type, Bot } from 'lucide-react'
 import { useEditorContext } from './EditorContext'
 import { Trash2 } from 'lucide-react'
+import { useWindowManager } from '@/components/ui/window'
 
 const ICONS = {
   insert_up: '/icons/insert_up.ico',
@@ -26,7 +27,20 @@ const FONT_SIZES = ['12', '14', '16', '18', '20', '24', '28', '32', '36', '40']
  */
 export function EditorBubbleMenu() {
   const editor = useEditorContext()
+  const { openWindowWithData } = useWindowManager()
+  
   if (!editor) return null
+
+  const handleAiClick = () => {
+    // 선택된 텍스트 가져오기
+    const { from, to } = editor.state.selection
+    const selectedText = editor.state.doc.textBetween(from, to, ' ')
+    
+    if (selectedText) {
+      // AI 창 열면서 선택된 텍스트 전달
+      openWindowWithData('ai-chat-window', { selectedText })
+    }
+  }
 
   return (
     <>
@@ -39,6 +53,15 @@ export function EditorBubbleMenu() {
         }}
         className="flex items-center bg-white shadow-lg border rounded-lg overflow-hidden"
       >
+        <button
+          type="button"
+          onClick={handleAiClick}
+          className="p-1.5 hover:bg-blue-50 transition-colors text-blue-600"
+          title="AI에게 물어보기"
+        >
+          <Bot size={14} />
+        </button>
+        <div className="w-px h-4 bg-gray-200" />
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBold().run()}

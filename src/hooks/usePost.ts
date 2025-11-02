@@ -178,15 +178,18 @@ export function usePost({
     }))
     setHasUnsavedChanges(true)
     
-    // 메인 카테고리 변경시 하위 카테고리 리셋
-    if (field === 'mainCategory') {
-      setSelectedSubCategory(null)
+    // 메인 카테고리 변경시 하위 카테고리는 useSubCategories에서 자동으로 첫 번째로 설정됨
+  }
+  
+  // 선택된 하위 카테고리가 변경되면 formData에 반영
+  useEffect(() => {
+    if (selectedSubCategory) {
       setFormData(prev => ({
         ...prev,
-        subCategory: ''
+        subCategory: selectedSubCategory.value
       }))
     }
-  }
+  }, [selectedSubCategory])
   
   // 폼 검증
   const validateForm = (): boolean => {

@@ -4,9 +4,10 @@ import { ApiFetch } from '@/lib/apiFetch';
 
 export type ChatRequest = {
   message: string;
-  model?: string;        // 선택사항, 기본값: gpt-4o-mini
+  model?: string;        // 선택사항, 기본값: gpt-4.1-nano
   max_tokens?: number;   // 선택사항, 기본값: 1000
   temperature?: number;  // 선택사항, 기본값: 0.7 (0=일관적, 2=창의적)
+  reasoning_effort?: 'low' | 'medium' | 'high'; // 선택사항, 추론 깊이
 };
 
 export type ChatResponse = {
@@ -15,6 +16,11 @@ export type ChatResponse = {
   model: string;
   tokens_used: number;
   timestamp: string;
+  usage?: {
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+  };
 };
 
 /**

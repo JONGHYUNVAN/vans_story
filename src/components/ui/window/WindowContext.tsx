@@ -20,9 +20,13 @@ interface WindowManagerContextValue extends WindowManagerState {
   getWindow: (id: string) => WindowConfig | undefined
   getDefaultConfig: (id: string) => Omit<WindowConfig, 'zIndex' | 'isActive'> | undefined
   toggleWindowState: (id: string) => void
-  openWindow: (id: string) => void
+  openWindow: (id: string, data?: any) => void
+  openWindowWithData: (id: string, data: any) => void
   windowOrder: string[]
   reorderWindows: (newOrder: string[]) => void
+  windowData: Map<string, any>
+  getWindowData: (id: string) => any
+  clearWindowData: (id: string) => void
 }
 
 const WindowManagerContext = createContext<WindowManagerContextValue | null>(null)
@@ -55,6 +59,7 @@ export function WindowManagerProvider({ children, persistKey = 'windows-state' }
   const [activeWindowId, setActiveWindowId] = useState<string | null>(null)
   const [highestZIndex, setHighestZIndex] = useState(1000)
   const [isHydrated, setIsHydrated] = useState(false)
+  const [windowData, setWindowData] = useState<Map<string, any>>(new Map())
 
   // 클라이언트에서 마운트된 후 localStorage에서 복원
   useEffect(() => {
@@ -324,8 +329,18 @@ export function WindowManagerProvider({ children, persistKey = 'windows-state' }
     }
   }, [windows, restoreWindow, maximizeWindow])
 
-  const openWindow = useCallback((id: string) => {
+  const openWindow = useCallback((id: string, data?: any) => {
     const newZIndex = highestZIndex + 1
+    
+    // 데이터가 있으면 저장
+    if (data !== undefined) {
+      setWindowData(prev => {
+        const newData = new Map(prev)
+        newData.set(id, data)
+        return newData
+      })
+    }
+    
     setWindows(prev => {
       const newWindows = new Map(prev)
       const window = newWindows.get(id)
@@ -362,6 +377,22 @@ export function WindowManagerProvider({ children, persistKey = 'windows-state' }
     setActiveWindowId(id)
   }, [highestZIndex, defaultConfigs])
 
+  const openWindowWithData = useCallback((id: string, data: any) => {
+    openWindow(id, data)
+  }, [openWindow])
+
+  const getWindowData = useCallback((id: string) => {
+    return windowData.get(id)
+  }, [windowData])
+
+  const clearWindowData = useCallback((id: string) => {
+    setWindowData(prev => {
+      const newData = new Map(prev)
+      newData.delete(id)
+      return newData
+    })
+  }, [])
+
   const reorderWindows = useCallback((newOrder: string[]) => {
     setWindowOrder(newOrder)
   }, [])
@@ -383,8 +414,12 @@ export function WindowManagerProvider({ children, persistKey = 'windows-state' }
     getDefaultConfig,
     toggleWindowState,
     openWindow,
+    openWindowWithData,
     windowOrder,
     reorderWindows,
+    windowData,
+    getWindowData,
+    clearWindowData,
   }
 
   return (

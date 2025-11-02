@@ -43,8 +43,8 @@ export function useSubCategories(
       
       setSubCategories(newSubCategories)
       
-      // 선택된 하위 카테고리가 없고 새 하위 카테고리가 있을 때만 첫 번째로 설정
-      if (!selectedSubCategory && newSubCategories.length > 0) {
+      // 메인 카테고리가 변경되면 항상 첫 번째 하위 카테고리로 자동 선택
+      if (newSubCategories.length > 0) {
         console.log('🎯 첫 번째 하위 카테고리로 자동 선택:', newSubCategories[0].label)
         setSelectedSubCategory(newSubCategories[0])
       }

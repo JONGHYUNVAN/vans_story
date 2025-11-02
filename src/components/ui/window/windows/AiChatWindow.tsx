@@ -5,8 +5,9 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import { Bot, Send, User, AlertCircle, Loader2, Trash2 } from 'lucide-react'
-import { sendChatMessage, type ChatRequest } from '@/lib/ai/client-actions'
+import { Bot, Send, User, AlertCircle, Loader2, Trash2, Zap } from 'lucide-react'
+import { sendChatMessage, type ChatRequest, type ChatResponse } from '@/lib/ai/client-actions'
+import { useWindowManager } from '../WindowContext'
 
 interface ChatMessage {
   id: string
@@ -15,17 +16,43 @@ interface ChatMessage {
   timestamp: Date
 }
 
-interface AiChatWindowContentProps {
-  onInsertText?: (text: string) => void
+interface TokenUsage {
+  prompt_tokens: number
+  completion_tokens: number
+  total_tokens: number
 }
 
-export function AiChatWindowContent({ onInsertText }: AiChatWindowContentProps) {
+interface AiChatWindowContentProps {
+  onInsertText?: (text: string) => void
+  initialMessage?: string
+}
+
+export function AiChatWindowContent({ onInsertText, initialMessage }: AiChatWindowContentProps) {
+  const { getWindowData, clearWindowData } = useWindowManager()
   const [messages, setMessages] = useState<ChatMessage[]>([])
-  const [inputValue, setInputValue] = useState('')
+  const [inputValue, setInputValue] = useState(initialMessage || '')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [selectedModel, setSelectedModel] = useState<string>('gpt-4.1-nano')
+  const [currentModel, setCurrentModel] = useState<string>('gpt-4.1-nano')
+  const [maxTokens, setMaxTokens] = useState<number>(300)
+  const [totalTokensUsed, setTotalTokensUsed] = useState<number>(0)
+  const [lastUsage, setLastUsage] = useState<TokenUsage | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  // 사용 가능한 모델 목록
+  const availableModels = [
+    // GPT-4.1 시리즈 (기존 방식)
+    { id: 'gpt-4.1', name: 'GPT-4.1', description: '스마트한 비추론 모델 ($2/$8)', category: 'gpt4' },
+    { id: 'gpt-4.1-mini', name: 'GPT-4.1 Mini', description: '균형잡힌 성능 ($0.40/$1.60)', category: 'gpt4' },
+    { id: 'gpt-4.1-nano', name: 'GPT-4.1 Nano', description: '초저비용 ($0.10/$0.40)', category: 'gpt4' },
+    
+    // GPT-5 자동 라우팅
+    { id: 'gpt-5', name: 'GPT-5', description: '코딩 및 에이전트 작업에 최적 ($1.25/$10)', category: 'gpt5' },
+    { id: 'gpt-5-mini', name: 'GPT-5 Mini', description: '빠르고 비용 효율적 ($0.25/$2)', category: 'gpt5' },
+    { id: 'gpt-5-nano', name: 'GPT-5 Nano', description: '가장 빠르고 저렴 ($0.05/$0.40)', category: 'gpt5' },
+  ]
 
   // 메시지 스크롤 자동 이동
   const scrollToBottom = () => {
@@ -40,7 +67,18 @@ export function AiChatWindowContent({ onInsertText }: AiChatWindowContentProps) 
     if (inputRef.current) {
       inputRef.current.focus()
     }
-  }, [])
+    
+    // windowData에서 선택된 텍스트 가져오기
+    const windowData = getWindowData('ai-chat-window')
+    if (windowData?.selectedText) {
+      setInputValue(windowData.selectedText)
+      // 데이터 사용 후 클리어
+      clearWindowData('ai-chat-window')
+    } else if (initialMessage) {
+      // windowData가 없으면 initialMessage 사용
+      setInputValue(initialMessage)
+    }
+  }, [initialMessage, getWindowData, clearWindowData])
 
   const handleSendMessage = async () => {
     if (!inputValue.trim() || isLoading) return
@@ -59,22 +97,25 @@ export function AiChatWindowContent({ onInsertText }: AiChatWindowContentProps) 
     setError(null)
 
     try {
-      const systemMessage = `You're a Korean technical blog assistant. 
-1. Each post has: 1-sentence topic intro, 1-paragraph summary, numbered chapters. (1000+ chars each)
-2. Write in formal explanatory tone (~입니다). 
-3. Use clear structure.
-4. never use **. 
-5. Include SQL/ERD/code blocks and tables when useful.
-6. min 1 chars, max 2000 chars, end with summary when more than 1000 chars`
-
       const chatRequest: ChatRequest = {
-        message: `${systemMessage}\n\n사용자 요청: ${currentInput}`,
-        model: 'gpt-4o-mini',
-        max_tokens: 2000,
+        message: currentInput,
+        model: selectedModel,
+        max_tokens: maxTokens,
         temperature: 0.7,
       }
 
       const response = await sendChatMessage(chatRequest)
+
+      // 토큰 사용량 업데이트
+      if (response.usage) {
+        setLastUsage(response.usage)
+        setTotalTokensUsed(prev => prev + response.usage!.total_tokens)
+      }
+      
+      // 모델 정보 업데이트
+      if (response.model) {
+        setCurrentModel(response.model)
+      }
 
       const assistantMessage: ChatMessage = {
         id: response.id || `ai-${Date.now()}`,
@@ -107,30 +148,105 @@ export function AiChatWindowContent({ onInsertText }: AiChatWindowContentProps) 
   const clearChat = () => {
     setMessages([])
     setError(null)
+    setTotalTokensUsed(0)
+    setLastUsage(null)
   }
 
   return (
     <div className="flex flex-col h-full bg-gray-50/80">
       {/* 헤더 영역 */}
-      <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between bg-white/60">
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-md bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-sm">
-            <Bot className="text-white" size={14} />
+      <div className="px-4 py-3 border-b border-gray-200 bg-white/60">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-md bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-sm">
+              <Bot className="text-white" size={14} />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-gray-800">AI 어시스턴트</h3>
+              <p className="text-xs text-gray-500">{currentModel}</p>
+            </div>
           </div>
-          <div>
-            <h3 className="text-sm font-semibold text-gray-800">AI 어시스턴트</h3>
-            <p className="text-xs text-gray-500">GPT-4o Mini</p>
+          {messages.length > 0 && (
+            <button
+              onClick={clearChat}
+              className="px-2.5 py-1.5 text-xs bg-gray-200/60 hover:bg-gray-300/60 rounded-md text-gray-700 hover:text-gray-900 transition-colors flex items-center gap-1.5"
+            >
+              <Trash2 size={12} />
+              <span>지우기</span>
+            </button>
+          )}
+        </div>
+
+        {/* 모델 선택 */}
+        <div className="mb-3">
+          <select
+            value={selectedModel}
+            onChange={(e) => setSelectedModel(e.target.value)}
+            disabled={isLoading}
+            className="w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
+          >
+            <optgroup label="🔷 GPT-4.1 시리즈">
+              {availableModels.filter(m => m.category === 'gpt4').map((model) => (
+                <option key={model.id} value={model.id}>
+                  {model.name} - {model.description}
+                </option>
+              ))}
+            </optgroup>
+            <optgroup label="⚡ GPT-5 시리즈">
+              {availableModels.filter(m => m.category === 'gpt5').map((model) => (
+                <option key={model.id} value={model.id}>
+                  {model.name} - {model.description}
+                </option>
+              ))}
+            </optgroup>
+          </select>
+        </div>
+
+        {/* 최대 토큰 설정 */}
+        <div className="mb-3">
+          <div className="flex items-center justify-between mb-1.5">
+            <label className="text-xs text-gray-600">최대 토큰</label>
+            <span className="text-xs font-mono text-blue-600">{maxTokens}</span>
+          </div>
+          <input
+            type="range"
+            value={maxTokens}
+            onChange={(e) => setMaxTokens(parseInt(e.target.value))}
+            min="100"
+            max="1000"
+            step="50"
+            disabled={isLoading}
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+          />
+          <div className="flex justify-between text-xs text-gray-500 mt-1">
+            <span>100</span>
+            <span>500</span>
+            <span>1000</span>
           </div>
         </div>
-        {messages.length > 0 && (
-          <button
-            onClick={clearChat}
-            className="px-2.5 py-1.5 text-xs bg-gray-200/60 hover:bg-gray-300/60 rounded-md text-gray-700 hover:text-gray-900 transition-colors flex items-center gap-1.5"
-          >
-            <Trash2 size={12} />
-            <span>지우기</span>
-          </button>
-        )}
+        
+        {/* 토큰 사용량 표시 */}
+        <div className="flex items-center gap-4 text-xs">
+          <div className="flex items-center gap-1.5 text-gray-600">
+            <Zap size={12} className="text-yellow-500" />
+            <span className="font-medium">총 사용:</span>
+            <span className="font-mono text-blue-600">{totalTokensUsed.toLocaleString()}</span>
+            <span className="text-gray-500">토큰</span>
+          </div>
+          
+          {lastUsage && (
+            <div className="flex items-center gap-3 text-gray-500 border-l border-gray-300 pl-4">
+              <div className="flex items-center gap-1">
+                <span>입력:</span>
+                <span className="font-mono text-gray-700">{lastUsage.prompt_tokens}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span>출력:</span>
+                <span className="font-mono text-gray-700">{lastUsage.completion_tokens}</span>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* 메시지 영역 */}

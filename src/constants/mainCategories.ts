@@ -5,23 +5,64 @@
 
 import { MainCategoryOption, SubCategoryOption } from '@/types/post'
 import { main_categories } from '@/interfaces/post/categories'
+import { SiNestjs, SiSpring, SiMariadb, SiMongodb, SiNextdotjs, 
+         SiDocker, SiJest, SiCypress, SiGit, SiJunit5 } from "react-icons/si"
+import { TbBinaryTree2, TbDatabase } from "react-icons/tb"
+import { RiShieldKeyholeLine } from "react-icons/ri"
 
-// 메인 카테고리 목록 (기존 THEMES)
-export const MAIN_CATEGORIES: MainCategoryOption[] = [
-  { value: 'nextjs', label: 'Next.js' },
-  { value: 'nestjs', label: 'Nest.js' },
-  { value: 'spring', label: 'Spring' },
-  { value: 'database-theory', label: 'Database Theory' },
-  { value: 'mariadb', label: 'MariaDB' },
-  { value: 'mongodb', label: 'MongoDB' },
-  { value: 'docker', label: 'Docker' },
-  { value: 'jwt', label: 'JWT' },
-  { value: 'jest', label: 'Jest' },
-  { value: 'cypress', label: 'Cypress' },
-  { value: 'junit5', label: 'JUnit5' },
-  { value: 'git', label: 'Git' },
-  { value: 'algorithm', label: 'Algorithm' }
-]
+// 카테고리 그룹 타입
+export type CategoryGroup = 'frontend' | 'backend' | 'database' | 'devops' | 'testing' | 'cs'
+
+// 그룹별 메인 카테고리
+export const CATEGORY_GROUPS = {
+  frontend: {
+    label: '프론트엔드',
+    categories: [
+      { value: 'nextjs', label: 'Next.js', icon: SiNextdotjs, color: '#000000' },
+    ]
+  },
+  backend: {
+    label: '백엔드',
+    categories: [
+      { value: 'nestjs', label: 'Nest.js', icon: SiNestjs, color: '#E0234E' },
+      { value: 'spring', label: 'Spring', icon: SiSpring, color: '#6DB33F' },
+      { value: 'jwt', label: 'JWT', icon: RiShieldKeyholeLine, color: '#00B4CC' },
+    ]
+  },
+  database: {
+    label: 'DB',
+    categories: [
+      { value: 'database-theory', label: 'Database Theory', icon: TbDatabase, color: '#2563EB' },
+      { value: 'mariadb', label: 'MariaDB', icon: SiMariadb, color: '#003545' },
+      { value: 'mongodb', label: 'MongoDB', icon: SiMongodb, color: '#47A248' },
+    ]
+  },
+  devops: {
+    label: 'DevOps',
+    categories: [
+      { value: 'docker', label: 'Docker', icon: SiDocker, color: '#2496ED' },
+      { value: 'git', label: 'Git', icon: SiGit, color: '#F05032' },
+    ]
+  },
+  testing: {
+    label: '테스트',
+    categories: [
+      { value: 'jest', label: 'Jest', icon: SiJest, color: '#C21325' },
+      { value: 'cypress', label: 'Cypress', icon: SiCypress, color: '#17202C' },
+      { value: 'junit5', label: 'JUnit5', icon: SiJunit5, color: '#25A162' },
+    ]
+  },
+  cs: {
+    label: 'CS',
+    categories: [
+      { value: 'algorithm', label: 'Algorithm', icon: TbBinaryTree2, color: '#4CAF50' },
+    ]
+  }
+} as const
+
+// 메인 카테고리 목록 (기존 THEMES) - 모든 카테고리를 평탄화
+export const MAIN_CATEGORIES: MainCategoryOption[] = Object.values(CATEGORY_GROUPS)
+  .flatMap(group => group.categories)
 
 // 메인 카테고리 이름 매핑 (기존 THEME_NAME_MAPPING)
 const MAIN_CATEGORY_NAME_MAPPING: { [key: string]: string } = {

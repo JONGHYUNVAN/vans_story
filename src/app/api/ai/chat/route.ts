@@ -4,9 +4,10 @@ import { createErrorResponse, createSuccessResponse } from '@/lib/errorHandler';
 
 export type ChatRequest = {
   message: string;
-  model?: string;        // 선택사항, 기본값: gpt-4o-mini
+  model?: string;        // 선택사항, 기본값: gpt-4.1-nano
   max_tokens?: number;   // 선택사항, 기본값: 1000
   temperature?: number;  // 선택사항, 기본값: 0.7 (0=일관적, 2=창의적)
+  reasoning_effort?: 'low' | 'medium' | 'high'; // 선택사항, 추론 깊이
 };
 
 // POST /api/ai/chat - 채팅 메시지 전송
@@ -25,7 +26,20 @@ export async function POST(request: NextRequest) {
     }
 
     const aiApiUrl = process.env.AI_API_URL || 'http://localhost:3003';
-    console.log('🔄 AI API 호출:', `${aiApiUrl}/chat`);
+    const selectedModel = body.model || 'gpt-4.1-nano';
+
+    // 요청 본문 구성
+    const requestBody: any = {
+      message: body.message,
+      model: selectedModel,
+      max_tokens: body.max_tokens || 1000,
+      temperature: body.temperature || 0.7,
+    };
+
+    // reasoning_effort가 있으면 추가
+    if (body.reasoning_effort) {
+      requestBody.reasoning_effort = body.reasoning_effort;
+    }
 
     const res = await fetch(`${aiApiUrl}/chat`, {
       method: 'POST',
@@ -34,38 +48,35 @@ export async function POST(request: NextRequest) {
         'X-API-Key': process.env.AI_ROUTE_API_KEY || '',
         ...(token && { Authorization: token }),
       },
-      body: JSON.stringify({
-        message: body.message,
-        model: body.model || 'gpt-4o-mini',
-        max_tokens: body.max_tokens || 1000,
-        temperature: body.temperature || 0.7,
-      })
+      body: JSON.stringify(requestBody)
     });
 
     if (!res.ok) {
       const errorData = await res.json().catch(() => null);
-      console.error('❌ AI API 호출 실패:', res.status, errorData);
       return createErrorResponse(
         res.status,
-        errorData?.message || errorData?.error || '채팅 메시지 전송에 실패했습니다.'
+        errorData?.message || errorData?.error || `채팅 메시지 전송에 실패했습니다. (모델: ${selectedModel})`
       );
     }
 
     const data = await res.json();
-    console.log('✅ AI 채팅 메시지 전송 성공');
     
     // 3003번 포트 응답 형식을 우리 형식으로 매핑
     const mappedResponse = {
       id: data.id || `chat-${Date.now()}`,
       message: data.response || data.message || '응답을 받지 못했습니다.',
-      model: data.model || 'gpt-4o-mini',
+      model: data.model || selectedModel,
       tokens_used: data.usage?.total_tokens || 0,
       timestamp: new Date().toISOString(),
+      usage: data.usage ? {
+        prompt_tokens: data.usage.prompt_tokens || 0,
+        completion_tokens: data.usage.completion_tokens || 0,
+        total_tokens: data.usage.total_tokens || 0,
+      } : undefined,
     };
     
     return createSuccessResponse(mappedResponse);
   } catch (error) {
-    console.error('❌ AI API 오류:', error);
     return createErrorResponse(
       500,
       '서버 오류가 발생했습니다.'

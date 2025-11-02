@@ -77,3 +77,4 @@ export interface CategoryLoadingState {
   lastUpdated: Date | null;
 }
 
+

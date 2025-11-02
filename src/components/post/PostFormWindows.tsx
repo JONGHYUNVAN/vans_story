@@ -274,6 +274,13 @@ function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave }: Pos
           onChange={(content) => updateFormData('content', content)}
           localImages={localImages}
           setLocalImages={setLocalImages}
+          postContext={{
+            title: formData.title,
+            mainCategory: formData.mainCategory,
+            subCategory: formData.subCategory,
+            topic: formData.topic,
+            tags: formData.tags
+          }}
         />
       </Window>
 

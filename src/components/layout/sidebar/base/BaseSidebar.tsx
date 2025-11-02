@@ -150,7 +150,7 @@ export default function BaseSidebar({
               </h2>
               <div className="space-y-3">
                 {subCategories.map((subCategory) => {
-                  const categoryPath = `${frameworkPath}/${subCategory.value}`;
+                  const categoryPath = `${frameworkPath}/category/${subCategory.value}`;
                   return (
                     <div key={subCategory.value} className="space-y-1">
                       <Link

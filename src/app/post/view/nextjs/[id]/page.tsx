@@ -5,13 +5,25 @@ import NextjsLayout from '../NextjsLayout';
 import { SidebarWrapper } from '../../components/SidebarWrapper';
 import { getPostWithViewCount } from '@/lib/posts/client-actions';
 import { ViewCountHandler } from '../../components/ViewCountHandler';
+import { notFound } from 'next/navigation';
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
+// MongoDB ObjectId 형식 검증 함수
+function isValidObjectId(id: string): boolean {
+  return /^[0-9a-fA-F]{24}$/.test(id);
+}
+
 export default async function ViewNextjsPostPage({ params }: PageProps) {
   const { id } = await params;
+  
+  // MongoDB ObjectId 형식이 아니면 404 처리
+  if (!isValidObjectId(id)) {
+    notFound();
+  }
+  
   const post = await getPostWithViewCount(id);
   
   if (!post) {

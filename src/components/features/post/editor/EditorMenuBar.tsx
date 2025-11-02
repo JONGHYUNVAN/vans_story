@@ -7,7 +7,7 @@ import {
   Image, Smile, Video, Bot
 } from 'lucide-react'
 import { useEffect, useState, useCallback } from 'react'
-import { AiChatModal } from './AiChatModal'
+import { AiGenerateModal } from './AiGenerateModal'
 import EmojiPicker, { EmojiStyle } from 'emoji-picker-react'
 import { koreanFonts } from '@/app/fonts/editor/kr';
 import { englishFonts } from '@/app/fonts/editor/en';
@@ -34,9 +34,18 @@ const FONTS_BY_LANGUAGE = {
   co: codeFonts,
 };
 
-export function EditorMenuBar({ localImages, setLocalImages }: {
+interface PostContext {
+  title?: string
+  mainCategory?: string
+  subCategory?: string
+  topic?: string
+  tags?: string[]
+}
+
+export function EditorMenuBar({ localImages, setLocalImages, postContext }: {
   localImages: Map<string, File>,
-  setLocalImages: React.Dispatch<React.SetStateAction<Map<string, File>>>
+  setLocalImages: React.Dispatch<React.SetStateAction<Map<string, File>>>,
+  postContext?: PostContext
 }) {
   const editor = useEditorContext();
   const [fontSize, setFontSize] = useState('12');
@@ -52,7 +61,7 @@ export function EditorMenuBar({ localImages, setLocalImages }: {
   const [inputLanguage, setInputLanguage] = useState<'ko' | 'en' | 'co' >('en');
   const [selectedFont, setSelectedFont] = useState('ko');
   const [isSticky, setIsSticky] = useState(false);
-  const [showAiChat, setShowAiChat] = useState(false);
+  const [showAiGenerate, setShowAiGenerate] = useState(false);
 
   useEffect(() => {
     if (!editor) return;
@@ -591,12 +600,12 @@ export function EditorMenuBar({ localImages, setLocalImages }: {
             <FaYoutube size={18} className="text-red-600" />
           </button>
 
-          {/* AI 어시스턴트 버튼 */}
+          {/* AI 콘텐츠 생성 버튼 */}
           <button
             type="button"
-            onClick={() => setShowAiChat(true)}
+            onClick={() => setShowAiGenerate(true)}
             className="p-2 rounded text-gray-700 hover:bg-blue-50 transition-colors"
-            title="AI 어시스턴트"
+            title="AI 콘텐츠 생성"
           >
             <Bot size={18} className="text-blue-600" />
           </button>
@@ -604,14 +613,14 @@ export function EditorMenuBar({ localImages, setLocalImages }: {
         </div>
       </div>
 
-      {/* AI 채팅 모달 */}
-      <AiChatModal
-        isOpen={showAiChat}
-        onClose={() => setShowAiChat(false)}
+      {/* AI 생성 모달 */}
+      <AiGenerateModal
+        isOpen={showAiGenerate}
+        onClose={() => setShowAiGenerate(false)}
         onInsertText={(text) => {
           editor.chain().focus().insertContent(text).run();
-          setShowAiChat(false);
         }}
+        postContext={postContext}
       />
     </div>  
     </div>

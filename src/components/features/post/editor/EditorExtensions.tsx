@@ -42,6 +42,7 @@ import Youtube from '@tiptap/extension-youtube'
 import { Extension, Editor } from '@tiptap/core'
 import { RawCommands } from '@tiptap/core'
 import { ResizableDraggableImage } from './ResizableDraggableImage'
+import { AiDiffBlock } from './AiDiffBlockExtension'
 
 
 const lowlight = createLowlight()
@@ -209,4 +210,6 @@ export const EditorExtensions = [
       class: 'max-w-full h-auto',
     },
   }),
+  // AI Diff Block 확장
+  AiDiffBlock,
 ]

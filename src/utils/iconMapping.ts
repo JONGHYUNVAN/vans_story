@@ -48,3 +48,4 @@ export function getIconComponent(iconName: string): IconType {
   return ICON_MAP[iconName] || TbDatabase; // 기본 아이콘
 }
 
+

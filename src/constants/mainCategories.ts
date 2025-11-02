@@ -61,8 +61,14 @@ export const CATEGORY_GROUPS = {
 } as const
 
 // 메인 카테고리 목록 (기존 THEMES) - 모든 카테고리를 평탄화
-export const MAIN_CATEGORIES: MainCategoryOption[] = Object.values(CATEGORY_GROUPS)
-  .flatMap(group => group.categories)
+export const MAIN_CATEGORIES: MainCategoryOption[] = [
+  ...CATEGORY_GROUPS.frontend.categories,
+  ...CATEGORY_GROUPS.backend.categories,
+  ...CATEGORY_GROUPS.database.categories,
+  ...CATEGORY_GROUPS.devops.categories,
+  ...CATEGORY_GROUPS.testing.categories,
+  ...CATEGORY_GROUPS.cs.categories,
+] as MainCategoryOption[]
 
 // 메인 카테고리 이름 매핑 (기존 THEME_NAME_MAPPING)
 const MAIN_CATEGORY_NAME_MAPPING: { [key: string]: string } = {

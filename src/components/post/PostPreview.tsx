@@ -120,7 +120,7 @@ export function PostPreview({
           {showCard && <PostCardComponent post={postInfo} />}
           {showLayout && (
             <LayoutComponent title={post.title!} isPreview>
-              <div className="prose max-w-none text-white">
+              <div className="prose max-w-none text-white [&_*]:!text-white [&_a]:!text-blue-300 [&_code]:!text-green-300 [&_h1]:!text-white [&_h2]:!text-white [&_h3]:!text-white [&_h4]:!text-white [&_h5]:!text-white [&_h6]:!text-white [&_strong]:!text-white [&_em]:!text-white [&_li]:!text-white [&_td]:!text-white [&_th]:!text-white [&_th]:!bg-gray-700">
                 {isViewerMounted && <Viewer content={post.content!} />}
               </div>
             </LayoutComponent>

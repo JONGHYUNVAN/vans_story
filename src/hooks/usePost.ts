@@ -25,6 +25,9 @@ export interface UsePostOptions {
   initialData?: Partial<PostEditData>
   autoSave?: boolean
   enableValidation?: boolean
+  onSuccess?: (data: any) => void | Promise<void>
+  onError?: (error: Error) => void
+  redirectPath?: string | null  // null이면 리다이렉트 안함
 }
 
 export interface UsePostReturn {
@@ -48,6 +51,11 @@ export interface UsePostReturn {
   hasUnsavedChanges: boolean
   errors: Record<string, string>
   
+  // 이미지 및 에디터 Ref
+  localImages: Map<string, File>
+  setLocalImages: React.Dispatch<React.SetStateAction<Map<string, File>>>
+  editorRef: React.MutableRefObject<any>
+  
   // 액션
   handleSubmit: (e: React.FormEvent) => Promise<void>
   handleTempSave: () => void
@@ -60,7 +68,10 @@ export function usePost({
   postId,
   initialData,
   autoSave = true,
-  enableValidation = true
+  enableValidation = true,
+  onSuccess,
+  onError,
+  redirectPath = undefined
 }: UsePostOptions): UsePostReturn {
   const router = useRouter()
   const { t } = useTranslation('')
@@ -254,11 +265,18 @@ export function usePost({
         finalContent = await uploadAndReplace(finalContent)
       }
       
-      // API 호출용 데이터 준비
+      // API 호출용 데이터 준비 (백엔드 DTO에 맞게 필터링)
       const submitData = {
-        ...formData,
-        content: finalContent
-      } as PostCreateData | PostEditData
+        title: formData.title,
+        content: finalContent,
+        mainCategory: formData.mainCategory,
+        subCategory: formData.subCategory,
+        topic: formData.topic,
+        description: formData.description,
+        tags: formData.tags || [],
+        thumbnail: formData.thumbnail,
+        language: formData.language || 'ko'
+      }
       
       const token = tokenStorage.getToken()
       if (!token) {
@@ -267,27 +285,60 @@ export function usePost({
       
       let response
       if (mode === 'create') {
+        console.log('📤 Creating post:', API_URLS.POST.CREATE, submitData)
         response = await ApiFetch.postWithAuth(API_URLS.POST.CREATE, submitData)
       } else {
-        response = await ApiFetch.postWithAuth(`${API_URLS.POST.UPDATE}/${postId}`, submitData)
+        const updateUrl = `${API_URLS.POST.UPDATE}/${postId}`
+        console.log('📤 Updating post:', updateUrl)
+        console.log('📋 Filtered submit data:', submitData)
+        response = await ApiFetch.patchWithAuth(updateUrl, submitData)
       }
       
       if (response.ok) {
+        const responseData = await response.json()
+        
         // 임시저장 데이터 삭제
         if (mode === 'create') {
           localStorage.removeItem('temp_post')
         }
         
-        // 성공 후 이동
-        router.push(`/post/view/${formData.mainCategory}`)
         console.log('✅ 포스트 저장 성공')
+        
+        // 성공 콜백 호출 (있으면)
+        if (onSuccess) {
+          await onSuccess(responseData)
+        }
+        
+        // 리다이렉트 처리
+        if (redirectPath === undefined) {
+          // 기본 동작: 뷰 페이지로 이동
+          router.push(`/post/view/${formData.mainCategory}`)
+        } else if (redirectPath !== null) {
+          // 커스텀 경로로 이동
+          router.push(redirectPath)
+        }
+        // redirectPath가 null이면 이동하지 않음
+        
       } else {
-        throw new Error('포스트 저장에 실패했습니다.')
+        const errorData = await response.json().catch(() => null)
+        const errorMessage = errorData?.error || errorData?.message || `포스트 저장에 실패했습니다. (상태 코드: ${response.status})`
+        console.error('❌ 포스트 저장 실패:', errorMessage, errorData)
+        throw new Error(errorMessage)
       }
       
     } catch (error) {
       console.error('포스트 저장 실패:', error)
-      setErrors({ submit: error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.' })
+      const errorObj = error instanceof Error ? error : new Error('알 수 없는 오류가 발생했습니다.')
+      
+      setErrors({ submit: errorObj.message })
+      
+      // 에러 콜백 호출 (있으면)
+      if (onError) {
+        onError(errorObj)
+      }
+      
+      // 에러를 다시 throw하여 상위에서 처리할 수 있도록 함
+      throw errorObj
     } finally {
       setIsSaving(false)
     }
@@ -327,6 +378,9 @@ export function usePost({
     isSaving,
     hasUnsavedChanges,
     errors,
+    localImages,
+    setLocalImages,
+    editorRef,
     handleSubmit,
     handleTempSave,
     validateForm,

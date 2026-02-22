@@ -138,6 +138,27 @@ package.json                            # framer-motion 추가
 WINDOWS11_REFACTORING.md               # 이 문서
 ```
 
+## 🧩 `post/new` 구조
+
+### 1) 라우팅 & 레이아웃
+- `src/app/post/new/layout.tsx`: `post/new` 전용 레이아웃(배경/컨테이너)
+- `src/app/post/new/page.tsx`: `PostFormWindows`를 렌더링하고 생성 모드로 동작
+
+### 2) 상위 컴포넌트 흐름
+- `PostFormWindows`는 `WindowManagerProvider`로 감싸며, `persistKey="post-editor-windows"`로 윈도우 상태를 복원/저장
+- 내부에서 `PostFormWindowsContent`가 `usePost` 훅을 통해 폼 상태/검증/제출/임시저장을 통합 관리
+
+### 3) 윈도우 구성(기본 4개)
+- 폼 윈도우(`form-window`): `PostFormInputs` 기반의 기본 정보 입력 + 등록/임시저장 액션
+- 에디터 윈도우(`editor-window`): Tiptap 기반 에디터, 이미지 업로드와 컨텐츠 입력
+- 미리보기 윈도우(`preview-window`): `PostPreview`로 실시간 프리뷰
+- AI 채팅 윈도우(`ai-chat-window`): AI 응답을 에디터에 삽입 가능
+
+### 4) 상태/데이터 흐름
+- `usePost`에서 `formData`, `errors`, `isSaving`, `localImages`, `editorRef`를 제공
+- 폼 변경 → `updateFormData` → 미리보기/에디터 동기화
+- `handleSubmit`/`handleTempSave`는 `PostFormWindows`의 콜백(`onSubmit`, `onTempSave`)과 연동
+
 ## 🎨 주요 기능
 
 ### 1. 멀티 윈도우 관리

@@ -19,12 +19,19 @@ export default function PostEditPage({ params }: PostEditPageProps) {
       mode="edit"
       initialData={{ id }}
       onSubmit={async (data) => {
-        // 제출 로직은 usePost 훅에서 처리됨
-        console.log('포스트 수정 완료:', data)
+        console.log('✅ 포스트 수정 완료:', data)
       }}
       onTempSave={(data) => {
-        console.log('임시저장 완료:', data)
+        console.log('💾 임시저장 완료:', data)
+      }}
+      onSuccess={async (data) => {
+        console.log('🎉 수정 성공:', data)
+        // 성공 시 추가 작업 가능 (예: 토스트 알림)
+      }}
+      onError={(error) => {
+        console.error('❌ 수정 실패:', error)
+        // 에러 처리 (예: 에러 모달 표시)
       }}
     />
   )
-} 
+}

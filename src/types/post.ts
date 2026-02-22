@@ -111,6 +111,9 @@ export interface PostFormProps {
   initialData?: Partial<PostEditData>
   onSubmit?: (data: PostCreateData | PostEditData) => Promise<void>
   onTempSave?: (data: Partial<PostCreateData | PostEditData>) => void
+  onSuccess?: (data: any) => void | Promise<void>
+  onError?: (error: Error) => void
+  redirectPath?: string | null  // null이면 리다이렉트 안함, undefined면 기본 동작
 }
 
 /**

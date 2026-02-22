@@ -5,7 +5,7 @@
 
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { useTranslation } from '@/utils/i18n'
 import { PostFormProps } from '@/types/post'
 import { usePost } from '@/hooks/usePost'
@@ -28,10 +28,8 @@ import {
   AiChatWindowIcon,
 } from '@/components/ui/window/windows/AiChatWindow'
 
-function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave }: PostFormProps) {
+function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave, onSuccess, onError, redirectPath }: PostFormProps) {
   const { t } = useTranslation('')
-  const [localImages, setLocalImages] = useState<Map<string, File>>(new Map())
-  const editorRef = useRef<any>(null)
   const { createWindow, windows } = useWindowManager()
 
   // 통합 Post 훅 사용
@@ -45,6 +43,9 @@ function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave }: Pos
     isSaving,
     hasUnsavedChanges,
     errors,
+    localImages,
+    setLocalImages,
+    editorRef,
     handleSubmit,
     handleTempSave,
   } = usePost({
@@ -53,6 +54,9 @@ function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave }: Pos
     initialData,
     autoSave: true,
     enableValidation: true,
+    onSuccess,
+    onError,
+    redirectPath,
   })
 
   // 초기 윈도우 생성 (마운트 시에만 한 번)
@@ -134,7 +138,9 @@ function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave }: Pos
         await onSubmit(formData as any)
       }
     } catch (error) {
+      // usePost에서 이미 에러를 처리했으므로 여기서는 로그만 남김
       console.error('폼 제출 실패:', error)
+      // 필요시 추가 에러 처리 가능
     }
   }
 

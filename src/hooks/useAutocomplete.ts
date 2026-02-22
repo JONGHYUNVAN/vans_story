@@ -58,8 +58,8 @@ export function useAutocomplete({
   const [isOpen, setIsOpen] = useState(false);
   const [currentQuery, setCurrentQuery] = useState('');
   
-  const debounceTimeoutRef = useRef<NodeJS.Timeout>();
-  const abortControllerRef = useRef<AbortController>();
+  const debounceTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
+  const abortControllerRef = useRef<AbortController | undefined>(undefined);
 
   // 백엔드 응답을 프론트엔드 구조로 변환하는 함수
   const transformApiResponse = useCallback((apiResponse: AutocompleteApiResponse, originalQuery: string): AutocompleteResponse => {

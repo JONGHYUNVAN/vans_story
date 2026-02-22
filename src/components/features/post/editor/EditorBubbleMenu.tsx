@@ -1,10 +1,53 @@
 'use client'
-import { BubbleMenu } from '@tiptap/react'
+import { useEffect, useRef } from 'react'
+import { BubbleMenuPlugin, type BubbleMenuPluginProps } from '@tiptap/extension-bubble-menu'
+import type { Editor } from '@tiptap/core'
 import { Bold, Italic, Underline, Palette, Type, Sparkles } from 'lucide-react'
 import { useEditorContext } from './EditorContext'
 import { Trash2 } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { sendChatMessage } from '@/lib/ai/client-actions'
+
+// ─── Tiptap 3.20 BubbleMenu React 래퍼 ─────────────────────────────────────
+interface TiptapBubbleMenuProps {
+  editor: Editor
+  pluginKey: string
+  shouldShow?: BubbleMenuPluginProps['shouldShow']
+  className?: string
+  children: React.ReactNode
+}
+
+function TiptapBubbleMenu({ editor, pluginKey, shouldShow, className, children }: TiptapBubbleMenuProps) {
+  const menuRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!menuRef.current) return
+
+    const plugin = BubbleMenuPlugin({
+      pluginKey,
+      editor,
+      element: menuRef.current,
+      shouldShow: shouldShow ?? null,
+    })
+
+    editor.registerPlugin(plugin)
+
+    return () => {
+      editor.unregisterPlugin(pluginKey)
+    }
+  }, [editor, pluginKey]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <div
+      ref={menuRef}
+      className={className}
+      style={{ visibility: 'hidden', position: 'absolute', zIndex: 50 }}
+    >
+      {children}
+    </div>
+  )
+}
+// ────────────────────────────────────────────────────────────────────────────
 
 const ICONS = {
   insert_up: '/icons/insert_up.ico',
@@ -333,8 +376,9 @@ export function EditorBubbleMenu() {
 
   return (
     <>
-      <BubbleMenu
+      <TiptapBubbleMenu
         editor={editor}
+        pluginKey="bubbleMenu"
         shouldShow={({ editor, state }) => {
           if (!editor || !editor.view || !editor.view.dom) return false
           const { selection } = state
@@ -447,11 +491,12 @@ export function EditorBubbleMenu() {
             <option value="Comic Sans MS, cursive">Comic Sans MS</option>
           </select>
         </div>
-      </BubbleMenu>
+      </TiptapBubbleMenu>
 
       {/* 표 버블 메뉴 */}
-      <BubbleMenu
+      <TiptapBubbleMenu
         editor={editor}
+        pluginKey="tableBubbleMenu"
         shouldShow={({ editor }) => editor.isActive('table')}
         className="flex items-center gap-1 p-1 rounded-lg bg-white border shadow-lg"
       >
@@ -587,7 +632,7 @@ export function EditorBubbleMenu() {
         >
           <img src={ICONS.align_right} alt="표 오른쪽 정렬" width={16} height={16} />
         </button>
-      </BubbleMenu>
+      </TiptapBubbleMenu>
     </>
   )
 }

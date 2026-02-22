@@ -23,10 +23,7 @@ import BulletList from '@tiptap/extension-bullet-list'
 import OrderedList from '@tiptap/extension-ordered-list'
 import ListItem from '@tiptap/extension-list-item'
 import sql from 'highlight.js/lib/languages/sql';
-import Table from '@tiptap/extension-table'
-import TableRow from '@tiptap/extension-table-row'
-import TableCell from '@tiptap/extension-table-cell'
-import TableHeader from '@tiptap/extension-table-header'
+import { Table, TableRow, TableCell, TableHeader } from '@tiptap/extension-table'
 import cpp from 'highlight.js/lib/languages/cpp'
 import csharp from 'highlight.js/lib/languages/csharp'
 import rust from 'highlight.js/lib/languages/rust'
@@ -81,13 +78,6 @@ declare module '@tiptap/core' {
         height?: string
         class?: string
         'data-local'?: string
-      }) => ReturnType
-    }
-    image: {
-      setImage: (options: {
-        src: string
-        alt?: string
-        title?: string
       }) => ReturnType
     }
   }

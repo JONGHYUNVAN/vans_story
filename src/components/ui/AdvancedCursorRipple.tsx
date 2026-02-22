@@ -35,7 +35,7 @@ export default function AdvancedCursorRipple({
 }: AdvancedCursorRippleProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wavesRef = useRef<WavePoint[]>([]);
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number>(0);
   const lastMouseMoveRef = useRef<number>(0);
 
   const createWave = useCallback((x: number, y: number) => {

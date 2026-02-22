@@ -26,6 +26,7 @@ export async function POST(request: NextRequest) {
     }
 
     const aiApiUrl = process.env.AI_API_URL || 'http://localhost:3003';
+    const timeoutMs = Number(process.env.AI_API_TIMEOUT_MS || 60000);
     const selectedModel = body.model || 'gpt-4.1-nano';
 
     // 요청 본문 구성
@@ -41,6 +42,9 @@ export async function POST(request: NextRequest) {
       requestBody.reasoning_effort = body.reasoning_effort;
     }
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
     const res = await fetch(`${aiApiUrl}/chat`, {
       method: 'POST',
       headers: {
@@ -48,8 +52,28 @@ export async function POST(request: NextRequest) {
         'X-API-Key': process.env.AI_ROUTE_API_KEY || '',
         ...(token && { Authorization: token }),
       },
-      body: JSON.stringify(requestBody)
-    });
+      body: JSON.stringify(requestBody),
+      signal: controller.signal,
+    }).finally(() => clearTimeout(timeoutId));
+
+    if (res.status === 429) {
+      const retryAfter = res.headers.get('retry-after') || undefined;
+      const errorData = await res.json().catch(() => null);
+      const baseMessage = errorData?.message || errorData?.error || '요청이 많습니다.';
+      const retryHint = retryAfter
+        ? ` ${retryAfter}초 후 다시 시도해주세요.`
+        : ' 잠시 후 다시 시도해주세요.';
+      return NextResponse.json(
+        {
+          success: false,
+          error: { message: `${baseMessage}${retryHint}` },
+        },
+        {
+          status: 429,
+          headers: retryAfter ? { 'Retry-After': retryAfter } : undefined,
+        }
+      );
+    }
 
     if (!res.ok) {
       const errorData = await res.json().catch(() => null);
@@ -77,6 +101,9 @@ export async function POST(request: NextRequest) {
     
     return createSuccessResponse(mappedResponse);
   } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      return createErrorResponse(504, '응답 시간이 초과되었습니다. 잠시 후 다시 시도해주세요.');
+    }
     return createErrorResponse(
       500,
       '서버 오류가 발생했습니다.'

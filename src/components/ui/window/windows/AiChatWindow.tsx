@@ -6,7 +6,7 @@
 
 import React, { useState, useRef, useEffect } from 'react'
 import { Bot, Send, User, AlertCircle, Loader2, Trash2, Zap } from 'lucide-react'
-import { sendChatMessage, type ChatRequest, type ChatResponse } from '@/lib/ai/client-actions'
+import { sendChatMessageDirect, type ChatRequest, type ChatResponse } from '@/lib/ai/client-actions'
 import { useWindowManager } from '../WindowContext'
 
 interface ChatMessage {
@@ -48,10 +48,10 @@ export function AiChatWindowContent({ onInsertText, initialMessage }: AiChatWind
     { id: 'gpt-4.1-mini', name: 'GPT-4.1 Mini', description: '균형잡힌 성능 ($0.40/$1.60)', category: 'gpt4' },
     { id: 'gpt-4.1-nano', name: 'GPT-4.1 Nano', description: '초저비용 ($0.10/$0.40)', category: 'gpt4' },
     
-    // GPT-5 자동 라우팅
-    { id: 'gpt-5', name: 'GPT-5', description: '코딩 및 에이전트 작업에 최적 ($1.25/$10)', category: 'gpt5' },
-    { id: 'gpt-5-mini', name: 'GPT-5 Mini', description: '빠르고 비용 효율적 ($0.25/$2)', category: 'gpt5' },
-    { id: 'gpt-5-nano', name: 'GPT-5 Nano', description: '가장 빠르고 저렴 ($0.05/$0.40)', category: 'gpt5' },
+    // GPT-5.2 자동 라우팅
+    { id: 'gpt-5.2', name: 'GPT-5.2', description: '코딩 및 에이전트 작업에 최적 ($1.25/$10)', category: 'gpt5' },
+    { id: 'gpt-5.2-mini', name: 'GPT-5.2 Mini', description: '빠르고 비용 효율적 ($0.25/$2)', category: 'gpt5' },
+    { id: 'gpt-5.2-nano', name: 'GPT-5.2 Nano', description: '가장 빠르고 저렴 ($0.05/$0.40)', category: 'gpt5' },
   ]
 
   // 메시지 스크롤 자동 이동
@@ -104,7 +104,7 @@ export function AiChatWindowContent({ onInsertText, initialMessage }: AiChatWind
         temperature: 0.7,
       }
 
-      const response = await sendChatMessage(chatRequest)
+      const response = await sendChatMessageDirect(chatRequest)
 
       // 토큰 사용량 업데이트
       if (response.usage) {

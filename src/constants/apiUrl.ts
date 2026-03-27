@@ -32,4 +32,10 @@ export const API_URLS = {
     BY_ID: `/api/categories`,
     BY_VALUE: `/api/categories/value`,
   },
+  STOCKS: {
+    PRICES: `/api/stocks/prices`,
+    MACRO: `/api/stocks/macro`,
+    NEWS: `/api/stocks/news`,
+    DART: `/api/stocks/dart`,
+  },
 } as const; 

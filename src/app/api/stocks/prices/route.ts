@@ -3,16 +3,17 @@ import type {
   StockPrice,
   StockPricesData,
   StocksApiResponse,
-  YahooQuoteResponse,
   YahooChartResponse,
   Market,
   MarketState,
 } from '@/types/stocks';
-import { KR_STOCKS, US_STOCKS } from '@/types/stocks';
+import { KR_STOCKS, US_STOCKS, resolveStockDisplayName } from '@/types/stocks';
 
 const YAHOO_HEADERS = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+  'User-Agent':
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
   Accept: 'application/json',
+  'Accept-Language': 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7',
 };
 
 const KR_SYMBOL_SET = new Set<string>(KR_STOCKS.map((s) => s.symbol));
@@ -21,26 +22,9 @@ function resolveMarket(symbol: string): Market {
   return KR_SYMBOL_SET.has(symbol) ? 'kr' : 'us';
 }
 
-function normalizeFromV7Quote(
-  result: YahooQuoteResponse['quoteResponse']['result'][number],
-): StockPrice {
-  return {
-    symbol: result.symbol,
-    name: result.shortName ?? result.longName ?? result.symbol,
-    price: result.regularMarketPrice,
-    change: result.regularMarketChange,
-    changePercent: result.regularMarketChangePercent,
-    previousClose: result.regularMarketPreviousClose,
-    open: result.regularMarketOpen,
-    high: result.regularMarketDayHigh,
-    low: result.regularMarketDayLow,
-    volume: result.regularMarketVolume,
-    marketCap: result.marketCap ?? null,
-    currency: result.currency,
-    market: resolveMarket(result.symbol),
-    marketState: (result.marketState as MarketState) ?? 'CLOSED',
-    updatedAt: result.regularMarketTime,
-  };
+function finiteNum(value: unknown, fallback = 0): number {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : fallback;
 }
 
 function normalizeFromV8Chart(symbol: string, chartRes: YahooChartResponse): StockPrice | null {
@@ -50,43 +34,47 @@ function normalizeFromV8Chart(symbol: string, chartRes: YahooChartResponse): Sto
   const meta = chartResult.meta;
   const quote = chartResult.indicators?.quote?.[0];
   const lastIdx = (quote?.close?.length ?? 0) - 1;
-  const close = lastIdx >= 0 ? quote?.close?.[lastIdx] : undefined;
-  const open = lastIdx >= 0 ? quote?.open?.[lastIdx] : undefined;
-  const high = lastIdx >= 0 ? quote?.high?.[lastIdx] : undefined;
-  const low = lastIdx >= 0 ? quote?.low?.[lastIdx] : undefined;
-  const volume = lastIdx >= 0 ? quote?.volume?.[lastIdx] : undefined;
+
+  const metaPrice = finiteNum(meta.regularMarketPrice);
+  const prevRaw = finiteNum(meta.previousClose);
+  const chartPrev = finiteNum(meta.chartPreviousClose);
+  const prev = prevRaw > 0 ? prevRaw : chartPrev > 0 ? chartPrev : 0;
+  const last = lastIdx >= 0 ? finiteNum(quote?.close?.[lastIdx], metaPrice) : metaPrice;
+
+  const high =
+    finiteNum(meta.regularMarketDayHigh) > 0
+      ? finiteNum(meta.regularMarketDayHigh)
+      : lastIdx >= 0 ? finiteNum(quote?.high?.[lastIdx], last) : last;
+  const low =
+    finiteNum(meta.regularMarketDayLow) > 0
+      ? finiteNum(meta.regularMarketDayLow)
+      : lastIdx >= 0 ? finiteNum(quote?.low?.[lastIdx], last) : last;
+  const open =
+    finiteNum(meta.regularMarketOpen) > 0
+      ? finiteNum(meta.regularMarketOpen)
+      : lastIdx >= 0 ? finiteNum(quote?.open?.[lastIdx], last) : last;
+  const volume =
+    finiteNum(meta.regularMarketVolume) > 0
+      ? finiteNum(meta.regularMarketVolume)
+      : lastIdx >= 0 ? finiteNum(quote?.volume?.[lastIdx]) : 0;
 
   return {
     symbol,
-    name: symbol,
-    price: close ?? meta.regularMarketPrice,
-    change: (close ?? meta.regularMarketPrice) - meta.previousClose,
-    changePercent:
-      meta.previousClose > 0
-        ? (((close ?? meta.regularMarketPrice) - meta.previousClose) / meta.previousClose) * 100
-        : 0,
-    previousClose: meta.previousClose,
-    open: open ?? meta.regularMarketPrice,
-    high: high ?? meta.regularMarketPrice,
-    low: low ?? meta.regularMarketPrice,
-    volume: volume ?? 0,
+    name: resolveStockDisplayName(symbol, meta.shortName ?? null, meta.longName ?? null),
+    price: last,
+    change: prev > 0 ? last - prev : 0,
+    changePercent: prev > 0 ? ((last - prev) / prev) * 100 : 0,
+    previousClose: prev,
+    open,
+    high,
+    low,
+    volume,
     marketCap: null,
     currency: meta.currency,
     market: resolveMarket(symbol),
-    marketState: 'CLOSED',
-    updatedAt: meta.regularMarketTime,
+    marketState: ((meta.marketState ?? 'CLOSED') as MarketState),
+    updatedAt: finiteNum(meta.regularMarketTime, Date.now() / 1000),
   };
-}
-
-async function fetchV7Quote(symbols: string[]): Promise<StockPrice[]> {
-  const symbolsParam = symbols.map(encodeURIComponent).join(',');
-  const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbolsParam}`;
-  const res = await fetch(url, { headers: YAHOO_HEADERS, cache: 'no-store' });
-  if (!res.ok) throw new Error(`Yahoo Finance v7 오류: ${res.status}`);
-  const json: YahooQuoteResponse = await res.json();
-  const results = json?.quoteResponse?.result;
-  if (!Array.isArray(results) || results.length === 0) throw new Error('v7 결과 없음');
-  return results.map(normalizeFromV7Quote);
 }
 
 async function fetchV8ChartSingle(symbol: string): Promise<StockPrice | null> {
@@ -133,20 +121,15 @@ export async function GET(request: NextRequest): Promise<NextResponse<StocksApiR
     }
 
     let stocks: StockPrice[];
-    try {
-      stocks = await fetchV7Quote(symbols);
-    } catch (v7Error) {
-      console.warn('[stocks/prices] v7 실패, v8 fallback:', v7Error);
-      stocks = await fetchV8ChartAll(symbols);
-      if (stocks.length === 0) {
-        return NextResponse.json(
-          {
-            success: false,
-            error: { message: 'Yahoo Finance 데이터를 불러오는 데 실패했습니다.', code: 'YAHOO_FINANCE_ERROR' },
-          },
-          { status: 502 },
-        );
-      }
+    stocks = await fetchV8ChartAll(symbols);
+    if (stocks.length === 0) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: { message: 'Yahoo Finance 데이터를 불러오는 데 실패했습니다.', code: 'YAHOO_FINANCE_ERROR' },
+        },
+        { status: 502 },
+      );
     }
 
     return NextResponse.json({

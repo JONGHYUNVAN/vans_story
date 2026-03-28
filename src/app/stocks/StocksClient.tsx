@@ -1,6 +1,8 @@
 'use client';
 
 import { useStocksData } from '@/hooks/useStocksData';
+import { StocksThemeProvider, useStocksTheme } from '@/components/features/stocks/StocksThemeContext';
+import StocksThemeToggle from '@/components/features/stocks/StocksThemeToggle';
 import MarketStatusBadge from '@/components/features/stocks/MarketStatusBadge';
 import RefreshButton from '@/components/features/stocks/RefreshButton';
 import StockCard from '@/components/features/stocks/StockCard';
@@ -10,106 +12,107 @@ import DartSection from '@/components/features/stocks/DartSection';
 import { KR_STOCKS, US_STOCKS } from '@/types/stocks';
 
 export default function StocksClient() {
-  const { prices, macro, isLoading, isError, errorMessage, refetch, marketOpen } = useStocksData();
+  return (
+    <StocksThemeProvider>
+      <StocksDashboard />
+    </StocksThemeProvider>
+  );
+}
 
-  const krStocks = KR_STOCKS.map((s) =>
-    prices?.stocks.find((p) => p.symbol === s.symbol)
-  );
-  const usStocks = US_STOCKS.map((s) =>
-    prices?.stocks.find((p) => p.symbol === s.symbol)
-  );
+function StocksDashboard() {
+  const { prices, macro, isLoading, isRefreshing, isError, errorMessage, refetch, refetchPrices, marketOpen } = useStocksData();
+  const { tokens: t } = useStocksTheme();
+
+  const krStocks = KR_STOCKS.map((s) => prices?.stocks.find((p) => p.symbol === s.symbol));
+  const usStocks = US_STOCKS.map((s) => prices?.stocks.find((p) => p.symbol === s.symbol));
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <div className="max-w-screen-xl mx-auto px-4 py-8">
-
-        {/* 페이지 헤더 */}
-        <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-white">주식 대시보드</h1>
-            <MarketStatusBadge isOpen={marketOpen} />
-          </div>
-          <RefreshButton onClick={refetch} isLoading={isLoading} />
-        </div>
-
-        {/* 전역 에러 */}
-        {isError && !isLoading && (
-          <div className="mb-6 p-4 bg-red-900/20 border border-red-800/40 rounded-lg flex items-center justify-between gap-4">
-            <div>
-              <p className="text-red-400 font-medium text-sm">데이터 로드 실패</p>
-              <p className="text-red-500/80 text-xs mt-0.5">{errorMessage}</p>
+    <div className={t.layout.page}>
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+        <header className={t.layout.toolbar}>
+          <div className="min-w-0 space-y-0.5">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+              <h1 className={t.layout.toolbarTitle}>주식 대시보드</h1>
+              <MarketStatusBadge isOpen={marketOpen} />
             </div>
-            <button
-              onClick={refetch}
-              className="shrink-0 px-3 py-1.5 bg-red-800/50 text-red-300 text-xs rounded-lg border border-red-700/50
-                         hover:bg-red-700/50 hover:text-red-200 transition-colors"
-            >
+            <p className={t.layout.toolbarSubtitle}>Korea · US watchlist · Yahoo Finance</p>
+          </div>
+          <div className={t.layout.toolbarActions}>
+            <StocksThemeToggle />
+            <RefreshButton onClick={refetchPrices} isLoading={isRefreshing} />
+          </div>
+        </header>
+
+        {isError && !isLoading && (
+          <div className={t.layout.errorBanner}>
+            <div>
+              <p className={t.layout.errorTitle}>데이터 로드 실패</p>
+              <p className={t.layout.errorDetail}>{errorMessage}</p>
+            </div>
+            <button type="button" onClick={refetch} className={t.layout.errorRetry}>
               다시 시도
             </button>
           </div>
         )}
 
-        {/* 거시지표 */}
-        <MacroPanel macro={macro} isLoading={isLoading} />
+        <div className={t.layout.workspace}>
+          <MacroPanel macro={macro} isLoading={isLoading} />
 
-        {/* 한국 / 미국 종목 섹션 */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-1 gap-8 xl:grid-cols-2">
+            <section className={t.layout.krMarketShell}>
+              <div className={t.layout.sectionHeadRow}>
+                <div className="flex items-center gap-3 min-w-0">
+                  <span className={t.layout.sectionAccentKr} aria-hidden />
+                  <h2 className={t.layout.sectionTitle}>한국 시장</h2>
+                </div>
+                <span className={t.layout.sectionMeta}>KRX</span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {isLoading
+                  ? Array.from({ length: KR_STOCKS.length }).map((_, i) => <StockCard key={i} isLoading />)
+                  : krStocks.map((stock, i) => (
+                      <StockCard
+                        key={KR_STOCKS[i].symbol}
+                        stock={stock}
+                        isLoading={false}
+                        isError={isError && !stock}
+                      />
+                    ))}
+              </div>
+            </section>
 
-          {/* 한국 종목 */}
-          <div>
-            <h2 className="text-white font-semibold text-sm mb-3 flex items-center gap-2">
-              <span className="w-1 h-4 bg-red-400 rounded-full inline-block" />
-              한국 종목
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-3">
-              {isLoading
-                ? Array.from({ length: KR_STOCKS.length }).map((_, i) => (
-                    <StockCard key={i} isLoading />
-                  ))
-                : krStocks.map((stock, i) => (
-                    <StockCard
-                      key={KR_STOCKS[i].symbol}
-                      stock={stock}
-                      isLoading={false}
-                      isError={isError && !stock}
-                    />
-                  ))}
-            </div>
-          </div>
-
-          {/* 미국 종목 */}
-          <div>
-            <h2 className="text-white font-semibold text-sm mb-3 flex items-center gap-2">
-              <span className="w-1 h-4 bg-purple-400 rounded-full inline-block" />
-              미국 종목
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {isLoading
-                ? Array.from({ length: US_STOCKS.length }).map((_, i) => (
-                    <StockCard key={i} isLoading />
-                  ))
-                : usStocks.map((stock, i) => (
-                    <StockCard
-                      key={US_STOCKS[i].symbol}
-                      stock={stock}
-                      isLoading={false}
-                      isError={isError && !stock}
-                    />
-                  ))}
-            </div>
+            <section className={t.layout.usMarketShell}>
+              <div className={t.layout.sectionHeadRow}>
+                <div className="flex items-center gap-3 min-w-0">
+                  <span className={t.layout.sectionAccentUs} aria-hidden />
+                  <h2 className={t.layout.sectionTitle}>미국 시장</h2>
+                </div>
+                <span className={t.layout.sectionMeta}>NYSE · NASDAQ</span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {isLoading
+                  ? Array.from({ length: US_STOCKS.length }).map((_, i) => <StockCard key={i} isLoading />)
+                  : usStocks.map((stock, i) => (
+                      <StockCard
+                        key={US_STOCKS[i].symbol}
+                        stock={stock}
+                        isLoading={false}
+                        isError={isError && !stock}
+                      />
+                    ))}
+              </div>
+            </section>
           </div>
         </div>
 
-        {/* 뉴스 + DART 섹션 */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
           <NewsSection />
           <DartSection />
         </div>
 
-        {/* 하단 업데이트 시각 */}
         {prices?.fetchedAt && (
-          <p className="text-center text-gray-600 text-xs mt-6">
-            데이터 기준: {new Date(prices.fetchedAt).toLocaleString('ko-KR')} · 출처: Yahoo Finance, DART
+          <p className={t.layout.footer}>
+            데이터 기준 · {new Date(prices.fetchedAt).toLocaleString('ko-KR')} · Yahoo Finance, DART
           </p>
         )}
       </div>

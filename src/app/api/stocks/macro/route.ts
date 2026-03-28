@@ -115,9 +115,10 @@ export async function GET(): Promise<NextResponse<StocksApiResponse<MacroData>>>
     return NextResponse.json({
       success: true,
       data: {
-        currency: indicators.filter((i) => i.category === 'currency'),
-        bond: indicators.filter((i) => i.category === 'bond'),
-        index: indicators.filter((i) => i.category === 'index'),
+        currency:  indicators.filter((i) => i.category === 'currency'),
+        bond:      indicators.filter((i) => i.category === 'bond'),
+        index:     indicators.filter((i) => i.category === 'index'),
+        commodity: indicators.filter((i) => i.category === 'commodity'),
         fetchedAt: new Date().toISOString(),
       },
     });

@@ -124,6 +124,57 @@ describe('GET /api/stocks/prices', () => {
     expect(us).toMatchObject({ symbol: US_STOCKS[0].symbol });
   });
 
+  it('v7에서 regularMarketChange가 null이면 전일 대비로 change를 계산한다', async () => {
+    const krSymbol = KR_STOCKS[0].symbol;
+    const mockResult = makeMockQuoteResult({
+      symbol: krSymbol,
+      regularMarketPrice: 60000,
+      regularMarketChange: null,
+      regularMarketChangePercent: null,
+      regularMarketPreviousClose: 59500,
+    });
+
+    fetchSpy.mockResolvedValueOnce(
+      new Response(JSON.stringify(makeV7Response([mockResult])), { status: 200 }),
+    );
+
+    const req = makeRequest(`http://localhost/api/stocks/prices?symbols=${krSymbol}`);
+    const res = await GET(req as never);
+    const body = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(body.success).toBe(true);
+    const stock = body.data.stocks[0];
+    expect(stock).toMatchObject({ price: 60000, change: 500 });
+    expect(stock.changePercent).toBeCloseTo((500 / 59500) * 100, 5);
+  });
+
+  it('v7에서 regularMarketPreviousClose가 0이면 chartPreviousClose로 보정한다', async () => {
+    const krSymbol = KR_STOCKS[0].symbol;
+    const mockResult = makeMockQuoteResult({
+      symbol: krSymbol,
+      regularMarketPrice: 60_000,
+      regularMarketPreviousClose: 0,
+      chartPreviousClose: 59_500,
+      regularMarketChange: null,
+      regularMarketChangePercent: null,
+    });
+
+    fetchSpy.mockResolvedValueOnce(
+      new Response(JSON.stringify(makeV7Response([mockResult])), { status: 200 }),
+    );
+
+    const req = makeRequest(`http://localhost/api/stocks/prices?symbols=${krSymbol}`);
+    const res = await GET(req as never);
+    const body = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(body.success).toBe(true);
+    const stock = body.data.stocks[0];
+    expect(stock.previousClose).toBe(59_500);
+    expect(stock.change).toBe(500);
+  });
+
   // ----------------------------------------------------------
   // 4. v7 실패 후 v8 fallback 도 실패 → 502
   // ----------------------------------------------------------

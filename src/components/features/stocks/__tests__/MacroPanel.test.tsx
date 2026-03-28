@@ -63,9 +63,9 @@ describe('MacroPanel', () => {
   });
 
   describe('데이터 표시', () => {
-    it('isLoading=false이고 데이터가 있을 때 거시지표 섹션 제목을 표시한다', () => {
+    it('isLoading=false이고 데이터가 있을 때 거시 지표 섹션 제목을 표시한다', () => {
       const html = renderToStaticMarkup(<MacroPanel macro={makeMockMacroData()} isLoading={false} />);
-      expect(html).toContain('거시지표');
+      expect(html).toContain('거시 지표');
     });
 
     it('currency 지표의 displayName을 표시한다', () => {
@@ -98,14 +98,14 @@ describe('MacroPanel', () => {
       expect(html).not.toContain('원/달러 환율');
     });
 
-    it('상승 지표에 text-red-400 클래스가 적용된다', () => {
+    it('상승 지표에 text-rose-400 클래스가 적용된다', () => {
       const html = renderToStaticMarkup(<MacroPanel macro={makeMockMacroData()} isLoading={false} />);
-      expect(html).toContain('text-red-400');
+      expect(html).toContain('text-rose-400');
     });
 
-    it('하락 지표에 text-blue-400 클래스가 적용된다', () => {
+    it('하락 지표에 text-sky-400 클래스가 적용된다', () => {
       const html = renderToStaticMarkup(<MacroPanel macro={makeMockMacroData()} isLoading={false} />);
-      expect(html).toContain('text-blue-400');
+      expect(html).toContain('text-sky-400');
     });
   });
 });

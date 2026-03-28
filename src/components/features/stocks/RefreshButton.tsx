@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useStocksTheme } from '@/components/features/stocks/StocksThemeContext';
 
 interface RefreshButtonProps {
   onClick: () => void;
@@ -8,6 +9,8 @@ interface RefreshButtonProps {
 }
 
 export default function RefreshButton({ onClick, isLoading }: RefreshButtonProps) {
+  const { tokens } = useStocksTheme();
+  const r = tokens.refresh;
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [displayTime, setDisplayTime] = useState('');
 
@@ -35,25 +38,21 @@ export default function RefreshButton({ onClick, isLoading }: RefreshButtonProps
   }, [lastUpdated]);
 
   return (
-    <div className="flex items-center gap-2">
-      {lastUpdated && (
-        <span className="text-xs text-gray-500 hidden sm:inline">
-          갱신: {displayTime}
-        </span>
-      )}
+    <div className="flex items-center gap-3">
+      {lastUpdated && <span className={r.meta}>갱신 {displayTime}</span>}
       <button
+        type="button"
         onClick={onClick}
         disabled={isLoading}
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-800 border border-gray-700
-                   text-gray-300 text-sm hover:bg-gray-700 hover:text-white transition-colors duration-200
-                   disabled:opacity-50 disabled:cursor-not-allowed"
+        className={r.button}
         aria-label="데이터 새로고침"
       >
         <svg
-          className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`}
+          className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
+          aria-hidden
         >
           <path
             strokeLinecap="round"
@@ -62,7 +61,7 @@ export default function RefreshButton({ onClick, isLoading }: RefreshButtonProps
             d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
           />
         </svg>
-        <span>새로고침</span>
+        새로고침
       </button>
     </div>
   );

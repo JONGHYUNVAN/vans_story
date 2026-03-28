@@ -69,6 +69,17 @@ describe('StockCard', () => {
       expect(html).toContain('$120.50');
     });
 
+    it('change·changePercent가 null이어도 크래시하지 않는다', () => {
+      const stock = makeMockStock({
+        change: null as unknown as number,
+        changePercent: null as unknown as number,
+      });
+      expect(() => renderToStaticMarkup(<StockCard stock={stock} />)).not.toThrow();
+      const html = renderToStaticMarkup(<StockCard stock={stock} />);
+      expect(html).toContain('NVIDIA');
+      expect(html).toContain('+');
+    });
+
     it('KRW 가격에 원 단위를 표시한다', () => {
       const stock = makeMockStock({
         symbol: '005930.KS',
@@ -89,16 +100,16 @@ describe('StockCard', () => {
   });
 
   describe('색상 클래스', () => {
-    it('상승(change>0)일 때 text-red-400 클래스가 적용된다', () => {
+    it('상승(change>0)일 때 text-rose-400 클래스가 적용된다', () => {
       const stock = makeMockStock({ change: 2.5, changePercent: 2.12 });
       const html = renderToStaticMarkup(<StockCard stock={stock} />);
-      expect(html).toContain('text-red-400');
+      expect(html).toContain('text-rose-400');
     });
 
-    it('하락(change<0)일 때 text-blue-400 클래스가 적용된다', () => {
+    it('하락(change<0)일 때 text-sky-400 클래스가 적용된다', () => {
       const stock = makeMockStock({ change: -1.5, changePercent: -1.27 });
       const html = renderToStaticMarkup(<StockCard stock={stock} />);
-      expect(html).toContain('text-blue-400');
+      expect(html).toContain('text-sky-400');
     });
 
     it('상승(change>0)일 때 위 화살표(▲)가 표시된다', () => {

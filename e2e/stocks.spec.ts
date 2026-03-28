@@ -395,7 +395,7 @@ test.describe('주식 대시보드 (/stocks) E2E 테스트', () => {
       await page.goto('/stocks');
 
       // LIVE 배지 또는 장마감 배지 중 하나가 존재해야 함
-      const liveBadge = page.locator('span').filter({ hasText: 'LIVE' });
+      const liveBadge = page.locator('span').filter({ hasText: 'Live' });
       const closedBadge = page.locator('span').filter({ hasText: '장마감' });
 
       const isLive = await liveBadge.isVisible();
@@ -413,27 +413,27 @@ test.describe('주식 대시보드 (/stocks) E2E 테스트', () => {
       await expect(refreshBtn).toContainText('새로고침');
     });
 
-    test('"한국 종목" 섹션 헤딩이 존재한다', async ({ page }) => {
+    test('"한국 시장" 섹션 헤딩이 존재한다', async ({ page }) => {
       await setupApiMocks(page);
       await page.goto('/stocks');
 
-      const krHeading = page.locator('h2').filter({ hasText: '한국 종목' });
+      const krHeading = page.locator('h2').filter({ hasText: '한국 시장' });
       await expect(krHeading).toBeVisible({ timeout: 10_000 });
     });
 
-    test('"미국 종목" 섹션 헤딩이 존재한다', async ({ page }) => {
+    test('"미국 시장" 섹션 헤딩이 존재한다', async ({ page }) => {
       await setupApiMocks(page);
       await page.goto('/stocks');
 
-      const usHeading = page.locator('h2').filter({ hasText: '미국 종목' });
+      const usHeading = page.locator('h2').filter({ hasText: '미국 시장' });
       await expect(usHeading).toBeVisible({ timeout: 10_000 });
     });
 
-    test('"거시지표" 섹션 헤딩이 존재한다', async ({ page }) => {
+    test('"거시 지표" 섹션 헤딩이 존재한다', async ({ page }) => {
       await setupApiMocks(page);
       await page.goto('/stocks');
 
-      const macroHeading = page.locator('h2').filter({ hasText: '거시지표' });
+      const macroHeading = page.locator('h2').filter({ hasText: '거시 지표' });
       await expect(macroHeading).toBeVisible({ timeout: 10_000 });
     });
 
@@ -813,8 +813,8 @@ test.describe('주식 대시보드 (/stocks) E2E 테스트', () => {
       await expect(refreshBtn).toBeVisible({ timeout: 10_000 });
 
       // 섹션 헤딩들 확인
-      await expect(page.locator('h2').filter({ hasText: '거시지표' })).toBeVisible({ timeout: 10_000 });
-      await expect(page.locator('h2').filter({ hasText: '한국 종목' })).toBeVisible({ timeout: 10_000 });
+      await expect(page.locator('h2').filter({ hasText: '거시 지표' })).toBeVisible({ timeout: 10_000 });
+      await expect(page.locator('h2').filter({ hasText: '한국 시장' })).toBeVisible({ timeout: 10_000 });
     });
 
     test('데스크탑 뷰포트 (1280x800)에서 페이지가 정상 렌더링된다', async ({ page }) => {
@@ -831,9 +831,9 @@ test.describe('주식 대시보드 (/stocks) E2E 테스트', () => {
       await expect(refreshBtn).toBeVisible({ timeout: 10_000 });
 
       // 모든 섹션 헤딩 확인
-      await expect(page.locator('h2').filter({ hasText: '거시지표' })).toBeVisible({ timeout: 10_000 });
-      await expect(page.locator('h2').filter({ hasText: '한국 종목' })).toBeVisible({ timeout: 10_000 });
-      await expect(page.locator('h2').filter({ hasText: '미국 종목' })).toBeVisible({ timeout: 10_000 });
+      await expect(page.locator('h2').filter({ hasText: '거시 지표' })).toBeVisible({ timeout: 10_000 });
+      await expect(page.locator('h2').filter({ hasText: '한국 시장' })).toBeVisible({ timeout: 10_000 });
+      await expect(page.locator('h2').filter({ hasText: '미국 시장' })).toBeVisible({ timeout: 10_000 });
       await expect(page.locator('h2').filter({ hasText: '관련 뉴스' })).toBeVisible({ timeout: 10_000 });
     });
 

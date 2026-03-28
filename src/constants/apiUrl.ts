@@ -37,5 +37,7 @@ export const API_URLS = {
     MACRO: `/api/stocks/macro`,
     NEWS: `/api/stocks/news`,
     DART: `/api/stocks/dart`,
+    DETAIL: `/api/stocks/detail`,
+    CHART: `/api/stocks/chart`,
   },
 } as const; 

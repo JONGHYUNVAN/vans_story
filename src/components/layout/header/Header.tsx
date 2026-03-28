@@ -71,6 +71,13 @@ export default function Header({ isStorybook = false }: HeaderProps) {
           <div className="flex items-center gap-6">
             <nav className="hidden md:flex items-center gap-6">
               <Link
+                href="/stocks"
+                className="text-gray-600 hover:text-blue-600 transition-colors flex items-center gap-1"
+              >
+                <span>📈</span>
+                <span>주식</span>
+              </Link>
+              <Link
                 href="/projects"
                 className="text-gray-600 hover:text-blue-600 transition-colors"
               >

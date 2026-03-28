@@ -39,5 +39,7 @@ export const API_URLS = {
     DART: `/api/stocks/dart`,
     DETAIL: `/api/stocks/detail`,
     CHART: `/api/stocks/chart`,
+    KIS_SNAPSHOT: `/api/stocks/kis/snapshot`,
+    KIS_STREAM: `/api/stocks/kis/stream`,
   },
 } as const; 

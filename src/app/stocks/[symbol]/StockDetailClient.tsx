@@ -16,6 +16,9 @@ import StockRelationBlock from '@/components/features/stocks/detail/StockRelatio
 import IndicatorExplainBlock from '@/components/features/stocks/detail/IndicatorExplainBlock';
 import InvestorTrendBlock from '@/components/features/stocks/detail/InvestorTrendBlock';
 import FundamentalsBlock from '@/components/features/stocks/detail/FundamentalsBlock';
+import KisRealtimePrice from '@/components/features/stocks/detail/KisRealtimePrice';
+import KisOrderbook from '@/components/features/stocks/detail/KisOrderbook';
+import { useKisRealtime } from '@/hooks/useKisRealtime';
 import type { StockDetailData, StocksApiResponse } from '@/types/stocks';
 import { MACRO_SYMBOLS, STOCK_DISPLAY_NAME } from '@/types/stocks';
 import { getStockRelation } from '@/constants/stockRelations';
@@ -118,6 +121,9 @@ function StockDetailInner({ symbol }: Props) {
   const relation = getStockRelation(symbol);
   const symbolType = getSymbolType(symbol);
 
+  // 국장 종목일 때만 KIS 실시간 훅 사용
+  const kisRealtime = useKisRealtime(symbolType === 'kr' ? symbol : null);
+
   const macroMeta = MACRO_SYMBOLS.find((m) => m.symbol === symbol);
   const displayName = STOCK_DISPLAY_NAME[symbol] ?? macroMeta?.displayName ?? symbol;
 
@@ -131,13 +137,19 @@ function StockDetailInner({ symbol }: Props) {
         ? 'border-violet-500/30 bg-violet-500/10 text-violet-200'
         : 'border-amber-500/30 bg-amber-500/10 text-amber-300';
 
-  const priceColorClass = detail
-    ? detail.quote.change > 0
+  // KIS 실시간 데이터가 있으면 우선 사용
+  const displayPrice = kisRealtime.trade?.price ?? detail?.quote.price ?? 0;
+  const displayChange = kisRealtime.trade?.change ?? detail?.quote.change ?? 0;
+  const displayChangePercent =
+    kisRealtime.trade?.changePercent ?? detail?.quote.changePercent ?? 0;
+  const displayCurrency = detail?.quote.currency ?? 'KRW';
+
+  const priceColorClass =
+    displayChange > 0
       ? 'text-rose-400'
-      : detail.quote.change < 0
+      : displayChange < 0
         ? 'text-sky-400'
-        : 'text-zinc-400'
-    : 'text-zinc-400';
+        : 'text-zinc-400';
 
   const keyMetrics = detail
     ? [
@@ -194,16 +206,16 @@ function StockDetailInner({ symbol }: Props) {
             </div>
             <h1 className={t.layout.toolbarTitle}>{displayName}</h1>
             <p className={t.layout.toolbarSubtitle}>{symbol}</p>
-            {detail && (
+            {(detail || kisRealtime.trade) && (
               <div className="flex items-baseline gap-3 mt-1">
                 <span className="text-3xl font-bold tabular-nums text-white">
-                  {formatPrice(detail.quote.price, detail.quote.currency, symbol)}
+                  {formatPrice(displayPrice, displayCurrency, symbol)}
                 </span>
                 <span className={`text-sm font-semibold font-mono ${priceColorClass}`}>
-                  {detail.quote.change >= 0 ? '+' : ''}
-                  {formatPrice(detail.quote.change, detail.quote.currency, symbol)}{' '}
-                  ({detail.quote.changePercent >= 0 ? '+' : ''}
-                  {detail.quote.changePercent.toFixed(2)}%)
+                  {displayChange >= 0 ? '+' : ''}
+                  {formatPrice(displayChange, displayCurrency, symbol)}{' '}
+                  ({displayChangePercent >= 0 ? '+' : ''}
+                  {displayChangePercent.toFixed(2)}%)
                 </span>
               </div>
             )}
@@ -242,8 +254,28 @@ function StockDetailInner({ symbol }: Props) {
         {/* 메인 콘텐츠: 최초 로드 후엔 새로고침 시에도 숨기지 않음 */}
         {detail && (
           <div className={`space-y-6 transition-opacity duration-150 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>
+            {/* 국장: KIS 실시간 현재가 */}
+            {symbolType === 'kr' && (
+              <KisRealtimePrice
+                trade={kisRealtime.trade}
+                isConnected={kisRealtime.isConnected}
+                isLoading={kisRealtime.isLoading}
+                error={kisRealtime.error}
+              />
+            )}
+
             {/* 차트 */}
             <PriceChart data={detail.chart} currency={detail.quote.currency} symbol={symbol} />
+
+            {/* 국장: KIS 호가창 */}
+            {symbolType === 'kr' && (
+              <KisOrderbook
+                orderbook={kisRealtime.orderbook}
+                currentPrice={kisRealtime.trade?.price ?? detail.quote.price}
+                prevClose={kisRealtime.trade?.prevClose ?? detail.quote.previousClose}
+                isLoading={kisRealtime.isLoading}
+              />
+            )}
 
             {/* 국장: 핵심 지표 + 투자자/펀더멘털 */}
             {symbolType === 'kr' && (

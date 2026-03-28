@@ -257,6 +257,45 @@ export const DART_CORP_CODE_MAP: Record<string, string> = {
 };
 
 // ============================================================
+// KIS 실시간 데이터
+// ============================================================
+
+/** KIS 체결가 데이터 */
+export interface KisTradeData {
+  price: number;           // 현재가
+  change: number;          // 전일대비
+  changePercent: number;   // 전일대비율(%)
+  changeSign: string;      // 대비부호 (1:상한,2:상승,3:보합,4:하한,5:하락)
+  volume: number;          // 누적거래량
+  amount: number;          // 누적거래대금
+  open: number;            // 시가
+  high: number;            // 고가
+  low: number;             // 저가
+  prevClose: number;       // 전일종가
+  time: string;            // 체결시간 "HHMMSS"
+}
+
+/** KIS 호가 데이터 (10호가) */
+export interface KisOrderbookData {
+  askPrices: number[];     // 매도호가 1~10 (낮은가->높은가)
+  askVolumes: number[];    // 매도호가 잔량 1~10
+  bidPrices: number[];     // 매수호가 1~10 (높은가->낮은가)
+  bidVolumes: number[];    // 매수호가 잔량 1~10
+  totalAskVolume: number;  // 총 매도호가 잔량
+  totalBidVolume: number;  // 총 매수호가 잔량
+  time: string;            // 호가시간 "HHMMSS"
+}
+
+/** KIS 스냅샷 응답 */
+export interface KisSnapshotData {
+  symbol: string;          // 종목코드 6자리
+  name: string;            // 종목명
+  trade: KisTradeData;
+  orderbook: KisOrderbookData;
+  updatedAt: string;       // ISO 8601
+}
+
+// ============================================================
 // 상세 페이지 데이터
 // ============================================================
 

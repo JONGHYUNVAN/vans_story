@@ -70,5 +70,6 @@ export async function GET(
 }
 
 // force-dynamic: SSE는 캐시 불가
-// Node.js runtime: localhost fetch + console.log 정상 동작
+// edge runtime: SSE passthrough에 최적화
 export const dynamic = 'force-dynamic';
+export const runtime = 'edge';

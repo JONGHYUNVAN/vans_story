@@ -7,8 +7,37 @@ const YAHOO_HEADERS = {
   'Accept-Language': 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7',
 };
 
+async function fetchMarketCaps(symbols: string[]): Promise<Map<string, number>> {
+  const map = new Map<string, number>();
+  if (symbols.length === 0) return map;
+
+  const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(symbols.join(','))}`;
+  try {
+    const res = await fetch(url, { headers: YAHOO_HEADERS, cache: 'no-store' });
+    if (!res.ok) return map;
+    const json = await res.json();
+    const results = json?.quoteResponse?.result;
+    if (!Array.isArray(results)) return map;
+
+    for (const item of results) {
+      const symbol = typeof item?.symbol === 'string' ? item.symbol : '';
+      const cap = typeof item?.marketCap === 'number' && isFinite(item.marketCap) && item.marketCap > 0
+        ? item.marketCap
+        : null;
+      if (symbol && cap) {
+        map.set(symbol, cap);
+      }
+    }
+  } catch {
+    // noop: fallback to manual weights
+  }
+
+  return map;
+}
+
 async function fetchHeatmapItem(
-  stock: { symbol: string; name: string; market: string; weight: number }
+  stock: { symbol: string; name: string; market: string; weight: number },
+  marketCapMap: Map<string, number>,
 ): Promise<SectorHeatmapItem> {
   const encoded = encodeURIComponent(stock.symbol);
   const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encoded}?interval=1d&range=1d`;
@@ -19,10 +48,11 @@ async function fetchHeatmapItem(
     const meta = json?.chart?.result?.[0]?.meta;
     const price: number = meta?.regularMarketPrice ?? 0;
     const marketCapRaw: unknown = meta?.marketCap;
+    const quoteMarketCap = marketCapMap.get(stock.symbol) ?? null;
     const marketCap =
       typeof marketCapRaw === 'number' && isFinite(marketCapRaw) && marketCapRaw > 0
         ? marketCapRaw
-        : null;
+        : quoteMarketCap;
     const marketState: string = meta?.marketState ?? 'CLOSED';
 
     // Yahoo v8 does not reliably return *ChangePercent fields — calculate manually
@@ -65,7 +95,7 @@ async function fetchHeatmapItem(
       name: stock.name,
       market: stock.market as 'kr' | 'us',
       weight: stock.weight,
-      marketCap: null,
+      marketCap: marketCapMap.get(stock.symbol) ?? null,
       price: null,
       changePercent: null,
     };
@@ -74,8 +104,9 @@ async function fetchHeatmapItem(
 
 export async function GET() {
   try {
+    const marketCapMap = await fetchMarketCaps(SECTOR_HEATMAP_STOCKS.map((s) => s.symbol));
     const results = await Promise.allSettled(
-      SECTOR_HEATMAP_STOCKS.map(s => fetchHeatmapItem(s))
+      SECTOR_HEATMAP_STOCKS.map((s) => fetchHeatmapItem(s, marketCapMap))
     );
 
     const data: SectorHeatmapItem[] = results.map((r, i) => {

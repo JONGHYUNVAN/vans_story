@@ -63,12 +63,8 @@ export async function GET() {
         futures: futures
           ? {
               symbol: kkFutures ? 'KK=F' : ks200 ? '^KS200' : '^KS11',
-              label: '야간 선물 지수',
-              sublabel: kkFutures
-                ? 'CME KOSPI 200'
-                : ks200
-                  ? 'KOSPI 200 지수(대체)'
-                  : 'KOSPI 지수(대체)',
+              label: '야간 KOSPI 200 지수',
+              sublabel: kkFutures ? 'CME KOSPI 200' : '다음날 코스피 선행지표(대체)',
               price: futures.price,
               change: futures.change,
               changePercent: futures.changePercent,

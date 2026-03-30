@@ -20,6 +20,16 @@ function heatmapBgColor(pct: number | null): string {
   return '#2563eb';
 }
 
+function formatMarketCap(value: number | null, market: 'kr' | 'us', fallbackWeight: number): string {
+  if (value === null || !isFinite(value) || value <= 0) return `비중 ${fallbackWeight}`;
+  const locale = market === 'kr' ? 'ko-KR' : 'en-US';
+  const compact = new Intl.NumberFormat(locale, {
+    notation: 'compact',
+    maximumFractionDigits: 1,
+  }).format(value);
+  return `시총 ${compact}`;
+}
+
 // ---------------------------------------------------------------------------
 // Market state helpers
 // ---------------------------------------------------------------------------
@@ -255,6 +265,8 @@ function HeatmapPanel({ label, items }: HeatmapPanelProps) {
           const cellWidthPx = (rect.width / 100) * size.width;
           const showName = cellWidthPx > 60 && cellHeightPx > 24;
           const showPct = cellWidthPx > 52 && cellHeightPx > 36;
+          const showMarketCap = cellWidthPx > 88 && cellHeightPx > 52;
+          const marketCapText = formatMarketCap(item.marketCap, item.market, item.weight);
 
           return (
             <div
@@ -279,6 +291,11 @@ function HeatmapPanel({ label, items }: HeatmapPanelProps) {
                 {showPct && (
                   <span className="text-white text-xs font-bold leading-tight">
                     {pctText}
+                  </span>
+                )}
+                {showMarketCap && (
+                  <span className="text-[10px] text-zinc-100/80 leading-tight">
+                    {marketCapText}
                   </span>
                 )}
               </div>

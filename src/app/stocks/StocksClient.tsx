@@ -10,6 +10,8 @@ import MacroPanel from '@/components/features/stocks/MacroPanel';
 import NewsSection from '@/components/features/stocks/NewsSection';
 import DartSection from '@/components/features/stocks/DartSection';
 import { KR_STOCKS, US_STOCKS } from '@/types/stocks';
+import { SectorHeatmap } from '@/components/features/stocks/SectorHeatmap';
+import { KospiFuturesCard } from '@/components/features/stocks/KospiFuturesCard';
 
 export default function StocksClient() {
   return (
@@ -20,7 +22,7 @@ export default function StocksClient() {
 }
 
 function StocksDashboard() {
-  const { prices, macro, isLoading, isRefreshing, isError, errorMessage, refetch, refetchPrices, marketOpen } = useStocksData();
+  const { prices, macro, isLoading, isRefreshing, isError, errorMessage, refetch, refetchPrices, marketOpen, krMarketState, usMarketState } = useStocksData();
   const { tokens: t } = useStocksTheme();
 
   const krStocks = KR_STOCKS.map((s) => prices?.stocks.find((p) => p.symbol === s.symbol));
@@ -33,7 +35,10 @@ function StocksDashboard() {
           <div className="min-w-0 space-y-0.5">
             <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <h1 className={t.layout.toolbarTitle}>주식 대시보드</h1>
-              <MarketStatusBadge isOpen={marketOpen} />
+              <div className="flex items-center gap-2">
+                <MarketStatusBadge state={krMarketState} market="kr" />
+                <MarketStatusBadge state={usMarketState} market="us" />
+              </div>
             </div>
             <p className={t.layout.toolbarSubtitle}>Korea · US watchlist · Yahoo Finance</p>
           </div>
@@ -42,6 +47,12 @@ function StocksDashboard() {
             <RefreshButton onClick={refetchPrices} isLoading={isRefreshing} />
           </div>
         </header>
+
+        {/* Sector Heatmap + KOSPI Futures */}
+        <div className="mt-6 grid gap-4 xl:grid-cols-[1fr_260px]">
+          <SectorHeatmap />
+          <KospiFuturesCard />
+        </div>
 
         {isError && !isLoading && (
           <div className={t.layout.errorBanner}>

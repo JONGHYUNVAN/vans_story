@@ -5,7 +5,11 @@ import type { MarketState } from '@/types/stocks';
 interface MarketHoursSectionProps {
   marketState: MarketState;
   preMarketPrice?: number | null;
+  preMarketChange?: number | null;
+  preMarketChangePercent?: number | null;
   postMarketPrice?: number | null;
+  postMarketChange?: number | null;
+  postMarketChangePercent?: number | null;
   regularPrice: number;
   currency: string;
 }
@@ -15,10 +19,15 @@ function formatP(p: number, currency: string) {
   return '$' + p.toFixed(2);
 }
 
+
 export default function MarketHoursSection({
   marketState,
   preMarketPrice,
+  preMarketChange,
+  preMarketChangePercent,
   postMarketPrice,
+  postMarketChange,
+  postMarketChangePercent,
   regularPrice,
   currency,
 }: MarketHoursSectionProps) {
@@ -29,10 +38,24 @@ export default function MarketHoursSection({
   if (!showPre && !showPost) return null;
 
   const extPrice = showPre ? preMarketPrice! : postMarketPrice!;
-  const diff = extPrice - regularPrice;
-  const diffPct = regularPrice !== 0 ? (diff / regularPrice) * 100 : 0;
-  const isUp = diff >= 0;
   const label = showPre ? '프리마켓' : '애프터마켓';
+
+  // Use provided change values if available; otherwise fall back to calculation from regularPrice
+  const rawDiff =
+    showPre
+      ? (preMarketChange != null ? preMarketChange : extPrice - regularPrice)
+      : (postMarketChange != null ? postMarketChange : extPrice - regularPrice);
+
+  const rawPct =
+    showPre
+      ? (preMarketChangePercent != null
+          ? preMarketChangePercent
+          : regularPrice !== 0 ? ((extPrice - regularPrice) / regularPrice) * 100 : 0)
+      : (postMarketChangePercent != null
+          ? postMarketChangePercent
+          : regularPrice !== 0 ? ((extPrice - regularPrice) / regularPrice) * 100 : 0);
+
+  const isUp = rawDiff >= 0;
   const colorClass = isUp ? 'text-rose-400' : 'text-sky-400';
 
   return (
@@ -49,8 +72,9 @@ export default function MarketHoursSection({
           <p className="text-xs text-zinc-500 mb-1">정규장 대비</p>
           <p className={`text-lg font-bold font-mono ${colorClass}`}>
             {isUp ? '+' : ''}
-            {formatP(diff, currency)} ({isUp ? '+' : ''}
-            {diffPct.toFixed(2)}%)
+            {formatP(rawDiff, currency)}{' '}
+            ({isUp ? '+' : ''}
+            {rawPct.toFixed(2)}%)
           </p>
         </div>
       </div>

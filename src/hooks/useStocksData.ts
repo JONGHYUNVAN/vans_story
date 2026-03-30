@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { StockPricesData, MacroData, StocksApiResponse } from '@/types/stocks';
 import { API_URLS } from '@/constants/apiUrl';
+import { getKrMarketState, getUsMarketState, MarketState } from '@/utils/marketHours';
 
 const POLL_INTERVAL_MS = 30_000; // 30초
 
@@ -57,6 +58,8 @@ interface UseStocksDataReturn {
   refetch:        () => void; // 전체 재시도 (에러 복구용)
   refetchPrices:  () => void; // 주가만 갱신 (새로고침 버튼용)
   marketOpen:     boolean;
+  krMarketState:  MarketState;
+  usMarketState:  MarketState;
 }
 
 export function useStocksData(): UseStocksDataReturn {
@@ -67,6 +70,8 @@ export function useStocksData(): UseStocksDataReturn {
   const [isError,      setIsError]      = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [marketOpen,   setMarketOpen]   = useState(() => isMarketOpen());
+  const [krMarketState, setKrMarketState] = useState<MarketState>(() => getKrMarketState());
+  const [usMarketState, setUsMarketState] = useState<MarketState>(() => getUsMarketState());
 
   /** 초기 로드 또는 에러 재시도: 주가 + 거시지표 모두 가져옴 */
   const fetchAll = useCallback(async () => {
@@ -112,8 +117,14 @@ export function useStocksData(): UseStocksDataReturn {
 
   // 장 운영 여부 갱신 (1분마다 체크)
   useEffect(() => {
-    const tick = () => setMarketOpen(isMarketOpen());
-    const id   = setInterval(tick, 60_000);
+    const tick = () => {
+      const kr = getKrMarketState();
+      const us = getUsMarketState();
+      setKrMarketState(kr);
+      setUsMarketState(us);
+      setMarketOpen(kr === 'REGULAR' || us === 'REGULAR');
+    };
+    const id = setInterval(tick, 60_000);
     return () => clearInterval(id);
   }, []);
 
@@ -136,5 +147,7 @@ export function useStocksData(): UseStocksDataReturn {
     refetch: fetchAll,
     refetchPrices: fetchPricesOnly,
     marketOpen,
+    krMarketState,
+    usMarketState,
   };
 }

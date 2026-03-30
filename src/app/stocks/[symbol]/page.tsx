@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { slugToSymbol, symbolToSlug } from '@/utils/stockSymbol';
-import { KR_STOCKS, US_STOCKS, MACRO_SYMBOLS, STOCK_DISPLAY_NAME } from '@/types/stocks';
+import { KR_STOCKS, US_STOCKS, MACRO_SYMBOLS, STOCK_DISPLAY_NAME, SECTOR_HEATMAP_STOCKS } from '@/types/stocks';
 import { getStockRelation } from '@/constants/stockRelations';
 import StockDetailClient from './StockDetailClient';
 
@@ -32,8 +32,11 @@ export function generateStaticParams() {
     ...KR_STOCKS.map((s) => s.symbol as string),
     ...US_STOCKS.map((s) => s.symbol as string),
     ...MACRO_SYMBOLS.map((s) => s.symbol as string),
+    ...SECTOR_HEATMAP_STOCKS.map((s) => s.symbol as string),
   ];
-  return allSymbols.map((sym) => ({ symbol: symbolToSlug(sym) }));
+  // 중복 제거
+  const unique = [...new Set(allSymbols)];
+  return unique.map((sym) => ({ symbol: symbolToSlug(sym) }));
 }
 
 export default async function StockDetailPage({ params }: PageProps) {

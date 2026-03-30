@@ -164,6 +164,12 @@ export interface YahooChartResponse {
         marketState?: string;
         dataGranularity: string;
         range: string;
+        preMarketPrice?: number;
+        preMarketChange?: number;
+        preMarketChangePercent?: number;
+        postMarketPrice?: number;
+        postMarketChange?: number;
+        postMarketChangePercent?: number;
       };
       timestamp: number[];
       indicators: {
@@ -369,6 +375,12 @@ export interface StockDetailData {
     marketState: MarketState;
     fiftyTwoWeekHigh: number | null;
     fiftyTwoWeekLow: number | null;
+    preMarketPrice: number | null;
+    preMarketChange: number | null;
+    preMarketChangePercent: number | null;
+    postMarketPrice: number | null;
+    postMarketChange: number | null;
+    postMarketChangePercent: number | null;
   };
   chart: ChartDataPoint[];
   type: 'kr' | 'us' | 'macro';
@@ -381,3 +393,51 @@ export interface StockDetailData {
   peers: StockPeer[] | null;
   fetchedAt: string;
 }
+
+// ============================================================
+// 섹터 히트맵
+// ============================================================
+
+export const SECTOR_HEATMAP_STOCKS = [
+  // KR semiconductor/tech
+  { symbol: '005930.KS', name: '삼성전자',      market: 'kr', weight: 12 },
+  { symbol: '000660.KS', name: 'SK하이닉스',    market: 'kr', weight: 9  },
+  { symbol: '035420.KS', name: 'NAVER',         market: 'kr', weight: 4  },
+  { symbol: '035720.KS', name: '카카오',         market: 'kr', weight: 3  },
+  { symbol: '066570.KS', name: 'LG전자',        market: 'kr', weight: 4  },
+  { symbol: '009150.KS', name: '삼성전기',       market: 'kr', weight: 3  },
+  { symbol: '042700.KS', name: '한미반도체',     market: 'kr', weight: 3  },
+  { symbol: '267260.KS', name: 'HD현대일렉트릭', market: 'kr', weight: 3  },
+  { symbol: '000990.KS', name: 'DB하이텍',      market: 'kr', weight: 2  },
+  // US semiconductor/tech
+  { symbol: 'NVDA',  name: 'NVIDIA',       market: 'us', weight: 14 },
+  { symbol: 'AAPL',  name: 'Apple',        market: 'us', weight: 12 },
+  { symbol: 'MSFT',  name: 'Microsoft',    market: 'us', weight: 11 },
+  { symbol: 'TSM',   name: 'TSMC',         market: 'us', weight: 10 },
+  { symbol: 'GOOGL', name: 'Alphabet',     market: 'us', weight: 9  },
+  { symbol: 'AMZN',  name: 'Amazon',       market: 'us', weight: 9  },
+  { symbol: 'META',  name: 'Meta',         market: 'us', weight: 8  },
+  { symbol: 'AVGO',  name: 'Broadcom',     market: 'us', weight: 7  },
+  { symbol: 'TSLA',  name: 'Tesla',        market: 'us', weight: 6  },
+  { symbol: 'AMD',   name: 'AMD',          market: 'us', weight: 6  },
+  { symbol: 'QCOM',  name: 'Qualcomm',     market: 'us', weight: 5  },
+  { symbol: 'ARM',   name: 'ARM',          market: 'us', weight: 4  },
+  { symbol: 'MU',    name: 'Micron',       market: 'us', weight: 4  },
+  { symbol: 'INTC',  name: 'Intel',        market: 'us', weight: 4  },
+  { symbol: 'AMAT',  name: 'AMAT',         market: 'us', weight: 3  },
+  { symbol: 'ASML',  name: 'ASML',         market: 'us', weight: 3  },
+  { symbol: 'LRCX',  name: 'Lam Research', market: 'us', weight: 3  },
+  { symbol: 'TXN',   name: 'Texas Inst.',  market: 'us', weight: 3  },
+] as const;
+
+export type SectorHeatmapStock = typeof SECTOR_HEATMAP_STOCKS[number];
+export type SectorHeatmapItem = {
+  symbol: string;
+  name: string;
+  market: 'kr' | 'us';
+  weight: number;
+  marketCap: number | null;
+  price: number | null;
+  changePercent: number | null;
+  marketState?: string;
+};

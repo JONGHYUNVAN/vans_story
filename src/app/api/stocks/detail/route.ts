@@ -442,6 +442,13 @@ async function fetchV8Detail(
         ? finiteNum(rawQuote?.volume?.[lastIdx])
         : 0;
 
+  const preMarketPrice = finiteNum(meta.preMarketPrice) || null;
+  const preMarketChange = finiteNum(meta.preMarketChange) || null;
+  const preMarketChangePercent = finiteNum(meta.preMarketChangePercent) || null;
+  const postMarketPrice = finiteNum(meta.postMarketPrice) || null;
+  const postMarketChange = finiteNum(meta.postMarketChange) || null;
+  const postMarketChangePercent = finiteNum(meta.postMarketChangePercent) || null;
+
   const quote: StockDetailData['quote'] = {
     price,
     change,
@@ -456,6 +463,12 @@ async function fetchV8Detail(
     marketState: ((meta.marketState ?? 'CLOSED') as MarketState),
     fiftyTwoWeekHigh: meta.fiftyTwoWeekHigh != null ? finiteNum(meta.fiftyTwoWeekHigh) : null,
     fiftyTwoWeekLow: meta.fiftyTwoWeekLow != null ? finiteNum(meta.fiftyTwoWeekLow) : null,
+    preMarketPrice,
+    preMarketChange,
+    preMarketChangePercent,
+    postMarketPrice,
+    postMarketChange,
+    postMarketChangePercent,
   };
 
   const chart: ChartDataPoint[] = timestamps

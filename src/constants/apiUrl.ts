@@ -41,5 +41,8 @@ export const API_URLS = {
     CHART: `/api/stocks/chart`,
     KIS_SNAPSHOT: `/api/stocks/kis/snapshot`,
     KIS_STREAM: `/api/stocks/kis/stream`,
+    QUOTE: `/api/stocks/quote`,
+    HEATMAP: `/api/stocks/heatmap`,
+    KOSPI_FUTURES: `/api/stocks/kospi-futures`,
   },
 } as const; 

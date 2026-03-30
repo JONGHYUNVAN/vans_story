@@ -19,6 +19,7 @@ import FundamentalsBlock from '@/components/features/stocks/detail/FundamentalsB
 import KisRealtimePrice from '@/components/features/stocks/detail/KisRealtimePrice';
 import KisOrderbook from '@/components/features/stocks/detail/KisOrderbook';
 import { useKisRealtime } from '@/hooks/useKisRealtime';
+import { useUsRealtime } from '@/hooks/useUsRealtime';
 import type { StockDetailData, StocksApiResponse } from '@/types/stocks';
 import { MACRO_SYMBOLS, STOCK_DISPLAY_NAME } from '@/types/stocks';
 import { getStockRelation } from '@/constants/stockRelations';
@@ -123,6 +124,8 @@ function StockDetailInner({ symbol }: Props) {
 
   // 국장 종목일 때만 KIS 실시간 훅 사용
   const kisRealtime = useKisRealtime(symbolType === 'kr' ? symbol : null);
+  // 미장 종목일 때만 US 실시간 폴링 훅 사용
+  const usRealtime = useUsRealtime(symbolType === 'us' ? symbol : null);
 
   const macroMeta = MACRO_SYMBOLS.find((m) => m.symbol === symbol);
   const displayName = STOCK_DISPLAY_NAME[symbol] ?? macroMeta?.displayName ?? symbol;
@@ -137,11 +140,27 @@ function StockDetailInner({ symbol }: Props) {
         ? 'border-violet-500/30 bg-violet-500/10 text-violet-200'
         : 'border-amber-500/30 bg-amber-500/10 text-amber-300';
 
-  // KIS 실시간 데이터가 있으면 우선 사용
-  const displayPrice = kisRealtime.trade?.price ?? detail?.quote.price ?? 0;
-  const displayChange = kisRealtime.trade?.change ?? detail?.quote.change ?? 0;
+  // 실시간 데이터 우선 사용: 국장 → KIS, 미장 → US polling
+  const displayPrice =
+    symbolType === 'kr'
+      ? (kisRealtime.trade?.price ?? detail?.quote.price ?? 0)
+      : symbolType === 'us'
+        ? (usRealtime.price ?? detail?.quote.price ?? 0)
+        : (detail?.quote.price ?? 0);
+
+  const displayChange =
+    symbolType === 'kr'
+      ? (kisRealtime.trade?.change ?? detail?.quote.change ?? 0)
+      : symbolType === 'us'
+        ? (usRealtime.change ?? detail?.quote.change ?? 0)
+        : (detail?.quote.change ?? 0);
+
   const displayChangePercent =
-    kisRealtime.trade?.changePercent ?? detail?.quote.changePercent ?? 0;
+    symbolType === 'kr'
+      ? (kisRealtime.trade?.changePercent ?? detail?.quote.changePercent ?? 0)
+      : symbolType === 'us'
+        ? (usRealtime.changePercent ?? detail?.quote.changePercent ?? 0)
+        : (detail?.quote.changePercent ?? 0);
   const displayCurrency = detail?.quote.currency ?? 'KRW';
 
   const priceColorClass =
@@ -318,6 +337,12 @@ function StockDetailInner({ symbol }: Props) {
             {symbolType === 'us' && (
               <MarketHoursSection
                 marketState={detail.quote.marketState}
+                preMarketPrice={usRealtime.preMarketPrice ?? detail.quote.preMarketPrice}
+                preMarketChange={usRealtime.preMarketChange ?? detail.quote.preMarketChange}
+                preMarketChangePercent={usRealtime.preMarketChangePercent ?? detail.quote.preMarketChangePercent}
+                postMarketPrice={usRealtime.postMarketPrice ?? detail.quote.postMarketPrice}
+                postMarketChange={usRealtime.postMarketChange ?? detail.quote.postMarketChange}
+                postMarketChangePercent={usRealtime.postMarketChangePercent ?? detail.quote.postMarketChangePercent}
                 regularPrice={detail.quote.price}
                 currency={detail.quote.currency}
               />

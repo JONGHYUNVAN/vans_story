@@ -1,4 +1,4 @@
-import { KR_STOCKS, US_STOCKS, MACRO_SYMBOLS } from '@/types/stocks';
+import { KR_STOCKS, US_STOCKS, MACRO_SYMBOLS, SECTOR_HEATMAP_STOCKS } from '@/types/stocks';
 
 /**
  * Yahoo Finance 심볼 → URL-safe slug
@@ -15,6 +15,7 @@ const ALL_SYMBOLS: string[] = [
   ...KR_STOCKS.map((s) => s.symbol as string),
   ...US_STOCKS.map((s) => s.symbol as string),
   ...MACRO_SYMBOLS.map((s) => s.symbol as string),
+  ...SECTOR_HEATMAP_STOCKS.map((s) => s.symbol as string),
 ];
 
 const SLUG_TO_SYMBOL_MAP = new Map<string, string>(

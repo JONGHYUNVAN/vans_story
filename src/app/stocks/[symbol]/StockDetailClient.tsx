@@ -128,7 +128,8 @@ function StockDetailInner({ symbol }: Props) {
   const usRealtime = useUsRealtime(symbolType === 'us' ? symbol : null);
 
   const macroMeta = MACRO_SYMBOLS.find((m) => m.symbol === symbol);
-  const displayName = STOCK_DISPLAY_NAME[symbol] ?? macroMeta?.displayName ?? symbol;
+  // 상세 API가 반환한 name을 최우선으로 사용해, watchlist 밖 심볼도 종목명이 보이도록 함
+  const displayName = detail?.name ?? STOCK_DISPLAY_NAME[symbol] ?? macroMeta?.displayName ?? symbol;
 
   const typeBadge = detail
     ? getTypeBadge(symbol, detail.type)

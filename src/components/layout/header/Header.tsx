@@ -75,7 +75,7 @@ export default function Header({ isStorybook = false }: HeaderProps) {
                 className="text-gray-600 hover:text-blue-600 transition-colors flex items-center gap-1"
               >
                 <span>📈</span>
-                <span>주식</span>
+                <span>주가</span>
               </Link>
               <Link
                 href="/projects"

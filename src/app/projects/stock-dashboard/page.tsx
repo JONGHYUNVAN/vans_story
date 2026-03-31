@@ -19,8 +19,8 @@ export default function StockDashboardPage() {
     <div className="min-h-screen bg-black py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ProjectHeader
-          title="주식 대시보드"
-          description="KIS OpenAPI · Yahoo Finance 기반 한국·미국 실시간 주식 대시보드"
+          title="주가 대시보드"
+          description="KIS OpenAPI · Yahoo Finance 기반 한국·미국 실시간 주가 대시보드"
         />
 
         <div className="bg-white rounded-lg shadow-lg p-8 mb-8">

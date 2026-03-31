@@ -3,13 +3,13 @@
   <rect width="900" height="580" fill="#18181b"/>
 
   <!-- Title -->
-  <text x="450" y="38" text-anchor="middle" fill="#f4f4f5" font-size="18" font-weight="700" letter-spacing="0.5">실시간 주식 대시보드 — 아키텍처</text>
+  <text x="450" y="38" text-anchor="middle" fill="#f4f4f5" font-size="18" font-weight="700" letter-spacing="0.5">실시간 주가 대시보드 — 아키텍처</text>
 
   <!-- ═══════════════════════════════════════════════════════ -->
   <!-- PIPELINE 1: KR Real-Time -->
   <!-- ═══════════════════════════════════════════════════════ -->
   <rect x="20" y="60" width="860" height="230" rx="10" fill="#27272a" stroke="#7c3aed" stroke-width="1.5"/>
-  <text x="36" y="84" fill="#a78bfa" font-size="13" font-weight="700" letter-spacing="0.3">국내주식 실시간 파이프라인</text>
+  <text x="36" y="84" fill="#a78bfa" font-size="13" font-weight="700" letter-spacing="0.3">국내주가 실시간 파이프라인</text>
 
   <!-- Box 1: KIS WebSocket API -->
   <rect x="36" y="96" width="140" height="62" rx="7" fill="#18181b" stroke="#7c3aed" stroke-width="1.5"/>
@@ -78,7 +78,7 @@
   <!-- PIPELINE 2: US / Heatmap Polling -->
   <!-- ═══════════════════════════════════════════════════════ -->
   <rect x="20" y="310" width="860" height="200" rx="10" fill="#27272a" stroke="#0ea5e9" stroke-width="1.5"/>
-  <text x="36" y="334" fill="#38bdf8" font-size="13" font-weight="700" letter-spacing="0.3">미국주식 / 히트맵 폴링 파이프라인</text>
+  <text x="36" y="334" fill="#38bdf8" font-size="13" font-weight="700" letter-spacing="0.3">미국주가 / 히트맵 폴링 파이프라인</text>
 
   <!-- Box A: Yahoo Finance -->
   <rect x="36" y="348" width="148" height="62" rx="7" fill="#18181b" stroke="#71717a" stroke-width="1.5"/>

@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const desc = meta.description ?? `${name} 실시간 시세 및 차트`;
 
   return {
-    title: `${name} | 주식 대시보드 · Vans Story`,
+    title: `${name} | 주가 대시보드 · Vans Story`,
     description: desc,
   };
 }

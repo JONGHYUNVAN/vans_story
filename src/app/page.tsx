@@ -30,7 +30,7 @@ export default function Home() {
                        transition-all duration-200"
           >
             <span>📈</span>
-            <span>주식 대시보드</span>
+            <span>주가 대시보드</span>
           </Link>
         </div>
       </div>

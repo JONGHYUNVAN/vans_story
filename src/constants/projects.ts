@@ -1,12 +1,12 @@
 import { Project } from '@/interfaces/project';
 
 /**
- * 주식 대시보드 프로젝트 데이터
+ * 주가 대시보드 프로젝트 데이터
  */
 export const stockDashboardProject: Project = {
   id: 'stock-dashboard',
-  title: '실시간 주식 대시보드',
-  description: 'KIS OpenAPI와 Yahoo Finance를 연동해 국내·미국 주식을 한 화면에서 보여주는 실시간 대시보드.\n\n국내주식은 Django SSE 파이프라인으로 폴링 없이 실시간 전달, 미국주식은 Next.js BFF를 통해 장 운영 시간에만 폴링.',
+  title: '실시간 주가 대시보드',
+  description: 'KIS OpenAPI와 Yahoo Finance를 연동해 국내·미국 주가을 한 화면에서 보여주는 실시간 대시보드.\n\n국내주가는 Django SSE 파이프라인으로 폴링 없이 실시간 전달, 미국주가는 Next.js BFF를 통해 장 운영 시간에만 폴링.',
   deployUrl: 'https://vansdevblog.online/stocks',
   githubUrl: 'https://github.com/JONGHYUNVAN/vans_story',
   status: 'Deployed',
@@ -28,8 +28,8 @@ export const stockDashboardProject: Project = {
         'Squarified Treemap 알고리즘 기반 섹터 히트맵. 셀 면적은 시가총액에 비례, 색상은 당일 등락률 표시. 시총 데이터 없을 시 사전 정의 비중으로 대체.',
         '원/달러 환율·미국 10년 국채·KOSPI·KOSDAQ·나스닥·S&P 500·필라델피아 반도체 지수·WTI 유가 8개 거시지표를 통화·채권·지수·원자재 카테고리로 분류. 마운트 시 1회만 로드해 중복 요청 없음.',
         'KOSPI 현물 지수와 야간 KOSPI 200 지수를 60초 주기로 갱신. 색상으로 방향을 구분해 야간 시장 흐름 파악.',
-        '국내 주식 시세를 체결가·10호가 포함 SSE 스트림으로 수신. 연결 실패 시 지수 백오프로 최대 5회 재시도, 마운트 시 REST 스냅샷을 병렬 요청해 스트림 연결 전에도 화면 채움.',
-        '미국 주식은 프리마켓·정규장·애프터마켓 전 구간에서 30초 주기로 폴링. 거래소 마감 시 폴링 자동 중단, 상세 페이지에 정규·시간 외 가격 모두 표시.',
+        '국내 주가 시세를 체결가·10호가 포함 SSE 스트림으로 수신. 연결 실패 시 지수 백오프로 최대 5회 재시도, 마운트 시 REST 스냅샷을 병렬 요청해 스트림 연결 전에도 화면 채움.',
+        '미국 주가는 프리마켓·정규장·애프터마켓 전 구간에서 30초 주기로 폴링. 거래소 마감 시 폴링 자동 중단, 상세 페이지에 정규·시간 외 가격 모두 표시.',
         'IANA 타임존 기반으로 KRX(09:00–15:30 KST)와 NYSE(09:30–16:00 ET) 장 운영 여부를 1분마다 재판별. 두 시장 모두 마감 시 외부 요청 완전 차단.',
         '종목 상세 페이지에 가격 차트·핵심 지표·펀더멘털(PER·PBR·EPS·배당수익률·외국인 보유비율)·애널리스트 목표주가·외국인·기관·개인 투자자 동향·DART 공시·뉴스 통합.',
       ],
@@ -50,7 +50,7 @@ export const stockDashboardProject: Project = {
     }
   ],
   architecture: {
-    description: '국내 주식은 KIS WebSocket → Django SSE → 브라우저 파이프라인으로 폴링 없이 실시간 전달.\n\n미국 시세·거시지표·섹터 히트맵·KOSPI 선물은 Next.js BFF가 Yahoo Finance를 30초 주기로 폴링. KRX와 NYSE 모두 마감 시 모든 요청 자동 중단.',
+    description: '국내 주가는 KIS WebSocket → Django SSE → 브라우저 파이프라인으로 폴링 없이 실시간 전달.\n\n미국 시세·거시지표·섹터 히트맵·KOSPI 선물은 Next.js BFF가 Yahoo Finance를 30초 주기로 폴링. KRX와 NYSE 모두 마감 시 모든 요청 자동 중단.',
     imagePath: '/StockDashboard_Architecture.svg',
     benefits: [
       'KIS WebSocket 연결을 프로세스당 하나만 유지해 동일 API 키 충돌 방지',
@@ -63,7 +63,7 @@ export const stockDashboardProject: Project = {
       '장 운영 시간을 1분마다 재평가해 두 시장 모두 마감 시 외부 요청 자동 차단',
     ]
   },
-  impact: 'KIS WebSocket → Django SSE → 브라우저로 이어지는 국내 주식 실시간 파이프라인 직접 구축. Yahoo Finance 폴링 기반 미국 시장 데이터와 결합해 국내·미국 통합 주식 대시보드 완성.',
+  impact: 'KIS WebSocket → Django SSE → 브라우저로 이어지는 국내 주가 실시간 파이프라인 직접 구축. Yahoo Finance 폴링 기반 미국 시장 데이터와 결합해 국내·미국 통합 주가 대시보드 완성.',
   totalTech: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Django', 'Python', 'KIS OpenAPI', 'Yahoo Finance API', 'DART API', 'websockets', 'SSE', 'PyCryptodome']
 };
 

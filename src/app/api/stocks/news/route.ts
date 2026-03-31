@@ -90,7 +90,7 @@ async function fetchYahooRSS(symbol: string, limit: number): Promise<NewsItem[]>
  * - 거시지표 전체: Yahoo RSS가 지수/원자재 심볼에 결과 없음
  */
 function skipYahooRSS(symbol: string): boolean {
-  if (KR_SYMBOL_SET.has(symbol)) return true;       // 국내 주식
+  if (KR_SYMBOL_SET.has(symbol)) return true;       // 국내 주가
   if (symbol in MACRO_QUERY_MAP) return true;        // 거시지표 전체
   return false;
 }
@@ -99,9 +99,9 @@ function skipYahooRSS(symbol: string): boolean {
 function buildGoogleQueries(symbol: string): Array<{ query: string; lang: 'ko' | 'en' }> {
   // 1. 거시지표 매핑
   if (MACRO_QUERY_MAP[symbol]) return MACRO_QUERY_MAP[symbol];
-  // 2. 국내 종목: 한글 이름 + "주식"
+  // 2. 국내 종목: 한글 이름 + "주가"
   const kr = KR_STOCKS.find((s) => s.symbol === symbol);
-  if (kr) return [{ query: kr.name + ' 주식', lang: 'ko' }];
+  if (kr) return [{ query: kr.name + ' 주가', lang: 'ko' }];
   // 3. 그 외 MACRO_SYMBOLS (매핑 누락 시)
   const macro = MACRO_SYMBOLS.find((m) => m.symbol === symbol);
   if (macro) return [{ query: macro.displayName, lang: 'ko' }];
@@ -150,7 +150,7 @@ export async function GET(request: NextRequest): Promise<NextResponse<StocksApiR
       );
     }
 
-    // 국내종목·거시지표는 Yahoo RSS(주식 전용) 생략, Google 뉴스만 사용
+    // 국내종목·거시지표는 Yahoo RSS(주가 전용) 생략, Google 뉴스만 사용
     const [yahooItems, googleItems] = await Promise.all([
       skipYahooRSS(symbol) ? Promise.resolve([]) : fetchYahooRSS(symbol, limit),
       fetchGoogleNewsRSS(symbol, limit),

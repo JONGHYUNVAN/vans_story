@@ -34,7 +34,7 @@ function StocksDashboard() {
         <header className={t.layout.toolbar}>
           <div className="min-w-0 space-y-0.5">
             <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-              <h1 className={t.layout.toolbarTitle}>주식 대시보드</h1>
+              <h1 className={t.layout.toolbarTitle}>주가 대시보드</h1>
               <div className="flex items-center gap-2">
                 <MarketStatusBadge state={krMarketState} market="kr" />
                 <MarketStatusBadge state={usMarketState} market="us" />

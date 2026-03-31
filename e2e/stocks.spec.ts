@@ -350,23 +350,23 @@ async function setupApiMocks(page: Page) {
 // 테스트 스위트
 // ============================================================
 
-test.describe('주식 대시보드 (/stocks) E2E 테스트', () => {
+test.describe('주가 대시보드 (/stocks) E2E 테스트', () => {
 
   // ----------------------------------------------------------
   // 시나리오 1: 메인 페이지에서 /stocks 진입
   // ----------------------------------------------------------
   test.describe('시나리오 1: 메인 페이지에서 /stocks 진입', () => {
-    test('메인 페이지에 주식 대시보드 링크가 존재한다', async ({ page }) => {
+    test('메인 페이지에 주가 대시보드 링크가 존재한다', async ({ page }) => {
       await setupApiMocks(page);
       await page.goto('/');
 
-      // 주식 대시보드 링크 확인
+      // 주가 대시보드 링크 확인
       const stocksLink = page.locator('a[href="/stocks"]');
       await expect(stocksLink).toBeVisible({ timeout: 10_000 });
-      await expect(stocksLink).toContainText('주식 대시보드');
+      await expect(stocksLink).toContainText('주가 대시보드');
     });
 
-    test('주식 대시보드 링크 클릭 시 /stocks로 이동한다', async ({ page }) => {
+    test('주가 대시보드 링크 클릭 시 /stocks로 이동한다', async ({ page }) => {
       await setupApiMocks(page);
       await page.goto('/');
 
@@ -382,11 +382,11 @@ test.describe('주식 대시보드 (/stocks) E2E 테스트', () => {
   // 시나리오 2: /stocks 페이지 기본 렌더링
   // ----------------------------------------------------------
   test.describe('시나리오 2: /stocks 페이지 기본 렌더링', () => {
-    test('페이지 타이틀 "주식 대시보드" 텍스트가 존재한다', async ({ page }) => {
+    test('페이지 타이틀 "주가 대시보드" 텍스트가 존재한다', async ({ page }) => {
       await setupApiMocks(page);
       await page.goto('/stocks');
 
-      const heading = page.locator('h1').filter({ hasText: '주식 대시보드' });
+      const heading = page.locator('h1').filter({ hasText: '주가 대시보드' });
       await expect(heading).toBeVisible({ timeout: 10_000 });
     });
 
@@ -510,7 +510,7 @@ test.describe('주식 대시보드 (/stocks) E2E 테스트', () => {
   // 시나리오 4: 데이터 로드 후 상태 (API mock)
   // ----------------------------------------------------------
   test.describe('시나리오 4: 데이터 로드 후 상태', () => {
-    test('삼성전자 주식 카드가 렌더링된다', async ({ page }) => {
+    test('삼성전자 주가 카드가 렌더링된다', async ({ page }) => {
       await setupApiMocks(page);
       await page.goto('/stocks');
 
@@ -518,14 +518,14 @@ test.describe('주식 대시보드 (/stocks) E2E 테스트', () => {
       await expect(page.locator('text=삼성전자').first()).toBeVisible({ timeout: 10_000 });
     });
 
-    test('NVIDIA 주식 카드가 렌더링된다', async ({ page }) => {
+    test('NVIDIA 주가 카드가 렌더링된다', async ({ page }) => {
       await setupApiMocks(page);
       await page.goto('/stocks');
 
       await expect(page.locator('text=NVIDIA').first()).toBeVisible({ timeout: 10_000 });
     });
 
-    test('한국 주식 카드가 최소 1개 이상 렌더링된다', async ({ page }) => {
+    test('한국 주가 카드가 최소 1개 이상 렌더링된다', async ({ page }) => {
       await setupApiMocks(page);
       await page.goto('/stocks');
 
@@ -538,7 +538,7 @@ test.describe('주식 대시보드 (/stocks) E2E 테스트', () => {
       await expect(symbolEl.first()).toBeVisible({ timeout: 10_000 });
     });
 
-    test('미국 주식 카드가 최소 1개 이상 렌더링된다', async ({ page }) => {
+    test('미국 주가 카드가 최소 1개 이상 렌더링된다', async ({ page }) => {
       await setupApiMocks(page);
       await page.goto('/stocks');
 
@@ -570,7 +570,7 @@ test.describe('주식 대시보드 (/stocks) E2E 테스트', () => {
       await expect(page.locator('text=나스닥').first()).toBeVisible({ timeout: 10_000 });
     });
 
-    test('삼성전자 주식 가격이 올바르게 표시된다', async ({ page }) => {
+    test('삼성전자 주가가 올바르게 표시된다', async ({ page }) => {
       await setupApiMocks(page);
       await page.goto('/stocks');
 
@@ -805,7 +805,7 @@ test.describe('주식 대시보드 (/stocks) E2E 테스트', () => {
       await page.goto('/stocks');
 
       // 페이지 타이틀 확인
-      const heading = page.locator('h1').filter({ hasText: '주식 대시보드' });
+      const heading = page.locator('h1').filter({ hasText: '주가 대시보드' });
       await expect(heading).toBeVisible({ timeout: 10_000 });
 
       // 새로고침 버튼 확인
@@ -823,7 +823,7 @@ test.describe('주식 대시보드 (/stocks) E2E 테스트', () => {
       await page.goto('/stocks');
 
       // 페이지 타이틀 확인
-      const heading = page.locator('h1').filter({ hasText: '주식 대시보드' });
+      const heading = page.locator('h1').filter({ hasText: '주가 대시보드' });
       await expect(heading).toBeVisible({ timeout: 10_000 });
 
       // 새로고침 버튼 확인
@@ -837,7 +837,7 @@ test.describe('주식 대시보드 (/stocks) E2E 테스트', () => {
       await expect(page.locator('h2').filter({ hasText: '관련 뉴스' })).toBeVisible({ timeout: 10_000 });
     });
 
-    test('모바일에서 데이터 로드 후 주식 카드가 표시된다', async ({ page }) => {
+    test('모바일에서 데이터 로드 후 주가 카드가 표시된다', async ({ page }) => {
       await setupApiMocks(page);
       await page.setViewportSize({ width: 375, height: 667 });
       await page.goto('/stocks');

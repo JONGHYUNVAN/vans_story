@@ -19,7 +19,7 @@ export default function Services({ services, selectedService, onServiceSelect, s
   const serviceCategories = [
     {
       title: '프론트엔드',
-      services: services.filter(service => service.name.includes('프론트엔드') || service.name.includes('실시간 주식')),
+      services: services.filter(service => service.name.includes('프론트엔드') || service.name.includes('실시간 주가')),
       colorTheme: 'blue'
     },
     {

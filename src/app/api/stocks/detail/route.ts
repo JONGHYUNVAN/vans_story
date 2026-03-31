@@ -190,7 +190,7 @@ async function fetchNaverConsensusDetail(
   return null;
 }
 
-/** Yahoo Finance v11 quoteSummary — US 주식 컨센서스 */
+/** Yahoo Finance v11 quoteSummary — US 주가 컨센서스 */
 async function fetchYahooConsensus(symbol: string): Promise<StockConsensus | null> {
   // query2 가 query1 보다 덜 엄격한 경우가 있음
   const hosts = ['query2.finance.yahoo.com', 'query1.finance.yahoo.com'];

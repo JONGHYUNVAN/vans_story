@@ -9,13 +9,13 @@ export default function Architecture({ architecture }: ArchitectureProps) {
   return (
     <div className="mb-8">
       <h3 className="text-xl font-semibold mb-4">아키텍처</h3>
-      <p className="text-gray-600 mb-4">{architecture.description}</p>
+      <p className="text-gray-600 mb-4 whitespace-pre-line">{architecture.description}</p>
       
       {/* 아키텍처 다이어그램 */}
       <div className="mb-6">
         <Image
-          src="/Architecture_Diagram.webp"
-          alt="마이크로서비스 아키텍처 다이어그램"
+          src={architecture.imagePath ?? '/Architecture_Diagram.webp'}
+          alt={architecture.imagePath ? architecture.imagePath.split('/').pop() ?? 'Architecture Diagram' : '마이크로서비스 아키텍처 다이어그램'}
           width={800}
           height={600}
           className="w-full h-auto rounded-lg border border-gray-200 shadow-sm"

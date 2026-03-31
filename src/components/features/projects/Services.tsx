@@ -18,25 +18,26 @@ export default function Services({ services, selectedService, onServiceSelect, s
   // 서비스를 역할별로 분류
   const serviceCategories = [
     {
-      title: 'Frontend',
-      services: services.filter(service => service.name.includes('Frontend')),
+      title: '프론트엔드',
+      services: services.filter(service => service.name.includes('프론트엔드') || service.name.includes('실시간 주식')),
       colorTheme: 'blue'
     },
     {
-      title: 'Backend Services',
-      services: services.filter(service => 
-        service.name.includes('User Service') || 
-        service.name.includes('Post Service') || 
-        service.name.includes('Search Service')
+      title: '백엔드 서비스',
+      services: services.filter(service =>
+        service.name.includes('유저 서비스') ||
+        service.name.includes('게시글 서비스') ||
+        service.name.includes('검색 서비스') ||
+        service.name.includes('백엔드')
       ),
       colorTheme: 'green'
     },
     {
-      title: 'API Services',
-      services: services.filter(service => 
-        service.name.includes('OAuth') || 
-        service.name.includes('Image') || 
-        service.name.includes('AI Chat')
+      title: 'API 서비스',
+      services: services.filter(service =>
+        service.name.includes('OAuth') ||
+        service.name.includes('이미지') ||
+        service.name.includes('AI 채팅')
       ),
       colorTheme: 'purple'
     }
@@ -76,8 +77,9 @@ export default function Services({ services, selectedService, onServiceSelect, s
         hintText: 'text-purple-600',
         arrowColor: 'text-purple-500',
         linkColor: 'text-purple-600 hover:text-purple-800'
-      }
+      },
     };
+
     
     return themes[colorTheme as keyof typeof themes] || themes.blue;
   };
@@ -92,7 +94,7 @@ export default function Services({ services, selectedService, onServiceSelect, s
       category: string;
     }> = [];
     
-    if (serviceName.includes('Frontend')) {
+    if (serviceName.includes('프론트엔드')) {
       links.push({
         title: 'Frontend README',
         filePath: '/docs/frontend-readme.md',
@@ -119,7 +121,7 @@ export default function Services({ services, selectedService, onServiceSelect, s
       });
     }
     
-    if (serviceName.includes('User Service')) {
+    if (serviceName.includes('유저 서비스')) {
       links.push({
         title: 'User Service 개발 가이드',
         filePath: '/docs/user-service-dev.md',
@@ -166,7 +168,7 @@ export default function Services({ services, selectedService, onServiceSelect, s
       });
     }
     
-    if (serviceName.includes('Post Service')) {
+    if (serviceName.includes('게시글 서비스')) {
       links.push({
         title: 'Post Service README',
         filePath: '/docs/post-service-readme.md',
@@ -217,7 +219,7 @@ export default function Services({ services, selectedService, onServiceSelect, s
       });
     }
     
-    if (serviceName.includes('Image')) {
+    if (serviceName.includes('이미지')) {
       links.push({
         title: 'Image Service README',
         filePath: '/docs/image-service-readme.md',
@@ -233,7 +235,7 @@ export default function Services({ services, selectedService, onServiceSelect, s
       });
     }
     
-    if (serviceName.includes('AI Chat')) {
+    if (serviceName.includes('AI 채팅')) {
       links.push({
         title: 'AI Chat Service README',
         filePath: '/docs/ai-chat-service-readme.md',
@@ -249,7 +251,7 @@ export default function Services({ services, selectedService, onServiceSelect, s
       });
     }
     
-    if (serviceName.includes('Search Service')) {
+    if (serviceName.includes('검색 서비스')) {
       links.push({
         title: 'Search Service README',
         filePath: '/docs/search-service-readme.md',

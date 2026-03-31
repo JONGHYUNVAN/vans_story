@@ -96,6 +96,26 @@ const projectsKo = [
       '바코드 인식을 통한 영양제 자동 등록',
       '모바일 최적화 반응형 UI'
     ]
+  },
+  {
+    id: 6,
+    title: 'Live Market Pulse',
+    description: 'KIS OpenAPI 실시간 체결가와 Yahoo Finance 데이터를 결합한 한국·미국 테크주 실시간 대시보드입니다. Django SSE 파이프라인으로 KIS WebSocket 데이터를 브라우저까지 중계하며, Squarified Treemap으로 섹터 히트맵을 시각화합니다.',
+    tech: ['Next.js', 'TypeScript', 'Django', 'Python', 'KIS OpenAPI', 'Yahoo Finance API', 'SSE', 'Tailwind CSS'],
+    githubUrl: 'https://github.com/JONGHYUNVAN/vans_story',
+    linkUrl: 'https://vansdevblog.online/stocks',
+    category: '개인',
+    status: 'Deployed',
+    date: '2025.03',
+    impact: 'KIS WebSocket 싱글톤 + Django SSE + Vercel Edge BFF 파이프라인으로 브라우저 실시간 주가 중계 구현',
+    features: [
+      'KR/US 워치리스트 실시간 주가 (KIS WebSocket + Yahoo Finance)',
+      'Tech·Semiconductor 섹터 히트맵 (Squarified Treemap 알고리즘)',
+      'KOSPI 야간 선물 카드 및 거시지표 패널 (환율·채권·지수·원자재)',
+      'KIS 실시간 체결가·10호가 호가창 (장중 KR 종목)',
+      '미국 프리/애프터마켓 가격 표시 (30초 폴링)',
+      'AES-256-CBC 복호화로 KIS 암호화 메시지 처리'
+    ]
   }
 ].sort((a, b) => {
   // 날짜를 비교하여 최신순으로 정렬
@@ -196,6 +216,26 @@ const projectsEn = [
       'Supplement information search using Naver Open API',
       'Automatic supplement registration through barcode recognition',
       'Mobile-optimized responsive UI'
+    ]
+  },
+  {
+    id: 6,
+    title: 'Live Market Pulse',
+    description: 'A real-time KR/US tech stock dashboard combining KIS OpenAPI live trade data with Yahoo Finance. Streams KIS WebSocket data to the browser via a Django SSE pipeline and visualizes sector performance with a Squarified Treemap heatmap.',
+    tech: ['Next.js', 'TypeScript', 'Django', 'Python', 'KIS OpenAPI', 'Yahoo Finance API', 'SSE', 'Tailwind CSS'],
+    githubUrl: 'https://github.com/JONGHYUNVAN/vans_story',
+    linkUrl: 'https://vansdevblog.online/stocks',
+    category: 'Personal',
+    status: 'Deployed',
+    date: '2025.03',
+    impact: 'Built a KIS WebSocket → Django SSE → Vercel Edge BFF → EventSource real-time pipeline for live stock data in the browser',
+    features: [
+      'KR/US watchlist with live prices (KIS WebSocket + Yahoo Finance)',
+      'Tech·Semiconductor sector heatmap (Squarified Treemap algorithm)',
+      'KOSPI night futures card and macro panel (FX, bonds, indices, commodities)',
+      'KIS live trade price and 10-level order book (KR stocks, market hours)',
+      'US pre/after-market price display (30 s polling)',
+      'AES-256-CBC decryption of encrypted KIS WebSocket messages'
     ]
   }
 ].sort((a, b) => {

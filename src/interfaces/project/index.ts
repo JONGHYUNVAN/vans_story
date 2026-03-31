@@ -14,6 +14,7 @@ export interface ProjectService {
 export interface ProjectArchitecture {
   description: string;
   benefits: string[];
+  imagePath?: string;   // custom diagram path; if omitted, defaults to Architecture_Diagram.webp
 }
 
 /**

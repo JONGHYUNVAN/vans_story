@@ -1,6 +1,73 @@
 import { Project } from '@/interfaces/project';
 
 /**
+ * 주식 대시보드 프로젝트 데이터
+ */
+export const stockDashboardProject: Project = {
+  id: 'stock-dashboard',
+  title: '실시간 주식 대시보드',
+  description: 'KIS OpenAPI와 Yahoo Finance를 연동해 국내·미국 주식을 한 화면에서 보여주는 실시간 대시보드.\n\n국내주식은 Django SSE 파이프라인으로 폴링 없이 실시간 전달, 미국주식은 Next.js BFF를 통해 장 운영 시간에만 폴링.',
+  deployUrl: 'https://vansdevblog.online/stocks',
+  githubUrl: 'https://github.com/JONGHYUNVAN/vans_story',
+  status: 'Deployed',
+  date: '2025.03',
+  category: '개인',
+  services: [
+    {
+      name: '프론트엔드 (Next.js)',
+      description: '국내·미국 워치리스트, 섹터 히트맵, 거시지표 패널, 종목 상세 페이지를 하나의 화면에 담음.\n\n시장 개장 여부를 1분마다 체크해 장 마감 시 폴링을 자동으로 멈추고, 심야에는 외부 요청 없음.',
+      tech: [
+        'Next.js',
+        'React',
+        'TypeScript',
+        'Tailwind CSS',
+        'SSE (EventSource)',
+      ],
+      features: [
+        'KRX 국내 대형주 3종목과 NYSE·NASDAQ 미국 테크주 8종목 워치리스트. 현재가·등락률·시장 상태 실시간 표시.',
+        'Squarified Treemap 알고리즘 기반 섹터 히트맵. 셀 면적은 시가총액에 비례, 색상은 당일 등락률 표시. 시총 데이터 없을 시 사전 정의 비중으로 대체.',
+        '원/달러 환율·미국 10년 국채·KOSPI·KOSDAQ·나스닥·S&P 500·필라델피아 반도체 지수·WTI 유가 8개 거시지표를 통화·채권·지수·원자재 카테고리로 분류. 마운트 시 1회만 로드해 중복 요청 없음.',
+        'KOSPI 현물 지수와 야간 KOSPI 200 지수를 60초 주기로 갱신. 색상으로 방향을 구분해 야간 시장 흐름 파악.',
+        '국내 주식 시세를 체결가·10호가 포함 SSE 스트림으로 수신. 연결 실패 시 지수 백오프로 최대 5회 재시도, 마운트 시 REST 스냅샷을 병렬 요청해 스트림 연결 전에도 화면 채움.',
+        '미국 주식은 프리마켓·정규장·애프터마켓 전 구간에서 30초 주기로 폴링. 거래소 마감 시 폴링 자동 중단, 상세 페이지에 정규·시간 외 가격 모두 표시.',
+        'IANA 타임존 기반으로 KRX(09:00–15:30 KST)와 NYSE(09:30–16:00 ET) 장 운영 여부를 1분마다 재판별. 두 시장 모두 마감 시 외부 요청 완전 차단.',
+        '종목 상세 페이지에 가격 차트·핵심 지표·펀더멘털(PER·PBR·EPS·배당수익률·외국인 보유비율)·애널리스트 목표주가·외국인·기관·개인 투자자 동향·DART 공시·뉴스 통합.',
+      ],
+    },
+    {
+      name: '백엔드 (Django + Next.js BFF)',
+      description: 'KIS OpenAPI WebSocket 연결을 Django 프로세스 싱글톤으로 유지하고, SSE로 실시간 체결가·호가를 각 브라우저에 중계.\n\nKIS 자격증명이 없어도 나머지 대시보드 기능은 정상 동작.',
+      tech: ['Django', 'Python', 'KIS OpenAPI', 'websockets', 'SSE', 'PyCryptodome', 'Next.js', 'TypeScript'],
+      features: [
+        '스레드 락으로 KIS WebSocket 연결을 프로세스당 하나만 유지. 비동기 I/O는 별도 백그라운드 스레드에서 처리해 Django 동기 핸들러가 파이프라인을 막지 않음.',
+        '참조 카운트로 구독 관리. 첫 클라이언트 요청 시 KIS 구독을 보내고, 마지막 클라이언트 해제 시 취소. 불필요한 구독 누적 없음.',
+        '실시간 프레임을 구독 핸드셰이크에서 받은 채널별 키·IV로 서버에서 AES-256-CBC 복호화. 브라우저에는 순수 JSON만 전달되고 암호화 키 노출 없음.',
+        'SSE 연결 즉시 캐시된 체결가·호가 스냅샷 전송. 클라이언트별 유한 큐로 느린 연결의 초과 이벤트를 드롭해 파이프라인 막힘 없음.',
+        'WebSocket 끊김 시 5초 간격으로 최대 10회 자동 재연결. 재연결 성공 시 활성 구독 목록 전체 즉시 재전송.',
+        'Next.js BFF 프록시는 핸드셰이크 단계에만 30초 타임아웃을 적용, 응답 헤더 수신 즉시 해제. 스트림 중간 연결 끊김 없음.',
+        'KIS 자격증명 없을 시 SSE 엔드포인트는 킵얼라이브 핑 스트림, 스냅샷 엔드포인트는 미사용 응답 반환. 나머지 대시보드 기능 영향 없음.',
+      ],
+    }
+  ],
+  architecture: {
+    description: '국내 주식은 KIS WebSocket → Django SSE → 브라우저 파이프라인으로 폴링 없이 실시간 전달.\n\n미국 시세·거시지표·섹터 히트맵·KOSPI 선물은 Next.js BFF가 Yahoo Finance를 30초 주기로 폴링. KRX와 NYSE 모두 마감 시 모든 요청 자동 중단.',
+    imagePath: '/StockDashboard_Architecture.svg',
+    benefits: [
+      'KIS WebSocket 연결을 프로세스당 하나만 유지해 동일 API 키 충돌 방지',
+      '참조 카운트로 구독 관리. 시청자가 있을 때만 KIS 구독을 유지해 불필요한 연결 비용 없음',
+      '실시간 프레임을 서버에서 복호화해 암호화 키가 브라우저에 노출되지 않음',
+      'SSE 연결 즉시 캐시 스냅샷 전송으로 스트림 준비 전에도 화면이 비지 않음',
+      '클라이언트별 유한 큐로 느린 연결의 초과 이벤트를 드롭해 파이프라인 막힘 없음',
+      'KIS 자격증명 없어도 킵얼라이브 응답으로 대체해 나머지 대시보드 정상 동작',
+      '브라우저 SSE 클라이언트가 지수 백오프로 자동 재연결, 마운트 시 스냅샷을 병렬 요청해 화면 즉시 채움',
+      '장 운영 시간을 1분마다 재평가해 두 시장 모두 마감 시 외부 요청 자동 차단',
+    ]
+  },
+  impact: 'KIS WebSocket → Django SSE → 브라우저로 이어지는 국내 주식 실시간 파이프라인 직접 구축. Yahoo Finance 폴링 기반 미국 시장 데이터와 결합해 국내·미국 통합 주식 대시보드 완성.',
+  totalTech: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Django', 'Python', 'KIS OpenAPI', 'Yahoo Finance API', 'DART API', 'websockets', 'SSE', 'PyCryptodome']
+};
+
+/**
  * VansDevBlog 프로젝트 데이터
  */
 export const vansDevBlogProject: Project = {
@@ -14,7 +81,7 @@ export const vansDevBlogProject: Project = {
   category: '개인',
   services: [
     {
-      name: 'Frontend (Next.js)',
+      name: '프론트엔드 (Next.js)',
       description: 'React, Next.js 기반 프론트엔드',
       tech: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Storybook'],
       features: [
@@ -27,7 +94,7 @@ export const vansDevBlogProject: Project = {
       ]
     },
     {
-      name: 'Backend - User Service (Spring Boot)',
+      name: '백엔드 - 유저 서비스 (Spring Boot)',
       description: 'Kotlin 기반 사용자 관리 및 인증 서비스',
       tech: ['Spring Boot', 'Kotlin', 'MariaDB', 'JWT', 'Spring Security'],
       features: [
@@ -38,7 +105,7 @@ export const vansDevBlogProject: Project = {
       ]
     },
     {
-      name: 'Backend - Post Service (NestJS)',
+      name: '백엔드 - 게시글 서비스 (NestJS)',
       description: 'TypeScript 기반 게시글 관리 서비스',
       tech: ['NestJS', 'TypeScript', 'MongoDB', 'Mongoose', 'JWT'],
       features: [
@@ -49,7 +116,7 @@ export const vansDevBlogProject: Project = {
       ]
     },
     {
-      name: 'OAuth Authentication Server',
+      name: 'OAuth 인증 서버',
       description: 'OAuth 2.0 기반 소셜 로그인 중간 서버',
       tech: ['Next.js', 'TypeScript', 'OAuth 2.0', 'JWT', 'JOSE'],
       features: [
@@ -62,7 +129,7 @@ export const vansDevBlogProject: Project = {
       ]
     },
     {
-      name: 'Image Processing Service',
+      name: '이미지 처리 서비스',
       description: 'AWS S3 기반 이미지 업로드 및 처리 서비스',
       tech: ['Next.js', 'Sharp', 'AWS S3', 'WebP', 'TypeScript'],
       features: [
@@ -75,7 +142,7 @@ export const vansDevBlogProject: Project = {
       ]
     },
     {
-      name: 'AI Chat Service',
+      name: 'AI 채팅 서비스',
       description: 'OpenAI API 기반 AI 채팅 서비스',
       tech: ['Next.js', 'OpenAI API', 'TypeScript', 'React'],
       features: [
@@ -86,7 +153,7 @@ export const vansDevBlogProject: Project = {
       ]
     },
     {
-      name: 'Backend - Search Service (Django)',
+      name: '백엔드 - 검색 서비스 (Django)',
       description: 'Django 기반 고성능 검색 엔진 서비스',
       tech: ['Django', 'Python', 'Elasticsearch', 'Redis', 'MongoDB'],
       features: [

@@ -15,7 +15,7 @@ export default function ServiceDetails({ services, selectedService, selectedTech
   return (
     <div className="bg-gray-50 rounded-lg p-6 mb-8">
       <h4 className="text-lg font-semibold mb-3">{service.name}</h4>
-      <p className="text-gray-600 mb-4">{service.description}</p>
+      <p className="text-gray-600 mb-4 whitespace-pre-line">{service.description}</p>
       
       <div className="mb-4">
         <h5 className="font-medium mb-2">기술 스택</h5>

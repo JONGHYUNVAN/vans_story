@@ -11,7 +11,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         <h2 className="text-3xl font-bold text-gray-900 mb-2">
           {project.title}
         </h2>
-        <p className="text-gray-600 text-lg mb-4">
+        <p className="text-gray-600 text-lg mb-4 whitespace-pre-line">
           {project.description}
         </p>
         <div className="flex items-center gap-4 mb-4">

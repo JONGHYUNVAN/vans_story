@@ -122,7 +122,7 @@ export function useStocksData(): UseStocksDataReturn {
       const us = getUsMarketState();
       setKrMarketState(kr);
       setUsMarketState(us);
-      setMarketOpen(kr === 'REGULAR' || us === 'REGULAR');
+      setMarketOpen(kr === 'REGULAR' || kr === 'PRE' || us === 'REGULAR');
     };
     const id = setInterval(tick, 60_000);
     return () => clearInterval(id);

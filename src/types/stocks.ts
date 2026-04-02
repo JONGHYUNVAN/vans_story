@@ -254,6 +254,7 @@ export const MACRO_SYMBOLS = [
   { symbol: '^GSPC', name: 'S&P 500', displayName: 'S&P 500', category: 'index' as const },
   { symbol: '^SOX', name: 'SOX', displayName: '필라델피아 반도체', category: 'index' as const },
   { symbol: 'CL=F', name: 'WTI Crude Oil', displayName: 'WTI 유가', category: 'commodity' as const },
+  { symbol: 'GC=F', name: 'Gold', displayName: '금', category: 'commodity' as const },
 ] as const;
 
 export const DART_CORP_CODE_MAP: Record<string, string> = {

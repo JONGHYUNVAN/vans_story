@@ -170,6 +170,8 @@ export const vansDevBlogProject: Project = {
   ],
   architecture: {
     description: '마이크로서비스 아키텍처로 각 서비스가 독립적으로 배포되며 직접 통신합니다.',
+    figmaUrl: 'https://www.figma.com/board/BocKlSL17rlDR6YwWPjbeA/Architecture-Diagram?node-id=0-1&t=vIojgniIvKrQwZAy-1',
+    dbFigmaUrl: 'https://match-glory-07750383.figma.site',
     benefits: [
       '각 서비스별 독립적인 배포 및 관리 (각 백엔드 서버 및 db, 프론트엔드 서버, 각 api 라우트 서버)',
       '다양한 기술 스택 학습 및 적용 (Spring Boot, NestJS, Django, Next.js)',

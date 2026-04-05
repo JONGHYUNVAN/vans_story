@@ -468,17 +468,47 @@ export default function Services({ services, selectedService, onServiceSelect, s
         
         {serviceCategories.map((category, categoryIndex) => (
           <div key={categoryIndex} className="mb-10">
+
+            {/* 백엔드 서비스 제목 위에 API Flow 다이어그램 */}
+            {category.title === '백엔드 서비스' && (
+              <div className="mb-6">
+                <p className="text-sm text-gray-500 mb-2">API Flow 다이어그램</p>
+                <div className="relative w-full rounded-lg border border-gray-200 shadow-sm overflow-hidden" style={{ paddingBottom: '62.5%' }}>
+                  <iframe
+                    src={`https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent('https://www.figma.com/board/BocKlSL17rlDR6YwWPjbeA/Architecture-Diagram?node-id=7-423&t=vIojgniIvKrQwZAy-1')}`}
+                    className="absolute inset-0 w-full h-full"
+                    allowFullScreen
+                  />
+                </div>
+              </div>
+            )}
+
             <h4 className="text-lg font-medium mb-4 text-gray-800">{category.title}</h4>
+
             <div className="grid grid-cols-1 gap-6">
               {category.services.map((service, serviceIndex) => (
-                <ServiceCard 
-                  key={serviceIndex} 
-                  service={service} 
-                  index={serviceIndex} 
+                <ServiceCard
+                  key={serviceIndex}
+                  service={service}
+                  index={serviceIndex}
                   colorTheme={category.colorTheme}
                 />
               ))}
             </div>
+
+            {/* 백엔드 서비스 카드 아래에 DB 다이어그램 */}
+            {category.title === '백엔드 서비스' && (
+              <div className="mt-6">
+                <p className="text-sm text-gray-500 mb-2">데이터베이스 다이어그램</p>
+                <div className="w-full rounded-lg border border-gray-200 shadow-sm overflow-hidden" style={{ height: '1600px' }}>
+                  <iframe
+                    src="https://match-glory-07750383.figma.site"
+                    className="w-full h-full"
+                    allowFullScreen
+                  />
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

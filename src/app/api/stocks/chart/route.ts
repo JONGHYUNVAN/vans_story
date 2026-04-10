@@ -7,9 +7,10 @@ const YAHOO_HEADERS = {
   Accept: 'application/json',
 };
 
-type ChartRange = '1W' | '1M' | '3M' | '6M' | '1Y';
+type ChartRange = '1D' | '1W' | '1M' | '3M' | '6M' | '1Y';
 
 const RANGE_MAP: Record<ChartRange, { range: string; interval: string }> = {
+  '1D': { range: '1d',  interval: '5m'  },
   '1W': { range: '5d',  interval: '1h'  },
   '1M': { range: '1mo', interval: '1d'  },
   '3M': { range: '3mo', interval: '1d'  },
@@ -28,7 +29,7 @@ export async function GET(
   try {
     const { searchParams } = new URL(request.url);
     const symbol = searchParams.get('symbol');
-    const rangeParam = (searchParams.get('range') ?? '1M') as ChartRange;
+    const rangeParam = (searchParams.get('range') ?? '1D') as ChartRange;
 
     if (!symbol) {
       return NextResponse.json(
@@ -37,13 +38,20 @@ export async function GET(
       );
     }
 
-    const config = RANGE_MAP[rangeParam] ?? RANGE_MAP['1M'];
-    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=${config.interval}&range=${config.range}`;
+    const config = RANGE_MAP[rangeParam] ?? RANGE_MAP['1D'];
+    const path = `/v8/finance/chart/${encodeURIComponent(symbol)}?interval=${config.interval}&range=${config.range}`;
+    const hosts = ['query1.finance.yahoo.com', 'query2.finance.yahoo.com'];
 
-    const res = await fetch(url, { headers: YAHOO_HEADERS, cache: 'no-store' });
-    if (!res.ok) {
+    let res: Response | null = null;
+    for (const host of hosts) {
+      try {
+        const r = await fetch(`https://${host}${path}`, { headers: YAHOO_HEADERS, cache: 'no-store' });
+        if (r.ok) { res = r; break; }
+      } catch { /* 다음 host 시도 */ }
+    }
+    if (!res) {
       return NextResponse.json(
-        { success: false, error: { message: `Yahoo Finance 오류: ${res.status}`, code: 'YAHOO_ERROR' } },
+        { success: false, error: { message: 'Yahoo Finance 요청 실패', code: 'YAHOO_ERROR' } },
         { status: 502 },
       );
     }
@@ -59,6 +67,8 @@ export async function GET(
 
     const timestamps = result.timestamp ?? [];
     const q = result.indicators?.quote?.[0];
+    // 인덱스·수익률 심볼(^)은 거래량이 없거나 무관한 값이므로 0으로 고정
+    const isIndex = symbol.startsWith('^');
 
     const data: ChartDataPoint[] = timestamps
       .map((ts, i) => ({
@@ -67,7 +77,7 @@ export async function GET(
         high:   finiteNum(q?.high?.[i]),
         low:    finiteNum(q?.low?.[i]),
         close:  finiteNum(q?.close?.[i]),
-        volume: finiteNum(q?.volume?.[i]),
+        volume: isIndex ? 0 : finiteNum(q?.volume?.[i]),
       }))
       .filter((d) => d.close > 0);
 

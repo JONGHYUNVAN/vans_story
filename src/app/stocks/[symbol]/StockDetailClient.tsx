@@ -82,6 +82,9 @@ function StockDetailInner({ symbol }: Props) {
   const [isRefreshing, setIsRefreshing] = useState(false);  // 새로고침 버튼 스피너용
   const [isError,      setIsError]      = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [rangeStats,   setRangeStats]   = useState<{
+    range: string; firstClose: number; lastClose: number;
+  } | null>(null);
   const hasLoadedRef = useRef(false);  // 최초 로드 완료 여부
 
   const fetchDetail = useCallback(async () => {
@@ -156,12 +159,18 @@ function StockDetailInner({ symbol }: Props) {
         ? (usRealtime.change ?? detail?.quote.change ?? 0)
         : (detail?.quote.change ?? 0);
 
+  const rangeChangePercent = rangeStats && rangeStats.firstClose > 0
+    ? ((rangeStats.lastClose - rangeStats.firstClose) / rangeStats.firstClose) * 100
+    : null;
+
   const displayChangePercent =
-    symbolType === 'kr'
-      ? (kisRealtime.trade?.changePercent ?? detail?.quote.changePercent ?? 0)
-      : symbolType === 'us'
-        ? (usRealtime.changePercent ?? detail?.quote.changePercent ?? 0)
-        : (detail?.quote.changePercent ?? 0);
+    (rangeStats === null || rangeStats.range === '1D')
+      ? (symbolType === 'kr'
+          ? (kisRealtime.trade?.changePercent ?? detail?.quote.changePercent ?? 0)
+          : symbolType === 'us'
+            ? (usRealtime.changePercent ?? detail?.quote.changePercent ?? 0)
+            : (detail?.quote.changePercent ?? 0))
+      : (rangeChangePercent ?? detail?.quote.changePercent ?? 0);
   const displayCurrency = detail?.quote.currency ?? 'KRW';
 
   const priceColorClass =
@@ -236,6 +245,9 @@ function StockDetailInner({ symbol }: Props) {
                   {formatPrice(displayChange, displayCurrency, symbol)}{' '}
                   ({displayChangePercent >= 0 ? '+' : ''}
                   {displayChangePercent.toFixed(2)}%)
+                  {rangeStats && rangeStats.range !== '1D' && (
+                    <span className="text-xs text-gray-400 ml-1">({rangeStats.range})</span>
+                  )}
                 </span>
               </div>
             )}
@@ -285,7 +297,15 @@ function StockDetailInner({ symbol }: Props) {
             )}
 
             {/* 차트 */}
-            <PriceChart data={detail.chart} currency={detail.quote.currency} symbol={symbol} />
+            <PriceChart
+              data={detail.chart}
+              currency={detail.quote.currency}
+              symbol={symbol}
+              prevClose={kisRealtime.trade?.prevClose ?? detail.quote.previousClose}
+              onRangeStats={(range, firstClose, lastClose) =>
+                setRangeStats({ range, firstClose, lastClose })
+              }
+            />
 
             {/* 국장: KIS 호가창 */}
             {symbolType === 'kr' && (

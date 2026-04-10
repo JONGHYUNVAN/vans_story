@@ -12,6 +12,7 @@ import DartSection from '@/components/features/stocks/DartSection';
 import { KR_STOCKS, US_STOCKS } from '@/types/stocks';
 import { SectorHeatmap } from '@/components/features/stocks/SectorHeatmap';
 import { KospiFuturesCard } from '@/components/features/stocks/KospiFuturesCard';
+import { FearGreedBar } from '@/components/features/stocks/FearGreedBar';
 
 export default function StocksClient() {
   return (
@@ -68,6 +69,9 @@ function StocksDashboard() {
 
         <div className={t.layout.workspace}>
           <MacroPanel macro={macro} isLoading={isLoading} />
+
+          {/* 시장 심리 (공포탐욕지수 + VIX) */}
+          <FearGreedBar />
 
           <div className="grid grid-cols-1 gap-8 xl:grid-cols-2">
             <section className={t.layout.krMarketShell}>

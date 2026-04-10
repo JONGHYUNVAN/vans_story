@@ -394,9 +394,18 @@ function resolveName(symbol: string, shortName?: string, longName?: string): str
 async function fetchV8Detail(
   symbol: string,
 ): Promise<{ quote: StockDetailData['quote']; chart: ChartDataPoint[]; name: string }> {
-  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=1mo`;
-  const res = await fetch(url, { headers: YAHOO_HEADERS, cache: 'no-store' });
-  if (!res.ok) throw new Error(`Yahoo Finance v8 오류: ${res.status}`);
+  const enc  = encodeURIComponent(symbol);
+  const path = `/v8/finance/chart/${enc}?interval=1d&range=1mo`;
+  const hosts = ['query1.finance.yahoo.com', 'query2.finance.yahoo.com'];
+
+  let res: Response | null = null;
+  for (const host of hosts) {
+    try {
+      const r = await fetch(`https://${host}${path}`, { headers: YAHOO_HEADERS, cache: 'no-store' });
+      if (r.ok) { res = r; break; }
+    } catch { /* 다음 host 시도 */ }
+  }
+  if (!res) throw new Error(`Yahoo Finance v8 요청 실패 (query1·query2 모두 오류)`);
 
   const json: YahooChartResponse = await res.json();
   const result = json?.chart?.result?.[0];
@@ -435,8 +444,11 @@ async function fetchV8Detail(
       : lastIdx >= 0
         ? finiteNum(rawQuote?.open?.[lastIdx], lastClose)
         : lastClose;
-  const volume =
-    finiteNum(meta.regularMarketVolume) > 0
+  // 인덱스·수익률 심볼(^)은 거래량이 없거나 무관한 값이므로 0으로 고정
+  const isIndex = symbol.startsWith('^');
+  const volume = isIndex
+    ? 0
+    : finiteNum(meta.regularMarketVolume) > 0
       ? finiteNum(meta.regularMarketVolume)
       : lastIdx >= 0
         ? finiteNum(rawQuote?.volume?.[lastIdx])

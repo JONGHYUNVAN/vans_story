@@ -57,17 +57,23 @@ async function fetchHeatmapItem(
 
     // Yahoo v8 does not reliably return *ChangePercent fields — calculate manually
     const prevClose: number = meta?.previousClose || meta?.chartPreviousClose || 0;
-    const regularChangePercent = prevClose !== 0 ? ((price - prevClose) / prevClose) * 100 : null;
+    const regularOpen: number = meta?.regularMarketOpen ?? 0;
+    const regularBaseline = regularOpen > 0 ? regularOpen : prevClose;
+    const preBaseline     = prevClose; // 프리마켓은 전일종가 기준 유지
+
+    const regularChangePercent = regularBaseline !== 0
+      ? ((price - regularBaseline) / regularBaseline) * 100
+      : null;
 
     // Pre/post market: use Yahoo fields if present, else fall back to regular
     const prePrice: number = meta?.preMarketPrice ?? 0;
-    const preChangePercent = prevClose !== 0 && prePrice !== 0
-      ? ((prePrice - prevClose) / prevClose) * 100
+    const preChangePercent = preBaseline !== 0 && prePrice !== 0
+      ? ((prePrice - preBaseline) / preBaseline) * 100
       : regularChangePercent;
 
     const postPrice: number = meta?.postMarketPrice ?? 0;
-    const postChangePercent = prevClose !== 0 && postPrice !== 0
-      ? ((postPrice - prevClose) / prevClose) * 100
+    const postChangePercent = regularBaseline !== 0 && postPrice !== 0
+      ? ((postPrice - regularBaseline) / regularBaseline) * 100
       : regularChangePercent;
 
     let rawChangePercent: number | null;

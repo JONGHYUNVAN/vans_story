@@ -41,6 +41,27 @@ function normalizeFromV8Chart(symbol: string, chartRes: YahooChartResponse): Sto
   const prev = prevRaw > 0 ? prevRaw : chartPrev > 0 ? chartPrev : 0;
   const last = lastIdx >= 0 ? finiteNum(quote?.close?.[lastIdx], metaPrice) : metaPrice;
 
+  // 시장 상태별 현재가/기준가 결정
+  const marketState = (meta.marketState ?? 'CLOSED') as MarketState;
+  const regularOpen = finiteNum(meta.regularMarketOpen);
+  const prePrice    = finiteNum(meta.preMarketPrice);
+  const postPrice   = finiteNum(meta.postMarketPrice);
+
+  let currentPrice: number;
+  let baseline: number;
+
+  if (marketState === 'PRE') {
+    currentPrice = prePrice > 0 ? prePrice : metaPrice;
+    baseline     = prev;
+  } else if (marketState === 'POST' || marketState === 'POSTPOST') {
+    currentPrice = postPrice > 0 ? postPrice : metaPrice;
+    baseline     = regularOpen > 0 ? regularOpen : prev;
+  } else {
+    // REGULAR / CLOSED
+    currentPrice = metaPrice > 0 ? metaPrice : last;
+    baseline     = regularOpen > 0 ? regularOpen : prev;
+  }
+
   const high =
     finiteNum(meta.regularMarketDayHigh) > 0
       ? finiteNum(meta.regularMarketDayHigh)
@@ -61,9 +82,9 @@ function normalizeFromV8Chart(symbol: string, chartRes: YahooChartResponse): Sto
   return {
     symbol,
     name: resolveStockDisplayName(symbol, meta.shortName ?? null, meta.longName ?? null),
-    price: last,
-    change: prev > 0 ? last - prev : 0,
-    changePercent: prev > 0 ? ((last - prev) / prev) * 100 : 0,
+    price: currentPrice,
+    change: baseline > 0 ? currentPrice - baseline : 0,
+    changePercent: baseline > 0 ? ((currentPrice - baseline) / baseline) * 100 : 0,
     previousClose: prev,
     open,
     high,
@@ -72,7 +93,7 @@ function normalizeFromV8Chart(symbol: string, chartRes: YahooChartResponse): Sto
     marketCap: null,
     currency: meta.currency,
     market: resolveMarket(symbol),
-    marketState: ((meta.marketState ?? 'CLOSED') as MarketState),
+    marketState,
     updatedAt: finiteNum(meta.regularMarketTime, Date.now() / 1000),
   };
 }

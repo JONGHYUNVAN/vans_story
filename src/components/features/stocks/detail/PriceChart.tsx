@@ -7,7 +7,7 @@ import { API_URLS } from '@/constants/apiUrl';
 import TermTooltip from '@/components/features/stocks/detail/TermTooltip';
 
 // ───────────────────────────── types ─────────────────────────────
-type ChartRange = '1W' | '1M' | '3M' | '6M' | '1Y';
+type ChartRange = '1D' | '1W' | '1M' | '3M' | '6M' | '1Y';
 type ChartType  = 'line' | 'candle';
 type Indicator  = 'MA5' | 'MA20' | 'MA60' | 'BB' | 'Volume' | 'RSI';
 
@@ -53,7 +53,7 @@ function calcRSI(data: ChartDataPoint[], period = 14): (number | null)[] {
 
 // ──────────────────────── layout constants ────────────────────────
 const W       = 640;
-const PAD     = { top: 14, bottom: 20, left: 60, right: 14 };
+const PAD     = { top: 14, bottom: 20, left: 60, right: 38 };
 const MAIN_H  = 220;
 const VOL_H   = 46;
 const RSI_H   = 64;
@@ -83,6 +83,11 @@ function areaPath(xs: number[], ys: number[], yBase: number): string {
 
 function fmtDate(ts: number, range: ChartRange): string {
   const d = new Date(ts * 1000);
+  if (range === '1D') {
+    const h = String(d.getHours()).padStart(2, '0');
+    const m = String(d.getMinutes()).padStart(2, '0');
+    return `${h}:${m}`;
+  }
   if (range === '1W') return `${d.getMonth()+1}/${d.getDate()} ${d.getHours()}h`;
   if (range === '1Y') return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}`;
   return `${d.getMonth()+1}. ${d.getDate()}`;
@@ -117,20 +122,32 @@ const IND_TIPS: Record<Indicator, string> = {
   RSI:    'RSI(14) — 상대강도지수\n0~100 범위의 모멘텀 지표.\n70 이상: 과매수 (조정 가능)\n30 이하: 과매도 (반등 가능)',
 };
 
-const RANGE_OPTIONS: ChartRange[] = ['1W', '1M', '3M', '6M', '1Y'];
+const RANGE_OPTIONS: ChartRange[] = ['1D', '1W', '1M', '3M', '6M', '1Y'];
 const ALL_INDICATORS: Indicator[] = ['MA5', 'MA20', 'MA60', 'BB', 'Volume', 'RSI'];
 
 // ─────────────────────── main component ───────────────────────────
-interface Props { data: ChartDataPoint[]; currency: string; symbol?: string; }
+interface Props {
+  data: ChartDataPoint[];
+  currency: string;
+  symbol?: string;
+  prevClose?: number;
+  onRangeStats?: (range: ChartRange, firstClose: number, lastClose: number) => void;
+}
 
-export default function PriceChart({ data: initialData, currency, symbol }: Props) {
+export default function PriceChart({ data: initialData, currency, symbol, prevClose, onRangeStats }: Props) {
   const { tokens, theme } = useStocksTheme();
   const d = tokens.detail;
   const isDark = theme === 'dark';
 
-  const [range,      setRange]      = useState<ChartRange>('1M');
-  const [chartType,  setChartType]  = useState<ChartType>('line');
-  const [indicators, setIndicators] = useState<Set<Indicator>>(new Set(['MA20', 'Volume']));
+  // 지수·수익률 심볼(^)은 거래량이 없음
+  const isIndex = symbol?.startsWith('^') ?? false;
+
+  const [range,         setRange]         = useState<ChartRange>('1D');
+  const [chartType,     setChartType]     = useState<ChartType>('line');
+  const [indicators,    setIndicators]    = useState<Set<Indicator>>(
+    new Set(isIndex ? ['MA20'] : ['MA20', 'Volume']),
+  );
+  const [showPrevClose, setShowPrevClose] = useState(false);
   const [chartData,  setChartData]  = useState<ChartDataPoint[]>(initialData);
   const [isFetching, setIsFetching] = useState(false);
   const [hoverIdx,   setHoverIdx]   = useState<number | null>(null);
@@ -142,15 +159,31 @@ export default function PriceChart({ data: initialData, currency, symbol }: Prop
     setHoverIdx(null);
     fetch(`${API_URLS.STOCKS.CHART}?symbol=${encodeURIComponent(symbol)}&range=${range}`)
       .then((r) => r.json())
-      .then((j) => { if (j.success) setChartData(j.data.data); })
+      .then((j) => {
+        if (j.success && j.data.data.length > 0) {
+          const d = j.data.data;
+          setChartData(d);
+          onRangeStats?.(range, d[0].close, d[d.length - 1].close);
+        } else if (j.success) {
+          setChartData(j.data.data);
+        }
+      })
       .catch(() => {})
       .finally(() => setIsFetching(false));
-  }, [range, symbol]);
+  }, [range, symbol]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (initialData.length > 0) {
+      onRangeStats?.('1D', initialData[0].close, initialData[initialData.length - 1].close);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // 마운트 1회
 
   const toggleInd = (ind: Indicator) =>
     setIndicators((prev) => { const n = new Set(prev); n.has(ind) ? n.delete(ind) : n.add(ind); return n; });
 
-  const showVol = indicators.has('Volume');
+  // 인덱스 심볼은 거래량 패널 강제 숨김
+  const showVol = !isIndex && indicators.has('Volume');
   const showRSI = indicators.has('RSI');
 
   const ma5  = useMemo(() => indicators.has('MA5')  ? calcMA(chartData, 5)  : [], [chartData, indicators]);
@@ -172,10 +205,28 @@ export default function PriceChart({ data: initialData, currency, symbol }: Prop
 
   // ── price extent ──
   const closes = chartData.map((p) => p.close);
+
+  // 시/고/저/종가 계산
+  // 라인 차트: close 기준(intraday 극값 제외 → Y스케일 왜곡 방지)
+  // 캔들 차트: 실제 high/low 기준
+  const keyOpen  = chartData[0]?.open  ?? 0;
+  const keyClose = closes[closes.length - 1] ?? 0;
+  const keyHigh  = chartData.length > 0
+    ? (chartType === 'candle' ? Math.max(...chartData.map((p) => p.high)) : Math.max(...closes))
+    : 0;
+  const keyLow   = chartData.length > 0
+    ? (chartType === 'candle' ? Math.min(...chartData.map((p) => p.low))  : Math.min(...closes))
+    : 0;
+
   const allPrices: number[] = [...closes];
+  // 캔들 모드에서만 실제 고가/저가를 Y 범위에 포함
   if (chartType === 'candle') chartData.forEach((p) => { allPrices.push(p.high, p.low); });
+  // 1D: 시가를 Y 범위에 포함 (시가 라인이 잘리지 않도록)
+  if (range === '1D' && keyOpen > 0) allPrices.push(keyOpen);
   if (indicators.has('BB'))  bb.forEach((b) => { if (b) allPrices.push(b.upper, b.lower); });
   [ma5, ma20, ma60].forEach((arr) => arr.forEach((v) => { if (v !== null) allPrices.push(v); }));
+  // 전일종가: 버튼 ON일 때만 Y 범위에 포함 (OFF시 스케일 왜곡 방지)
+  if (showPrevClose && prevClose && prevClose > 0) allPrices.push(prevClose);
 
   const minP = Math.min(...allPrices.filter(Boolean));
   const maxP = Math.max(...allPrices.filter(Boolean));
@@ -203,6 +254,38 @@ export default function PriceChart({ data: initialData, currency, symbol }: Prop
 
   const yTicks = [minP, minP + pRange * 0.33, minP + pRange * 0.67, maxP];
 
+  // ── key price lines: 근접 선 병합 (Y 12px 이내 → 라벨 합성) ──
+  const mergedKeyLines = (() => {
+    const raw = [
+      { price: keyHigh,  label: '고가', color: 'rgba(248,113,113,0.65)', pri: 0 },
+      { price: keyLow,   label: '저가', color: 'rgba(96,165,250,0.65)',  pri: 1 },
+      ...(range === '1D' ? [
+        { price: keyOpen,  label: '시가', color: 'rgba(148,163,184,0.60)', pri: 2 },
+        { price: keyClose, label: '종가', color: 'rgba(200,200,200,0.60)', pri: 3 },
+      ] : []),
+    ].filter((l) => {
+      if (!l.price || l.price <= 0) return false;
+      const y = mainY1 + (1 - (l.price - minP) / pRange) * MAIN_H;
+      return y >= mainY1 && y <= mainY2;
+    });
+
+    // 우선순위 순 정렬 후 Y 근접 선 병합
+    raw.sort((a, b) => a.pri - b.pri);
+    const merged: { price: number; label: string; color: string }[] = [];
+    for (const line of raw) {
+      const y = mainY1 + (1 - (line.price - minP) / pRange) * MAIN_H;
+      const found = merged.find(
+        (m) => Math.abs(mainY1 + (1 - (m.price - minP) / pRange) * MAIN_H - y) < 12,
+      );
+      if (found) {
+        found.label = `${found.label}(${line.label})`;
+      } else {
+        merged.push({ price: line.price, label: line.label, color: line.color });
+      }
+    }
+    return merged;
+  })();
+
   // ── crosshair ──
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<SVGSVGElement>) => {
@@ -222,7 +305,7 @@ export default function PriceChart({ data: initialData, currency, symbol }: Prop
   const textFill     = isDark ? 'rgba(255,255,255,0.38)' : 'rgba(15,23,42,0.50)';
   const crossFill    = isDark ? 'rgba(255,255,255,0.25)' : 'rgba(15,23,42,0.22)';
 
-  const hoverPt = hoverIdx !== null ? chartData[hoverIdx] : null;
+  const hoverPt = hoverIdx !== null && hoverIdx < chartData.length ? chartData[hoverIdx] : null;
   const infoPt  = hoverPt ?? (chartData.length > 0 ? chartData[chartData.length - 1] : null);
 
   if (chartData.length < 2) {
@@ -259,21 +342,38 @@ export default function PriceChart({ data: initialData, currency, symbol }: Prop
       {/* ── indicator toggles ── */}
       <div className={`px-4 py-2 ${d.subPanel} border-b`}>
         <div className={d.indicatorWrap}>
-          {ALL_INDICATORS.map((ind) => {
-            const on = indicators.has(ind);
-            return (
-              <TermTooltip key={ind} text={IND_TIPS[ind]} width={220}>
-                <button
-                  type="button"
-                  onClick={() => toggleInd(ind)}
-                  className={on ? d.indicatorOn : d.indicatorOff}
-                  style={on ? { borderColor: IND_COLORS[ind], color: IND_COLORS[ind], backgroundColor: IND_COLORS[ind] + '22' } : {}}
-                >
-                  {IND_LABELS[ind]}
-                </button>
-              </TermTooltip>
-            );
-          })}
+          {ALL_INDICATORS
+            .filter((ind) => !(isIndex && ind === 'Volume'))
+            .map((ind) => {
+              const on = indicators.has(ind);
+              return (
+                <TermTooltip key={ind} text={IND_TIPS[ind]} width={220}>
+                  <button
+                    type="button"
+                    onClick={() => toggleInd(ind)}
+                    className={on ? d.indicatorOn : d.indicatorOff}
+                    style={on ? { borderColor: IND_COLORS[ind], color: IND_COLORS[ind], backgroundColor: IND_COLORS[ind] + '22' } : {}}
+                  >
+                    {IND_LABELS[ind]}
+                  </button>
+                </TermTooltip>
+              );
+            })}
+          {prevClose && prevClose > 0 && (
+            <TermTooltip
+              text={'전일종가 기준선\n전 거래일 종가를 수평선으로 표시합니다.\n현재 가격이 기준선 위/아래인지 확인할 수 있습니다.\n※ 가격 차이가 클 때는 OFF 권장'}
+              width={220}
+            >
+              <button
+                type="button"
+                onClick={() => setShowPrevClose((v) => !v)}
+                className={showPrevClose ? d.indicatorOn : d.indicatorOff}
+                style={showPrevClose ? { borderColor: 'rgba(250,204,21,0.8)', color: 'rgba(250,204,21,0.9)', backgroundColor: 'rgba(250,204,21,0.12)' } : {}}
+              >
+                전일종가
+              </button>
+            </TermTooltip>
+          )}
         </div>
       </div>
 
@@ -338,6 +438,47 @@ export default function PriceChart({ data: initialData, currency, symbol }: Prop
             {label}
           </text>
         ))}
+
+        {/* ── 시/고/저/종가 기준선 (근접값 병합) ── */}
+        {mergedKeyLines.map(({ price, label, color }) => {
+          const y = yMain(price);
+          return (
+            <g key={label}>
+              <line
+                x1={PAD.left} y1={y} x2={W - PAD.right} y2={y}
+                stroke={color} strokeWidth="0.7" strokeDasharray="3 3"
+                clipPath="url(#mc)"
+              />
+              <text
+                x={W - PAD.right + 3} y={y + 3}
+                fill={color} fontSize="8" fontFamily="monospace" fontWeight="600"
+              >
+                {label}
+              </text>
+            </g>
+          );
+        })}
+
+        {/* ── 전일종가 기준선 (버튼 ON 시 표시) ── */}
+        {showPrevClose && prevClose && prevClose > 0 && (() => {
+          const baseY = yMain(prevClose);
+          if (baseY < mainY1 || baseY > mainY2) return null;
+          return (
+            <g>
+              <line
+                x1={PAD.left} y1={baseY} x2={W - PAD.right} y2={baseY}
+                stroke="rgba(250,204,21,0.65)" strokeWidth="1" strokeDasharray="5 4"
+                clipPath="url(#mc)"
+              />
+              <text
+                x={W - PAD.right + 3} y={baseY + 3}
+                fill="rgba(250,204,21,0.85)" fontSize="8" fontFamily="monospace" fontWeight="700"
+              >
+                전일
+              </text>
+            </g>
+          );
+        })()}
 
         {/* ── BB bands ── */}
         {indicators.has('BB') && (() => {
@@ -482,7 +623,7 @@ export default function PriceChart({ data: initialData, currency, symbol }: Prop
         )}
 
         {/* ── crosshair ── */}
-        {hoverIdx !== null && (
+        {hoverIdx !== null && chartData[hoverIdx] !== undefined && (
           <>
             <line x1={xs[hoverIdx]} y1={mainY1}
                   x2={xs[hoverIdx]} y2={showRSI ? rsiY2 : showVol ? volY2 : mainY2}

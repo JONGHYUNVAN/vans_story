@@ -44,5 +44,6 @@ export const API_URLS = {
     QUOTE: `/api/stocks/quote`,
     HEATMAP: `/api/stocks/heatmap`,
     KOSPI_FUTURES: `/api/stocks/kospi-futures`,
+    FEAR_GREED:    `/api/stocks/fear-greed`,
   },
 } as const; 

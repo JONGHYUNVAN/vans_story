@@ -3,7 +3,9 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { MdKeyboardArrowDown } from "react-icons/md";
-import LanguageSelector from './LanguageSelector';
+import dynamic from 'next/dynamic';
+
+const LanguageSelector = dynamic(() => import('./LanguageSelector'), { ssr: false });
 import AuthButtons from './AuthButtons';
 import { useTranslation } from '@/utils/i18n';
 import { useSelector } from 'react-redux';

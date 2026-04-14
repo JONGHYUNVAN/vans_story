@@ -80,6 +80,13 @@ export default function Header({ isStorybook = false }: HeaderProps) {
                 <span>주가</span>
               </Link>
               <Link
+                href="/games"
+                className="text-gray-600 hover:text-blue-600 transition-colors flex items-center gap-1"
+              >
+                <span>🎮</span>
+                <span>게임</span>
+              </Link>
+              <Link
                 href="/projects"
                 className="text-gray-600 hover:text-blue-600 transition-colors"
               >

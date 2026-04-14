@@ -33,7 +33,7 @@ function getGradePrefix(avg: number): string {
   return '😴';
 }
 
-export default function ReactionGame({ onGameEnd, onScoreChange }: GameComponentProps) {
+export default function ReactionGame({ onGameEnd, onScoreChange, onAction }: GameComponentProps) {
   const [state, setState] = useState<ReactionState>({
     gameStatus: 'idle',
     round: 0,
@@ -117,6 +117,7 @@ export default function ReactionGame({ onGameEnd, onScoreChange }: GameComponent
     if (gameStatus === 'ready' && startTime !== null) {
       const reactionMs = Date.now() - startTime;
       clearTimers();
+      onAction?.();
       setFlashColor('rgba(52,211,153,0.3)');
       setFlashActive(true);
       const newResults = [...results, reactionMs];

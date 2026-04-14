@@ -101,7 +101,7 @@ function getGhostY(board: BoardRow[], piece: Piece): number {
 
 const LINE_SCORES = [0, 100, 300, 500, 800];
 
-export default function TetrisGame({ onGameEnd, onScoreChange }: GameComponentProps) {
+export default function TetrisGame({ onGameEnd, onScoreChange, onAction }: GameComponentProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const nextCanvasRef = useRef<HTMLCanvasElement>(null);
   const boardRef = useRef<BoardRow[]>(createBoard());
@@ -123,6 +123,8 @@ export default function TetrisGame({ onGameEnd, onScoreChange }: GameComponentPr
   const [confettiActive, setConfettiActive] = useState(false);
   const triggerShakeRef = useRef(triggerShake);
   triggerShakeRef.current = triggerShake;
+  const onActionRef = useRef(onAction);
+  onActionRef.current = onAction;
 
   const getDropInterval = useCallback(() => {
     return Math.max(100, 1000 - (levelRef.current - 1) * 80);
@@ -245,6 +247,7 @@ export default function TetrisGame({ onGameEnd, onScoreChange }: GameComponentPr
           setDisplayLevel(levelRef.current);
           setDisplayLines(linesRef.current);
           onScoreChange(scoreRef.current);
+          onActionRef.current?.();
           // 줄 제거 이펙트
           if (linesCleared >= 4) {
             triggerShakeRef.current(10, 500);

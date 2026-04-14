@@ -7,8 +7,8 @@ import { THEME_SIDEBARS } from '../../../../interfaces/post/categories';
 export default function Sidebar() {
   const pathname = usePathname();
 
-  // /stocks 관련 페이지에선 사이드바 미표시
-  if (pathname.startsWith('/stocks')) return null;
+  // /stocks, /games 관련 페이지에선 사이드바 미표시
+  if (pathname.startsWith('/stocks') || pathname.startsWith('/games')) return null;
 
   const currentTheme = Object.keys(THEME_SIDEBARS).find(theme => 
     pathname.startsWith(`/post/view/${theme}`)

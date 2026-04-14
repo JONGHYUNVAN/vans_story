@@ -11,7 +11,7 @@ const GAME_DURATION = 30;
 
 type GameStatus = 'idle' | 'playing' | 'gameover';
 
-export default function WhackaMoleGame({ onGameEnd, onScoreChange }: GameComponentProps) {
+export default function WhackaMoleGame({ onGameEnd, onScoreChange, onAction }: GameComponentProps) {
   const [moles, setMoles] = useState<boolean[]>(Array(TOTAL_HOLES).fill(false));
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
@@ -96,6 +96,7 @@ export default function WhackaMoleGame({ onGameEnd, onScoreChange }: GameCompone
 
     if (moles[idx]) {
       // Hit
+      onAction?.();
       const now = Date.now();
       let newCombo = comboRef.current;
       if (now - lastHitTimeRef.current < 1000) {

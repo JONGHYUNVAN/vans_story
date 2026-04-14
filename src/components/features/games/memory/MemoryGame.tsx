@@ -35,7 +35,7 @@ function createCards(): Card[] {
   }));
 }
 
-export default function MemoryGame({ onGameEnd, onScoreChange }: GameComponentProps) {
+export default function MemoryGame({ onGameEnd, onScoreChange, onAction }: GameComponentProps) {
   const [cards, setCards] = useState<Card[]>(createCards());
   const [flippedIds, setFlippedIds] = useState<number[]>([]);
   const [moves, setMoves] = useState(0);
@@ -91,6 +91,7 @@ export default function MemoryGame({ onGameEnd, onScoreChange }: GameComponentPr
 
       if (firstCard.icon === secondCard.icon) {
         // Match
+        onAction?.();
         setCards(prev => prev.map(c =>
           c.id === firstId || c.id === secondId
             ? { ...c, isMatched: true, isFlipped: true }

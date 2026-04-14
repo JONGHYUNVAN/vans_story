@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef, useState } from 'react';
 import { ScoreRecord } from '@/hooks/useGameScores';
 
 interface ScorePanelProps {
@@ -23,22 +24,73 @@ function getRelativeTime(isoString: string): string {
 
 export default function ScorePanel({ currentScore, bestScore, bestDetail, history }: ScorePanelProps) {
   const recentHistory = history.slice(0, 5);
+  const [displayScore, setDisplayScore] = useState(currentScore);
+  const animFrameRef = useRef<number | undefined>(undefined);
+  const prevScoreRef = useRef(currentScore);
+  const isNewRecord = currentScore > 0 && currentScore >= bestScore;
+
+  useEffect(() => {
+    const start = prevScoreRef.current;
+    const end = currentScore;
+    if (start === end) return;
+
+    const duration = 400;
+    const startTime = performance.now();
+
+    if (animFrameRef.current !== undefined) {
+      cancelAnimationFrame(animFrameRef.current);
+    }
+
+    const animate = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - (1 - progress) ** 3;
+      setDisplayScore(Math.round(start + (end - start) * eased));
+
+      if (progress < 1) {
+        animFrameRef.current = requestAnimationFrame(animate);
+      } else {
+        prevScoreRef.current = end;
+        animFrameRef.current = undefined;
+      }
+    };
+
+    animFrameRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (animFrameRef.current !== undefined) {
+        cancelAnimationFrame(animFrameRef.current);
+      }
+    };
+  }, [currentScore]);
 
   return (
     <div className="bg-[#0f0f12] border border-white/8 rounded-2xl p-5 space-y-6">
+      {/* Current score */}
       <div>
         <p className="text-xs text-zinc-500 uppercase tracking-wider mb-1">현재 점수</p>
-        <p className="text-3xl font-black text-white">{currentScore.toLocaleString()}</p>
-      </div>
-
-      <div>
-        <p className="text-xs text-zinc-500 uppercase tracking-wider mb-1">최고 점수</p>
-        <p className="text-xl font-bold text-indigo-400">{bestScore.toLocaleString()}</p>
-        {bestDetail && (
-          <p className="text-xs text-zinc-500 mt-1">{bestDetail}</p>
+        <p className="text-3xl font-black text-white tabular-nums">
+          {displayScore.toLocaleString()}
+        </p>
+        {isNewRecord && (
+          <span className="inline-flex items-center gap-1 mt-1 text-xs font-bold text-yellow-400 animate-pulse">
+            ★ 신기록!
+          </span>
         )}
       </div>
 
+      {/* Best score */}
+      <div>
+        <p className="text-xs text-zinc-500 uppercase tracking-wider mb-1">최고 점수</p>
+        <p
+          className={`text-xl font-bold tabular-nums ${isNewRecord ? 'text-yellow-400' : 'text-indigo-400'}`}
+        >
+          {bestScore.toLocaleString()}
+        </p>
+        {bestDetail && <p className="text-xs text-zinc-500 mt-1">{bestDetail}</p>}
+      </div>
+
+      {/* Recent history */}
       {recentHistory.length > 0 && (
         <div>
           <p className="text-xs text-zinc-500 uppercase tracking-wider mb-3">최근 기록</p>
@@ -46,15 +98,15 @@ export default function ScorePanel({ currentScore, bestScore, bestDetail, histor
             {recentHistory.map((record, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between py-2 border-b border-white/5 last:border-0"
+                className={`flex items-center justify-between py-2 border-b border-white/5 last:border-0 ${index === 0 ? 'opacity-100' : 'opacity-60'}`}
               >
                 <div>
-                  <p className="text-sm font-semibold text-zinc-300">
+                  <p
+                    className={`text-sm font-semibold tabular-nums ${index === 0 ? 'text-zinc-200' : 'text-zinc-400'}`}
+                  >
                     {record.score.toLocaleString()}
                   </p>
-                  {record.detail && (
-                    <p className="text-xs text-zinc-600">{record.detail}</p>
-                  )}
+                  {record.detail && <p className="text-xs text-zinc-600">{record.detail}</p>}
                 </div>
                 <p className="text-xs text-zinc-600">{getRelativeTime(record.playedAt)}</p>
               </div>

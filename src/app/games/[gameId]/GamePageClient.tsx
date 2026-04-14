@@ -1,8 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { getGameById } from '@/constants/games';
 import { useGameScores } from '@/hooks/useGameScores';
+import { useSound } from '@/hooks/useSound';
+import { useBGM } from '@/hooks/useBGM';
 import GameLayout from '@/components/features/games/GameLayout';
 import ScorePanel from '@/components/features/games/ScorePanel';
 import SnakeGame from '@/components/features/games/snake/SnakeGame';
@@ -22,6 +24,7 @@ import ReactionGame from '@/components/features/games/reaction/ReactionGame';
 export interface GameComponentProps {
   onGameEnd: (score: number, detail?: string) => void;
   onScoreChange: (score: number) => void;
+  onAction?: () => void;
 }
 
 const GAME_COMPONENTS: Record<string, React.ComponentType<GameComponentProps>> = {
@@ -47,9 +50,46 @@ interface GamePageClientProps {
 export default function GamePageClient({ gameId }: GamePageClientProps) {
   const [currentScore, setCurrentScore] = useState(0);
   const { bestScore, bestDetail, history, saveScore } = useGameScores(gameId);
+  const {
+    playScore, playGameOver,
+    playJump, playHit, playLineClear, playMatch, playPing,
+    isMuted, toggleMute,
+  } = useSound();
+
+  // BGM — 게임별 고유 배경음악
+  useBGM(gameId, isMuted);
+
+  // 점수 사운드 스로틀 (연속 호출 방지)
+  const lastScoreSoundRef = useRef(0);
+  const lastScoreRef = useRef(0);
 
   const game = getGameById(gameId);
   const GameComponent = GAME_COMPONENTS[gameId];
+
+  // 게임별 onAction 사운드 매핑
+  const actionSoundMap: Record<string, (() => void) | undefined> = {
+    flappy: playJump,
+    whackamole: playHit,
+    tetris: playLineClear,
+    memory: playMatch,
+    reaction: playPing,
+  };
+
+  const handleGameEnd = useCallback((score: number, detail?: string) => {
+    saveScore(score, detail);
+    setCurrentScore(score);
+    playGameOver();
+  }, [saveScore, playGameOver]);
+
+  const handleScoreChange = useCallback((score: number) => {
+    setCurrentScore(score);
+    const now = Date.now();
+    if (score > lastScoreRef.current && now - lastScoreSoundRef.current > 150) {
+      playScore();
+      lastScoreSoundRef.current = now;
+    }
+    lastScoreRef.current = score;
+  }, [playScore]);
 
   if (!game || !GameComponent) {
     return (
@@ -59,19 +99,12 @@ export default function GamePageClient({ gameId }: GamePageClientProps) {
     );
   }
 
-  const handleGameEnd = (score: number, detail?: string) => {
-    saveScore(score, detail);
-    setCurrentScore(score);
-  };
-
-  const handleScoreChange = (score: number) => {
-    setCurrentScore(score);
-  };
-
   return (
     <GameLayout
       gameId={gameId}
       currentScore={currentScore}
+      isMuted={isMuted}
+      onToggleMute={toggleMute}
       scorePanel={
         <ScorePanel
           currentScore={currentScore}
@@ -84,6 +117,7 @@ export default function GamePageClient({ gameId }: GamePageClientProps) {
       <GameComponent
         onGameEnd={handleGameEnd}
         onScoreChange={handleScoreChange}
+        onAction={actionSoundMap[gameId]}
       />
     </GameLayout>
   );

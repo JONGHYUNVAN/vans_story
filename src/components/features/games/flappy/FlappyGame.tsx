@@ -25,7 +25,7 @@ interface Pipe {
   passed: boolean;
 }
 
-export default function FlappyGame({ onGameEnd, onScoreChange }: GameComponentProps) {
+export default function FlappyGame({ onGameEnd, onScoreChange, onAction }: GameComponentProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const birdYRef = useRef(CANVAS_H / 2);
   const velocityRef = useRef(0);
@@ -194,6 +194,9 @@ export default function FlappyGame({ onGameEnd, onScoreChange }: GameComponentPr
     }
   }, [drawBird, drawPipe, checkCollision, onGameEnd, onScoreChange]);
 
+  const onActionRef = useRef(onAction);
+  onActionRef.current = onAction;
+
   const jump = useCallback(() => {
     if (gameStatusRef.current === 'idle') {
       gameStatusRef.current = 'playing';
@@ -208,6 +211,7 @@ export default function FlappyGame({ onGameEnd, onScoreChange }: GameComponentPr
     } else if (gameStatusRef.current === 'playing') {
       velocityRef.current = JUMP_FORCE;
     }
+    onActionRef.current?.();
   }, [draw]);
 
   const restart = useCallback(() => {

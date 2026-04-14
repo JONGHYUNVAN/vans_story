@@ -2,6 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
+import { useScreenShake } from '@/hooks/useScreenShake';
+import ParticleEffect from '@/components/features/games/effects/ParticleEffect';
+import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
 
 const GRID_SIZE = 20;
 const CELL_SIZE = 20;
@@ -71,16 +74,49 @@ const DELTA: Record<Direction, Point> = {
   RIGHT: { x: 1, y: 0 },
 };
 
+interface ParticleItem {
+  id: number;
+  x: number;
+  y: number;
+}
+
 export default function SnakeGame({ onGameEnd, onScoreChange }: GameComponentProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [state, setState] = useState<SnakeState>(initialState());
   const stateRef = useRef<SnakeState>(state);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+  const { shakeStyle, triggerShake } = useScreenShake();
+  const [particles, setParticles] = useState<ParticleItem[]>([]);
+  const [flashActive, setFlashActive] = useState(false);
+  const particleIdRef = useRef(0);
+  const prevScoreRef = useRef(0);
+  const prevFoodRef = useRef<Point | null>(null);
 
   useEffect(() => {
     stateRef.current = state;
   }, [state]);
+
+  // 이펙트 감지
+  useEffect(() => {
+    // 게임오버 → 흔들림 + 플래시
+    if (state.gameStatus === 'gameover') {
+      triggerShake(10, 500);
+      setFlashActive(true);
+    }
+    // 먹이 획득 → 파티클 (점수 증가로 감지)
+    if (state.score > prevScoreRef.current && state.gameStatus === 'playing') {
+      const prevFood = prevFoodRef.current;
+      if (prevFood) {
+        const px = prevFood.x * CELL_SIZE + CELL_SIZE / 2;
+        const py = prevFood.y * CELL_SIZE + CELL_SIZE / 2;
+        const id = ++particleIdRef.current;
+        setParticles(prev => [...prev, { id, x: px, y: py }]);
+      }
+    }
+    prevScoreRef.current = state.score;
+    prevFoodRef.current = state.food;
+  }, [state.score, state.gameStatus, state.food, triggerShake]);
 
   const drawCanvas = useCallback((s: SnakeState) => {
     const canvas = canvasRef.current;
@@ -364,13 +400,31 @@ export default function SnakeGame({ onGameEnd, onScoreChange }: GameComponentPro
         </div>
       </div>
 
-      <canvas
-        ref={canvasRef}
-        width={CANVAS_SIZE}
-        height={CANVAS_SIZE}
-        className="max-w-[400px] w-full aspect-square mx-auto rounded-lg border border-gray-700"
-        style={{ imageRendering: 'pixelated' }}
-      />
+      <div className="relative max-w-[400px] w-full" style={shakeStyle}>
+        <canvas
+          ref={canvasRef}
+          width={CANVAS_SIZE}
+          height={CANVAS_SIZE}
+          className="w-full aspect-square mx-auto rounded-lg border border-gray-700"
+          style={{ imageRendering: 'pixelated' }}
+        />
+        <FlashOverlay
+          active={flashActive}
+          color="rgba(239,68,68,0.35)"
+          duration={400}
+          onDone={() => setFlashActive(false)}
+        />
+        {particles.map(p => (
+          <ParticleEffect
+            key={p.id}
+            x={p.x}
+            y={p.y}
+            color="#34d399"
+            count={8}
+            onDone={() => setParticles(prev => prev.filter(pt => pt.id !== p.id))}
+          />
+        ))}
+      </div>
 
       <button
         onClick={handleStart}

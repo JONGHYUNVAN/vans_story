@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
+import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
+import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
 
 const CODE_SNIPPETS: string[] = [
   'const fetchData = async (url: string) => {',
@@ -88,6 +90,10 @@ export default function TypingGame({ onGameEnd, onScoreChange }: GameComponentPr
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const gameAreaRef = useRef<HTMLDivElement>(null);
   const hiddenInputRef = useRef<HTMLInputElement>(null);
+  const [flashActive, setFlashActive] = useState(false);
+  const [confettiActive, setConfettiActive] = useState(false);
+  const prevSnippetIndexRef = useRef(0);
+  const prevIncorrectRef = useRef(0);
 
   const stopTimer = useCallback(() => {
     if (timerRef.current) {
@@ -233,6 +239,33 @@ export default function TypingGame({ onGameEnd, onScoreChange }: GameComponentPr
     []
   );
 
+  // 이펙트 감지
+  useEffect(() => {
+    // 오타 감지
+    if (state.totalIncorrect > prevIncorrectRef.current) {
+      setFlashActive(true);
+    }
+    prevIncorrectRef.current = state.totalIncorrect;
+  }, [state.totalIncorrect]);
+
+  useEffect(() => {
+    // 완료 + WPM 40 이상 → 컨페티
+    if (state.gameStatus === 'finished' && state.wpm >= 40) {
+      setConfettiActive(true);
+    }
+  }, [state.gameStatus, state.wpm]);
+
+  useEffect(() => {
+    // 스니펫 완료 감지
+    if (
+      state.currentSnippetIndex > prevSnippetIndexRef.current &&
+      state.gameStatus === 'playing'
+    ) {
+      setFlashActive(true);
+    }
+    prevSnippetIndexRef.current = state.currentSnippetIndex;
+  }, [state.currentSnippetIndex, state.gameStatus]);
+
   // document-level keydown
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -268,8 +301,15 @@ export default function TypingGame({ onGameEnd, onScoreChange }: GameComponentPr
     <div
       ref={gameAreaRef}
       tabIndex={0}
-      className="flex flex-col gap-4 outline-none"
+      className="flex flex-col gap-4 outline-none relative"
     >
+      <ConfettiEffect active={confettiActive} duration={3000} />
+      <FlashOverlay
+        active={flashActive}
+        color="rgba(239,68,68,0.25)"
+        duration={250}
+        onDone={() => setFlashActive(false)}
+      />
       {/* 숨겨진 모바일 input */}
       <input
         ref={hiddenInputRef}

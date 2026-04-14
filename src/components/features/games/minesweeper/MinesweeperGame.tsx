@@ -2,6 +2,9 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
+import { useScreenShake } from '@/hooks/useScreenShake';
+import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
+import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
 
 const ROWS = 9;
 const COLS = 9;
@@ -95,6 +98,9 @@ export default function MinesweeperGame({ onGameEnd, onScoreChange }: GameCompon
   const [time, setTime] = useState(0);
   const [firstClick, setFirstClick] = useState(true);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const { shakeStyle, triggerShake } = useScreenShake();
+  const [flashActive, setFlashActive] = useState(false);
+  const [confettiActive, setConfettiActive] = useState(false);
 
   const startTimer = useCallback(() => {
     timerRef.current = setInterval(() => {
@@ -149,6 +155,8 @@ export default function MinesweeperGame({ onGameEnd, onScoreChange }: GameCompon
       setGameStatus('gameover');
       stopTimer();
       onGameEnd(0, '지뢰 폭발!');
+      triggerShake(12, 600);
+      setFlashActive(true);
       return;
     }
 
@@ -169,8 +177,9 @@ export default function MinesweeperGame({ onGameEnd, onScoreChange }: GameCompon
       const score = Math.max(0, clearableCells * 10 - time);
       onScoreChange(score);
       onGameEnd(score, `${time}초 클리어`);
+      setConfettiActive(true);
     }
-  }, [board, gameStatus, firstClick, time, startTimer, stopTimer, onGameEnd, onScoreChange]);
+  }, [board, gameStatus, firstClick, time, startTimer, stopTimer, onGameEnd, onScoreChange, triggerShake]);
 
   const handleRightClick = useCallback((e: React.MouseEvent, r: number, c: number) => {
     e.preventDefault();
@@ -189,7 +198,14 @@ export default function MinesweeperGame({ onGameEnd, onScoreChange }: GameCompon
   }, [board, gameStatus]);
 
   return (
-    <div className="flex flex-col items-center gap-4 p-4">
+    <div className="flex flex-col items-center gap-4 p-4" style={shakeStyle}>
+      <ConfettiEffect active={confettiActive} duration={3000} />
+      <FlashOverlay
+        active={flashActive}
+        color="rgba(239,68,68,0.35)"
+        duration={500}
+        onDone={() => setFlashActive(false)}
+      />
       {/* Header */}
       <div className="flex items-center gap-6 bg-gray-900 border border-gray-700 rounded-xl px-6 py-3">
         <span className="text-white font-mono text-lg">

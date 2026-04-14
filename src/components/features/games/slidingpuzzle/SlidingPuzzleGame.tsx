@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
+import { useScreenShake } from '@/hooks/useScreenShake';
+import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 
 const SIZE = 4;
 const GOAL = [...Array.from({ length: SIZE * SIZE - 1 }, (_, i) => i + 1), 0];
@@ -35,6 +37,8 @@ export default function SlidingPuzzleGame({ onGameEnd, onScoreChange }: GameComp
   const [gameStatus, setGameStatus] = useState<GameStatus>('idle');
   const [won, setWon] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const { shakeStyle, triggerShake } = useScreenShake();
+  const [confettiActive, setConfettiActive] = useState(false);
 
   const stopTimer = useCallback(() => {
     if (timerRef.current) {
@@ -80,6 +84,8 @@ export default function SlidingPuzzleGame({ onGameEnd, onScoreChange }: GameComp
         setWon(true);
         setGameStatus('won');
         stopTimer();
+        triggerShake(5, 300);
+        setConfettiActive(true);
         setTime(t => {
           const finalTime = t;
           setMoves(m => {
@@ -94,7 +100,7 @@ export default function SlidingPuzzleGame({ onGameEnd, onScoreChange }: GameComp
 
       return next;
     });
-  }, [gameStatus, stopTimer, onGameEnd, onScoreChange]);
+  }, [gameStatus, stopTimer, onGameEnd, onScoreChange, triggerShake]);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -123,6 +129,8 @@ export default function SlidingPuzzleGame({ onGameEnd, onScoreChange }: GameComp
           setWon(true);
           setGameStatus('won');
           stopTimer();
+          triggerShake(5, 300);
+          setConfettiActive(true);
           setTime(t => {
             const finalTime = t;
             setMoves(m => {
@@ -140,10 +148,11 @@ export default function SlidingPuzzleGame({ onGameEnd, onScoreChange }: GameComp
     };
     document.addEventListener('keydown', handleKey);
     return () => document.removeEventListener('keydown', handleKey);
-  }, [gameStatus, stopTimer, onGameEnd, onScoreChange]);
+  }, [gameStatus, stopTimer, onGameEnd, onScoreChange, triggerShake, setConfettiActive]);
 
   return (
-    <div className="flex flex-col items-center gap-4 p-4">
+    <div className="flex flex-col items-center gap-4 p-4" style={shakeStyle}>
+      <ConfettiEffect active={confettiActive} duration={2500} />
       {/* Stats */}
       <div className="flex gap-6 bg-gray-900 border border-gray-700 rounded-xl px-6 py-3">
         <span className="text-white">이동: <span className="font-mono font-bold">{moves}</span></span>

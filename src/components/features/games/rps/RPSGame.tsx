@@ -2,6 +2,8 @@
 
 import { useState, useCallback } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
+import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
+import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
 
 type Choice = 'rock' | 'paper' | 'scissors';
 type RoundResult = 'win' | 'lose' | 'draw';
@@ -40,6 +42,9 @@ export default function RPSGame({ onGameEnd, onScoreChange }: GameComponentProps
   const [cpuChoice, setCpuChoice] = useState<Choice | null>(null);
   const [playerChoice, setPlayerChoice] = useState<Choice | null>(null);
   const [gameStatus, setGameStatus] = useState<GameStatus>('idle');
+  const [flashActive, setFlashActive] = useState(false);
+  const [flashColor, setFlashColor] = useState('rgba(52,211,153,0.3)');
+  const [confettiActive, setConfettiActive] = useState(false);
 
   const startGame = useCallback(() => {
     setRound(1);
@@ -75,9 +80,13 @@ export default function RPSGame({ onGameEnd, onScoreChange }: GameComponentProps
       if (result === 'win') {
         newPlayerScore++;
         roundScore = 100;
+        setFlashColor('rgba(52,211,153,0.3)');
+        setFlashActive(true);
       } else if (result === 'lose') {
         newCpuScore++;
         roundScore = 0;
+        setFlashColor('rgba(239,68,68,0.25)');
+        setFlashActive(true);
       } else {
         roundScore = 50;
       }
@@ -96,6 +105,9 @@ export default function RPSGame({ onGameEnd, onScoreChange }: GameComponentProps
       if (round >= 5) {
         setGameStatus('finished');
         onGameEnd(totalScore, `${newPlayerScore}승 ${newCpuScore}패`);
+        if (newPlayerScore > newCpuScore) {
+          setConfettiActive(true);
+        }
       } else {
         setTimeout(() => {
           setRound(r => r + 1);
@@ -125,7 +137,14 @@ export default function RPSGame({ onGameEnd, onScoreChange }: GameComponentProps
   };
 
   return (
-    <div className="flex flex-col items-center gap-4 p-4">
+    <div className="flex flex-col items-center gap-4 p-4 relative">
+      <ConfettiEffect active={confettiActive} duration={2000} />
+      <FlashOverlay
+        active={flashActive}
+        color={flashColor}
+        duration={250}
+        onDone={() => setFlashActive(false)}
+      />
       {gameStatus === 'idle' ? (
         <button
           onClick={startGame}

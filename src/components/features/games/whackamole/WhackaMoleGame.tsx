@@ -2,6 +2,9 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
+import { useScreenShake } from '@/hooks/useScreenShake';
+import ParticleEffect from '@/components/features/games/effects/ParticleEffect';
+import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
 
 const TOTAL_HOLES = 9;
 const GAME_DURATION = 30;
@@ -23,6 +26,10 @@ export default function WhackaMoleGame({ onGameEnd, onScoreChange }: GameCompone
   const moleTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const moleTimeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const { shakeStyle, triggerShake } = useScreenShake();
+  const [flashActive, setFlashActive] = useState(false);
+  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number }>>([]);
+  const particleIdRef = useRef(0);
 
   const clearAllTimers = useCallback(() => {
     if (moleTimerRef.current) clearInterval(moleTimerRef.current);
@@ -72,6 +79,7 @@ export default function WhackaMoleGame({ onGameEnd, onScoreChange }: GameCompone
         setGameStatus('gameover');
         setMoles(Array(TOTAL_HOLES).fill(false));
         onGameEnd(scoreRef.current);
+        triggerShake(8, 400);
       }
     }, 1000);
 
@@ -104,6 +112,17 @@ export default function WhackaMoleGame({ onGameEnd, onScoreChange }: GameCompone
       setScore(scoreRef.current);
       onScoreChange(scoreRef.current);
 
+      // 파티클 (grid cell 중앙 위치 계산: padding=24, gap=16, cell=80)
+      const col = idx % 3;
+      const row = Math.floor(idx / 3);
+      const cellSize = 80;
+      const gap = 16;
+      const padding = 24;
+      const px = padding + col * (cellSize + gap) + cellSize / 2;
+      const py = padding + row * (cellSize + gap) + cellSize / 2;
+      const pid = ++particleIdRef.current;
+      setParticles(prev => [...prev, { id: pid, x: px, y: py }]);
+
       setLastHit(idx);
       setHitAnim(idx);
       setTimeout(() => {
@@ -123,11 +142,18 @@ export default function WhackaMoleGame({ onGameEnd, onScoreChange }: GameCompone
       onScoreChange(scoreRef.current);
       comboRef.current = 0;
       setCombo(0);
+      setFlashActive(true);
     }
   }, [gameStatus, moles, onScoreChange]);
 
   return (
-    <div className="flex flex-col items-center gap-4 p-4">
+    <div className="flex flex-col items-center gap-4 p-4" style={shakeStyle}>
+      <FlashOverlay
+        active={flashActive}
+        color="rgba(239,68,68,0.2)"
+        duration={200}
+        onDone={() => setFlashActive(false)}
+      />
       {/* Header */}
       <div className="flex items-center gap-6 bg-gray-900 border border-gray-700 rounded-xl px-6 py-3">
         <span className="text-white font-mono text-lg">점수: <span className="font-bold text-yellow-400">{score}</span></span>
@@ -147,7 +173,17 @@ export default function WhackaMoleGame({ onGameEnd, onScoreChange }: GameCompone
       )}
 
       {/* 3x3 grid */}
-      <div className="grid grid-cols-3 gap-4 bg-gray-900 border border-gray-700 rounded-xl p-6">
+      <div className="relative grid grid-cols-3 gap-4 bg-gray-900 border border-gray-700 rounded-xl p-6">
+        {particles.map(p => (
+          <ParticleEffect
+            key={p.id}
+            x={p.x}
+            y={p.y}
+            color="#facc15"
+            count={8}
+            onDone={() => setParticles(prev => prev.filter(pt => pt.id !== p.id))}
+          />
+        ))}
         {moles.map((hasMole, idx) => (
           <div
             key={idx}

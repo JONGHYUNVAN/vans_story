@@ -2,6 +2,8 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
+import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
+import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
 
 const TOTAL_ROUNDS = 5;
 
@@ -41,6 +43,9 @@ export default function ReactionGame({ onGameEnd, onScoreChange }: GameComponent
   });
   const waitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const tooEarlyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [flashActive, setFlashActive] = useState(false);
+  const [flashColor, setFlashColor] = useState('rgba(239,68,68,0.4)');
+  const [confettiActive, setConfettiActive] = useState(false);
 
   const clearTimers = useCallback(() => {
     if (waitTimerRef.current) clearTimeout(waitTimerRef.current);
@@ -84,6 +89,8 @@ export default function ReactionGame({ onGameEnd, onScoreChange }: GameComponent
       // Too early
       clearTimers();
       setState(prev => ({ ...prev, gameStatus: 'tooearly' }));
+      setFlashColor('rgba(239,68,68,0.4)');
+      setFlashActive(true);
       tooEarlyTimerRef.current = setTimeout(() => {
         // Record 1000ms penalty and continue
         const newResults = [...results, 1000];
@@ -110,6 +117,8 @@ export default function ReactionGame({ onGameEnd, onScoreChange }: GameComponent
     if (gameStatus === 'ready' && startTime !== null) {
       const reactionMs = Date.now() - startTime;
       clearTimers();
+      setFlashColor('rgba(52,211,153,0.3)');
+      setFlashActive(true);
       const newResults = [...results, reactionMs];
       const newRound = round + 1;
 
@@ -130,6 +139,9 @@ export default function ReactionGame({ onGameEnd, onScoreChange }: GameComponent
           }));
           onScoreChange(score);
           onGameEnd(score, `평균 ${avg}ms`);
+          if (avg < 200) {
+            setConfettiActive(true);
+          }
         }, 800);
       } else {
         setTimeout(() => {
@@ -157,6 +169,13 @@ export default function ReactionGame({ onGameEnd, onScoreChange }: GameComponent
 
   return (
     <div className="flex flex-col items-center gap-4 p-4">
+      <ConfettiEffect active={confettiActive} duration={3000} />
+      <FlashOverlay
+        active={flashActive}
+        color={flashColor}
+        duration={300}
+        onDone={() => setFlashActive(false)}
+      />
       {/* Progress */}
       {gameStatus !== 'idle' && gameStatus !== 'finished' && (
         <div className="flex gap-2">

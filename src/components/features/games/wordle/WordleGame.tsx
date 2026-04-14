@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
+import { useScreenShake } from '@/hooks/useScreenShake';
+import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 
 const WORDS = [
   'array', 'async', 'await', 'build', 'cache',
@@ -69,10 +71,13 @@ export default function WordleGame({ onGameEnd, onScoreChange }: GameComponentPr
   const [letterStatus, setLetterStatus] = useState<Record<string, LetterStatus>>({});
   const [shake, setShake] = useState(false);
   const [message, setMessage] = useState('');
+  const { shakeStyle, triggerShake } = useScreenShake();
+  const [confettiActive, setConfettiActive] = useState(false);
 
   const submitGuess = useCallback(() => {
     if (currentGuess.length !== 5) {
       setShake(true);
+      triggerShake(6, 350);
       setTimeout(() => setShake(false), 500);
       setMessage('5글자를 입력하세요');
       setTimeout(() => setMessage(''), 1500);
@@ -104,6 +109,7 @@ export default function WordleGame({ onGameEnd, onScoreChange }: GameComponentPr
       const score = (7 - newGuesses.length) * 100;
       onScoreChange(score);
       onGameEnd(score, `${newGuesses.length}번째 시도`);
+      setConfettiActive(true);
     } else if (newGuesses.length >= 6) {
       setGameStatus('lost');
       onGameEnd(0, '실패');
@@ -178,7 +184,8 @@ export default function WordleGame({ onGameEnd, onScoreChange }: GameComponentPr
   };
 
   return (
-    <div className="flex flex-col items-center gap-4 p-4">
+    <div className="flex flex-col items-center gap-4 p-4" style={shakeStyle}>
+      <ConfettiEffect active={confettiActive} duration={2500} />
       <div className="text-zinc-400 text-sm">개발자 워들 — 5글자 IT 용어 맞추기</div>
 
       {message && (

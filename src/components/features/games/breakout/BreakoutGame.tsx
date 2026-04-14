@@ -2,6 +2,10 @@
 
 import { useRef, useEffect, useCallback, useState } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
+import { useScreenShake } from '@/hooks/useScreenShake';
+import ParticleEffect from '@/components/features/games/effects/ParticleEffect';
+import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
+import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
 
 const CANVAS_W = 480;
 const CANVAS_H = 360;
@@ -53,6 +57,13 @@ export default function BreakoutGame({ onGameEnd, onScoreChange }: GameComponent
   const [displayScore, setDisplayScore] = useState(0);
   const [displayLevel, setDisplayLevel] = useState(1);
   const [displayLives, setDisplayLives] = useState(3);
+  const { shakeStyle, triggerShake } = useScreenShake();
+  const [flashActive, setFlashActive] = useState(false);
+  const [confettiActive, setConfettiActive] = useState(false);
+  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; color: string }>>([]);
+  const particleIdRef = useRef(0);
+  const triggerShakeRef = useRef(triggerShake);
+  triggerShakeRef.current = triggerShake;
 
   const resetBall = useCallback(() => {
     ballRef.current = {
@@ -106,6 +117,8 @@ export default function BreakoutGame({ onGameEnd, onScoreChange }: GameComponent
       if (ball.y + BALL_R > CANVAS_H) {
         livesRef.current--;
         setDisplayLives(livesRef.current);
+        triggerShakeRef.current(8, 400);
+        setFlashActive(true);
         if (livesRef.current <= 0) {
           gameStatusRef.current = 'gameover';
           setGameStatus('gameover');
@@ -134,6 +147,12 @@ export default function BreakoutGame({ onGameEnd, onScoreChange }: GameComponent
           scoreRef.current += pts;
           setDisplayScore(scoreRef.current);
           onScoreChange(scoreRef.current);
+          // 벽돌 파괴 파티클
+          const brickCX = bx + BRICK_W / 2;
+          const brickCY = by + BRICK_H / 2;
+          const brickColor = BRICK_COLORS[brick.row];
+          const pid = ++particleIdRef.current;
+          setParticles(prev => [...prev, { id: pid, x: brickCX, y: brickCY, color: brickColor }]);
 
           // Determine bounce direction
           const overlapLeft = ball.x + BALL_R - bx;
@@ -153,6 +172,7 @@ export default function BreakoutGame({ onGameEnd, onScoreChange }: GameComponent
         setDisplayLevel(levelRef.current);
         bricksRef.current = createBricks();
         resetBall();
+        setConfettiActive(true);
       }
     }
 
@@ -254,13 +274,30 @@ export default function BreakoutGame({ onGameEnd, onScoreChange }: GameComponent
 
   return (
     <div className="flex flex-col items-center gap-4 p-4">
-      <div className="relative">
+      <ConfettiEffect active={confettiActive} duration={2500} />
+      <div className="relative" style={shakeStyle}>
         <canvas
           ref={canvasRef}
           width={CANVAS_W}
           height={CANVAS_H}
           className="rounded-xl border border-gray-700"
         />
+        <FlashOverlay
+          active={flashActive}
+          color="rgba(239,68,68,0.35)"
+          duration={300}
+          onDone={() => setFlashActive(false)}
+        />
+        {particles.map(p => (
+          <ParticleEffect
+            key={p.id}
+            x={p.x}
+            y={p.y}
+            color={p.color}
+            count={6}
+            onDone={() => setParticles(prev => prev.filter(pt => pt.id !== p.id))}
+          />
+        ))}
         {gameStatus === 'idle' && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/70 rounded-xl">
             <button

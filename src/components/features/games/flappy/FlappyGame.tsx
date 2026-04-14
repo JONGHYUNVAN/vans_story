@@ -2,6 +2,8 @@
 
 import { useRef, useEffect, useCallback, useState } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
+import { useScreenShake } from '@/hooks/useScreenShake';
+import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
 
 const CANVAS_W = 320;
 const CANVAS_H = 480;
@@ -34,6 +36,11 @@ export default function FlappyGame({ onGameEnd, onScoreChange }: GameComponentPr
   const lastPipeRef = useRef<number>(0);
   const [gameStatus, setGameStatus] = useState<GameStatus>('idle');
   const [displayScore, setDisplayScore] = useState(0);
+  const { shakeStyle, triggerShake } = useScreenShake();
+  const [flashActive, setFlashActive] = useState(false);
+  const [flashColor, setFlashColor] = useState('rgba(239,68,68,0.35)');
+  const triggerShakeRef = useRef(triggerShake);
+  triggerShakeRef.current = triggerShake;
 
   const drawBird = useCallback((ctx: CanvasRenderingContext2D, y: number) => {
     // Body
@@ -130,6 +137,8 @@ export default function FlappyGame({ onGameEnd, onScoreChange }: GameComponentPr
           scoreRef.current++;
           setDisplayScore(scoreRef.current);
           onScoreChange(scoreRef.current * 10);
+          setFlashColor('rgba(52,211,153,0.15)');
+          setFlashActive(true);
         }
       }
 
@@ -138,6 +147,9 @@ export default function FlappyGame({ onGameEnd, onScoreChange }: GameComponentPr
         gameStatusRef.current = 'gameover';
         setGameStatus('gameover');
         onGameEnd(scoreRef.current * 10);
+        triggerShakeRef.current(10, 500);
+        setFlashColor('rgba(239,68,68,0.35)');
+        setFlashActive(true);
         // Final draw
         for (const pipe of pipesRef.current) drawPipe(ctx, pipe);
         drawBird(ctx, birdYRef.current);
@@ -233,13 +245,19 @@ export default function FlappyGame({ onGameEnd, onScoreChange }: GameComponentPr
 
   return (
     <div className="flex flex-col items-center gap-4 p-4">
-      <div className="relative">
+      <div className="relative" style={shakeStyle}>
         <canvas
           ref={canvasRef}
           width={CANVAS_W}
           height={CANVAS_H}
           className="rounded-xl border border-gray-700 cursor-pointer"
           onClick={jump}
+        />
+        <FlashOverlay
+          active={flashActive}
+          color={flashColor}
+          duration={400}
+          onDone={() => setFlashActive(false)}
         />
         {gameStatus === 'gameover' && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 rounded-xl gap-3">

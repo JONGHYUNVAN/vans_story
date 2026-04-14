@@ -2,6 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
+import { useScreenShake } from '@/hooks/useScreenShake';
+import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
+import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
 
 type GameStatus = 'idle' | 'playing' | 'won' | 'gameover';
 
@@ -153,6 +156,12 @@ export default function Game2048({ onGameEnd, onScoreChange }: GameComponentProp
 
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const boardRef = useRef<HTMLDivElement>(null);
+  const { shakeStyle, triggerShake } = useScreenShake();
+  const [confettiActive, setConfettiActive] = useState(false);
+  const [confettiDuration, setConfettiDuration] = useState(3000);
+  const [flashActive, setFlashActive] = useState(false);
+  const prevScoreRef = useRef(0);
+  const bestScoreRef = useRef(0);
 
   const startGame = useCallback(() => {
     setState({
@@ -199,6 +208,26 @@ export default function Game2048({ onGameEnd, onScoreChange }: GameComponentProp
     },
     [onGameEnd, onScoreChange]
   );
+
+  // 이펙트 감지
+  useEffect(() => {
+    if (state.gameStatus === 'won') {
+      triggerShake(8, 500);
+      setConfettiDuration(3000);
+      setConfettiActive(true);
+    }
+    if (state.gameStatus === 'gameover') {
+      setFlashActive(true);
+    }
+    // 신기록 감지
+    if (state.score > prevScoreRef.current && state.score > bestScoreRef.current && state.score > 0) {
+      bestScoreRef.current = state.score;
+      triggerShake(6, 400);
+      setConfettiDuration(1500);
+      setConfettiActive(true);
+    }
+    prevScoreRef.current = state.score;
+  }, [state.score, state.gameStatus, triggerShake]);
 
   // 키보드 핸들러
   useEffect(() => {
@@ -249,6 +278,10 @@ export default function Game2048({ onGameEnd, onScoreChange }: GameComponentProp
 
   return (
     <div className="flex flex-col items-center gap-4">
+      <ConfettiEffect
+        active={confettiActive}
+        duration={confettiDuration}
+      />
       <div className="flex items-center gap-6 w-full max-w-[400px]">
         <div className="text-center">
           <p className="text-xs text-zinc-500">점수</p>
@@ -270,7 +303,14 @@ export default function Game2048({ onGameEnd, onScoreChange }: GameComponentProp
       <div
         ref={boardRef}
         className="relative max-w-[400px] w-full mx-auto bg-zinc-900 rounded-xl p-3"
+        style={shakeStyle}
       >
+        <FlashOverlay
+          active={flashActive}
+          color="rgba(239,68,68,0.35)"
+          duration={400}
+          onDone={() => setFlashActive(false)}
+        />
         <div className="grid grid-cols-4 grid-rows-4 gap-2 aspect-square">
           {state.board.flat().map((value, index) => {
             const colors = getTileColor(value);

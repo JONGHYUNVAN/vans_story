@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
+import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
+import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
 
 const CARD_ICONS = ['🐍', '🔢', '⌨️', '💣', '🟦', '🐦', '🧱', '🃏'];
 
@@ -42,6 +44,9 @@ export default function MemoryGame({ onGameEnd, onScoreChange }: GameComponentPr
   const [time, setTime] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const lockRef = useRef(false);
+  const [flashActive, setFlashActive] = useState(false);
+  const [flashColor, setFlashColor] = useState('rgba(52,211,153,0.2)');
+  const [confettiActive, setConfettiActive] = useState(false);
 
   const stopTimer = useCallback(() => {
     if (timerRef.current) {
@@ -95,6 +100,8 @@ export default function MemoryGame({ onGameEnd, onScoreChange }: GameComponentPr
         setMatchCount(newMatchCount);
         setFlippedIds([]);
         lockRef.current = false;
+        setFlashColor('rgba(52,211,153,0.2)');
+        setFlashActive(true);
 
         if (newMatchCount >= 8) {
           stopTimer();
@@ -102,9 +109,12 @@ export default function MemoryGame({ onGameEnd, onScoreChange }: GameComponentPr
           const score = Math.max(0, 1000 - (moves + 1) * 10 - time * 2);
           onScoreChange(score);
           onGameEnd(score, `이동: ${moves + 1}회, 시간: ${time}초`);
+          setConfettiActive(true);
         }
       } else {
         // No match — flip back
+        setFlashColor('rgba(239,68,68,0.15)');
+        setFlashActive(true);
         setTimeout(() => {
           setCards(prev => prev.map(c =>
             c.id === firstId || c.id === secondId
@@ -119,7 +129,14 @@ export default function MemoryGame({ onGameEnd, onScoreChange }: GameComponentPr
   }, [cards, flippedIds, gameStatus, matchCount, moves, time, stopTimer, onGameEnd, onScoreChange]);
 
   return (
-    <div className="flex flex-col items-center gap-4 p-4">
+    <div className="flex flex-col items-center gap-4 p-4 relative">
+      <ConfettiEffect active={confettiActive} duration={2500} />
+      <FlashOverlay
+        active={flashActive}
+        color={flashColor}
+        duration={300}
+        onDone={() => setFlashActive(false)}
+      />
       {/* Stats */}
       <div className="flex gap-6 bg-gray-900 border border-gray-700 rounded-xl px-6 py-3">
         <span className="text-white">이동: <span className="font-mono font-bold">{moves}</span></span>

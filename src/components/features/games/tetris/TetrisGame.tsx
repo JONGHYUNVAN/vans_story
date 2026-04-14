@@ -2,6 +2,9 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
+import { useScreenShake } from '@/hooks/useScreenShake';
+import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
+import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
 
 const BOARD_COLS = 10;
 const BOARD_ROWS = 20;
@@ -114,6 +117,12 @@ export default function TetrisGame({ onGameEnd, onScoreChange }: GameComponentPr
   const [displayLevel, setDisplayLevel] = useState(1);
   const [displayLines, setDisplayLines] = useState(0);
   const [gameStatus, setGameStatus] = useState<GameStatus>('idle');
+  const { shakeStyle, triggerShake } = useScreenShake();
+  const [flashActive, setFlashActive] = useState(false);
+  const [flashColor, setFlashColor] = useState('rgba(99,102,241,0.3)');
+  const [confettiActive, setConfettiActive] = useState(false);
+  const triggerShakeRef = useRef(triggerShake);
+  triggerShakeRef.current = triggerShake;
 
   const getDropInterval = useCallback(() => {
     return Math.max(100, 1000 - (levelRef.current - 1) * 80);
@@ -236,6 +245,20 @@ export default function TetrisGame({ onGameEnd, onScoreChange }: GameComponentPr
           setDisplayLevel(levelRef.current);
           setDisplayLines(linesRef.current);
           onScoreChange(scoreRef.current);
+          // 줄 제거 이펙트
+          if (linesCleared >= 4) {
+            triggerShakeRef.current(10, 500);
+            setConfettiActive(true);
+            setFlashColor('rgba(99,102,241,0.3)');
+            setFlashActive(true);
+          } else if (linesCleared >= 2) {
+            triggerShakeRef.current(6, 300);
+            setFlashColor('rgba(99,102,241,0.3)');
+            setFlashActive(true);
+          } else {
+            setFlashColor('rgba(99,102,241,0.3)');
+            setFlashActive(true);
+          }
         }
 
         // New piece
@@ -245,6 +268,9 @@ export default function TetrisGame({ onGameEnd, onScoreChange }: GameComponentPr
           gameStatusRef.current = 'gameover';
           setGameStatus('gameover');
           onGameEnd(scoreRef.current, `레벨: ${levelRef.current}, 줄: ${linesRef.current}`);
+          triggerShakeRef.current(10, 600);
+          setFlashColor('rgba(239,68,68,0.35)');
+          setFlashActive(true);
           drawBoard();
           drawNext();
           return;
@@ -337,14 +363,21 @@ export default function TetrisGame({ onGameEnd, onScoreChange }: GameComponentPr
 
   return (
     <div className="flex flex-col items-center gap-4 p-4">
+      <ConfettiEffect active={confettiActive} duration={2000} />
       <div className="flex gap-6 items-start">
         {/* Board Canvas */}
-        <div className="relative">
+        <div className="relative" style={shakeStyle}>
           <canvas
             ref={canvasRef}
             width={BOARD_COLS * CELL_SIZE}
             height={BOARD_ROWS * CELL_SIZE}
             className="bg-gray-900 border border-gray-700 rounded-xl"
+          />
+          <FlashOverlay
+            active={flashActive}
+            color={flashColor}
+            duration={250}
+            onDone={() => setFlashActive(false)}
           />
           {gameStatus === 'idle' && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/70 rounded-xl">

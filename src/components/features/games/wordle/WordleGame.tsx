@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
+import { useSound } from '@/hooks/useSound';
+import { useCombo } from '@/hooks/useCombo';
 import { useScreenShake } from '@/hooks/useScreenShake';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 
@@ -63,7 +65,7 @@ function randomWord(): string {
   return WORDS[Math.floor(Math.random() * WORDS.length)];
 }
 
-export default function WordleGame({ onGameEnd, onScoreChange }: GameComponentProps) {
+export default function WordleGame({ onGameEnd, onScoreChange, onKeyClick, onCombo }: GameComponentProps) {
   const [answer, setAnswer] = useState(() => randomWord());
   const [guesses, setGuesses] = useState<GuessResult[][]>([]);
   const [currentGuess, setCurrentGuess] = useState<string[]>([]);
@@ -74,6 +76,9 @@ export default function WordleGame({ onGameEnd, onScoreChange }: GameComponentPr
   const { shakeStyle, triggerShake } = useScreenShake();
   const [confettiActive, setConfettiActive] = useState(false);
 
+  const { playKeyClick, playSelect } = useSound();
+  const combo = useCombo();
+
   const submitGuess = useCallback(() => {
     if (currentGuess.length !== 5) {
       setShake(true);
@@ -83,6 +88,9 @@ export default function WordleGame({ onGameEnd, onScoreChange }: GameComponentPr
       setTimeout(() => setMessage(''), 1500);
       return;
     }
+    // Enter 제출 사운드
+    playSelect();
+
     const word = currentGuess.join('');
     const result = evaluateGuess(currentGuess, answer);
     const newGuesses = [...guesses, result];
@@ -104,6 +112,20 @@ export default function WordleGame({ onGameEnd, onScoreChange }: GameComponentPr
     }
     setLetterStatus(newLetterStatus);
 
+    // 콤보 처리 - 정확 글자 수 기반
+    const correctCount = result.filter(r => r.status === 'correct').length;
+    if (correctCount > 0) {
+      for (let i = 0; i < correctCount; i++) {
+        const prevLevel = combo.comboLevel;
+        const newLevel = combo.increment();
+        if (newLevel > 0 && newLevel > prevLevel) {
+          onCombo?.(newLevel);
+        }
+      }
+    } else {
+      combo.reset();
+    }
+
     if (word === answer) {
       setGameStatus('won');
       const score = (7 - newGuesses.length) * 100;
@@ -115,7 +137,7 @@ export default function WordleGame({ onGameEnd, onScoreChange }: GameComponentPr
       onGameEnd(0, '실패');
       setMessage(`정답: ${answer.toUpperCase()}`);
     }
-  }, [currentGuess, guesses, answer, letterStatus, onGameEnd, onScoreChange]);
+  }, [currentGuess, guesses, answer, letterStatus, onGameEnd, onScoreChange, onCombo, playSelect, combo, triggerShake]);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -124,27 +146,32 @@ export default function WordleGame({ onGameEnd, onScoreChange }: GameComponentPr
       if (key === 'enter') {
         submitGuess();
       } else if (key === 'backspace') {
+        playKeyClick();
         setCurrentGuess(prev => prev.slice(0, -1));
       } else if (/^[a-z]$/.test(key) && currentGuess.length < 5) {
+        onKeyClick?.();
         setCurrentGuess(prev => [...prev, key]);
       }
     };
     document.addEventListener('keydown', handleKey);
     return () => document.removeEventListener('keydown', handleKey);
-  }, [gameStatus, currentGuess, submitGuess]);
+  }, [gameStatus, currentGuess, submitGuess, onKeyClick, playKeyClick]);
 
   const handleVirtualKey = useCallback((key: string) => {
     if (gameStatus !== 'playing') return;
     if (key === 'Enter') {
       submitGuess();
     } else if (key === '⌫') {
+      playKeyClick();
       setCurrentGuess(prev => prev.slice(0, -1));
     } else if (currentGuess.length < 5) {
+      onKeyClick?.();
       setCurrentGuess(prev => [...prev, key]);
     }
-  }, [gameStatus, currentGuess, submitGuess]);
+  }, [gameStatus, currentGuess, submitGuess, onKeyClick, playKeyClick]);
 
   const restart = useCallback(() => {
+    combo.reset();
     setAnswer(randomWord());
     setGuesses([]);
     setCurrentGuess([]);
@@ -152,7 +179,7 @@ export default function WordleGame({ onGameEnd, onScoreChange }: GameComponentPr
     setLetterStatus({});
     setMessage('');
     onScoreChange(0);
-  }, [onScoreChange]);
+  }, [onScoreChange, combo]);
 
   const getKeyClass = (key: string): string => {
     const base = 'flex items-center justify-center rounded font-bold text-xs cursor-pointer select-none transition-colors ';

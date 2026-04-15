@@ -2,6 +2,8 @@
 
 import { useState, useCallback } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
+import { useSound } from '@/hooks/useSound';
+import { useCombo } from '@/hooks/useCombo';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
 
@@ -33,7 +35,7 @@ function getResult(player: Choice, cpu: Choice): RoundResult {
   return 'lose';
 }
 
-export default function RPSGame({ onGameEnd, onScoreChange }: GameComponentProps) {
+export default function RPSGame({ onGameEnd, onScoreChange, onAction, onCombo }: GameComponentProps) {
   const [round, setRound] = useState(1);
   const [playerScore, setPlayerScore] = useState(0);
   const [cpuScore, setCpuScore] = useState(0);
@@ -46,7 +48,11 @@ export default function RPSGame({ onGameEnd, onScoreChange }: GameComponentProps
   const [flashColor, setFlashColor] = useState('rgba(52,211,153,0.3)');
   const [confettiActive, setConfettiActive] = useState(false);
 
+  const { playSelect } = useSound();
+  const combo = useCombo();
+
   const startGame = useCallback(() => {
+    combo.reset();
     setRound(1);
     setPlayerScore(0);
     setCpuScore(0);
@@ -56,7 +62,7 @@ export default function RPSGame({ onGameEnd, onScoreChange }: GameComponentProps
     setPlayerChoice(null);
     setGameStatus('playing');
     onScoreChange(0);
-  }, [onScoreChange]);
+  }, [onScoreChange, combo]);
 
   const handleChoice = useCallback((choice: Choice) => {
     if (gameStatus !== 'playing') return;
@@ -64,6 +70,10 @@ export default function RPSGame({ onGameEnd, onScoreChange }: GameComponentProps
     setPlayerChoice(choice);
     setCpuChoice(null);
     setCurrentResult(null);
+
+    // 선택 즉시 사운드
+    onAction?.();
+    playSelect();
 
     setTimeout(() => {
       const cpu = CPU_CHOICES[Math.floor(Math.random() * 3)];
@@ -82,13 +92,22 @@ export default function RPSGame({ onGameEnd, onScoreChange }: GameComponentProps
         roundScore = 100;
         setFlashColor('rgba(52,211,153,0.3)');
         setFlashActive(true);
+
+        // 콤보 추적 - 연속 승리
+        const prevLevel = combo.comboLevel;
+        const newLevel = combo.increment();
+        if (newLevel > 0 && newLevel > prevLevel) {
+          onCombo?.(newLevel);
+        }
       } else if (result === 'lose') {
         newCpuScore++;
         roundScore = 0;
         setFlashColor('rgba(239,68,68,0.25)');
         setFlashActive(true);
+        combo.reset();
       } else {
         roundScore = 50;
+        // 무승부 시 콤보 유지
       }
 
       setPlayerScore(newPlayerScore);
@@ -115,7 +134,7 @@ export default function RPSGame({ onGameEnd, onScoreChange }: GameComponentProps
         }, 1500);
       }
     }, 800);
-  }, [gameStatus, playerScore, cpuScore, round, history, onGameEnd, onScoreChange]);
+  }, [gameStatus, playerScore, cpuScore, round, history, onGameEnd, onScoreChange, onAction, onCombo, playSelect, combo]);
 
   const getResultLabel = (result: RoundResult | null) => {
     if (!result) return '';

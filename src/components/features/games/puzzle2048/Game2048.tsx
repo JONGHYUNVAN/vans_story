@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
 import { useScreenShake } from '@/hooks/useScreenShake';
+import { useSound } from '@/hooks/useSound';
+import { useCombo } from '@/hooks/useCombo';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
 
@@ -75,9 +77,10 @@ function reverseRows(board: number[][]): number[][] {
   return board.map(row => [...row].reverse());
 }
 
-function slideLeft(row: number[]): { result: number[]; gained: number } {
+function slideLeft(row: number[]): { result: number[]; gained: number; merges: number } {
   const filtered = row.filter(v => v !== 0);
   let gained = 0;
+  let merges = 0;
   const merged: number[] = [];
   let skip = false;
 
@@ -87,6 +90,7 @@ function slideLeft(row: number[]): { result: number[]; gained: number } {
       const val = filtered[i] * 2;
       merged.push(val);
       gained += val;
+      merges += 1;
       skip = true;
     } else {
       merged.push(filtered[i]);
@@ -94,37 +98,39 @@ function slideLeft(row: number[]): { result: number[]; gained: number } {
   }
 
   while (merged.length < 4) merged.push(0);
-  return { result: merged, gained };
+  return { result: merged, gained, merges };
 }
 
-function moveLeft(board: number[][]): { board: number[][]; gained: number; changed: boolean } {
+function moveLeft(board: number[][]): { board: number[][]; gained: number; changed: boolean; merges: number } {
   let gained = 0;
   let changed = false;
+  let merges = 0;
   const newBoard = board.map(row => {
-    const { result, gained: g } = slideLeft(row);
+    const { result, gained: g, merges: m } = slideLeft(row);
     gained += g;
+    merges += m;
     if (result.some((v, i) => v !== row[i])) changed = true;
     return result;
   });
-  return { board: newBoard, gained, changed };
+  return { board: newBoard, gained, changed, merges };
 }
 
-function moveRight(board: number[][]): { board: number[][]; gained: number; changed: boolean } {
+function moveRight(board: number[][]): { board: number[][]; gained: number; changed: boolean; merges: number } {
   const reversed = reverseRows(board);
-  const { board: moved, gained, changed } = moveLeft(reversed);
-  return { board: reverseRows(moved), gained, changed };
+  const { board: moved, gained, changed, merges } = moveLeft(reversed);
+  return { board: reverseRows(moved), gained, changed, merges };
 }
 
-function moveUp(board: number[][]): { board: number[][]; gained: number; changed: boolean } {
+function moveUp(board: number[][]): { board: number[][]; gained: number; changed: boolean; merges: number } {
   const transposed = transpose(board);
-  const { board: moved, gained, changed } = moveLeft(transposed);
-  return { board: transpose(moved), gained, changed };
+  const { board: moved, gained, changed, merges } = moveLeft(transposed);
+  return { board: transpose(moved), gained, changed, merges };
 }
 
-function moveDown(board: number[][]): { board: number[][]; gained: number; changed: boolean } {
+function moveDown(board: number[][]): { board: number[][]; gained: number; changed: boolean; merges: number } {
   const transposed = transpose(board);
-  const { board: moved, gained, changed } = moveRight(transposed);
-  return { board: transpose(moved), gained, changed };
+  const { board: moved, gained, changed, merges } = moveRight(transposed);
+  return { board: transpose(moved), gained, changed, merges };
 }
 
 function isGameOver(board: number[][]): boolean {
@@ -146,7 +152,7 @@ function getBestTile(board: number[][]): number {
   return Math.max(...board.flat());
 }
 
-export default function Game2048({ onGameEnd, onScoreChange }: GameComponentProps) {
+export default function Game2048({ onGameEnd, onScoreChange, onMove, onCombo }: GameComponentProps) {
   const [state, setState] = useState<Game2048State>({
     board: emptyBoard(),
     score: 0,
@@ -157,6 +163,8 @@ export default function Game2048({ onGameEnd, onScoreChange }: GameComponentProp
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const boardRef = useRef<HTMLDivElement>(null);
   const { shakeStyle, triggerShake } = useScreenShake();
+  const { playMoveTick, playCombo, playScore } = useSound();
+  const combo = useCombo();
   const [confettiActive, setConfettiActive] = useState(false);
   const [confettiDuration, setConfettiDuration] = useState(3000);
   const [flashActive, setFlashActive] = useState(false);
@@ -164,20 +172,21 @@ export default function Game2048({ onGameEnd, onScoreChange }: GameComponentProp
   const bestScoreRef = useRef(0);
 
   const startGame = useCallback(() => {
+    combo.reset();
     setState({
       board: initBoard(),
       score: 0,
       bestTile: 0,
       gameStatus: 'playing',
     });
-  }, []);
+  }, [combo]);
 
   const applyMove = useCallback(
     (direction: 'up' | 'down' | 'left' | 'right') => {
       setState(prev => {
         if (prev.gameStatus !== 'playing') return prev;
 
-        let result: { board: number[][]; gained: number; changed: boolean };
+        let result: { board: number[][]; gained: number; changed: boolean; merges: number };
         switch (direction) {
           case 'left':  result = moveLeft(prev.board); break;
           case 'right': result = moveRight(prev.board); break;
@@ -186,6 +195,30 @@ export default function Game2048({ onGameEnd, onScoreChange }: GameComponentProp
         }
 
         if (!result.changed) return prev;
+
+        onMove?.();
+
+        // 이동 틱 사운드
+        playMoveTick();
+
+        if (result.merges >= 2) {
+          onCombo?.(Math.min(result.merges, 5));
+        }
+
+        // 병합 콤보 사운드
+        if (result.merges === 0) {
+          combo.reset();
+        } else {
+          const prevLevel = combo.comboLevel;
+          const newLevel = combo.increment();
+          if (newLevel === 0) {
+            playScore();
+          } else if (newLevel > prevLevel) {
+            playCombo(newLevel);
+          } else {
+            playScore();
+          }
+        }
 
         let newBoard = addRandomTile(result.board);
         const newScore = prev.score + result.gained;
@@ -206,7 +239,7 @@ export default function Game2048({ onGameEnd, onScoreChange }: GameComponentProp
         return { board: newBoard, score: newScore, bestTile: newBestTile, gameStatus: 'playing' };
       });
     },
-    [onGameEnd, onScoreChange]
+    [onGameEnd, onScoreChange, onMove, onCombo, playMoveTick, playCombo, playScore, combo]
   );
 
   // 이펙트 감지
@@ -253,14 +286,16 @@ export default function Game2048({ onGameEnd, onScoreChange }: GameComponentProp
     if (!el) return;
 
     const onTouchStart = (e: TouchEvent) => {
+      e.preventDefault();
       touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
     };
     const onTouchEnd = (e: TouchEvent) => {
+      e.preventDefault();
       if (!touchStartRef.current) return;
       const dx = e.changedTouches[0].clientX - touchStartRef.current.x;
       const dy = e.changedTouches[0].clientY - touchStartRef.current.y;
       touchStartRef.current = null;
-      if (Math.abs(dx) < 30 && Math.abs(dy) < 30) return;
+      if (Math.abs(dx) < 20 && Math.abs(dy) < 20) return;
       if (Math.abs(dx) > Math.abs(dy)) {
         applyMove(dx > 0 ? 'right' : 'left');
       } else {
@@ -268,8 +303,8 @@ export default function Game2048({ onGameEnd, onScoreChange }: GameComponentProp
       }
     };
 
-    el.addEventListener('touchstart', onTouchStart, { passive: true });
-    el.addEventListener('touchend', onTouchEnd, { passive: true });
+    el.addEventListener('touchstart', onTouchStart, { passive: false });
+    el.addEventListener('touchend', onTouchEnd, { passive: false });
     return () => {
       el.removeEventListener('touchstart', onTouchStart);
       el.removeEventListener('touchend', onTouchEnd);
@@ -380,7 +415,50 @@ export default function Game2048({ onGameEnd, onScoreChange }: GameComponentProp
         )}
       </div>
 
-      <p className="text-xs text-zinc-600">방향키 또는 WASD로 이동</p>
+      {/* D-패드 모바일 컨트롤러 */}
+      <div className="flex flex-col items-center gap-1">
+        {/* 위 버튼 */}
+        <div className="flex justify-center">
+          <button
+            onPointerDown={e => { e.preventDefault(); applyMove('up'); }}
+            className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
+            aria-label="위로 이동"
+          >
+            ▲
+          </button>
+        </div>
+        {/* 가운데 행 */}
+        <div className="flex gap-1">
+          <button
+            onPointerDown={e => { e.preventDefault(); applyMove('left'); }}
+            className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
+            aria-label="왼쪽으로 이동"
+          >
+            ◀
+          </button>
+          {/* 중앙 스페이서 */}
+          <div className="w-14 h-14" />
+          <button
+            onPointerDown={e => { e.preventDefault(); applyMove('right'); }}
+            className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
+            aria-label="오른쪽으로 이동"
+          >
+            ▶
+          </button>
+        </div>
+        {/* 아래 버튼 */}
+        <div className="flex justify-center">
+          <button
+            onPointerDown={e => { e.preventDefault(); applyMove('down'); }}
+            className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
+            aria-label="아래로 이동"
+          >
+            ▼
+          </button>
+        </div>
+      </div>
+
+      <p className="text-xs text-zinc-600">방향키 또는 WASD로 이동 · 모바일: 스와이프 또는 D-패드</p>
     </div>
   );
 }

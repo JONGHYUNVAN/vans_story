@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
+import { useCombo } from '@/hooks/useCombo';
 import { useScreenShake } from '@/hooks/useScreenShake';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 
@@ -30,7 +31,7 @@ function createShuffled(): number[] {
   return tiles;
 }
 
-export default function SlidingPuzzleGame({ onGameEnd, onScoreChange }: GameComponentProps) {
+export default function SlidingPuzzleGame({ onGameEnd, onScoreChange, onMove, onCombo }: GameComponentProps) {
   const [tiles, setTiles] = useState<number[]>(GOAL);
   const [moves, setMoves] = useState(0);
   const [time, setTime] = useState(0);
@@ -39,6 +40,8 @@ export default function SlidingPuzzleGame({ onGameEnd, onScoreChange }: GameComp
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const { shakeStyle, triggerShake } = useScreenShake();
   const [confettiActive, setConfettiActive] = useState(false);
+
+  const combo = useCombo();
 
   const stopTimer = useCallback(() => {
     if (timerRef.current) {
@@ -53,6 +56,7 @@ export default function SlidingPuzzleGame({ onGameEnd, onScoreChange }: GameComp
 
   const startGame = useCallback(() => {
     stopTimer();
+    combo.reset();
     const shuffled = createShuffled();
     setTiles(shuffled);
     setMoves(0);
@@ -61,7 +65,21 @@ export default function SlidingPuzzleGame({ onGameEnd, onScoreChange }: GameComp
     setGameStatus('playing');
     onScoreChange(0);
     timerRef.current = setInterval(() => setTime(t => t + 1), 1000);
-  }, [stopTimer, onScoreChange]);
+  }, [stopTimer, onScoreChange, combo]);
+
+  // 공통 완성 체크 로직
+  const checkWin = useCallback((next: number[], currentMoves: number, currentTime: number) => {
+    if (next.join(',') === GOAL.join(',')) {
+      setWon(true);
+      setGameStatus('won');
+      stopTimer();
+      triggerShake(5, 300);
+      setConfettiActive(true);
+      const score = Math.max(100, 1000 - currentMoves * 5 - currentTime * 2);
+      onScoreChange(score);
+      onGameEnd(score, `${currentMoves}번 이동, ${currentTime}초`);
+    }
+  }, [stopTimer, triggerShake, onScoreChange, onGameEnd]);
 
   const moveTile = useCallback((idx: number) => {
     if (gameStatus !== 'playing') return;
@@ -78,77 +96,80 @@ export default function SlidingPuzzleGame({ onGameEnd, onScoreChange }: GameComp
 
       const next = [...prev];
       [next[idx], next[emptyIdx]] = [next[emptyIdx], next[idx]];
-      setMoves(m => m + 1);
+      setMoves(m => {
+        const newMoves = m + 1;
+        onMove?.();
 
-      if (next.join(',') === GOAL.join(',')) {
-        setWon(true);
-        setGameStatus('won');
-        stopTimer();
-        triggerShake(5, 300);
-        setConfettiActive(true);
+        // 콤보 추적
+        const prevLevel = combo.comboLevel;
+        const newLevel = combo.increment();
+        if (newLevel > 0 && newLevel > prevLevel) {
+          onCombo?.(newLevel);
+        }
+
         setTime(t => {
-          const finalTime = t;
-          setMoves(m => {
-            const score = Math.max(100, 1000 - m * 5 - finalTime * 2);
-            onScoreChange(score);
-            onGameEnd(score, `${m}번 이동, ${finalTime}초`);
-            return m;
-          });
-          return finalTime;
+          checkWin(next, newMoves, t);
+          return t;
         });
-      }
+        return newMoves;
+      });
 
       return next;
     });
-  }, [gameStatus, stopTimer, onGameEnd, onScoreChange, triggerShake]);
+  }, [gameStatus, onMove, onCombo, combo, checkWin]);
+
+  // moveByDir: D-pad 및 키보드 공통 사용
+  const moveByDir = useCallback((dir: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT') => {
+    if (gameStatus !== 'playing') return;
+    setTiles(prev => {
+      const emptyIdx = prev.indexOf(0);
+      const emptyRow = Math.floor(emptyIdx / SIZE);
+      const emptyCol = emptyIdx % SIZE;
+      let targetIdx = -1;
+
+      if (dir === 'UP' && emptyRow < SIZE - 1) targetIdx = emptyIdx + SIZE;
+      else if (dir === 'DOWN' && emptyRow > 0) targetIdx = emptyIdx - SIZE;
+      else if (dir === 'LEFT' && emptyCol < SIZE - 1) targetIdx = emptyIdx + 1;
+      else if (dir === 'RIGHT' && emptyCol > 0) targetIdx = emptyIdx - 1;
+
+      if (targetIdx === -1) return prev;
+
+      const next = [...prev];
+      [next[targetIdx], next[emptyIdx]] = [next[emptyIdx], next[targetIdx]];
+
+      setMoves(m => {
+        const newMoves = m + 1;
+        onMove?.();
+
+        // 콤보 추적
+        const prevLevel = combo.comboLevel;
+        const newLevel = combo.increment();
+        if (newLevel > 0 && newLevel > prevLevel) {
+          onCombo?.(newLevel);
+        }
+
+        setTime(t => {
+          checkWin(next, newMoves, t);
+          return t;
+        });
+        return newMoves;
+      });
+
+      return next;
+    });
+  }, [gameStatus, onMove, onCombo, combo, checkWin]);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (gameStatus !== 'playing') return;
-      setTiles(prev => {
-        const emptyIdx = prev.indexOf(0);
-        const emptyRow = Math.floor(emptyIdx / SIZE);
-        const emptyCol = emptyIdx % SIZE;
-        let targetIdx = -1;
-
-        if (e.key === 'ArrowUp' && emptyRow < SIZE - 1) targetIdx = emptyIdx + SIZE;
-        else if (e.key === 'ArrowDown' && emptyRow > 0) targetIdx = emptyIdx - SIZE;
-        else if (e.key === 'ArrowLeft' && emptyCol < SIZE - 1) targetIdx = emptyIdx + 1;
-        else if (e.key === 'ArrowRight' && emptyCol > 0) targetIdx = emptyIdx - 1;
-
-        if (targetIdx === -1) return prev;
-        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-          e.preventDefault();
-        }
-
-        const next = [...prev];
-        [next[targetIdx], next[emptyIdx]] = [next[emptyIdx], next[targetIdx]];
-        setMoves(m => m + 1);
-
-        if (next.join(',') === GOAL.join(',')) {
-          setWon(true);
-          setGameStatus('won');
-          stopTimer();
-          triggerShake(5, 300);
-          setConfettiActive(true);
-          setTime(t => {
-            const finalTime = t;
-            setMoves(m => {
-              const score = Math.max(100, 1000 - m * 5 - finalTime * 2);
-              onScoreChange(score);
-              onGameEnd(score, `${m}번 이동, ${finalTime}초`);
-              return m;
-            });
-            return finalTime;
-          });
-        }
-
-        return next;
-      });
+      if (e.key === 'ArrowUp') { e.preventDefault(); moveByDir('UP'); }
+      else if (e.key === 'ArrowDown') { e.preventDefault(); moveByDir('DOWN'); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); moveByDir('LEFT'); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); moveByDir('RIGHT'); }
     };
     document.addEventListener('keydown', handleKey);
     return () => document.removeEventListener('keydown', handleKey);
-  }, [gameStatus, stopTimer, onGameEnd, onScoreChange, triggerShake, setConfettiActive]);
+  }, [gameStatus, moveByDir]);
 
   return (
     <div className="flex flex-col items-center gap-4 p-4" style={shakeStyle}>
@@ -202,6 +223,37 @@ export default function SlidingPuzzleGame({ onGameEnd, onScoreChange }: GameComp
         </button>
       )}
       <p className="text-zinc-500 text-sm">타일 클릭 또는 방향키로 이동</p>
+
+      {/* D-패드 모바일 컨트롤러 */}
+      <div className="flex flex-col items-center gap-1 mt-1">
+        <div className="flex justify-center">
+          <button
+            onPointerDown={e => { e.preventDefault(); moveByDir('UP'); }}
+            className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
+            aria-label="위로 이동"
+          >&#9650;</button>
+        </div>
+        <div className="flex gap-1">
+          <button
+            onPointerDown={e => { e.preventDefault(); moveByDir('LEFT'); }}
+            className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
+            aria-label="왼쪽 이동"
+          >&#9664;</button>
+          <div className="w-14 h-14" />
+          <button
+            onPointerDown={e => { e.preventDefault(); moveByDir('RIGHT'); }}
+            className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
+            aria-label="오른쪽 이동"
+          >&#9654;</button>
+        </div>
+        <div className="flex justify-center">
+          <button
+            onPointerDown={e => { e.preventDefault(); moveByDir('DOWN'); }}
+            className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
+            aria-label="아래로 이동"
+          >&#9660;</button>
+        </div>
+      </div>
     </div>
   );
 }

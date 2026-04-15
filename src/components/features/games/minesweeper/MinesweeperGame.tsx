@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
+import { useSound } from '@/hooks/useSound';
+import { useCombo } from '@/hooks/useCombo';
 import { useScreenShake } from '@/hooks/useScreenShake';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
@@ -90,7 +92,7 @@ function revealBFS(board: Cell[][], startRow: number, startCol: number): Cell[][
   return next;
 }
 
-export default function MinesweeperGame({ onGameEnd, onScoreChange }: GameComponentProps) {
+export default function MinesweeperGame({ onGameEnd, onScoreChange, onAction, onCombo }: GameComponentProps) {
   const [board, setBoard] = useState<Cell[][]>(createEmptyBoard());
   const [gameStatus, setGameStatus] = useState<GameStatus>('idle');
   const [flagCount, setFlagCount] = useState(0);
@@ -101,6 +103,11 @@ export default function MinesweeperGame({ onGameEnd, onScoreChange }: GameCompon
   const { shakeStyle, triggerShake } = useScreenShake();
   const [flashActive, setFlashActive] = useState(false);
   const [confettiActive, setConfettiActive] = useState(false);
+  const longPressRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const longPressTriggeredRef = useRef(false);
+
+  const { playSelect, playMoveTick } = useSound();
+  const combo = useCombo();
 
   const startTimer = useCallback(() => {
     timerRef.current = setInterval(() => {
@@ -121,6 +128,7 @@ export default function MinesweeperGame({ onGameEnd, onScoreChange }: GameCompon
 
   const resetGame = useCallback(() => {
     stopTimer();
+    combo.reset();
     setBoard(createEmptyBoard());
     setGameStatus('idle');
     setFlagCount(0);
@@ -128,7 +136,7 @@ export default function MinesweeperGame({ onGameEnd, onScoreChange }: GameCompon
     setTime(0);
     setFirstClick(true);
     onScoreChange(0);
-  }, [stopTimer, onScoreChange]);
+  }, [stopTimer, onScoreChange, combo]);
 
   const handleCellClick = useCallback((r: number, c: number) => {
     if (gameStatus === 'won' || gameStatus === 'gameover') return;
@@ -154,11 +162,16 @@ export default function MinesweeperGame({ onGameEnd, onScoreChange }: GameCompon
       setBoard(revealed);
       setGameStatus('gameover');
       stopTimer();
+      combo.reset();
       onGameEnd(0, '지뢰 폭발!');
       triggerShake(12, 600);
       setFlashActive(true);
       return;
     }
+
+    // 안전 셀 공개 - 즉시 클릭 피드백
+    onAction?.();
+    playSelect();
 
     const nextBoard = revealBFS(currentBoard, r, c);
     let newRevealedCount = 0;
@@ -170,6 +183,13 @@ export default function MinesweeperGame({ onGameEnd, onScoreChange }: GameCompon
     setBoard(nextBoard);
     setRevealedCount(newRevealedCount);
 
+    // 콤보 추적
+    const prevLevel = combo.comboLevel;
+    const newLevel = combo.increment();
+    if (newLevel > 0 && newLevel > prevLevel) {
+      onCombo?.(newLevel);
+    }
+
     const clearableCells = ROWS * COLS - MINE_COUNT;
     if (newRevealedCount >= clearableCells) {
       setGameStatus('won');
@@ -179,12 +199,14 @@ export default function MinesweeperGame({ onGameEnd, onScoreChange }: GameCompon
       onGameEnd(score, `${time}초 클리어`);
       setConfettiActive(true);
     }
-  }, [board, gameStatus, firstClick, time, startTimer, stopTimer, onGameEnd, onScoreChange, triggerShake]);
+  }, [board, gameStatus, firstClick, time, startTimer, stopTimer, onGameEnd, onScoreChange, triggerShake, onAction, onCombo, playSelect, combo]);
 
-  const handleRightClick = useCallback((e: React.MouseEvent, r: number, c: number) => {
+  const handleRightClick = useCallback((e: React.MouseEvent | React.PointerEvent, r: number, c: number) => {
     e.preventDefault();
     if (gameStatus !== 'playing' && gameStatus !== 'idle') return;
     if (board[r][c].isRevealed) return;
+
+    playMoveTick();
 
     const next = board.map(row => row.map(cell => ({ ...cell })));
     if (next[r][c].isFlagged) {
@@ -195,7 +217,7 @@ export default function MinesweeperGame({ onGameEnd, onScoreChange }: GameCompon
       setFlagCount(f => f + 1);
     }
     setBoard(next);
-  }, [board, gameStatus]);
+  }, [board, gameStatus, playMoveTick]);
 
   return (
     <div className="flex flex-col items-center gap-4 p-4" style={shakeStyle}>
@@ -255,8 +277,30 @@ export default function MinesweeperGame({ onGameEnd, onScoreChange }: GameCompon
                 <div
                   key={c}
                   className={cellClass}
-                  onClick={() => handleCellClick(r, c)}
                   onContextMenu={e => handleRightClick(e, r, c)}
+                  onPointerDown={e => {
+                    longPressTriggeredRef.current = false;
+                    longPressRef.current = setTimeout(() => {
+                      longPressTriggeredRef.current = true;
+                      handleRightClick(e, r, c);
+                      longPressRef.current = null;
+                    }, 500);
+                  }}
+                  onPointerUp={() => {
+                    if (longPressRef.current) {
+                      clearTimeout(longPressRef.current);
+                      longPressRef.current = null;
+                    }
+                    if (!longPressTriggeredRef.current) {
+                      handleCellClick(r, c);
+                    }
+                  }}
+                  onPointerLeave={() => {
+                    if (longPressRef.current) {
+                      clearTimeout(longPressRef.current);
+                      longPressRef.current = null;
+                    }
+                  }}
                 >
                   {cell.isRevealed && cell.isMine && '💣'}
                   {cell.isRevealed && !cell.isMine && cell.neighborCount > 0 && (
@@ -272,7 +316,7 @@ export default function MinesweeperGame({ onGameEnd, onScoreChange }: GameCompon
         ))}
       </div>
 
-      <p className="text-zinc-500 text-sm">좌클릭: 열기 / 우클릭: 깃발</p>
+      <p className="text-zinc-500 text-sm">클릭: 열기 / 우클릭 또는 길게 누르기: 깃발</p>
     </div>
   );
 }

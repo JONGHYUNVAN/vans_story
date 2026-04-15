@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
+import { useSound } from '@/hooks/useSound';
+import { useCombo } from '@/hooks/useCombo';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
 
@@ -81,7 +83,7 @@ function makeInitialState(timeLimit: 30 | 60, snippets: string[]): TypingState {
   };
 }
 
-export default function TypingGame({ onGameEnd, onScoreChange }: GameComponentProps) {
+export default function TypingGame({ onGameEnd, onScoreChange, onKeyClick, onCombo }: GameComponentProps) {
   const [timeLimit, setTimeLimit] = useState<30 | 60>(60);
   const [state, setState] = useState<TypingState>(() =>
     makeInitialState(60, shuffleArray(CODE_SNIPPETS))
@@ -92,8 +94,17 @@ export default function TypingGame({ onGameEnd, onScoreChange }: GameComponentPr
   const hiddenInputRef = useRef<HTMLInputElement>(null);
   const [flashActive, setFlashActive] = useState(false);
   const [confettiActive, setConfettiActive] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const prevSnippetIndexRef = useRef(0);
   const prevIncorrectRef = useRef(0);
+  const correctComboRef = useRef(0);
+  const { playKeyClick, playCombo } = useSound();
+  const combo = useCombo();
+
+  // 모바일 감지
+  useEffect(() => {
+    setIsMobile('ontouchstart' in window || navigator.maxTouchPoints > 0);
+  }, []);
 
   const stopTimer = useCallback(() => {
     if (timerRef.current) {
@@ -199,10 +210,35 @@ export default function TypingGame({ onGameEnd, onScoreChange }: GameComponentPr
 
         if (key.length !== 1) return newState;
 
+        onKeyClick?.();
+
         const expected = currentSnippet[newState.currentCharIndex];
         if (expected === undefined) return newState;
 
         const isCorrect = key === expected;
+
+        if (isCorrect) {
+          // 정확 입력 사운드
+          playKeyClick();
+
+          correctComboRef.current += 1;
+          const rawCombo = correctComboRef.current;
+          if (rawCombo > 0 && rawCombo % 5 === 0) {
+            const level = Math.min(Math.floor(rawCombo / 5), 5);
+            onCombo?.(level);
+          }
+
+          // useCombo 기반 콤보 레벨 사운드
+          const prevLevel = combo.comboLevel;
+          const newLevel = combo.increment();
+          if (newLevel > 0 && newLevel > prevLevel) {
+            playCombo(newLevel);
+          }
+        } else {
+          correctComboRef.current = 0;
+          combo.reset();
+        }
+
         const newTyped = [...newState.typedChars];
         newTyped[newState.currentCharIndex] = isCorrect ? 'correct' : 'incorrect';
 
@@ -236,7 +272,7 @@ export default function TypingGame({ onGameEnd, onScoreChange }: GameComponentPr
         };
       });
     },
-    []
+    [onKeyClick, onCombo, playKeyClick, playCombo, combo]
   );
 
   // 이펙트 감지
@@ -278,9 +314,11 @@ export default function TypingGame({ onGameEnd, onScoreChange }: GameComponentPr
 
   const resetGame = useCallback(() => {
     stopTimer();
+    correctComboRef.current = 0;
+    combo.reset();
     setState(makeInitialState(timeLimit, shuffleArray(CODE_SNIPPETS)));
-    hiddenInputRef.current?.focus();
-  }, [stopTimer, timeLimit]);
+    setTimeout(() => hiddenInputRef.current?.focus(), 50);
+  }, [stopTimer, timeLimit, combo]);
 
   const handleTimeLimitChange = useCallback(
     (limit: 30 | 60) => {
@@ -302,6 +340,7 @@ export default function TypingGame({ onGameEnd, onScoreChange }: GameComponentPr
       ref={gameAreaRef}
       tabIndex={0}
       className="flex flex-col gap-4 outline-none relative"
+      onClick={() => hiddenInputRef.current?.focus()}
     >
       <ConfettiEffect active={confettiActive} duration={3000} />
       <FlashOverlay
@@ -315,12 +354,31 @@ export default function TypingGame({ onGameEnd, onScoreChange }: GameComponentPr
         ref={hiddenInputRef}
         className="sr-only"
         autoFocus
-        onKeyDown={e => {
-          e.preventDefault();
-          handleKey(e);
-        }}
-        readOnly
+        autoComplete="off"
+        autoCorrect="off"
+        autoCapitalize="off"
+        spellCheck={false}
+        inputMode={isMobile ? 'none' : 'text'}
+        readOnly={isMobile}
         aria-label="타이핑 입력"
+        onKeyDown={(e) => {
+          const key = e.key;
+          if (IGNORED_KEYS.has(key)) return;
+          if (key !== 'Unidentified' && (key.length === 1 || key === 'Backspace')) {
+            e.preventDefault();
+            handleKey(e as unknown as KeyboardEvent);
+          }
+        }}
+        onInput={(e) => {
+          const input = e.currentTarget;
+          const value = input.value;
+          if (!value) return;
+          for (const char of value) {
+            const syntheticEvent = { key: char } as unknown as KeyboardEvent;
+            handleKey(syntheticEvent);
+          }
+          input.value = '';
+        }}
       />
 
       {/* 시간 선택 (idle 상태에서만) */}
@@ -397,6 +455,66 @@ export default function TypingGame({ onGameEnd, onScoreChange }: GameComponentPr
         </div>
       )}
 
+      {/* 온스크린 QWERTY 키보드 — 모바일에서만 표시 */}
+      {isMobile && state.gameStatus !== 'finished' && (
+        <div className="flex flex-col items-center gap-1.5 mt-1">
+          {/* 행 1: Q~P */}
+          <div className="flex gap-1">
+            {['q','w','e','r','t','y','u','i','o','p'].map(key => (
+              <button
+                key={key}
+                onPointerDown={e => { e.preventDefault(); handleKey({ key } as unknown as KeyboardEvent); }}
+                className="w-9 h-10 bg-gray-700 active:bg-gray-500 border border-gray-600 rounded-md flex items-center justify-center text-sm text-gray-200 select-none touch-none uppercase"
+              >
+                {key}
+              </button>
+            ))}
+          </div>
+          {/* 행 2: A~L */}
+          <div className="flex gap-1">
+            {['a','s','d','f','g','h','j','k','l'].map(key => (
+              <button
+                key={key}
+                onPointerDown={e => { e.preventDefault(); handleKey({ key } as unknown as KeyboardEvent); }}
+                className="w-9 h-10 bg-gray-700 active:bg-gray-500 border border-gray-600 rounded-md flex items-center justify-center text-sm text-gray-200 select-none touch-none uppercase"
+              >
+                {key}
+              </button>
+            ))}
+          </div>
+          {/* 행 3: spacer + Z~M + Backspace */}
+          <div className="flex gap-1 items-center">
+            <div className="w-5" />
+            {['z','x','c','v','b','n','m'].map(key => (
+              <button
+                key={key}
+                onPointerDown={e => { e.preventDefault(); handleKey({ key } as unknown as KeyboardEvent); }}
+                className="w-9 h-10 bg-gray-700 active:bg-gray-500 border border-gray-600 rounded-md flex items-center justify-center text-sm text-gray-200 select-none touch-none uppercase"
+              >
+                {key}
+              </button>
+            ))}
+            <button
+              onPointerDown={e => { e.preventDefault(); handleKey({ key: 'Backspace' } as unknown as KeyboardEvent); }}
+              className="w-14 h-10 bg-gray-700 active:bg-gray-500 border border-gray-600 rounded-md flex items-center justify-center text-sm text-gray-200 select-none touch-none"
+              aria-label="삭제"
+            >
+              ⌫
+            </button>
+          </div>
+          {/* 행 4: 스페이스바 */}
+          <div className="flex gap-1">
+            <button
+              onPointerDown={e => { e.preventDefault(); handleKey({ key: ' ' } as unknown as KeyboardEvent); }}
+              className="w-40 h-10 bg-gray-700 active:bg-gray-500 border border-gray-600 rounded-md flex items-center justify-center text-sm text-gray-400 select-none touch-none"
+              aria-label="스페이스"
+            >
+              space
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* 결과 화면 */}
       {state.gameStatus === 'finished' && (
         <div className="bg-gray-900 rounded-xl p-8 border border-gray-700 text-center space-y-4">
@@ -430,7 +548,7 @@ export default function TypingGame({ onGameEnd, onScoreChange }: GameComponentPr
 
       <p className="text-xs text-zinc-600 text-center">
         {state.gameStatus === 'idle'
-          ? '키보드를 입력하면 자동 시작됩니다'
+          ? '키보드를 입력하면 자동 시작됩니다 (모바일: 화면을 탭하세요)'
           : state.gameStatus === 'playing'
           ? 'Backspace로 수정 가능'
           : ''}

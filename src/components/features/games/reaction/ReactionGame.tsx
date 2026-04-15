@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
+import { useCombo } from '@/hooks/useCombo';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
 
@@ -33,7 +34,7 @@ function getGradePrefix(avg: number): string {
   return '😴';
 }
 
-export default function ReactionGame({ onGameEnd, onScoreChange, onAction }: GameComponentProps) {
+export default function ReactionGame({ onGameEnd, onScoreChange, onAction, onCombo }: GameComponentProps) {
   const [state, setState] = useState<ReactionState>({
     gameStatus: 'idle',
     round: 0,
@@ -46,6 +47,8 @@ export default function ReactionGame({ onGameEnd, onScoreChange, onAction }: Gam
   const [flashActive, setFlashActive] = useState(false);
   const [flashColor, setFlashColor] = useState('rgba(239,68,68,0.4)');
   const [confettiActive, setConfettiActive] = useState(false);
+
+  const combo = useCombo();
 
   const clearTimers = useCallback(() => {
     if (waitTimerRef.current) clearTimeout(waitTimerRef.current);
@@ -67,6 +70,7 @@ export default function ReactionGame({ onGameEnd, onScoreChange, onAction }: Gam
 
   const startGame = useCallback(() => {
     clearTimers();
+    combo.reset();
     setState({
       gameStatus: 'waiting',
       round: 1,
@@ -78,7 +82,7 @@ export default function ReactionGame({ onGameEnd, onScoreChange, onAction }: Gam
     waitTimerRef.current = setTimeout(() => {
       setState(prev => ({ ...prev, gameStatus: 'ready', startTime: Date.now() }));
     }, delay);
-  }, [clearTimers]);
+  }, [clearTimers, combo]);
 
   const handleClick = useCallback(() => {
     const { gameStatus, round, results, startTime } = state;
@@ -88,6 +92,7 @@ export default function ReactionGame({ onGameEnd, onScoreChange, onAction }: Gam
     if (gameStatus === 'waiting') {
       // Too early
       clearTimers();
+      combo.reset();
       setState(prev => ({ ...prev, gameStatus: 'tooearly' }));
       setFlashColor('rgba(239,68,68,0.4)');
       setFlashActive(true);
@@ -123,6 +128,17 @@ export default function ReactionGame({ onGameEnd, onScoreChange, onAction }: Gam
       const newResults = [...results, reactionMs];
       const newRound = round + 1;
 
+      // 콤보 - 300ms 이하면 콤보 증가
+      if (reactionMs <= 300) {
+        const prevLevel = combo.comboLevel;
+        const newLevel = combo.increment();
+        if (newLevel > 0 && newLevel > prevLevel) {
+          onCombo?.(newLevel);
+        }
+      } else {
+        combo.reset();
+      }
+
       setState(prev => ({
         ...prev,
         gameStatus: 'clicked',
@@ -154,7 +170,7 @@ export default function ReactionGame({ onGameEnd, onScoreChange, onAction }: Gam
     }
 
     if (gameStatus === 'clicked' || gameStatus === 'tooearly') return;
-  }, [state, clearTimers, startWaiting, onGameEnd, onScoreChange]);
+  }, [state, clearTimers, startWaiting, onGameEnd, onScoreChange, onAction, onCombo, combo]);
 
   const { gameStatus, round, results, averageMs } = state;
   const lastResult = results[results.length - 1];

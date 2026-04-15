@@ -124,6 +124,44 @@ export function useSound() {
     tone(1200, 0.05, 'sine', 0.15, 1600);
   }, [isMuted]);
 
+  // 방향 이동 틱 (Snake 방향 전환 / 2048 타일 슬라이드)
+  const playMoveTick = useCallback(() => {
+    if (isMuted) return;
+    tone(660, 0.04, 'square', 0.04);
+  }, [isMuted]);
+
+  // 타이핑 키 클릭
+  const playKeyClick = useCallback(() => {
+    if (isMuted) return;
+    tone(900, 0.025, 'square', 0.05);
+  }, [isMuted]);
+
+  // 콤보 레벨별 상승 사운드 (level: 1~5+)
+  const playCombo = useCallback((level: number) => {
+    if (isMuted) return;
+    const lv = Math.min(level, 5);
+    const freqs = [440, 550, 660, 880, 1047];
+    const freq = freqs[lv - 1];
+    if (lv === 1) {
+      tone(freq, 0.1, 'sine', 0.11, freq * 1.2);
+    } else if (lv === 2) {
+      tone(freq, 0.12, 'triangle', 0.13, freq * 1.25);
+      tone(freq * 1.5, 0.1, 'triangle', 0.07, undefined, 0.07);
+    } else if (lv === 3) {
+      tone(freq, 0.1, 'triangle', 0.15, freq * 1.5);
+      tone(freq * 1.25, 0.12, 'triangle', 0.1, freq * 1.6, 0.06);
+    } else if (lv === 4) {
+      tone(freq, 0.08, 'square', 0.12, freq * 1.5);
+      tone(freq * 1.25, 0.1, 'square', 0.08, freq * 1.75, 0.05);
+      tone(freq * 1.5, 0.12, 'square', 0.06, freq * 2.0, 0.1);
+    } else {
+      tone(freq, 0.08, 'triangle', 0.16, freq * 1.5);
+      tone(freq * 1.25, 0.1, 'triangle', 0.12, freq * 1.75, 0.04);
+      tone(freq * 1.5, 0.12, 'triangle', 0.08, freq * 2.0, 0.08);
+      tone(freq * 2.0, 0.15, 'sine', 0.1, freq * 2.5, 0.12);
+    }
+  }, [isMuted]);
+
   return {
     playHover,
     playSelect,
@@ -136,6 +174,9 @@ export function useSound() {
     playLineClear,
     playMatch,
     playPing,
+    playMoveTick,
+    playKeyClick,
+    playCombo,
     isMuted,
     toggleMute,
   };

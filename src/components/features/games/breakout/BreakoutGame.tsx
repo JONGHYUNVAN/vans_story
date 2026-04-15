@@ -2,6 +2,8 @@
 
 import { useRef, useEffect, useCallback, useState } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
+import { useSound } from '@/hooks/useSound';
+import { useCombo } from '@/hooks/useCombo';
 import { useScreenShake } from '@/hooks/useScreenShake';
 import ParticleEffect from '@/components/features/games/effects/ParticleEffect';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
@@ -42,7 +44,7 @@ function createBricks(): Brick[] {
   return bricks;
 }
 
-export default function BreakoutGame({ onGameEnd, onScoreChange }: GameComponentProps) {
+export default function BreakoutGame({ onGameEnd, onScoreChange, onAction, onCombo }: GameComponentProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const paddleXRef = useRef((CANVAS_W - PADDLE_W) / 2);
   const ballRef = useRef({ x: CANVAS_W / 2, y: PADDLE_Y - BALL_R - 2, vx: 3, vy: -4 });
@@ -64,6 +66,14 @@ export default function BreakoutGame({ onGameEnd, onScoreChange }: GameComponent
   const particleIdRef = useRef(0);
   const triggerShakeRef = useRef(triggerShake);
   triggerShakeRef.current = triggerShake;
+
+  const onActionRef = useRef(onAction);
+  onActionRef.current = onAction;
+  const onComboRef = useRef(onCombo);
+  onComboRef.current = onCombo;
+
+  const { playHit } = useSound();
+  const combo = useCombo();
 
   const resetBall = useCallback(() => {
     ballRef.current = {
@@ -111,6 +121,7 @@ export default function BreakoutGame({ onGameEnd, onScoreChange }: GameComponent
         const relX = (ball.x - (paddleXRef.current + PADDLE_W / 2)) / (PADDLE_W / 2);
         ball.vx = relX * 5;
         ball.vy = -Math.abs(ball.vy);
+        playHit();
       }
 
       // Bottom out
@@ -119,6 +130,7 @@ export default function BreakoutGame({ onGameEnd, onScoreChange }: GameComponent
         setDisplayLives(livesRef.current);
         triggerShakeRef.current(8, 400);
         setFlashActive(true);
+        combo.reset();
         if (livesRef.current <= 0) {
           gameStatusRef.current = 'gameover';
           setGameStatus('gameover');
@@ -147,6 +159,17 @@ export default function BreakoutGame({ onGameEnd, onScoreChange }: GameComponent
           scoreRef.current += pts;
           setDisplayScore(scoreRef.current);
           onScoreChange(scoreRef.current);
+
+          // 벽돌 파괴 사운드 및 콤보
+          onActionRef.current?.();
+
+          // 콤보 추적
+          const prevLevel = combo.comboLevel;
+          const newLevel = combo.increment();
+          if (newLevel > 0 && newLevel > prevLevel) {
+            onComboRef.current?.(newLevel);
+          }
+
           // 벽돌 파괴 파티클
           const brickCX = bx + BRICK_W / 2;
           const brickCY = by + BRICK_H / 2;
@@ -215,7 +238,7 @@ export default function BreakoutGame({ onGameEnd, onScoreChange }: GameComponent
     if (gameStatusRef.current === 'playing') {
       animRef.current = requestAnimationFrame(draw);
     }
-  }, [resetBall, onGameEnd, onScoreChange]);
+  }, [resetBall, onGameEnd, onScoreChange, playHit, combo]);
 
   const startGame = useCallback(() => {
     bricksRef.current = createBricks();
@@ -223,6 +246,7 @@ export default function BreakoutGame({ onGameEnd, onScoreChange }: GameComponent
     levelRef.current = 1;
     livesRef.current = 3;
     paddleXRef.current = (CANVAS_W - PADDLE_W) / 2;
+    combo.reset();
     setDisplayScore(0);
     setDisplayLevel(1);
     setDisplayLives(3);
@@ -231,7 +255,7 @@ export default function BreakoutGame({ onGameEnd, onScoreChange }: GameComponent
     setGameStatus('playing');
     onScoreChange(0);
     animRef.current = requestAnimationFrame(draw);
-  }, [draw, resetBall, onScoreChange]);
+  }, [draw, resetBall, onScoreChange, combo]);
 
   useEffect(() => {
     // Initial render
@@ -255,6 +279,16 @@ export default function BreakoutGame({ onGameEnd, onScoreChange }: GameComponent
       const mouseX = e.clientX - rect.left;
       paddleXRef.current = Math.max(0, Math.min(CANVAS_W - PADDLE_W, mouseX - PADDLE_W / 2));
     };
+    const handleTouchMove = (e: TouchEvent) => {
+      if (gameStatusRef.current !== 'playing') return;
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const touchX = e.touches[0].clientX - rect.left;
+      const scaleX = CANVAS_W / rect.width;
+      paddleXRef.current = Math.max(0, Math.min(CANVAS_W - PADDLE_W, touchX * scaleX - PADDLE_W / 2));
+    };
     const handleKeyDown = (e: KeyboardEvent) => {
       keysRef.current.add(e.key);
       if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') e.preventDefault();
@@ -263,10 +297,12 @@ export default function BreakoutGame({ onGameEnd, onScoreChange }: GameComponent
 
     const canvas = canvasRef.current;
     canvas?.addEventListener('mousemove', handleMouseMove);
+    canvas?.addEventListener('touchmove', handleTouchMove, { passive: false });
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
     return () => {
       canvas?.removeEventListener('mousemove', handleMouseMove);
+      canvas?.removeEventListener('touchmove', handleTouchMove);
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('keyup', handleKeyUp);
     };
@@ -321,7 +357,7 @@ export default function BreakoutGame({ onGameEnd, onScoreChange }: GameComponent
           </div>
         )}
       </div>
-      <p className="text-zinc-500 text-sm">마우스 이동 / 방향키: 패들 조작</p>
+      <p className="text-zinc-500 text-sm">마우스 / 터치 / 방향키: 패들 조작</p>
     </div>
   );
 }

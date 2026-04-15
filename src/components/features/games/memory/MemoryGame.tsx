@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
+import { useSound } from '@/hooks/useSound';
+import { useCombo } from '@/hooks/useCombo';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
 
@@ -35,7 +37,7 @@ function createCards(): Card[] {
   }));
 }
 
-export default function MemoryGame({ onGameEnd, onScoreChange, onAction }: GameComponentProps) {
+export default function MemoryGame({ onGameEnd, onScoreChange, onAction, onCombo }: GameComponentProps) {
   const [cards, setCards] = useState<Card[]>(createCards());
   const [flippedIds, setFlippedIds] = useState<number[]>([]);
   const [moves, setMoves] = useState(0);
@@ -47,6 +49,9 @@ export default function MemoryGame({ onGameEnd, onScoreChange, onAction }: GameC
   const [flashActive, setFlashActive] = useState(false);
   const [flashColor, setFlashColor] = useState('rgba(52,211,153,0.2)');
   const [confettiActive, setConfettiActive] = useState(false);
+
+  const { playSelect } = useSound();
+  const combo = useCombo();
 
   const stopTimer = useCallback(() => {
     if (timerRef.current) {
@@ -61,6 +66,7 @@ export default function MemoryGame({ onGameEnd, onScoreChange, onAction }: GameC
 
   const startGame = useCallback(() => {
     stopTimer();
+    combo.reset();
     setCards(createCards());
     setFlippedIds([]);
     setMoves(0);
@@ -70,13 +76,16 @@ export default function MemoryGame({ onGameEnd, onScoreChange, onAction }: GameC
     lockRef.current = false;
     timerRef.current = setInterval(() => setTime(t => t + 1), 1000);
     onScoreChange(0);
-  }, [stopTimer, onScoreChange]);
+  }, [stopTimer, onScoreChange, combo]);
 
   const handleCardClick = useCallback((id: number) => {
     if (gameStatus !== 'playing') return;
     if (lockRef.current) return;
     const card = cards[id];
     if (card.isFlipped || card.isMatched) return;
+
+    // 카드 뒤집기 즉시 사운드
+    playSelect();
 
     const newFlipped = [...flippedIds, id];
     setCards(prev => prev.map(c => c.id === id ? { ...c, isFlipped: true } : c));
@@ -92,6 +101,14 @@ export default function MemoryGame({ onGameEnd, onScoreChange, onAction }: GameC
       if (firstCard.icon === secondCard.icon) {
         // Match
         onAction?.();
+
+        // 콤보 추적
+        const prevLevel = combo.comboLevel;
+        const newLevel = combo.increment();
+        if (newLevel > 0 && newLevel > prevLevel) {
+          onCombo?.(newLevel);
+        }
+
         setCards(prev => prev.map(c =>
           c.id === firstId || c.id === secondId
             ? { ...c, isMatched: true, isFlipped: true }
@@ -114,6 +131,7 @@ export default function MemoryGame({ onGameEnd, onScoreChange, onAction }: GameC
         }
       } else {
         // No match — flip back
+        combo.reset();
         setFlashColor('rgba(239,68,68,0.15)');
         setFlashActive(true);
         setTimeout(() => {
@@ -127,7 +145,7 @@ export default function MemoryGame({ onGameEnd, onScoreChange, onAction }: GameC
         }, 800);
       }
     }
-  }, [cards, flippedIds, gameStatus, matchCount, moves, time, stopTimer, onGameEnd, onScoreChange]);
+  }, [cards, flippedIds, gameStatus, matchCount, moves, time, stopTimer, onGameEnd, onScoreChange, onAction, onCombo, playSelect, combo]);
 
   return (
     <div className="flex flex-col items-center gap-4 p-4 relative">

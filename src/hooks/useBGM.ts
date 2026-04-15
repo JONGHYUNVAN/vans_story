@@ -26,6 +26,7 @@ interface Track {
 interface Pattern {
   tracks: Track[];
   bpm: number;
+  src?: string; // 오디오 파일 경로 (있으면 합성 대신 파일 재생)
 }
 
 // 음표 주파수 (Hz)
@@ -35,36 +36,64 @@ const C4=261.63, D4=293.66, Eb4=311.13, E4=329.63, F4=349.23, G4=392.00, Ab4=415
 const C5=523.25, D5=587.33, Eb5=622.25, E5=659.25, F5=698.46, G5=783.99, Ab5=830.61, A5=880.00, Bb5=932.33, B5=987.77;
 const C6=1046.50, D6=1174.66, E6=1318.51, F6=1396.91, G6=1567.98, A6=1760.00, B6=1975.53;
 
-// ─── Tetris / Korobeiniki 섹션 배열 ──────────────────────────────────────────
-// A 파트 (16 beats) — 원곡 주 선율
+// ─── Tetris / Korobeiniki 섹션 배열 (NES 3채널: Pulse1 + Pulse2 + Triangle) ─
+// A 파트 — Pulse 1 메인 멜로디 (16 beats)
 const T_A: Note[] = [
   [E5,1],[B4,0.5],[C5,0.5],[D5,1],[C5,0.5],[B4,0.5],
   [A4,1],[A4,0.5],[C5,0.5],[E5,1],[D5,0.5],[C5,0.5],
   [B4,1.5],[C5,0.5],[D5,1],[E5,1],
   [C5,1],[A4,1],[A4,2],
 ];
-// B 파트 (16 beats) — 원곡 부 선율
+// A 파트 — Pulse 2 카운터 멜로디 (독립 선율, Am 코드톤, 16 beats)
+const T_A2: Note[] = [
+  [A4,2],[G4,1],[F4,1],
+  [E4,2],[A4,2],
+  [D5,2],[B4,2],
+  [C5,2],[A4,2],
+];
+// B 파트 — Pulse 1 메인 (16 beats)
 const T_B: Note[] = [
   [D5,1.5],[F5,0.5],[A5,1],[G5,0.5],[F5,0.5],
   [E5,1.5],[C5,0.5],[E5,1],[D5,0.5],[C5,0.5],
   [B4,1],[B4,0.5],[C5,0.5],[D5,1],[E5,1],
   [C5,1],[A4,1],[A4,2],
 ];
-// C 파트 (16 beats) — Bridge 상승부
+// B 파트 — Pulse 2 카운터 멜로디 (Dm→C→G→Am, 16 beats)
+const T_B2: Note[] = [
+  [D5,2],[F5,2],
+  [E5,2],[C5,2],
+  [G4,2],[G4,2],
+  [E5,2],[A4,2],
+];
+// C 파트 — Pulse 1 (Bridge 상승, 16 beats)
 const T_C: Note[] = [
   [A5,1],[G5,0.5],[F5,0.5],[E5,1],[F5,0.5],[G5,0.5],
   [A5,1],[E5,1],[E5,2],
   [G5,1],[F5,0.5],[E5,0.5],[D5,1],[E5,0.5],[F5,0.5],
   [E5,1],[C5,1],[C5,2],
 ];
-// D 파트 (16 beats) — Bridge 하강부
+// C 파트 — Pulse 2 카운터 멜로디 (Am→E→G→C, 16 beats)
+const T_C2: Note[] = [
+  [A4,2],[C5,2],
+  [E5,2],[E5,2],
+  [G4,2],[F5,2],
+  [E5,2],[C5,2],
+];
+// D 파트 — Pulse 1 (Bridge 하강, 16 beats)
 const T_D: Note[] = [
   [F5,1],[E5,0.5],[D5,0.5],[C5,1],[D5,0.5],[E5,0.5],
   [F5,1],[D5,1],[D5,2],
   [E5,1],[D5,0.5],[C5,0.5],[B4,1],[C5,0.5],[D5,0.5],
   [E5,1],[A4,1],[A4,2],
 ];
-// 베이스 섹션 (각 16 beats)
+// D 파트 — Pulse 2 카운터 멜로디 (F→Dm→C→Am, 16 beats)
+const T_D2: Note[] = [
+  [F4,2],[D5,2],
+  [D5,2],[B4,2],
+  [C5,2],[B4,2],
+  [E5,2],[A4,2],
+];
+// 베이스 섹션 — Triangle (각 16 beats)
 const T_Ab: Note[] = [
   [A2,1],[E3,1],[A2,1],[E3,1],
   [E2,1],[B2,1],[E2,1],[B2,1],
@@ -92,41 +121,11 @@ const T_Db: Note[] = [
 
 // 게임별 멀티트랙 BGM
 const BGM: Record<string, Pattern> = {
-  // Snake: NES 어드벤처, 밝은 C장조, 32비트 A+B
+  // Snake: 오디오 파일 재생
   snake: {
-    tracks: [
-      // 멜로디 (square)
-      {
-        seq: [
-          [E5,1],[G5,1],[A5,2],
-          [G5,1],[E5,1],[D5,2],
-          [C5,1],[E5,1],[G5,2],
-          [A5,1],[G5,0.5],[E5,0.5],[C5,2],
-          [E5,1],[G5,1],[A5,2],
-          [A5,1],[G5,1],[E5,2],
-          [C5,2],[C5,1],[D5,1],[E5,2],
-          [D5,1],[C5,1],[C5,2],
-        ],
-        wave: 'square',
-        vol: 0.06,
-      },
-      // 베이스 (sine)
-      {
-        seq: [
-          [C3,4],[R,2],[C3,2],
-          [G2,4],[R,2],[G2,2],
-          [C3,4],[R,2],[C3,2],
-          [G2,4],[R,2],[G2,2],
-          [C3,4],[R,2],[C3,2],
-          [E3,4],[R,2],[E3,2],
-          [C3,4],[R,2],[C3,2],
-          [G2,4],[R,2],[G2,2],
-        ],
-        wave: 'sine',
-        vol: 0.05,
-      },
-    ],
-    bpm: 130,
+    tracks: [],
+    bpm: 0,
+    src: '/bgm/Last_Quarter.mp3',
   },
 
   // 2048: 로파이 재즈, C장조7, 32비트
@@ -240,81 +239,18 @@ const BGM: Record<string, Pattern> = {
     bpm: 78,
   },
 
-  // Tetris: Korobeiniki 완전판 — 272 beats ≈ 102초
-  // 구조: [AA+BB] × 3 + [CC] + [DD] + A (Coda)
+  // Tetris: 실제 오디오 파일 재생
   tetris: {
-    tracks: [
-      // 멜로디 (square)
-      {
-        seq: [
-          // Verse 1: A×2 + B×2  (64 beats)
-          ...T_A, ...T_A, ...T_B, ...T_B,
-          // Bridge 1: C×2       (32 beats)
-          ...T_C, ...T_C,
-          // Verse 2: A×2 + B×2  (64 beats)
-          ...T_A, ...T_A, ...T_B, ...T_B,
-          // Bridge 2: D×2       (32 beats)
-          ...T_D, ...T_D,
-          // Verse 3: A×2 + B×2  (64 beats)
-          ...T_A, ...T_A, ...T_B, ...T_B,
-          // Coda: A              (16 beats)
-          ...T_A,
-        ],
-        wave: 'square',
-        vol: 0.07,
-      },
-      // 베이스 (triangle) — 동일 272 beats
-      {
-        seq: [
-          ...T_Ab, ...T_Ab, ...T_Bb, ...T_Bb,
-          ...T_Cb, ...T_Cb,
-          ...T_Ab, ...T_Ab, ...T_Bb, ...T_Bb,
-          ...T_Db, ...T_Db,
-          ...T_Ab, ...T_Ab, ...T_Bb, ...T_Bb,
-          ...T_Ab,
-        ],
-        wave: 'triangle',
-        vol: 0.08,
-      },
-    ],
-    bpm: 160,
+    tracks: [],
+    bpm: 0,
+    src: '/bgm/Asphalt_Horizon.mp3',
   },
 
-  // Flappy: 열대/카리브해, 32비트
+  // Flappy: 오디오 파일 재생
   flappy: {
-    tracks: [
-      // 멜로디 (triangle)
-      {
-        seq: [
-          [G5,0.5],[E5,0.5],[G5,1],[C5,1],
-          [D5,0.5],[E5,0.5],[G5,1],[R,1],
-          [A5,0.5],[G5,0.5],[E5,1],[C5,1],
-          [D5,1],[G5,1],[E5,2],
-          [G5,0.5],[E5,0.5],[G5,1],[C5,1],
-          [D5,0.5],[E5,0.5],[G5,1],[R,1],
-          [B5,0.5],[A5,0.5],[G5,1],[E5,1],
-          [F5,1],[G5,1],[E5,2],
-        ],
-        wave: 'triangle',
-        vol: 0.07,
-      },
-      // 베이스 (sine)
-      {
-        seq: [
-          [C3,2],[C3,2],
-          [G2,2],[G2,2],
-          [C3,2],[C3,2],
-          [G2,2],[G2,2],
-          [C3,2],[C3,2],
-          [G2,2],[G2,2],
-          [C3,2],[C3,2],
-          [G2,2],[G2,2],
-        ],
-        wave: 'sine',
-        vol: 0.05,
-      },
-    ],
-    bpm: 180,
+    tracks: [],
+    bpm: 0,
+    src: '/bgm/Zero_Friction.mp3',
   },
 
   // Breakout: 고속 아케이드, 32비트
@@ -354,41 +290,11 @@ const BGM: Record<string, Pattern> = {
     bpm: 195,
   },
 
-  // Memory: 부드러운 피아노풍, 32비트
+  // Memory: 오디오 파일 재생
   memory: {
-    tracks: [
-      // 멜로디 (sine)
-      {
-        seq: [
-          [C4,1],[E4,1],[G4,1],[C5,1],
-          [G4,1],[E4,1],[F4,1],[A4,1],
-          [E4,1],[G4,1],[B4,1],[G4,1],
-          [F4,1],[D4,1],[C4,2],
-          [C4,1],[E4,1],[G4,1],[C5,1],
-          [B4,1],[G4,1],[A4,1],[B4,1],
-          [G4,1],[B4,1],[D5,1],[B4,1],
-          [A4,1],[F4,1],[E4,2],
-        ],
-        wave: 'sine',
-        vol: 0.07,
-      },
-      // 베이스 (sine)
-      {
-        seq: [
-          [C3,2],[C3,2],
-          [F3,2],[F3,2],
-          [C3,2],[C3,2],
-          [G2,2],[G2,2],
-          [C3,2],[C3,2],
-          [F3,2],[F3,2],
-          [C3,2],[C3,2],
-          [G2,2],[G2,2],
-        ],
-        wave: 'sine',
-        vol: 0.05,
-      },
-    ],
-    bpm: 90,
+    tracks: [],
+    bpm: 0,
+    src: '/bgm/Where_the_Tiles_Meet.mp3',
   },
 
   // WhackaMole: 극속 유쾌, 32비트
@@ -577,6 +483,7 @@ export function useBGM(gameId: string, isMuted: boolean) {
   const schedulerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const isPlayingRef = useRef(false);
   const trackStatesRef = useRef<Array<{ noteIdx: number; nextTime: number }>>([]);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const isMutedRef = useRef(isMuted);
   isMutedRef.current = isMuted;
 
@@ -586,17 +493,35 @@ export function useBGM(gameId: string, isMuted: boolean) {
       clearTimeout(schedulerRef.current);
       schedulerRef.current = undefined;
     }
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      audioRef.current = null;
+    }
   }, []);
 
   const play = useCallback(() => {
     if (isMutedRef.current) return;
     const pattern = BGM[gameId];
     if (!pattern) return;
-    const ctx = getCtx();
-    if (!ctx) return;
 
     stop();
     isPlayingRef.current = true;
+
+    // 파일 기반 재생
+    if (pattern.src) {
+      const audio = new Audio(pattern.src);
+      audio.loop = true;
+      audio.volume = 0.5;
+      audioRef.current = audio;
+      audio.play().catch(() => {});
+      return;
+    }
+
+    // 합성 기반 재생
+    const ctx = getCtx();
+    if (!ctx) return;
+
     trackStatesRef.current = pattern.tracks.map(() => ({
       noteIdx: 0,
       nextTime: ctx.currentTime + 0.15,

@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
 import { useScreenShake } from '@/hooks/useScreenShake';
+import { useSound } from '@/hooks/useSound';
+import { useCombo } from '@/hooks/useCombo';
 import ParticleEffect from '@/components/features/games/effects/ParticleEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
 
@@ -80,18 +82,22 @@ interface ParticleItem {
   y: number;
 }
 
-export default function SnakeGame({ onGameEnd, onScoreChange }: GameComponentProps) {
+export default function SnakeGame({ onGameEnd, onScoreChange, onMove, onCombo }: GameComponentProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [state, setState] = useState<SnakeState>(initialState());
   const stateRef = useRef<SnakeState>(state);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const { shakeStyle, triggerShake } = useScreenShake();
+  const { playMoveTick, playCombo, playScore } = useSound();
+  const combo = useCombo();
   const [particles, setParticles] = useState<ParticleItem[]>([]);
   const [flashActive, setFlashActive] = useState(false);
   const particleIdRef = useRef(0);
   const prevScoreRef = useRef(0);
   const prevFoodRef = useRef<Point | null>(null);
+  const foodComboRef = useRef(0);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     stateRef.current = state;
@@ -239,12 +245,16 @@ export default function SnakeGame({ onGameEnd, onScoreChange }: GameComponentPro
 
           // 벽 충돌
           if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
+            foodComboRef.current = 0;
+            combo.reset();
             onGameEnd(prev.score);
             return { ...prev, gameStatus: 'gameover', direction: dir };
           }
 
           // 자기 몸 충돌
           if (prev.snake.slice(1).some(s => s.x === head.x && s.y === head.y)) {
+            foodComboRef.current = 0;
+            combo.reset();
             onGameEnd(prev.score);
             return { ...prev, gameStatus: 'gameover', direction: dir };
           }
@@ -254,8 +264,26 @@ export default function SnakeGame({ onGameEnd, onScoreChange }: GameComponentPro
             ? [head, ...prev.snake]
             : [head, ...prev.snake.slice(0, -1)];
 
+          // 이동 틱 사운드
+          playMoveTick();
+
           const newScore = ateFood ? prev.score + SCORE_PER_FOOD : prev.score;
-          if (ateFood) onScoreChange(newScore);
+          if (ateFood) {
+            onScoreChange(newScore);
+            foodComboRef.current += 1;
+            onCombo?.(Math.min(foodComboRef.current, 5));
+
+            // 콤보 사운드: 레벨 변경 시에만 playCombo 호출
+            const prevLevel = combo.comboLevel;
+            const newLevel = combo.increment();
+            if (newLevel === 0) {
+              playScore();
+            } else if (newLevel > prevLevel) {
+              playCombo(newLevel);
+            } else {
+              playScore();
+            }
+          }
 
           const newFood = ateFood ? randomFood(newSnake) : prev.food;
           const newSpeed = Math.max(
@@ -274,7 +302,7 @@ export default function SnakeGame({ onGameEnd, onScoreChange }: GameComponentPro
         });
       }, speed);
     },
-    [stopLoop, onGameEnd, onScoreChange]
+    [stopLoop, onGameEnd, onScoreChange, onCombo, playMoveTick, playCombo, playScore, combo]
   );
 
   // 속도 변경 시 루프 재시작
@@ -289,6 +317,8 @@ export default function SnakeGame({ onGameEnd, onScoreChange }: GameComponentPro
   const handleStart = useCallback(() => {
     setState(s => {
       if (s.gameStatus === 'idle' || s.gameStatus === 'gameover') {
+        foodComboRef.current = 0;
+        combo.reset();
         const fresh = initialState();
         return { ...fresh, gameStatus: 'playing' };
       }
@@ -300,7 +330,19 @@ export default function SnakeGame({ onGameEnd, onScoreChange }: GameComponentPro
       }
       return s;
     });
-  }, []);
+  }, [combo]);
+
+  const changeDirection = useCallback(
+    (newDir: Direction) => {
+      setState(prev => {
+        if (prev.gameStatus !== 'playing') return prev;
+        if (OPPOSITE[newDir] === prev.direction) return prev;
+        onMove?.();
+        return { ...prev, nextDirection: newDir };
+      });
+    },
+    [onMove]
+  );
 
   // 키보드 핸들러
   useEffect(() => {
@@ -322,33 +364,31 @@ export default function SnakeGame({ onGameEnd, onScoreChange }: GameComponentPro
       if (!newDir) return;
       e.preventDefault();
 
-      setState(prev => {
-        if (prev.gameStatus !== 'playing') return prev;
-        if (OPPOSITE[newDir] === prev.direction) return prev;
-        return { ...prev, nextDirection: newDir };
-      });
+      changeDirection(newDir);
     };
 
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [handleStart]);
+  }, [handleStart, changeDirection]);
 
-  // 터치 스와이프
+  // 터치 스와이프 (컨테이너 전체)
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    const el = containerRef.current;
+    if (!el) return;
 
     const onTouchStart = (e: TouchEvent) => {
+      e.preventDefault();
       touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
     };
 
     const onTouchEnd = (e: TouchEvent) => {
+      e.preventDefault();
       if (!touchStartRef.current) return;
       const dx = e.changedTouches[0].clientX - touchStartRef.current.x;
       const dy = e.changedTouches[0].clientY - touchStartRef.current.y;
       touchStartRef.current = null;
 
-      if (Math.abs(dx) < 30 && Math.abs(dy) < 30) return;
+      if (Math.abs(dx) < 20 && Math.abs(dy) < 20) return;
 
       let newDir: Direction;
       if (Math.abs(dx) > Math.abs(dy)) {
@@ -357,20 +397,16 @@ export default function SnakeGame({ onGameEnd, onScoreChange }: GameComponentPro
         newDir = dy > 0 ? 'DOWN' : 'UP';
       }
 
-      setState(prev => {
-        if (prev.gameStatus !== 'playing') return prev;
-        if (OPPOSITE[newDir] === prev.direction) return prev;
-        return { ...prev, nextDirection: newDir };
-      });
+      changeDirection(newDir);
     };
 
-    canvas.addEventListener('touchstart', onTouchStart, { passive: true });
-    canvas.addEventListener('touchend', onTouchEnd, { passive: true });
+    el.addEventListener('touchstart', onTouchStart, { passive: false });
+    el.addEventListener('touchend', onTouchEnd, { passive: false });
     return () => {
-      canvas.removeEventListener('touchstart', onTouchStart);
-      canvas.removeEventListener('touchend', onTouchEnd);
+      el.removeEventListener('touchstart', onTouchStart);
+      el.removeEventListener('touchend', onTouchEnd);
     };
-  }, []);
+  }, [changeDirection]);
 
   const buttonLabel = () => {
     switch (state.gameStatus) {
@@ -400,7 +436,7 @@ export default function SnakeGame({ onGameEnd, onScoreChange }: GameComponentPro
         </div>
       </div>
 
-      <div className="relative max-w-[400px] w-full" style={shakeStyle}>
+      <div ref={containerRef} className="relative max-w-[400px] w-full" style={shakeStyle}>
         <canvas
           ref={canvasRef}
           width={CANVAS_SIZE}
@@ -433,7 +469,50 @@ export default function SnakeGame({ onGameEnd, onScoreChange }: GameComponentPro
         {buttonLabel()}
       </button>
 
-      <p className="text-xs text-zinc-600">방향키로 이동 · Space로 일시정지</p>
+      {/* D-패드 모바일 컨트롤러 */}
+      <div className="flex flex-col items-center gap-1 mt-1">
+        {/* 위 버튼 */}
+        <div className="flex justify-center">
+          <button
+            onPointerDown={e => { e.preventDefault(); changeDirection('UP'); }}
+            className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
+            aria-label="위로 이동"
+          >
+            ▲
+          </button>
+        </div>
+        {/* 가운데 행 */}
+        <div className="flex gap-1">
+          <button
+            onPointerDown={e => { e.preventDefault(); changeDirection('LEFT'); }}
+            className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
+            aria-label="왼쪽으로 이동"
+          >
+            ◀
+          </button>
+          {/* 중앙 스페이서 */}
+          <div className="w-14 h-14" />
+          <button
+            onPointerDown={e => { e.preventDefault(); changeDirection('RIGHT'); }}
+            className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
+            aria-label="오른쪽으로 이동"
+          >
+            ▶
+          </button>
+        </div>
+        {/* 아래 버튼 */}
+        <div className="flex justify-center">
+          <button
+            onPointerDown={e => { e.preventDefault(); changeDirection('DOWN'); }}
+            className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
+            aria-label="아래로 이동"
+          >
+            ▼
+          </button>
+        </div>
+      </div>
+
+      <p className="text-xs text-zinc-600">방향키로 이동 · Space로 일시정지 · 모바일: 스와이프 또는 D-패드</p>
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
+import { useCombo } from '@/hooks/useCombo';
 import { useScreenShake } from '@/hooks/useScreenShake';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
@@ -101,7 +102,7 @@ function getGhostY(board: BoardRow[], piece: Piece): number {
 
 const LINE_SCORES = [0, 100, 300, 500, 800];
 
-export default function TetrisGame({ onGameEnd, onScoreChange, onAction }: GameComponentProps) {
+export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove, onCombo }: GameComponentProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const nextCanvasRef = useRef<HTMLCanvasElement>(null);
   const boardRef = useRef<BoardRow[]>(createBoard());
@@ -125,6 +126,10 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction }: GameC
   triggerShakeRef.current = triggerShake;
   const onActionRef = useRef(onAction);
   onActionRef.current = onAction;
+  const onComboRef = useRef(onCombo);
+  onComboRef.current = onCombo;
+
+  const combo = useCombo();
 
   const getDropInterval = useCallback(() => {
     return Math.max(100, 1000 - (levelRef.current - 1) * 80);
@@ -248,6 +253,14 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction }: GameC
           setDisplayLines(linesRef.current);
           onScoreChange(scoreRef.current);
           onActionRef.current?.();
+
+          // 콤보 추적
+          const prevLevel = combo.comboLevel;
+          const newComboLevel = combo.increment();
+          if (newComboLevel > 0 && newComboLevel > prevLevel) {
+            onComboRef.current?.(newComboLevel);
+          }
+
           // 줄 제거 이펙트
           if (linesCleared >= 4) {
             triggerShakeRef.current(10, 500);
@@ -262,6 +275,9 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction }: GameC
             setFlashColor('rgba(99,102,241,0.3)');
             setFlashActive(true);
           }
+        } else {
+          // 라인 클리어 없이 착지 시 콤보 리셋
+          combo.reset();
         }
 
         // New piece
@@ -285,7 +301,62 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction }: GameC
 
     drawBoard();
     animFrameRef.current = requestAnimationFrame(gameLoop);
-  }, [getDropInterval, drawBoard, drawNext, onGameEnd, onScoreChange]);
+  }, [getDropInterval, drawBoard, drawNext, onGameEnd, onScoreChange, combo]);
+
+  // 이동 함수들 (키보드 + D-pad 공용)
+  const moveLeft = useCallback(() => {
+    if (gameStatusRef.current !== 'playing') return;
+    const piece = currentPieceRef.current;
+    const moved = { ...piece, x: piece.x - 1 };
+    if (isValid(boardRef.current, moved)) {
+      currentPieceRef.current = moved;
+      onMove?.();
+    }
+  }, [onMove]);
+
+  const moveRight = useCallback(() => {
+    if (gameStatusRef.current !== 'playing') return;
+    const piece = currentPieceRef.current;
+    const moved = { ...piece, x: piece.x + 1 };
+    if (isValid(boardRef.current, moved)) {
+      currentPieceRef.current = moved;
+      onMove?.();
+    }
+  }, [onMove]);
+
+  const softDrop = useCallback(() => {
+    if (gameStatusRef.current !== 'playing') return;
+    const piece = currentPieceRef.current;
+    const moved = { ...piece, y: piece.y + 1 };
+    if (isValid(boardRef.current, moved)) {
+      currentPieceRef.current = moved;
+      scoreRef.current += 1;
+      setDisplayScore(scoreRef.current);
+      onMove?.();
+    }
+  }, [onMove]);
+
+  const rotatePiece = useCallback(() => {
+    if (gameStatusRef.current !== 'playing') return;
+    const piece = currentPieceRef.current;
+    const rotated = { ...piece, shape: rotate(piece.shape) };
+    if (isValid(boardRef.current, rotated)) {
+      currentPieceRef.current = rotated;
+      onMove?.();
+    }
+  }, [onMove]);
+
+  const hardDrop = useCallback(() => {
+    if (gameStatusRef.current !== 'playing') return;
+    const piece = currentPieceRef.current;
+    let ghostY = piece.y;
+    while (isValid(boardRef.current, { ...piece, y: ghostY + 1 })) ghostY++;
+    const dist = ghostY - piece.y;
+    currentPieceRef.current = { ...piece, y: ghostY };
+    scoreRef.current += dist * 2;
+    setDisplayScore(scoreRef.current);
+    onMove?.();
+  }, [onMove]);
 
   const startGame = useCallback(() => {
     boardRef.current = createBoard();
@@ -295,6 +366,7 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction }: GameC
     levelRef.current = 1;
     linesRef.current = 0;
     lastDropRef.current = 0;
+    combo.reset();
     setDisplayScore(0);
     setDisplayLevel(1);
     setDisplayLines(0);
@@ -302,7 +374,7 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction }: GameC
     setGameStatus('playing');
     onScoreChange(0);
     animFrameRef.current = requestAnimationFrame(gameLoop);
-  }, [gameLoop, onScoreChange]);
+  }, [gameLoop, onScoreChange, combo]);
 
   useEffect(() => {
     drawBoard();
@@ -312,36 +384,21 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction }: GameC
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (gameStatusRef.current !== 'playing') return;
-      const piece = currentPieceRef.current;
-      const board = boardRef.current;
 
       if (e.key === 'ArrowLeft') {
-        const moved = { ...piece, x: piece.x - 1 };
-        if (isValid(board, moved)) currentPieceRef.current = moved;
+        moveLeft();
         e.preventDefault();
       } else if (e.key === 'ArrowRight') {
-        const moved = { ...piece, x: piece.x + 1 };
-        if (isValid(board, moved)) currentPieceRef.current = moved;
+        moveRight();
         e.preventDefault();
       } else if (e.key === 'ArrowDown') {
-        const moved = { ...piece, y: piece.y + 1 };
-        if (isValid(board, moved)) {
-          currentPieceRef.current = moved;
-          scoreRef.current += 1;
-          setDisplayScore(scoreRef.current);
-        }
+        softDrop();
         e.preventDefault();
       } else if (e.key === 'ArrowUp') {
-        const rotated = { ...piece, shape: rotate(piece.shape) };
-        if (isValid(board, rotated)) currentPieceRef.current = rotated;
+        rotatePiece();
         e.preventDefault();
       } else if (e.key === ' ') {
-        let ghostY = piece.y;
-        while (isValid(board, { ...piece, y: ghostY + 1 })) ghostY++;
-        const dist = ghostY - piece.y;
-        currentPieceRef.current = { ...piece, y: ghostY };
-        scoreRef.current += dist * 2;
-        setDisplayScore(scoreRef.current);
+        hardDrop();
         e.preventDefault();
       } else if (e.key === 'p' || e.key === 'P') {
         if (gameStatusRef.current === 'playing') {
@@ -358,7 +415,7 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction }: GameC
 
     document.addEventListener('keydown', handleKey);
     return () => document.removeEventListener('keydown', handleKey);
-  }, [gameLoop]);
+  }, [gameLoop, moveLeft, moveRight, softDrop, rotatePiece, hardDrop]);
 
   useEffect(() => {
     return () => cancelAnimationFrame(animFrameRef.current);
@@ -462,7 +519,46 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction }: GameC
           )}
         </div>
       </div>
+
       <p className="text-zinc-500 text-sm">방향키: 이동/회전 | Space: 하드드롭 | P: 일시정지</p>
+
+      {/* 모바일 D-pad 컨트롤러 */}
+      <div className="flex items-center gap-6 mt-2">
+        {/* 왼쪽: D-pad (좌/하/우) */}
+        <div className="flex flex-col items-center gap-1">
+          <div className="flex gap-1">
+            <button
+              onPointerDown={e => { e.preventDefault(); moveLeft(); }}
+              className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
+              aria-label="왼쪽 이동"
+            >&#9664;</button>
+            <button
+              onPointerDown={e => { e.preventDefault(); softDrop(); }}
+              className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
+              aria-label="소프트 드롭"
+            >&#9660;</button>
+            <button
+              onPointerDown={e => { e.preventDefault(); moveRight(); }}
+              className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
+              aria-label="오른쪽 이동"
+            >&#9654;</button>
+          </div>
+        </div>
+
+        {/* 오른쪽: 회전 + 하드드롭 */}
+        <div className="flex flex-col items-center gap-1">
+          <button
+            onPointerDown={e => { e.preventDefault(); rotatePiece(); }}
+            className="w-14 h-14 bg-indigo-700/80 hover:bg-indigo-600/80 active:bg-indigo-500/80 border border-indigo-500 rounded-xl flex items-center justify-center text-gray-200 text-lg font-bold select-none touch-none"
+            aria-label="회전"
+          >&#8635;</button>
+          <button
+            onPointerDown={e => { e.preventDefault(); hardDrop(); }}
+            className="w-14 h-14 bg-amber-700/80 hover:bg-amber-600/80 active:bg-amber-500/80 border border-amber-500 rounded-xl flex items-center justify-center text-gray-200 text-lg font-bold select-none touch-none"
+            aria-label="하드 드롭"
+          >&#9660;&#9660;</button>
+        </div>
+      </div>
     </div>
   );
 }

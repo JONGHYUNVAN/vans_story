@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
+import { useCombo } from '@/hooks/useCombo';
 import { useScreenShake } from '@/hooks/useScreenShake';
 import ParticleEffect from '@/components/features/games/effects/ParticleEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
@@ -11,7 +12,7 @@ const GAME_DURATION = 30;
 
 type GameStatus = 'idle' | 'playing' | 'gameover';
 
-export default function WhackaMoleGame({ onGameEnd, onScoreChange, onAction }: GameComponentProps) {
+export default function WhackaMoleGame({ onGameEnd, onScoreChange, onAction, onCombo }: GameComponentProps) {
   const [moles, setMoles] = useState<boolean[]>(Array(TOTAL_HOLES).fill(false));
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
@@ -30,6 +31,8 @@ export default function WhackaMoleGame({ onGameEnd, onScoreChange, onAction }: G
   const [flashActive, setFlashActive] = useState(false);
   const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number }>>([]);
   const particleIdRef = useRef(0);
+
+  const soundCombo = useCombo();
 
   const clearAllTimers = useCallback(() => {
     if (moleTimerRef.current) clearInterval(moleTimerRef.current);
@@ -61,6 +64,7 @@ export default function WhackaMoleGame({ onGameEnd, onScoreChange, onAction }: G
     clearAllTimers();
     scoreRef.current = 0;
     comboRef.current = 0;
+    soundCombo.reset();
     setScore(0);
     setCombo(0);
     setTimeLeft(GAME_DURATION);
@@ -89,7 +93,7 @@ export default function WhackaMoleGame({ onGameEnd, onScoreChange, onAction }: G
       const currentLevel = Math.floor(elapsed / 10) + 1;
       spawnMoles(currentLevel);
     }, 1000);
-  }, [clearAllTimers, spawnMoles, onGameEnd, onScoreChange]);
+  }, [clearAllTimers, spawnMoles, onGameEnd, onScoreChange, soundCombo]);
 
   const handleHoleClick = useCallback((idx: number) => {
     if (gameStatus !== 'playing') return;
@@ -107,6 +111,13 @@ export default function WhackaMoleGame({ onGameEnd, onScoreChange, onAction }: G
       comboRef.current = newCombo;
       lastHitTimeRef.current = now;
       setCombo(newCombo);
+
+      // 사운드 콤보 추적
+      const prevLevel = soundCombo.comboLevel;
+      const newLevel = soundCombo.increment();
+      if (newLevel > 0 && newLevel > prevLevel) {
+        onCombo?.(newLevel);
+      }
 
       const pts = 10 + (newCombo - 1) * 5;
       scoreRef.current += pts;
@@ -143,9 +154,10 @@ export default function WhackaMoleGame({ onGameEnd, onScoreChange, onAction }: G
       onScoreChange(scoreRef.current);
       comboRef.current = 0;
       setCombo(0);
+      soundCombo.reset();
       setFlashActive(true);
     }
-  }, [gameStatus, moles, onScoreChange]);
+  }, [gameStatus, moles, onScoreChange, onAction, onCombo, soundCombo]);
 
   return (
     <div className="flex flex-col items-center gap-4 p-4" style={shakeStyle}>

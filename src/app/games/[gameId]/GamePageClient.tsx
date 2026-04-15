@@ -25,6 +25,9 @@ export interface GameComponentProps {
   onGameEnd: (score: number, detail?: string) => void;
   onScoreChange: (score: number) => void;
   onAction?: () => void;
+  onMove?: () => void;
+  onCombo?: (level: number) => void;
+  onKeyClick?: () => void;
 }
 
 const GAME_COMPONENTS: Record<string, React.ComponentType<GameComponentProps>> = {
@@ -53,6 +56,7 @@ export default function GamePageClient({ gameId }: GamePageClientProps) {
   const {
     playScore, playGameOver,
     playJump, playHit, playLineClear, playMatch, playPing,
+    playMoveTick, playKeyClick, playCombo, playSelect,
     isMuted, toggleMute,
   } = useSound();
 
@@ -73,6 +77,11 @@ export default function GamePageClient({ gameId }: GamePageClientProps) {
     tetris: playLineClear,
     memory: playMatch,
     reaction: playPing,
+    minesweeper: playSelect,
+    breakout: playHit,
+    rps: playSelect,
+    slidingpuzzle: playMoveTick,
+    wordle: playKeyClick,
   };
 
   const handleGameEnd = useCallback((score: number, detail?: string) => {
@@ -118,6 +127,9 @@ export default function GamePageClient({ gameId }: GamePageClientProps) {
         onGameEnd={handleGameEnd}
         onScoreChange={handleScoreChange}
         onAction={actionSoundMap[gameId]}
+        onMove={['snake', '2048', 'tetris', 'slidingpuzzle'].includes(gameId) ? playMoveTick : undefined}
+        onCombo={playCombo}
+        onKeyClick={['typing', 'wordle'].includes(gameId) ? playKeyClick : undefined}
       />
     </GameLayout>
   );

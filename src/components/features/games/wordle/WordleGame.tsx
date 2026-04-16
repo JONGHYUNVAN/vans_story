@@ -195,7 +195,7 @@ export default function WordleGame({ onGameEnd, onScoreChange, onKeyClick, onCom
   };
 
   const getCellClass = (rowIdx: number, colIdx: number): string => {
-    const base = 'w-[52px] h-[52px] flex items-center justify-center text-xl font-black border-2 rounded-md uppercase ';
+    const base = 'w-[clamp(38px,9.5vw,52px)] h-[clamp(38px,9.5vw,52px)] flex items-center justify-center text-xl font-black border-2 rounded-md uppercase ';
     if (rowIdx < guesses.length) {
       const status = guesses[rowIdx][colIdx].status;
       if (status === 'correct') return base + 'bg-emerald-600 border-emerald-600 text-white';

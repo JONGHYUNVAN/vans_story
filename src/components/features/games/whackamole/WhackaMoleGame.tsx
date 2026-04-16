@@ -202,7 +202,7 @@ export default function WhackaMoleGame({ onGameEnd, onScoreChange, onAction, onC
             key={idx}
             onClick={() => handleHoleClick(idx)}
             className={[
-              'w-20 h-20 rounded-full flex items-center justify-center cursor-pointer border-2 transition-all duration-100 select-none',
+              'w-[clamp(60px,22vw,88px)] h-[clamp(60px,22vw,88px)] rounded-full flex items-center justify-center cursor-pointer border-2 transition-all duration-100 select-none',
               hasMole
                 ? 'bg-amber-900 border-amber-600'
                 : 'bg-zinc-800 border-zinc-700 hover:bg-zinc-700',

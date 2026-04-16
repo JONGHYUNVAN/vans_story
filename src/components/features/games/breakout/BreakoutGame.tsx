@@ -5,9 +5,11 @@ import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
 import { useSound } from '@/hooks/useSound';
 import { useCombo } from '@/hooks/useCombo';
 import { useScreenShake } from '@/hooks/useScreenShake';
+import { useGameSize } from '@/hooks/useGameSize';
 import ParticleEffect from '@/components/features/games/effects/ParticleEffect';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
+import GameOverlayController, { Direction } from '@/components/features/games/GameOverlayController';
 
 const CANVAS_W = 480;
 const CANVAS_H = 360;
@@ -75,6 +77,9 @@ export default function BreakoutGame({ onGameEnd, onScoreChange, onAction, onCom
   const { playHit } = useSound();
   const combo = useCombo();
 
+  // CSS 스케일링 방식: canvas 내부 좌표계는 CANVAS_W x CANVAS_H 고정
+  const size = useGameSize({ aspectRatio: CANVAS_W / CANVAS_H, maxWidth: 560, maxHeight: 420 });
+
   const resetBall = useCallback(() => {
     ballRef.current = {
       x: CANVAS_W / 2,
@@ -84,33 +89,39 @@ export default function BreakoutGame({ onGameEnd, onScoreChange, onAction, onCom
     };
   }, []);
 
+  // DPad tap 방식으로 패들 이동 (각 누름마다 고정 거리 이동)
+  const handleDpadDirection = useCallback((dir: Direction) => {
+    if (gameStatusRef.current !== 'playing') return;
+    const STEP = 30;
+    if (dir === 'LEFT') {
+      paddleXRef.current = Math.max(0, paddleXRef.current - STEP);
+    } else if (dir === 'RIGHT') {
+      paddleXRef.current = Math.min(CANVAS_W - PADDLE_W, paddleXRef.current + STEP);
+    }
+  }, []);
+
   const draw = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Background
     ctx.fillStyle = '#111827';
     ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
 
     if (gameStatusRef.current === 'playing') {
-      // Paddle keyboard movement
       if (keysRef.current.has('ArrowLeft')) paddleXRef.current = Math.max(0, paddleXRef.current - 5);
       if (keysRef.current.has('ArrowRight')) paddleXRef.current = Math.min(CANVAS_W - PADDLE_W, paddleXRef.current + 5);
 
       const ball = ballRef.current;
 
-      // Move ball
       ball.x += ball.vx;
       ball.y += ball.vy;
 
-      // Wall bounce
       if (ball.x - BALL_R < 0) { ball.x = BALL_R; ball.vx = Math.abs(ball.vx); }
       if (ball.x + BALL_R > CANVAS_W) { ball.x = CANVAS_W - BALL_R; ball.vx = -Math.abs(ball.vx); }
       if (ball.y - BALL_R < 0) { ball.y = BALL_R; ball.vy = Math.abs(ball.vy); }
 
-      // Paddle bounce
       if (
         ball.y + BALL_R >= PADDLE_Y &&
         ball.y + BALL_R <= PADDLE_Y + PADDLE_H &&
@@ -124,7 +135,6 @@ export default function BreakoutGame({ onGameEnd, onScoreChange, onAction, onCom
         playHit();
       }
 
-      // Bottom out
       if (ball.y + BALL_R > CANVAS_H) {
         livesRef.current--;
         setDisplayLives(livesRef.current);
@@ -140,7 +150,6 @@ export default function BreakoutGame({ onGameEnd, onScoreChange, onAction, onCom
         resetBall();
       }
 
-      // Brick collision
       let aliveBricks = 0;
       for (const brick of bricksRef.current) {
         if (!brick.alive) continue;
@@ -160,24 +169,20 @@ export default function BreakoutGame({ onGameEnd, onScoreChange, onAction, onCom
           setDisplayScore(scoreRef.current);
           onScoreChange(scoreRef.current);
 
-          // 벽돌 파괴 사운드 및 콤보
           onActionRef.current?.();
 
-          // 콤보 추적
           const prevLevel = combo.comboLevel;
           const newLevel = combo.increment();
           if (newLevel > 0 && newLevel > prevLevel) {
             onComboRef.current?.(newLevel);
           }
 
-          // 벽돌 파괴 파티클
           const brickCX = bx + BRICK_W / 2;
           const brickCY = by + BRICK_H / 2;
           const brickColor = BRICK_COLORS[brick.row];
           const pid = ++particleIdRef.current;
           setParticles(prev => [...prev, { id: pid, x: brickCX, y: brickCY, color: brickColor }]);
 
-          // Determine bounce direction
           const overlapLeft = ball.x + BALL_R - bx;
           const overlapRight = bx + BRICK_W - (ball.x - BALL_R);
           const overlapTop = ball.y + BALL_R - by;
@@ -199,7 +204,6 @@ export default function BreakoutGame({ onGameEnd, onScoreChange, onAction, onCom
       }
     }
 
-    // Draw bricks
     for (const brick of bricksRef.current) {
       if (!brick.alive) continue;
       const bx = BRICK_OFFSET_X + brick.col * (BRICK_W + BRICK_GAP);
@@ -210,7 +214,6 @@ export default function BreakoutGame({ onGameEnd, onScoreChange, onAction, onCom
       ctx.fillRect(bx, by, BRICK_W, 4);
     }
 
-    // Draw paddle
     ctx.fillStyle = '#6366f1';
     ctx.beginPath();
     ctx.roundRect(paddleXRef.current, PADDLE_Y, PADDLE_W, PADDLE_H, 4);
@@ -218,13 +221,11 @@ export default function BreakoutGame({ onGameEnd, onScoreChange, onAction, onCom
     ctx.fillStyle = 'rgba(255,255,255,0.3)';
     ctx.fillRect(paddleXRef.current + 4, PADDLE_Y + 2, PADDLE_W - 8, 3);
 
-    // Draw ball
     ctx.beginPath();
     ctx.arc(ballRef.current.x, ballRef.current.y, BALL_R, 0, Math.PI * 2);
     ctx.fillStyle = '#a5f3fc';
     ctx.fill();
 
-    // HUD
     ctx.fillStyle = 'white';
     ctx.font = '14px monospace';
     ctx.fillText(`점수: ${scoreRef.current}`, 8, 20);
@@ -258,7 +259,6 @@ export default function BreakoutGame({ onGameEnd, onScoreChange, onAction, onCom
   }, [draw, resetBall, onScoreChange, combo]);
 
   useEffect(() => {
-    // Initial render
     const canvas = canvasRef.current;
     if (canvas) {
       const ctx = canvas.getContext('2d');
@@ -277,7 +277,9 @@ export default function BreakoutGame({ onGameEnd, onScoreChange, onAction, onCom
       if (!canvas) return;
       const rect = canvas.getBoundingClientRect();
       const mouseX = e.clientX - rect.left;
-      paddleXRef.current = Math.max(0, Math.min(CANVAS_W - PADDLE_W, mouseX - PADDLE_W / 2));
+      // CSS 스케일링을 고려한 좌표 변환
+      const scaleX = CANVAS_W / rect.width;
+      paddleXRef.current = Math.max(0, Math.min(CANVAS_W - PADDLE_W, mouseX * scaleX - PADDLE_W / 2));
     };
     const handleTouchMove = (e: TouchEvent) => {
       if (gameStatusRef.current !== 'playing') return;
@@ -308,14 +310,20 @@ export default function BreakoutGame({ onGameEnd, onScoreChange, onAction, onCom
     };
   }, []);
 
+  const canvasStyle = size.ready
+    ? { width: size.width, height: size.height }
+    : {};
+
   return (
     <div className="flex flex-col items-center gap-4 p-4">
       <ConfettiEffect active={confettiActive} duration={2500} />
       <div className="relative" style={shakeStyle}>
+        {/* canvas 내부 좌표계 고정, CSS로 크기 조정 */}
         <canvas
           ref={canvasRef}
           width={CANVAS_W}
           height={CANVAS_H}
+          style={{ ...canvasStyle, display: 'block' }}
           className="rounded-xl border border-gray-700"
         />
         <FlashOverlay
@@ -357,7 +365,15 @@ export default function BreakoutGame({ onGameEnd, onScoreChange, onAction, onCom
           </div>
         )}
       </div>
-      <p className="text-zinc-500 text-sm">마우스 / 터치 / 방향키: 패들 조작</p>
+
+      <GameOverlayController
+        type="dpad"
+        onDirection={handleDpadDirection}
+        hiddenActions={['A', 'B', 'X', 'Y']}
+        disabled={gameStatus !== 'playing'}
+      />
+
+      <p className="text-zinc-500 text-sm">마우스 / 터치 / 방향키 / D-패드: 패들 조작</p>
     </div>
   );
 }

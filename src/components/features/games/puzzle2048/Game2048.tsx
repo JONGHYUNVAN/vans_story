@@ -5,8 +5,10 @@ import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
 import { useScreenShake } from '@/hooks/useScreenShake';
 import { useSound } from '@/hooks/useSound';
 import { useCombo } from '@/hooks/useCombo';
+import { useGameSize } from '@/hooks/useGameSize';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
+import GameOverlayController, { Direction } from '@/components/features/games/GameOverlayController';
 
 type GameStatus = 'idle' | 'playing' | 'won' | 'gameover';
 
@@ -171,6 +173,11 @@ export default function Game2048({ onGameEnd, onScoreChange, onMove, onCombo }: 
   const prevScoreRef = useRef(0);
   const bestScoreRef = useRef(0);
 
+  const size = useGameSize({ aspectRatio: 1, maxWidth: 480, maxHeight: 480 });
+
+  const gap = size.ready ? Math.max(6, Math.floor(size.width * 0.015)) : 8;
+  const padding = size.ready ? Math.max(8, Math.floor(size.width * 0.02)) : 12;
+
   const startGame = useCallback(() => {
     combo.reset();
     setState({
@@ -197,15 +204,12 @@ export default function Game2048({ onGameEnd, onScoreChange, onMove, onCombo }: 
         if (!result.changed) return prev;
 
         onMove?.();
-
-        // 이동 틱 사운드
         playMoveTick();
 
         if (result.merges >= 2) {
           onCombo?.(Math.min(result.merges, 5));
         }
 
-        // 병합 콤보 사운드
         if (result.merges === 0) {
           combo.reset();
         } else {
@@ -242,6 +246,19 @@ export default function Game2048({ onGameEnd, onScoreChange, onMove, onCombo }: 
     [onGameEnd, onScoreChange, onMove, onCombo, playMoveTick, playCombo, playScore, combo]
   );
 
+  const handleOverlayDirection = useCallback(
+    (dir: Direction) => {
+      const map: Record<Direction, 'up' | 'down' | 'left' | 'right'> = {
+        UP: 'up',
+        DOWN: 'down',
+        LEFT: 'left',
+        RIGHT: 'right',
+      };
+      applyMove(map[dir]);
+    },
+    [applyMove]
+  );
+
   // 이펙트 감지
   useEffect(() => {
     if (state.gameStatus === 'won') {
@@ -252,7 +269,6 @@ export default function Game2048({ onGameEnd, onScoreChange, onMove, onCombo }: 
     if (state.gameStatus === 'gameover') {
       setFlashActive(true);
     }
-    // 신기록 감지
     if (state.score > prevScoreRef.current && state.score > bestScoreRef.current && state.score > 0) {
       bestScoreRef.current = state.score;
       triggerShake(6, 400);
@@ -311,13 +327,29 @@ export default function Game2048({ onGameEnd, onScoreChange, onMove, onCombo }: 
     };
   }, [applyMove]);
 
+  const boardStyle = size.ready
+    ? {
+        width: size.width,
+        height: size.height,
+        padding,
+        gap,
+        ...shakeStyle,
+      }
+    : {
+        maxWidth: 480,
+        ...shakeStyle,
+      };
+
   return (
     <div className="flex flex-col items-center gap-4">
       <ConfettiEffect
         active={confettiActive}
         duration={confettiDuration}
       />
-      <div className="flex items-center gap-6 w-full max-w-[400px]">
+      <div
+        className="flex items-center gap-6"
+        style={{ width: size.ready ? size.width : undefined, maxWidth: 480 }}
+      >
         <div className="text-center">
           <p className="text-xs text-zinc-500">점수</p>
           <p className="text-2xl font-black text-white">{state.score.toLocaleString()}</p>
@@ -337,8 +369,8 @@ export default function Game2048({ onGameEnd, onScoreChange, onMove, onCombo }: 
 
       <div
         ref={boardRef}
-        className="relative max-w-[400px] w-full mx-auto bg-zinc-900 rounded-xl p-3"
-        style={shakeStyle}
+        className="relative w-full mx-auto bg-zinc-900 rounded-xl"
+        style={boardStyle}
       >
         <FlashOverlay
           active={flashActive}
@@ -346,7 +378,10 @@ export default function Game2048({ onGameEnd, onScoreChange, onMove, onCombo }: 
           duration={400}
           onDone={() => setFlashActive(false)}
         />
-        <div className="grid grid-cols-4 grid-rows-4 gap-2 aspect-square">
+        <div
+          className="grid grid-cols-4 grid-rows-4 w-full h-full"
+          style={{ gap }}
+        >
           {state.board.flat().map((value, index) => {
             const colors = getTileColor(value);
             return (
@@ -413,50 +448,15 @@ export default function Game2048({ onGameEnd, onScoreChange, onMove, onCombo }: 
             </button>
           </div>
         )}
+
       </div>
 
-      {/* D-패드 모바일 컨트롤러 */}
-      <div className="flex flex-col items-center gap-1">
-        {/* 위 버튼 */}
-        <div className="flex justify-center">
-          <button
-            onPointerDown={e => { e.preventDefault(); applyMove('up'); }}
-            className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
-            aria-label="위로 이동"
-          >
-            ▲
-          </button>
-        </div>
-        {/* 가운데 행 */}
-        <div className="flex gap-1">
-          <button
-            onPointerDown={e => { e.preventDefault(); applyMove('left'); }}
-            className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
-            aria-label="왼쪽으로 이동"
-          >
-            ◀
-          </button>
-          {/* 중앙 스페이서 */}
-          <div className="w-14 h-14" />
-          <button
-            onPointerDown={e => { e.preventDefault(); applyMove('right'); }}
-            className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
-            aria-label="오른쪽으로 이동"
-          >
-            ▶
-          </button>
-        </div>
-        {/* 아래 버튼 */}
-        <div className="flex justify-center">
-          <button
-            onPointerDown={e => { e.preventDefault(); applyMove('down'); }}
-            className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
-            aria-label="아래로 이동"
-          >
-            ▼
-          </button>
-        </div>
-      </div>
+      <GameOverlayController
+        type="dpad"
+        onDirection={handleOverlayDirection}
+        hiddenActions={['A', 'B', 'X', 'Y']}
+        disabled={state.gameStatus !== 'playing'}
+      />
 
       <p className="text-xs text-zinc-600">방향키 또는 WASD로 이동 · 모바일: 스와이프 또는 D-패드</p>
     </div>

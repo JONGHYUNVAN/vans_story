@@ -5,6 +5,7 @@ import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
 import { useCombo } from '@/hooks/useCombo';
 import { useScreenShake } from '@/hooks/useScreenShake';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
+import GameOverlayController, { Direction as OverlayDirection } from '@/components/features/games/GameOverlayController';
 
 const SIZE = 4;
 const GOAL = [...Array.from({ length: SIZE * SIZE - 1 }, (_, i) => i + 1), 0];
@@ -193,7 +194,7 @@ export default function SlidingPuzzleGame({ onGameEnd, onScoreChange, onMove, on
             key={idx}
             onClick={() => moveTile(idx)}
             className={[
-              'w-16 h-16 md:w-[72px] md:h-[72px] flex items-center justify-center rounded-lg font-bold text-xl transition-all duration-150 select-none',
+              'w-[clamp(52px,17vw,72px)] h-[clamp(52px,17vw,72px)] flex items-center justify-center rounded-lg font-bold text-xl transition-all duration-150 select-none',
               tile === 0
                 ? 'bg-zinc-800/30 cursor-default'
                 : won
@@ -205,6 +206,13 @@ export default function SlidingPuzzleGame({ onGameEnd, onScoreChange, onMove, on
           </div>
         ))}
       </div>
+
+      <GameOverlayController
+        type="dpad"
+        onDirection={(dir: OverlayDirection) => moveByDir(dir)}
+        hiddenActions={['A', 'B', 'X', 'Y']}
+        disabled={gameStatus !== 'playing'}
+      />
 
       {gameStatus === 'idle' && (
         <button
@@ -222,38 +230,7 @@ export default function SlidingPuzzleGame({ onGameEnd, onScoreChange, onMove, on
           새 게임
         </button>
       )}
-      <p className="text-zinc-500 text-sm">타일 클릭 또는 방향키로 이동</p>
-
-      {/* D-패드 모바일 컨트롤러 */}
-      <div className="flex flex-col items-center gap-1 mt-1">
-        <div className="flex justify-center">
-          <button
-            onPointerDown={e => { e.preventDefault(); moveByDir('UP'); }}
-            className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
-            aria-label="위로 이동"
-          >&#9650;</button>
-        </div>
-        <div className="flex gap-1">
-          <button
-            onPointerDown={e => { e.preventDefault(); moveByDir('LEFT'); }}
-            className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
-            aria-label="왼쪽 이동"
-          >&#9664;</button>
-          <div className="w-14 h-14" />
-          <button
-            onPointerDown={e => { e.preventDefault(); moveByDir('RIGHT'); }}
-            className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
-            aria-label="오른쪽 이동"
-          >&#9654;</button>
-        </div>
-        <div className="flex justify-center">
-          <button
-            onPointerDown={e => { e.preventDefault(); moveByDir('DOWN'); }}
-            className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
-            aria-label="아래로 이동"
-          >&#9660;</button>
-        </div>
-      </div>
+      <p className="text-zinc-500 text-sm">타일 클릭 또는 방향키로 이동 · 모바일: D-패드</p>
     </div>
   );
 }

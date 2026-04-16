@@ -6,6 +6,7 @@ import { useSound } from '@/hooks/useSound';
 import { useCombo } from '@/hooks/useCombo';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
+import GameOverlayController from '@/components/features/games/GameOverlayController';
 
 const CODE_SNIPPETS: string[] = [
   'const fetchData = async (url: string) => {',
@@ -94,17 +95,11 @@ export default function TypingGame({ onGameEnd, onScoreChange, onKeyClick, onCom
   const hiddenInputRef = useRef<HTMLInputElement>(null);
   const [flashActive, setFlashActive] = useState(false);
   const [confettiActive, setConfettiActive] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const prevSnippetIndexRef = useRef(0);
   const prevIncorrectRef = useRef(0);
   const correctComboRef = useRef(0);
   const { playKeyClick, playCombo } = useSound();
   const combo = useCombo();
-
-  // 모바일 감지
-  useEffect(() => {
-    setIsMobile('ontouchstart' in window || navigator.maxTouchPoints > 0);
-  }, []);
 
   const stopTimer = useCallback(() => {
     if (timerRef.current) {
@@ -358,8 +353,8 @@ export default function TypingGame({ onGameEnd, onScoreChange, onKeyClick, onCom
         autoCorrect="off"
         autoCapitalize="off"
         spellCheck={false}
-        inputMode={isMobile ? 'none' : 'text'}
-        readOnly={isMobile}
+        inputMode="text"
+        readOnly={false}
         aria-label="타이핑 입력"
         onKeyDown={(e) => {
           const key = e.key;
@@ -455,63 +450,14 @@ export default function TypingGame({ onGameEnd, onScoreChange, onKeyClick, onCom
         </div>
       )}
 
-      {/* 온스크린 QWERTY 키보드 — 모바일에서만 표시 */}
-      {isMobile && state.gameStatus !== 'finished' && (
-        <div className="flex flex-col items-center gap-1.5 mt-1">
-          {/* 행 1: Q~P */}
-          <div className="flex gap-1">
-            {['q','w','e','r','t','y','u','i','o','p'].map(key => (
-              <button
-                key={key}
-                onPointerDown={e => { e.preventDefault(); handleKey({ key } as unknown as KeyboardEvent); }}
-                className="w-9 h-10 bg-gray-700 active:bg-gray-500 border border-gray-600 rounded-md flex items-center justify-center text-sm text-gray-200 select-none touch-none uppercase"
-              >
-                {key}
-              </button>
-            ))}
-          </div>
-          {/* 행 2: A~L */}
-          <div className="flex gap-1">
-            {['a','s','d','f','g','h','j','k','l'].map(key => (
-              <button
-                key={key}
-                onPointerDown={e => { e.preventDefault(); handleKey({ key } as unknown as KeyboardEvent); }}
-                className="w-9 h-10 bg-gray-700 active:bg-gray-500 border border-gray-600 rounded-md flex items-center justify-center text-sm text-gray-200 select-none touch-none uppercase"
-              >
-                {key}
-              </button>
-            ))}
-          </div>
-          {/* 행 3: spacer + Z~M + Backspace */}
-          <div className="flex gap-1 items-center">
-            <div className="w-5" />
-            {['z','x','c','v','b','n','m'].map(key => (
-              <button
-                key={key}
-                onPointerDown={e => { e.preventDefault(); handleKey({ key } as unknown as KeyboardEvent); }}
-                className="w-9 h-10 bg-gray-700 active:bg-gray-500 border border-gray-600 rounded-md flex items-center justify-center text-sm text-gray-200 select-none touch-none uppercase"
-              >
-                {key}
-              </button>
-            ))}
-            <button
-              onPointerDown={e => { e.preventDefault(); handleKey({ key: 'Backspace' } as unknown as KeyboardEvent); }}
-              className="w-14 h-10 bg-gray-700 active:bg-gray-500 border border-gray-600 rounded-md flex items-center justify-center text-sm text-gray-200 select-none touch-none"
-              aria-label="삭제"
-            >
-              ⌫
-            </button>
-          </div>
-          {/* 행 4: 스페이스바 */}
-          <div className="flex gap-1">
-            <button
-              onPointerDown={e => { e.preventDefault(); handleKey({ key: ' ' } as unknown as KeyboardEvent); }}
-              className="w-40 h-10 bg-gray-700 active:bg-gray-500 border border-gray-600 rounded-md flex items-center justify-center text-sm text-gray-400 select-none touch-none"
-              aria-label="스페이스"
-            >
-              space
-            </button>
-          </div>
+      {/* 온스크린 QWERTY 키보드 — 모바일(1024px 미만)에서만 표시 */}
+      {state.gameStatus !== 'finished' && (
+        <div className="relative min-h-[120px] lg:hidden">
+          <GameOverlayController
+            type="keyboard"
+            onKey={(key) => handleKey({ key } as unknown as KeyboardEvent)}
+            disabled={false}
+          />
         </div>
       )}
 

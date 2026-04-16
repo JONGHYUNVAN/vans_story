@@ -5,12 +5,12 @@ import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
 import { useScreenShake } from '@/hooks/useScreenShake';
 import { useSound } from '@/hooks/useSound';
 import { useCombo } from '@/hooks/useCombo';
+import { useGameSize } from '@/hooks/useGameSize';
 import ParticleEffect from '@/components/features/games/effects/ParticleEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
+import GameOverlayController, { Direction as OverlayDirection } from '@/components/features/games/GameOverlayController';
 
 const GRID_SIZE = 20;
-const CELL_SIZE = 20;
-const CANVAS_SIZE = GRID_SIZE * CELL_SIZE; // 400
 const INITIAL_SPEED = 150;
 const SPEED_INCREMENT = 10;
 const MIN_SPEED = 60;
@@ -99,128 +99,131 @@ export default function SnakeGame({ onGameEnd, onScoreChange, onMove, onCombo }:
   const foodComboRef = useRef(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const size = useGameSize({ aspectRatio: 1, maxWidth: 520, maxHeight: 520, gridCols: GRID_SIZE });
+  // CELL_SIZE는 size.cellSize를 사용 (ready 전에는 기본값 사용)
+  const cellSize = size.ready ? size.cellSize : Math.floor(420 / GRID_SIZE);
+  const canvasSize = cellSize * GRID_SIZE;
+
   useEffect(() => {
     stateRef.current = state;
   }, [state]);
 
   // 이펙트 감지
   useEffect(() => {
-    // 게임오버 → 흔들림 + 플래시
     if (state.gameStatus === 'gameover') {
       triggerShake(10, 500);
       setFlashActive(true);
     }
-    // 먹이 획득 → 파티클 (점수 증가로 감지)
     if (state.score > prevScoreRef.current && state.gameStatus === 'playing') {
       const prevFood = prevFoodRef.current;
       if (prevFood) {
-        const px = prevFood.x * CELL_SIZE + CELL_SIZE / 2;
-        const py = prevFood.y * CELL_SIZE + CELL_SIZE / 2;
+        const px = prevFood.x * cellSize + cellSize / 2;
+        const py = prevFood.y * cellSize + cellSize / 2;
         const id = ++particleIdRef.current;
         setParticles(prev => [...prev, { id, x: px, y: py }]);
       }
     }
     prevScoreRef.current = state.score;
     prevFoodRef.current = state.food;
-  }, [state.score, state.gameStatus, state.food, triggerShake]);
+  }, [state.score, state.gameStatus, state.food, triggerShake, cellSize]);
 
-  const drawCanvas = useCallback((s: SnakeState) => {
+  const drawCanvas = useCallback((s: SnakeState, cs: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    const totalSize = cs * GRID_SIZE;
+
     // 배경
     ctx.fillStyle = '#111827';
-    ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    ctx.fillRect(0, 0, totalSize, totalSize);
 
     // 그리드 선
     ctx.strokeStyle = '#1f2937';
     ctx.lineWidth = 0.5;
     for (let i = 0; i <= GRID_SIZE; i++) {
       ctx.beginPath();
-      ctx.moveTo(i * CELL_SIZE, 0);
-      ctx.lineTo(i * CELL_SIZE, CANVAS_SIZE);
+      ctx.moveTo(i * cs, 0);
+      ctx.lineTo(i * cs, totalSize);
       ctx.stroke();
       ctx.beginPath();
-      ctx.moveTo(0, i * CELL_SIZE);
-      ctx.lineTo(CANVAS_SIZE, i * CELL_SIZE);
+      ctx.moveTo(0, i * cs);
+      ctx.lineTo(totalSize, i * cs);
       ctx.stroke();
     }
 
     // 먹이 (원형)
     ctx.fillStyle = '#f87171';
     ctx.beginPath();
-    const fx = s.food.x * CELL_SIZE + CELL_SIZE / 2;
-    const fy = s.food.y * CELL_SIZE + CELL_SIZE / 2;
-    ctx.arc(fx, fy, CELL_SIZE / 2 - 2, 0, Math.PI * 2);
+    const fx = s.food.x * cs + cs / 2;
+    const fy = s.food.y * cs + cs / 2;
+    ctx.arc(fx, fy, cs / 2 - 2, 0, Math.PI * 2);
     ctx.fill();
 
     // 뱀 body
     s.snake.forEach((seg, index) => {
-      const x = seg.x * CELL_SIZE;
-      const y = seg.y * CELL_SIZE;
+      const x = seg.x * cs;
+      const y = seg.y * cs;
       if (index === 0) {
-        // head - 둥근 사각형
         ctx.fillStyle = '#34d399';
         const radius = 4;
         ctx.beginPath();
         ctx.moveTo(x + radius, y);
-        ctx.lineTo(x + CELL_SIZE - radius, y);
-        ctx.quadraticCurveTo(x + CELL_SIZE, y, x + CELL_SIZE, y + radius);
-        ctx.lineTo(x + CELL_SIZE, y + CELL_SIZE - radius);
-        ctx.quadraticCurveTo(x + CELL_SIZE, y + CELL_SIZE, x + CELL_SIZE - radius, y + CELL_SIZE);
-        ctx.lineTo(x + radius, y + CELL_SIZE);
-        ctx.quadraticCurveTo(x, y + CELL_SIZE, x, y + CELL_SIZE - radius);
+        ctx.lineTo(x + cs - radius, y);
+        ctx.quadraticCurveTo(x + cs, y, x + cs, y + radius);
+        ctx.lineTo(x + cs, y + cs - radius);
+        ctx.quadraticCurveTo(x + cs, y + cs, x + cs - radius, y + cs);
+        ctx.lineTo(x + radius, y + cs);
+        ctx.quadraticCurveTo(x, y + cs, x, y + cs - radius);
         ctx.lineTo(x, y + radius);
         ctx.quadraticCurveTo(x, y, x + radius, y);
         ctx.closePath();
         ctx.fill();
       } else {
-        // body
         ctx.fillStyle = '#10b981';
-        ctx.fillRect(x + 1, y + 1, CELL_SIZE - 2, CELL_SIZE - 2);
+        ctx.fillRect(x + 1, y + 1, cs - 2, cs - 2);
       }
     });
 
     // 게임오버 오버레이
     if (s.gameStatus === 'gameover') {
       ctx.fillStyle = 'rgba(0,0,0,0.7)';
-      ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+      ctx.fillRect(0, 0, totalSize, totalSize);
       ctx.fillStyle = '#f87171';
       ctx.font = 'bold 32px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText('Game Over', CANVAS_SIZE / 2, CANVAS_SIZE / 2 - 16);
+      ctx.fillText('Game Over', totalSize / 2, totalSize / 2 - 16);
       ctx.fillStyle = '#e5e7eb';
       ctx.font = '18px monospace';
-      ctx.fillText(`점수: ${s.score}`, CANVAS_SIZE / 2, CANVAS_SIZE / 2 + 20);
+      ctx.fillText(`점수: ${s.score}`, totalSize / 2, totalSize / 2 + 20);
     }
 
     // idle 오버레이
     if (s.gameStatus === 'idle') {
       ctx.fillStyle = 'rgba(0,0,0,0.6)';
-      ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+      ctx.fillRect(0, 0, totalSize, totalSize);
       ctx.fillStyle = '#a1a1aa';
       ctx.font = '16px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText('시작 버튼을 누르세요', CANVAS_SIZE / 2, CANVAS_SIZE / 2);
+      ctx.fillText('시작 버튼을 누르세요', totalSize / 2, totalSize / 2);
     }
 
     // paused 오버레이
     if (s.gameStatus === 'paused') {
       ctx.fillStyle = 'rgba(0,0,0,0.6)';
-      ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+      ctx.fillRect(0, 0, totalSize, totalSize);
       ctx.fillStyle = '#a1a1aa';
       ctx.font = 'bold 24px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText('일시정지', CANVAS_SIZE / 2, CANVAS_SIZE / 2);
+      ctx.fillText('일시정지', totalSize / 2, totalSize / 2);
     }
   }, []);
 
-  // 캔버스 그리기 — state 변경 시
+  // 캔버스 그리기 — state 또는 cellSize 변경 시
   useEffect(() => {
-    drawCanvas(state);
-  }, [state, drawCanvas]);
+    drawCanvas(state, cellSize);
+  }, [state, drawCanvas, cellSize]);
 
   const stopLoop = useCallback(() => {
     if (intervalRef.current) {
@@ -264,7 +267,6 @@ export default function SnakeGame({ onGameEnd, onScoreChange, onMove, onCombo }:
             ? [head, ...prev.snake]
             : [head, ...prev.snake.slice(0, -1)];
 
-          // 이동 틱 사운드
           playMoveTick();
 
           const newScore = ateFood ? prev.score + SCORE_PER_FOOD : prev.score;
@@ -273,7 +275,6 @@ export default function SnakeGame({ onGameEnd, onScoreChange, onMove, onCombo }:
             foodComboRef.current += 1;
             onCombo?.(Math.min(foodComboRef.current, 5));
 
-            // 콤보 사운드: 레벨 변경 시에만 playCombo 호출
             const prevLevel = combo.comboLevel;
             const newLevel = combo.increment();
             if (newLevel === 0) {
@@ -342,6 +343,13 @@ export default function SnakeGame({ onGameEnd, onScoreChange, onMove, onCombo }:
       });
     },
     [onMove]
+  );
+
+  const handleOverlayDirection = useCallback(
+    (dir: OverlayDirection) => {
+      changeDirection(dir as Direction);
+    },
+    [changeDirection]
   );
 
   // 키보드 핸들러
@@ -419,7 +427,7 @@ export default function SnakeGame({ onGameEnd, onScoreChange, onMove, onCombo }:
 
   return (
     <div className="flex flex-col items-center gap-4">
-      <div className="flex items-center gap-6 w-full max-w-[400px]">
+      <div className="flex items-center gap-6" style={{ width: size.ready ? size.width : undefined, maxWidth: 520 }}>
         <div className="text-center">
           <p className="text-xs text-zinc-500">점수</p>
           <p className="text-2xl font-black text-white">{state.score}</p>
@@ -436,31 +444,45 @@ export default function SnakeGame({ onGameEnd, onScoreChange, onMove, onCombo }:
         </div>
       </div>
 
-      <div ref={containerRef} className="relative max-w-[400px] w-full" style={shakeStyle}>
-        <canvas
-          ref={canvasRef}
-          width={CANVAS_SIZE}
-          height={CANVAS_SIZE}
-          className="w-full aspect-square mx-auto rounded-lg border border-gray-700"
-          style={{ imageRendering: 'pixelated' }}
-        />
-        <FlashOverlay
-          active={flashActive}
-          color="rgba(239,68,68,0.35)"
-          duration={400}
-          onDone={() => setFlashActive(false)}
-        />
-        {particles.map(p => (
-          <ParticleEffect
-            key={p.id}
-            x={p.x}
-            y={p.y}
-            color="#34d399"
-            count={8}
-            onDone={() => setParticles(prev => prev.filter(pt => pt.id !== p.id))}
+      <div ref={containerRef} className="relative w-full" style={{ maxWidth: 520 }}>
+        <div className="relative" style={shakeStyle}>
+          <canvas
+            ref={canvasRef}
+            width={canvasSize}
+            height={canvasSize}
+            style={{
+              width: size.ready ? size.width : undefined,
+              height: size.ready ? size.height : undefined,
+              imageRendering: 'pixelated',
+              display: 'block',
+            }}
+            className="mx-auto rounded-lg border border-gray-700"
           />
-        ))}
+          <FlashOverlay
+            active={flashActive}
+            color="rgba(239,68,68,0.35)"
+            duration={400}
+            onDone={() => setFlashActive(false)}
+          />
+          {particles.map(p => (
+            <ParticleEffect
+              key={p.id}
+              x={p.x}
+              y={p.y}
+              color="#34d399"
+              count={8}
+              onDone={() => setParticles(prev => prev.filter(pt => pt.id !== p.id))}
+            />
+          ))}
+        </div>
       </div>
+
+      <GameOverlayController
+        type="dpad"
+        onDirection={handleOverlayDirection}
+        hiddenActions={['A', 'B', 'X', 'Y']}
+        disabled={state.gameStatus !== 'playing'}
+      />
 
       <button
         onClick={handleStart}
@@ -468,49 +490,6 @@ export default function SnakeGame({ onGameEnd, onScoreChange, onMove, onCombo }:
       >
         {buttonLabel()}
       </button>
-
-      {/* D-패드 모바일 컨트롤러 */}
-      <div className="flex flex-col items-center gap-1 mt-1">
-        {/* 위 버튼 */}
-        <div className="flex justify-center">
-          <button
-            onPointerDown={e => { e.preventDefault(); changeDirection('UP'); }}
-            className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
-            aria-label="위로 이동"
-          >
-            ▲
-          </button>
-        </div>
-        {/* 가운데 행 */}
-        <div className="flex gap-1">
-          <button
-            onPointerDown={e => { e.preventDefault(); changeDirection('LEFT'); }}
-            className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
-            aria-label="왼쪽으로 이동"
-          >
-            ◀
-          </button>
-          {/* 중앙 스페이서 */}
-          <div className="w-14 h-14" />
-          <button
-            onPointerDown={e => { e.preventDefault(); changeDirection('RIGHT'); }}
-            className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
-            aria-label="오른쪽으로 이동"
-          >
-            ▶
-          </button>
-        </div>
-        {/* 아래 버튼 */}
-        <div className="flex justify-center">
-          <button
-            onPointerDown={e => { e.preventDefault(); changeDirection('DOWN'); }}
-            className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
-            aria-label="아래로 이동"
-          >
-            ▼
-          </button>
-        </div>
-      </div>
 
       <p className="text-xs text-zinc-600">방향키로 이동 · Space로 일시정지 · 모바일: 스와이프 또는 D-패드</p>
     </div>

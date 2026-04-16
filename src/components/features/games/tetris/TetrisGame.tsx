@@ -4,12 +4,13 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
 import { useCombo } from '@/hooks/useCombo';
 import { useScreenShake } from '@/hooks/useScreenShake';
+import { useGameSize } from '@/hooks/useGameSize';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
+import GameOverlayController, { Direction, ActionBtn } from '@/components/features/games/GameOverlayController';
 
 const BOARD_COLS = 10;
 const BOARD_ROWS = 20;
-const CELL_SIZE = 30;
 
 const TETROMINOES: Record<string, { shape: number[][]; color: string }> = {
   I: { shape: [[1, 1, 1, 1]], color: '#22d3ee' },
@@ -131,6 +132,14 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
 
   const combo = useCombo();
 
+  const size = useGameSize({
+    aspectRatio: BOARD_COLS / BOARD_ROWS,
+    maxWidth: 360,
+    maxHeight: 720,
+    gridCols: BOARD_COLS,
+  });
+  const cellSize = size.ready ? size.cellSize : Math.floor(320 / BOARD_COLS);
+
   const getDropInterval = useCallback(() => {
     return Math.max(100, 1000 - (levelRef.current - 1) * 80);
   }, []);
@@ -141,72 +150,68 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Background
+    const cs = cellSize;
+
     ctx.fillStyle = '#111827';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw grid cells
     const board = boardRef.current;
     for (let r = 0; r < BOARD_ROWS; r++) {
       for (let c = 0; c < BOARD_COLS; c++) {
-        const x = c * CELL_SIZE;
-        const y = r * CELL_SIZE;
+        const x = c * cs;
+        const y = r * cs;
         if (board[r][c] !== 0) {
           const color = board[r][c] as string;
           ctx.fillStyle = color;
-          ctx.fillRect(x + 1, y + 1, CELL_SIZE - 2, CELL_SIZE - 2);
-          // Highlight
+          ctx.fillRect(x + 1, y + 1, cs - 2, cs - 2);
           ctx.fillStyle = 'rgba(255,255,255,0.25)';
-          ctx.fillRect(x + 1, y + 1, CELL_SIZE - 2, 4);
-          ctx.fillRect(x + 1, y + 1, 4, CELL_SIZE - 2);
-          // Shadow
+          ctx.fillRect(x + 1, y + 1, cs - 2, 4);
+          ctx.fillRect(x + 1, y + 1, 4, cs - 2);
           ctx.fillStyle = 'rgba(0,0,0,0.3)';
-          ctx.fillRect(x + 1, y + CELL_SIZE - 5, CELL_SIZE - 2, 4);
-          ctx.fillRect(x + CELL_SIZE - 5, y + 1, 4, CELL_SIZE - 2);
+          ctx.fillRect(x + 1, y + cs - 5, cs - 2, 4);
+          ctx.fillRect(x + cs - 5, y + 1, 4, cs - 2);
         } else {
           ctx.fillStyle = '#1f2937';
-          ctx.fillRect(x + 1, y + 1, CELL_SIZE - 2, CELL_SIZE - 2);
+          ctx.fillRect(x + 1, y + 1, cs - 2, cs - 2);
           ctx.strokeStyle = '#374151';
-          ctx.strokeRect(x, y, CELL_SIZE, CELL_SIZE);
+          ctx.strokeRect(x, y, cs, cs);
         }
       }
     }
 
     const piece = currentPieceRef.current;
 
-    // Ghost piece
     const ghostY = getGhostY(board, piece);
     if (ghostY !== piece.y) {
       ctx.globalAlpha = 0.3;
       for (let r = 0; r < piece.shape.length; r++) {
         for (let c = 0; c < piece.shape[r].length; c++) {
           if (!piece.shape[r][c]) continue;
-          const x = (piece.x + c) * CELL_SIZE;
-          const y = (ghostY + r) * CELL_SIZE;
+          const x = (piece.x + c) * cs;
+          const y = (ghostY + r) * cs;
           ctx.fillStyle = piece.color;
-          ctx.fillRect(x + 1, y + 1, CELL_SIZE - 2, CELL_SIZE - 2);
+          ctx.fillRect(x + 1, y + 1, cs - 2, cs - 2);
         }
       }
       ctx.globalAlpha = 1;
     }
 
-    // Current piece
     for (let r = 0; r < piece.shape.length; r++) {
       for (let c = 0; c < piece.shape[r].length; c++) {
         if (!piece.shape[r][c]) continue;
-        const x = (piece.x + c) * CELL_SIZE;
-        const y = (piece.y + r) * CELL_SIZE;
+        const x = (piece.x + c) * cs;
+        const y = (piece.y + r) * cs;
         ctx.fillStyle = piece.color;
-        ctx.fillRect(x + 1, y + 1, CELL_SIZE - 2, CELL_SIZE - 2);
+        ctx.fillRect(x + 1, y + 1, cs - 2, cs - 2);
         ctx.fillStyle = 'rgba(255,255,255,0.25)';
-        ctx.fillRect(x + 1, y + 1, CELL_SIZE - 2, 4);
-        ctx.fillRect(x + 1, y + 1, 4, CELL_SIZE - 2);
+        ctx.fillRect(x + 1, y + 1, cs - 2, 4);
+        ctx.fillRect(x + 1, y + 1, 4, cs - 2);
         ctx.fillStyle = 'rgba(0,0,0,0.3)';
-        ctx.fillRect(x + 1, y + CELL_SIZE - 5, CELL_SIZE - 2, 4);
-        ctx.fillRect(x + CELL_SIZE - 5, y + 1, 4, CELL_SIZE - 2);
+        ctx.fillRect(x + 1, y + cs - 5, cs - 2, 4);
+        ctx.fillRect(x + cs - 5, y + 1, 4, cs - 2);
       }
     }
-  }, []);
+  }, [cellSize]);
 
   const drawNext = useCallback(() => {
     const canvas = nextCanvasRef.current;
@@ -237,7 +242,6 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
       if (isValid(boardRef.current, moved)) {
         currentPieceRef.current = moved;
       } else {
-        // Lock
         boardRef.current = lockPiece(boardRef.current, piece);
         const { board: clearedBoard, linesCleared } = clearLines(boardRef.current);
         boardRef.current = clearedBoard;
@@ -254,14 +258,12 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
           onScoreChange(scoreRef.current);
           onActionRef.current?.();
 
-          // 콤보 추적
           const prevLevel = combo.comboLevel;
           const newComboLevel = combo.increment();
           if (newComboLevel > 0 && newComboLevel > prevLevel) {
             onComboRef.current?.(newComboLevel);
           }
 
-          // 줄 제거 이펙트
           if (linesCleared >= 4) {
             triggerShakeRef.current(10, 500);
             setConfettiActive(true);
@@ -276,11 +278,9 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
             setFlashActive(true);
           }
         } else {
-          // 라인 클리어 없이 착지 시 콤보 리셋
           combo.reset();
         }
 
-        // New piece
         const newPiece = nextPieceRef.current;
         nextPieceRef.current = randomPiece();
         if (!isValid(boardRef.current, newPiece)) {
@@ -303,8 +303,7 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
     animFrameRef.current = requestAnimationFrame(gameLoop);
   }, [getDropInterval, drawBoard, drawNext, onGameEnd, onScoreChange, combo]);
 
-  // 이동 함수들 (키보드 + D-pad 공용)
-  const moveLeft = useCallback(() => {
+  const movePieceLeft = useCallback(() => {
     if (gameStatusRef.current !== 'playing') return;
     const piece = currentPieceRef.current;
     const moved = { ...piece, x: piece.x - 1 };
@@ -314,7 +313,7 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
     }
   }, [onMove]);
 
-  const moveRight = useCallback(() => {
+  const movePieceRight = useCallback(() => {
     if (gameStatusRef.current !== 'playing') return;
     const piece = currentPieceRef.current;
     const moved = { ...piece, x: piece.x + 1 };
@@ -358,6 +357,23 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
     onMove?.();
   }, [onMove]);
 
+  // D-패드 핸들러: UP=회전, DOWN=소프트드롭, LEFT/RIGHT=이동
+  const handleOverlayDirection = useCallback(
+    (dir: Direction) => {
+      if (dir === 'UP') rotatePiece();
+      else if (dir === 'DOWN') softDrop();
+      else if (dir === 'LEFT') movePieceLeft();
+      else if (dir === 'RIGHT') movePieceRight();
+    },
+    [rotatePiece, softDrop, movePieceLeft, movePieceRight]
+  );
+
+  // 액션 버튼 핸들러: A=회전, B=하드드롭
+  const handleActionBtn = useCallback((btn: ActionBtn) => {
+    if (btn === 'A') rotatePiece();
+    else if (btn === 'B') hardDrop();
+  }, [rotatePiece, hardDrop]);
+
   const startGame = useCallback(() => {
     boardRef.current = createBoard();
     currentPieceRef.current = randomPiece();
@@ -381,15 +397,20 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
     drawNext();
   }, [drawBoard, drawNext]);
 
+  // cellSize 변경 시 재그리기
+  useEffect(() => {
+    drawBoard();
+  }, [drawBoard, cellSize]);
+
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (gameStatusRef.current !== 'playing') return;
 
       if (e.key === 'ArrowLeft') {
-        moveLeft();
+        movePieceLeft();
         e.preventDefault();
       } else if (e.key === 'ArrowRight') {
-        moveRight();
+        movePieceRight();
         e.preventDefault();
       } else if (e.key === 'ArrowDown') {
         softDrop();
@@ -415,11 +436,14 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
 
     document.addEventListener('keydown', handleKey);
     return () => document.removeEventListener('keydown', handleKey);
-  }, [gameLoop, moveLeft, moveRight, softDrop, rotatePiece, hardDrop]);
+  }, [gameLoop, movePieceLeft, movePieceRight, softDrop, rotatePiece, hardDrop]);
 
   useEffect(() => {
     return () => cancelAnimationFrame(animFrameRef.current);
   }, []);
+
+  const canvasWidth = cellSize * BOARD_COLS;
+  const canvasHeight = cellSize * BOARD_ROWS;
 
   return (
     <div className="flex flex-col items-center gap-4 p-4">
@@ -429,8 +453,13 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
         <div className="relative" style={shakeStyle}>
           <canvas
             ref={canvasRef}
-            width={BOARD_COLS * CELL_SIZE}
-            height={BOARD_ROWS * CELL_SIZE}
+            width={canvasWidth}
+            height={canvasHeight}
+            style={{
+              width: size.ready ? size.width : canvasWidth,
+              height: size.ready ? size.height : canvasHeight,
+              display: 'block',
+            }}
             className="bg-gray-900 border border-gray-700 rounded-xl"
           />
           <FlashOverlay
@@ -520,45 +549,16 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
         </div>
       </div>
 
+      <GameOverlayController
+        type="dpad"
+        onDirection={handleOverlayDirection}
+        onActionBtn={handleActionBtn}
+        hiddenActions={['X', 'Y']}
+        disabled={gameStatus !== 'playing'}
+      />
+
       <p className="text-zinc-500 text-sm">방향키: 이동/회전 | Space: 하드드롭 | P: 일시정지</p>
-
-      {/* 모바일 D-pad 컨트롤러 */}
-      <div className="flex items-center gap-6 mt-2">
-        {/* 왼쪽: D-pad (좌/하/우) */}
-        <div className="flex flex-col items-center gap-1">
-          <div className="flex gap-1">
-            <button
-              onPointerDown={e => { e.preventDefault(); moveLeft(); }}
-              className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
-              aria-label="왼쪽 이동"
-            >&#9664;</button>
-            <button
-              onPointerDown={e => { e.preventDefault(); softDrop(); }}
-              className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
-              aria-label="소프트 드롭"
-            >&#9660;</button>
-            <button
-              onPointerDown={e => { e.preventDefault(); moveRight(); }}
-              className="w-14 h-14 bg-gray-700/80 hover:bg-gray-600/80 active:bg-gray-500/80 border border-gray-600 rounded-xl flex items-center justify-center text-gray-200 text-2xl select-none touch-none"
-              aria-label="오른쪽 이동"
-            >&#9654;</button>
-          </div>
-        </div>
-
-        {/* 오른쪽: 회전 + 하드드롭 */}
-        <div className="flex flex-col items-center gap-1">
-          <button
-            onPointerDown={e => { e.preventDefault(); rotatePiece(); }}
-            className="w-14 h-14 bg-indigo-700/80 hover:bg-indigo-600/80 active:bg-indigo-500/80 border border-indigo-500 rounded-xl flex items-center justify-center text-gray-200 text-lg font-bold select-none touch-none"
-            aria-label="회전"
-          >&#8635;</button>
-          <button
-            onPointerDown={e => { e.preventDefault(); hardDrop(); }}
-            className="w-14 h-14 bg-amber-700/80 hover:bg-amber-600/80 active:bg-amber-500/80 border border-amber-500 rounded-xl flex items-center justify-center text-gray-200 text-lg font-bold select-none touch-none"
-            aria-label="하드 드롭"
-          >&#9660;&#9660;</button>
-        </div>
-      </div>
+      <p className="text-zinc-600 text-xs">모바일 D-패드: ▲회전 ▼소프트드롭 ◀▶이동 | A=회전 B=하드드롭</p>
     </div>
   );
 }

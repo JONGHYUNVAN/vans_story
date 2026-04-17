@@ -236,8 +236,12 @@ export default function SnakeGame({ onGameEnd, onScoreChange, onMove, onCombo }:
     (speed: number) => {
       stopLoop();
       intervalRef.current = setInterval(() => {
+        let gameEndScore: number | null = null;
+        let ateFoodScore: number | null = null;
+        let moved = false;
         setState(prev => {
           if (prev.gameStatus !== 'playing') return prev;
+          moved = true;
 
           const dir = prev.nextDirection;
           const delta = DELTA[dir];
@@ -248,17 +252,13 @@ export default function SnakeGame({ onGameEnd, onScoreChange, onMove, onCombo }:
 
           // 벽 충돌
           if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
-            foodComboRef.current = 0;
-            combo.reset();
-            onGameEnd(prev.score);
+            gameEndScore = prev.score;
             return { ...prev, gameStatus: 'gameover', direction: dir };
           }
 
           // 자기 몸 충돌
           if (prev.snake.slice(1).some(s => s.x === head.x && s.y === head.y)) {
-            foodComboRef.current = 0;
-            combo.reset();
-            onGameEnd(prev.score);
+            gameEndScore = prev.score;
             return { ...prev, gameStatus: 'gameover', direction: dir };
           }
 
@@ -267,24 +267,8 @@ export default function SnakeGame({ onGameEnd, onScoreChange, onMove, onCombo }:
             ? [head, ...prev.snake]
             : [head, ...prev.snake.slice(0, -1)];
 
-          playMoveTick();
-
           const newScore = ateFood ? prev.score + SCORE_PER_FOOD : prev.score;
-          if (ateFood) {
-            onScoreChange(newScore);
-            foodComboRef.current += 1;
-            onCombo?.(Math.min(foodComboRef.current, 5));
-
-            const prevLevel = combo.comboLevel;
-            const newLevel = combo.increment();
-            if (newLevel === 0) {
-              playScore();
-            } else if (newLevel > prevLevel) {
-              playCombo(newLevel);
-            } else {
-              playScore();
-            }
-          }
+          if (ateFood) ateFoodScore = newScore;
 
           const newFood = ateFood ? randomFood(newSnake) : prev.food;
           const newSpeed = Math.max(
@@ -301,6 +285,30 @@ export default function SnakeGame({ onGameEnd, onScoreChange, onMove, onCombo }:
             speed: newSpeed,
           };
         });
+
+        // Side effects (outside updater — runs once per tick, safe for parent setState)
+        if (gameEndScore !== null) {
+          foodComboRef.current = 0;
+          combo.reset();
+          onGameEnd(gameEndScore);
+        } else if (ateFoodScore !== null) {
+          playMoveTick();
+          onScoreChange(ateFoodScore);
+          foodComboRef.current += 1;
+          onCombo?.(Math.min(foodComboRef.current, 5));
+
+          const prevLevel = combo.comboLevel;
+          const newLevel = combo.increment();
+          if (newLevel === 0) {
+            playScore();
+          } else if (newLevel > prevLevel) {
+            playCombo(newLevel);
+          } else {
+            playScore();
+          }
+        } else if (moved) {
+          playMoveTick();
+        }
       }, speed);
     },
     [stopLoop, onGameEnd, onScoreChange, onCombo, playMoveTick, playCombo, playScore, combo]

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
 import { useCombo } from '@/hooks/useCombo';
 import { useScreenShake } from '@/hooks/useScreenShake';
+import { useGameTimer } from '@/hooks/useGameTimer';
 import ParticleEffect from '@/components/features/games/effects/ParticleEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
 
@@ -24,8 +25,6 @@ export default function WhackaMoleGame({ onGameEnd, onScoreChange, onAction, onC
   const scoreRef = useRef(0);
   const comboRef = useRef(0);
   const lastHitTimeRef = useRef<number>(0);
-  const moleTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const moleTimeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const { shakeStyle, triggerShake } = useScreenShake();
   const [flashActive, setFlashActive] = useState(false);
@@ -34,16 +33,14 @@ export default function WhackaMoleGame({ onGameEnd, onScoreChange, onAction, onC
 
   const soundCombo = useCombo();
 
-  const clearAllTimers = useCallback(() => {
-    if (moleTimerRef.current) clearInterval(moleTimerRef.current);
-    if (countdownRef.current) clearInterval(countdownRef.current);
+  const clearMoleTimeouts = useCallback(() => {
     moleTimeoutsRef.current.forEach(t => clearTimeout(t));
     moleTimeoutsRef.current = [];
   }, []);
 
   useEffect(() => {
-    return () => clearAllTimers();
-  }, [clearAllTimers]);
+    return () => clearMoleTimeouts();
+  }, [clearMoleTimeouts]);
 
   const spawnMoles = useCallback((level: number) => {
     const newMoles = Array(TOTAL_HOLES).fill(false);
@@ -61,7 +58,7 @@ export default function WhackaMoleGame({ onGameEnd, onScoreChange, onAction, onC
   }, []);
 
   const startGame = useCallback(() => {
-    clearAllTimers();
+    clearMoleTimeouts();
     scoreRef.current = 0;
     comboRef.current = 0;
     soundCombo.reset();
@@ -71,29 +68,29 @@ export default function WhackaMoleGame({ onGameEnd, onScoreChange, onAction, onC
     setMoles(Array(TOTAL_HOLES).fill(false));
     setGameStatus('playing');
     onScoreChange(0);
+    spawnMoles(1);
+  }, [clearMoleTimeouts, spawnMoles, onScoreChange, soundCombo]);
 
-    let elapsed = 0;
+  // 카운트다운
+  useGameTimer(() => {
+    const next = timeLeft - 1;
+    if (next <= 0) {
+      setTimeLeft(0);
+      setGameStatus('gameover');
+      setMoles(Array(TOTAL_HOLES).fill(false));
+      onGameEnd(scoreRef.current);
+      triggerShake(8, 400);
+    } else {
+      setTimeLeft(next);
+    }
+  }, gameStatus === 'playing' ? 1000 : null);
 
-    countdownRef.current = setInterval(() => {
-      elapsed++;
-      const remaining = GAME_DURATION - elapsed;
-      setTimeLeft(remaining);
-      if (remaining <= 0) {
-        clearAllTimers();
-        setGameStatus('gameover');
-        setMoles(Array(TOTAL_HOLES).fill(false));
-        onGameEnd(scoreRef.current);
-        triggerShake(8, 400);
-      }
-    }, 1000);
-
-    const level = 1;
-    spawnMoles(level);
-    moleTimerRef.current = setInterval(() => {
-      const currentLevel = Math.floor(elapsed / 10) + 1;
-      spawnMoles(currentLevel);
-    }, 1000);
-  }, [clearAllTimers, spawnMoles, onGameEnd, onScoreChange, soundCombo]);
+  // 두더지 스폰
+  useGameTimer(() => {
+    const elapsed = GAME_DURATION - timeLeft;
+    const currentLevel = Math.floor(elapsed / 10) + 1;
+    spawnMoles(currentLevel);
+  }, gameStatus === 'playing' ? 1000 : null);
 
   const handleHoleClick = useCallback((idx: number) => {
     if (gameStatus !== 'playing') return;

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
 import { useSound } from '@/hooks/useSound';
 import { useCombo } from '@/hooks/useCombo';
+import { useGameTimer } from '@/hooks/useGameTimer';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
 import GameOverlayController from '@/components/features/games/GameOverlayController';
@@ -90,7 +91,6 @@ export default function TypingGame({ onGameEnd, onScoreChange, onKeyClick, onCom
     makeInitialState(60, shuffleArray(CODE_SNIPPETS))
   );
 
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const gameAreaRef = useRef<HTMLDivElement>(null);
   const hiddenInputRef = useRef<HTMLInputElement>(null);
   const [flashActive, setFlashActive] = useState(false);
@@ -101,16 +101,8 @@ export default function TypingGame({ onGameEnd, onScoreChange, onKeyClick, onCom
   const { playKeyClick, playCombo } = useSound();
   const combo = useCombo();
 
-  const stopTimer = useCallback(() => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-  }, []);
-
   const finishGame = useCallback(
     (finalState: TypingState) => {
-      stopTimer();
       const elapsed = finalState.timeLimit - finalState.timeLeft;
       const elapsedMinutes = elapsed / 60;
       const wpm =
@@ -124,34 +116,26 @@ export default function TypingGame({ onGameEnd, onScoreChange, onKeyClick, onCom
       onGameEnd(wpm, `WPM: ${wpm}, 정확도: ${accuracy}%`);
       setState(s => ({ ...s, gameStatus: 'finished', wpm }));
     },
-    [stopTimer, onGameEnd]
+    [onGameEnd]
   );
 
-  // 타이머
-  useEffect(() => {
-    if (state.gameStatus !== 'playing') return;
-
-    timerRef.current = setInterval(() => {
-      setState(prev => {
-        if (prev.gameStatus !== 'playing') return prev;
-        const newTimeLeft = prev.timeLeft - 1;
-        if (newTimeLeft <= 0) {
-          return { ...prev, timeLeft: 0, gameStatus: 'finished' };
-        }
-        const elapsed = prev.timeLimit - newTimeLeft;
-        const elapsedMinutes = elapsed / 60;
-        const wpm =
-          elapsedMinutes > 0
-            ? Math.round(prev.totalCorrect / 5 / elapsedMinutes)
-            : 0;
-        onScoreChange(wpm);
-        return { ...prev, timeLeft: newTimeLeft, wpm };
-      });
-    }, 1000);
-
-    return () => stopTimer();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.gameStatus]);
+  useGameTimer(() => {
+    setState(prev => {
+      if (prev.gameStatus !== 'playing') return prev;
+      const newTimeLeft = prev.timeLeft - 1;
+      if (newTimeLeft <= 0) {
+        return { ...prev, timeLeft: 0, gameStatus: 'finished' };
+      }
+      const elapsed = prev.timeLimit - newTimeLeft;
+      const elapsedMinutes = elapsed / 60;
+      const wpm =
+        elapsedMinutes > 0
+          ? Math.round(prev.totalCorrect / 5 / elapsedMinutes)
+          : 0;
+      onScoreChange(wpm);
+      return { ...prev, timeLeft: newTimeLeft, wpm };
+    });
+  }, state.gameStatus === 'playing' ? 1000 : null);
 
   // finished 감지 후 처리
   useEffect(() => {
@@ -168,7 +152,6 @@ export default function TypingGame({ onGameEnd, onScoreChange, onKeyClick, onCom
           : 100;
       onGameEnd(wpm, `WPM: ${wpm}, 정확도: ${accuracy}%`);
       setState(s => ({ ...s, wpm }));
-      stopTimer();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.gameStatus, state.timeLeft]);
@@ -308,20 +291,18 @@ export default function TypingGame({ onGameEnd, onScoreChange, onKeyClick, onCom
   }, [handleKey, state.gameStatus]);
 
   const resetGame = useCallback(() => {
-    stopTimer();
     correctComboRef.current = 0;
     combo.reset();
     setState(makeInitialState(timeLimit, shuffleArray(CODE_SNIPPETS)));
     setTimeout(() => hiddenInputRef.current?.focus(), 50);
-  }, [stopTimer, timeLimit, combo]);
+  }, [timeLimit, combo]);
 
   const handleTimeLimitChange = useCallback(
     (limit: 30 | 60) => {
       setTimeLimit(limit);
-      stopTimer();
       setState(makeInitialState(limit, shuffleArray(CODE_SNIPPETS)));
     },
-    [stopTimer]
+    []
   );
 
   const currentSnippet = state.snippets[state.currentSnippetIndex] ?? '';

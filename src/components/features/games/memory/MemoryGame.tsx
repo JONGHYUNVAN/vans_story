@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
 import { useSound } from '@/hooks/useSound';
 import { useCombo } from '@/hooks/useCombo';
+import { useGameTimer } from '@/hooks/useGameTimer';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
 
@@ -44,7 +45,6 @@ export default function MemoryGame({ onGameEnd, onScoreChange, onAction, onCombo
   const [matchCount, setMatchCount] = useState(0);
   const [gameStatus, setGameStatus] = useState<GameStatus>('idle');
   const [time, setTime] = useState(0);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const lockRef = useRef(false);
   const [flashActive, setFlashActive] = useState(false);
   const [flashColor, setFlashColor] = useState('rgba(52,211,153,0.2)');
@@ -53,19 +53,9 @@ export default function MemoryGame({ onGameEnd, onScoreChange, onAction, onCombo
   const { playSelect } = useSound();
   const combo = useCombo();
 
-  const stopTimer = useCallback(() => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-  }, []);
-
-  useEffect(() => {
-    return () => stopTimer();
-  }, [stopTimer]);
+  useGameTimer(() => setTime(t => t + 1), gameStatus === 'playing' ? 1000 : null);
 
   const startGame = useCallback(() => {
-    stopTimer();
     combo.reset();
     setCards(createCards());
     setFlippedIds([]);
@@ -74,9 +64,8 @@ export default function MemoryGame({ onGameEnd, onScoreChange, onAction, onCombo
     setTime(0);
     setGameStatus('playing');
     lockRef.current = false;
-    timerRef.current = setInterval(() => setTime(t => t + 1), 1000);
     onScoreChange(0);
-  }, [stopTimer, onScoreChange, combo]);
+  }, [onScoreChange, combo]);
 
   const handleCardClick = useCallback((id: number) => {
     if (gameStatus !== 'playing') return;
@@ -122,7 +111,6 @@ export default function MemoryGame({ onGameEnd, onScoreChange, onAction, onCombo
         setFlashActive(true);
 
         if (newMatchCount >= 8) {
-          stopTimer();
           setGameStatus('won');
           const score = Math.max(0, 1000 - (moves + 1) * 10 - time * 2);
           onScoreChange(score);
@@ -145,7 +133,7 @@ export default function MemoryGame({ onGameEnd, onScoreChange, onAction, onCombo
         }, 800);
       }
     }
-  }, [cards, flippedIds, gameStatus, matchCount, moves, time, stopTimer, onGameEnd, onScoreChange, onAction, onCombo, playSelect, combo]);
+  }, [cards, flippedIds, gameStatus, matchCount, moves, time, onGameEnd, onScoreChange, onAction, onCombo, playSelect, combo]);
 
   return (
     <div className="flex flex-col items-center gap-4 p-4 relative">

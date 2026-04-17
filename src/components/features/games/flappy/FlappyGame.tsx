@@ -6,6 +6,7 @@ import { useSound } from '@/hooks/useSound';
 import { useCombo } from '@/hooks/useCombo';
 import { useScreenShake } from '@/hooks/useScreenShake';
 import { useGameSize } from '@/hooks/useGameSize';
+import { useGameLoop } from '@/hooks/useGameLoop';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
 import GameOverlayController from '@/components/features/games/GameOverlayController';
 
@@ -278,7 +279,6 @@ export default function FlappyGame({ onGameEnd, onScoreChange, onAction, onCombo
   const objsRef    = useRef<Obj[]>([]);
   const scoreRef   = useRef(0);
   const statRef    = useRef<GameStatus>('idle');
-  const animRef    = useRef(0);
   const spawnRef   = useRef(0);
   const holdRef    = useRef(false);
   const trailRef   = useRef<number[]>([]);
@@ -453,8 +453,9 @@ export default function FlappyGame({ onGameEnd, onScoreChange, onAction, onCombo
       ctx.restore();
     }
 
-    if (statRef.current !== 'gameover') animRef.current = requestAnimationFrame(draw);
   }, [spawnObj, onGameEnd, onScoreChange, combo]);
+
+  useGameLoop(draw, stat !== 'gameover');
 
   const startGame = useCallback(() => {
     if (statRef.current !== 'idle') return;
@@ -463,20 +464,16 @@ export default function FlappyGame({ onGameEnd, onScoreChange, onAction, onCombo
     objsRef.current = []; trailRef.current = [];
     scoreRef.current = 0; setDisplayScore(0);
     spawnRef.current = performance.now();
-    cancelAnimationFrame(animRef.current);
-    animRef.current = requestAnimationFrame(draw);
     onActionRef.current?.();
-  }, [draw]);
+  }, []);
 
   const restart = useCallback(() => {
-    cancelAnimationFrame(animRef.current);
     combo.reset();
     holdRef.current = false; trailRef.current = [];
     statRef.current = 'idle'; setStat('idle');
     byRef.current = H/2; velRef.current = 0;
     objsRef.current = []; scoreRef.current = 0; setDisplayScore(0);
-    animRef.current = requestAnimationFrame(draw);
-  }, [draw, combo]);
+  }, [combo]);
 
   const handleTap = useCallback(() => {
     if (!holdRef.current) playJump();
@@ -487,11 +484,6 @@ export default function FlappyGame({ onGameEnd, onScoreChange, onAction, onCombo
   const handleTapRelease = useCallback(() => {
     holdRef.current = false;
   }, []);
-
-  useEffect(() => {
-    animRef.current = requestAnimationFrame(draw);
-    return () => cancelAnimationFrame(animRef.current);
-  }, [draw]);
 
   useEffect(() => {
     const dn = (e: KeyboardEvent) => {

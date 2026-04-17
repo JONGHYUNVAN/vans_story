@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
 import { useSound } from '@/hooks/useSound';
 import { useCombo } from '@/hooks/useCombo';
 import { useScreenShake } from '@/hooks/useScreenShake';
+import { useGameTimer } from '@/hooks/useGameTimer';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
 
@@ -99,7 +100,6 @@ export default function MinesweeperGame({ onGameEnd, onScoreChange, onAction, on
   const [revealedCount, setRevealedCount] = useState(0);
   const [time, setTime] = useState(0);
   const [firstClick, setFirstClick] = useState(true);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const { shakeStyle, triggerShake } = useScreenShake();
   const [flashActive, setFlashActive] = useState(false);
   const [confettiActive, setConfettiActive] = useState(false);
@@ -109,25 +109,9 @@ export default function MinesweeperGame({ onGameEnd, onScoreChange, onAction, on
   const { playSelect, playMoveTick } = useSound();
   const combo = useCombo();
 
-  const startTimer = useCallback(() => {
-    timerRef.current = setInterval(() => {
-      setTime(t => t + 1);
-    }, 1000);
-  }, []);
-
-  const stopTimer = useCallback(() => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-  }, []);
-
-  useEffect(() => {
-    return () => stopTimer();
-  }, [stopTimer]);
+  useGameTimer(() => setTime(t => t + 1), gameStatus === 'playing' ? 1000 : null);
 
   const resetGame = useCallback(() => {
-    stopTimer();
     combo.reset();
     setBoard(createEmptyBoard());
     setGameStatus('idle');
@@ -136,7 +120,7 @@ export default function MinesweeperGame({ onGameEnd, onScoreChange, onAction, on
     setTime(0);
     setFirstClick(true);
     onScoreChange(0);
-  }, [stopTimer, onScoreChange, combo]);
+  }, [onScoreChange, combo]);
 
   const handleCellClick = useCallback((r: number, c: number) => {
     if (gameStatus === 'won' || gameStatus === 'gameover') return;
@@ -148,7 +132,6 @@ export default function MinesweeperGame({ onGameEnd, onScoreChange, onAction, on
       currentBoard = placeMines(board, r, c);
       setFirstClick(false);
       setGameStatus('playing');
-      startTimer();
     }
 
     if (currentBoard[r][c].isMine) {
@@ -161,7 +144,6 @@ export default function MinesweeperGame({ onGameEnd, onScoreChange, onAction, on
       );
       setBoard(revealed);
       setGameStatus('gameover');
-      stopTimer();
       combo.reset();
       onGameEnd(0, '지뢰 폭발!');
       triggerShake(12, 600);
@@ -193,13 +175,12 @@ export default function MinesweeperGame({ onGameEnd, onScoreChange, onAction, on
     const clearableCells = ROWS * COLS - MINE_COUNT;
     if (newRevealedCount >= clearableCells) {
       setGameStatus('won');
-      stopTimer();
       const score = Math.max(0, clearableCells * 10 - time);
       onScoreChange(score);
       onGameEnd(score, `${time}초 클리어`);
       setConfettiActive(true);
     }
-  }, [board, gameStatus, firstClick, time, startTimer, stopTimer, onGameEnd, onScoreChange, triggerShake, onAction, onCombo, playSelect, combo]);
+  }, [board, gameStatus, firstClick, time, onGameEnd, onScoreChange, triggerShake, onAction, onCombo, playSelect, combo]);
 
   const handleRightClick = useCallback((e: React.MouseEvent | React.PointerEvent, r: number, c: number) => {
     e.preventDefault();

@@ -6,6 +6,7 @@ import { useSound } from '@/hooks/useSound';
 import { useCombo } from '@/hooks/useCombo';
 import { useScreenShake } from '@/hooks/useScreenShake';
 import { useGameSize } from '@/hooks/useGameSize';
+import { useGameLoop } from '@/hooks/useGameLoop';
 import ParticleEffect from '@/components/features/games/effects/ParticleEffect';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
@@ -55,7 +56,6 @@ export default function BreakoutGame({ onGameEnd, onScoreChange, onAction, onCom
   const levelRef = useRef(1);
   const livesRef = useRef(3);
   const gameStatusRef = useRef<GameStatus>('idle');
-  const animRef = useRef<number>(0);
   const keysRef = useRef<Set<string>>(new Set());
   const [gameStatus, setGameStatus] = useState<GameStatus>('idle');
   const [displayScore, setDisplayScore] = useState(0);
@@ -236,10 +236,9 @@ export default function BreakoutGame({ onGameEnd, onScoreChange, onAction, onCom
     ctx.fillText(hearts, CANVAS_W - 8, 20);
     ctx.textAlign = 'start';
 
-    if (gameStatusRef.current === 'playing') {
-      animRef.current = requestAnimationFrame(draw);
-    }
   }, [resetBall, onGameEnd, onScoreChange, playHit, combo]);
+
+  useGameLoop(draw, gameStatus === 'playing');
 
   const startGame = useCallback(() => {
     bricksRef.current = createBricks();
@@ -255,8 +254,7 @@ export default function BreakoutGame({ onGameEnd, onScoreChange, onAction, onCom
     gameStatusRef.current = 'playing';
     setGameStatus('playing');
     onScoreChange(0);
-    animRef.current = requestAnimationFrame(draw);
-  }, [draw, resetBall, onScoreChange, combo]);
+  }, [resetBall, onScoreChange, combo]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -267,7 +265,6 @@ export default function BreakoutGame({ onGameEnd, onScoreChange, onAction, onCom
         ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
       }
     }
-    return () => cancelAnimationFrame(animRef.current);
   }, []);
 
   useEffect(() => {

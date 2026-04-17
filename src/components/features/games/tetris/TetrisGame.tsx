@@ -5,6 +5,7 @@ import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
 import { useCombo } from '@/hooks/useCombo';
 import { useScreenShake } from '@/hooks/useScreenShake';
 import { useGameSize } from '@/hooks/useGameSize';
+import { useGameLoop } from '@/hooks/useGameLoop';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
 import GameOverlayController, { Direction, ActionBtn } from '@/components/features/games/GameOverlayController';
@@ -113,7 +114,6 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
   const levelRef = useRef(1);
   const linesRef = useRef(0);
   const gameStatusRef = useRef<GameStatus>('idle');
-  const animFrameRef = useRef<number>(0);
   const lastDropRef = useRef<number>(0);
   const [displayScore, setDisplayScore] = useState(0);
   const [displayLevel, setDisplayLevel] = useState(1);
@@ -300,8 +300,9 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
     }
 
     drawBoard();
-    animFrameRef.current = requestAnimationFrame(gameLoop);
   }, [getDropInterval, drawBoard, drawNext, onGameEnd, onScoreChange, combo]);
+
+  useGameLoop(gameLoop, gameStatus === 'playing');
 
   const movePieceLeft = useCallback(() => {
     if (gameStatusRef.current !== 'playing') return;
@@ -389,8 +390,7 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
     gameStatusRef.current = 'playing';
     setGameStatus('playing');
     onScoreChange(0);
-    animFrameRef.current = requestAnimationFrame(gameLoop);
-  }, [gameLoop, onScoreChange, combo]);
+  }, [onScoreChange, combo]);
 
   useEffect(() => {
     drawBoard();
@@ -425,22 +425,16 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
         if (gameStatusRef.current === 'playing') {
           gameStatusRef.current = 'paused';
           setGameStatus('paused');
-          cancelAnimationFrame(animFrameRef.current);
         } else if (gameStatusRef.current === 'paused') {
           gameStatusRef.current = 'playing';
           setGameStatus('playing');
-          animFrameRef.current = requestAnimationFrame(gameLoop);
         }
       }
     };
 
     document.addEventListener('keydown', handleKey);
     return () => document.removeEventListener('keydown', handleKey);
-  }, [gameLoop, movePieceLeft, movePieceRight, softDrop, rotatePiece, hardDrop]);
-
-  useEffect(() => {
-    return () => cancelAnimationFrame(animFrameRef.current);
-  }, []);
+  }, [movePieceLeft, movePieceRight, softDrop, rotatePiece, hardDrop]);
 
   const canvasWidth = cellSize * BOARD_COLS;
   const canvasHeight = cellSize * BOARD_ROWS;
@@ -527,7 +521,6 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
               onClick={() => {
                 gameStatusRef.current = 'paused';
                 setGameStatus('paused');
-                cancelAnimationFrame(animFrameRef.current);
               }}
               className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg px-3 py-1 text-sm"
             >
@@ -539,7 +532,6 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
               onClick={() => {
                 gameStatusRef.current = 'playing';
                 setGameStatus('playing');
-                animFrameRef.current = requestAnimationFrame(gameLoop);
               }}
               className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg px-3 py-1 text-sm"
             >

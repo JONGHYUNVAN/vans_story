@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
 import { useCombo } from '@/hooks/useCombo';
 import { useScreenShake } from '@/hooks/useScreenShake';
+import { useGameTimer } from '@/hooks/useGameTimer';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 import GameOverlayController, { Direction as OverlayDirection } from '@/components/features/games/GameOverlayController';
 
@@ -38,25 +39,14 @@ export default function SlidingPuzzleGame({ onGameEnd, onScoreChange, onMove, on
   const [time, setTime] = useState(0);
   const [gameStatus, setGameStatus] = useState<GameStatus>('idle');
   const [won, setWon] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const { shakeStyle, triggerShake } = useScreenShake();
   const [confettiActive, setConfettiActive] = useState(false);
 
   const combo = useCombo();
 
-  const stopTimer = useCallback(() => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-  }, []);
-
-  useEffect(() => {
-    return () => stopTimer();
-  }, [stopTimer]);
+  useGameTimer(() => setTime(t => t + 1), gameStatus === 'playing' ? 1000 : null);
 
   const startGame = useCallback(() => {
-    stopTimer();
     combo.reset();
     const shuffled = createShuffled();
     setTiles(shuffled);
@@ -65,22 +55,20 @@ export default function SlidingPuzzleGame({ onGameEnd, onScoreChange, onMove, on
     setWon(false);
     setGameStatus('playing');
     onScoreChange(0);
-    timerRef.current = setInterval(() => setTime(t => t + 1), 1000);
-  }, [stopTimer, onScoreChange, combo]);
+  }, [onScoreChange, combo]);
 
   // 공통 완성 체크 로직
   const checkWin = useCallback((next: number[], currentMoves: number, currentTime: number) => {
     if (next.join(',') === GOAL.join(',')) {
       setWon(true);
       setGameStatus('won');
-      stopTimer();
       triggerShake(5, 300);
       setConfettiActive(true);
       const score = Math.max(100, 1000 - currentMoves * 5 - currentTime * 2);
       onScoreChange(score);
       onGameEnd(score, `${currentMoves}번 이동, ${currentTime}초`);
     }
-  }, [stopTimer, triggerShake, onScoreChange, onGameEnd]);
+  }, [triggerShake, onScoreChange, onGameEnd]);
 
   const moveTile = useCallback((idx: number) => {
     if (gameStatus !== 'playing') return;

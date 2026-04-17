@@ -109,7 +109,7 @@ export default function GamesClient() {
 
             {/* Subtitle with blinking cursor */}
             <p className="text-zinc-400 mt-3 flex items-center gap-1">
-              코딩 쉬는 시간, 간단한 게임 한 판
+              막판의 막판, 진짜 마지막
               <span className="cursor-blink text-indigo-400 font-thin ml-0.5">|</span>
             </p>
           </div>

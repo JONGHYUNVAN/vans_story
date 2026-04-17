@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { getGameById } from '@/constants/games';
 import { useGameScores } from '@/hooks/useGameScores';
 import { useSound } from '@/hooks/useSound';
@@ -66,6 +66,13 @@ export default function GamePageClient({ gameId }: GamePageClientProps) {
   // 점수 사운드 스로틀 (연속 호출 방지)
   const lastScoreSoundRef = useRef(0);
   const lastScoreRef = useRef(0);
+  // 점수 UI 업데이트 rAF 스로틀 (프레임당 최대 1회 리렌더)
+  const pendingScoreRef = useRef<number | null>(null);
+  const scoreRafRef = useRef(0);
+
+  useEffect(() => () => {
+    if (scoreRafRef.current) cancelAnimationFrame(scoreRafRef.current);
+  }, []);
 
   const game = getGameById(gameId);
   const GameComponent = GAME_COMPONENTS[gameId];
@@ -85,19 +92,33 @@ export default function GamePageClient({ gameId }: GamePageClientProps) {
   };
 
   const handleGameEnd = useCallback((score: number, detail?: string) => {
+    if (scoreRafRef.current) {
+      cancelAnimationFrame(scoreRafRef.current);
+      scoreRafRef.current = 0;
+      pendingScoreRef.current = null;
+    }
     saveScore(score, detail);
     setCurrentScore(score);
     playGameOver();
   }, [saveScore, playGameOver]);
 
   const handleScoreChange = useCallback((score: number) => {
-    setCurrentScore(score);
     const now = Date.now();
     if (score > lastScoreRef.current && now - lastScoreSoundRef.current > 150) {
       playScore();
       lastScoreSoundRef.current = now;
     }
     lastScoreRef.current = score;
+
+    pendingScoreRef.current = score;
+    if (scoreRafRef.current) return;
+    scoreRafRef.current = requestAnimationFrame(() => {
+      scoreRafRef.current = 0;
+      if (pendingScoreRef.current !== null) {
+        setCurrentScore(pendingScoreRef.current);
+        pendingScoreRef.current = null;
+      }
+    });
   }, [playScore]);
 
   if (!game || !GameComponent) {

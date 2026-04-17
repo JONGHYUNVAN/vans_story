@@ -40,6 +40,7 @@ export function useUsRealtime(symbol: string | null): UsUsRealtimeData {
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const hasFirstDataRef = useRef(false);
+  const marketStateRef = useRef<MarketState | null>(null);
 
   const clearPolling = useCallback(() => {
     if (intervalRef.current !== null) {
@@ -65,6 +66,7 @@ export function useUsRealtime(symbol: string | null): UsUsRealtimeData {
       setChange(d.change);
       setChangePercent(d.changePercent);
       setMarketState(d.marketState);
+      marketStateRef.current = d.marketState;
       setPreMarketPrice(d.preMarketPrice);
       setPreMarketChange(d.preMarketChange);
       setPreMarketChangePercent(d.preMarketChangePercent);
@@ -106,15 +108,12 @@ export function useUsRealtime(symbol: string | null): UsUsRealtimeData {
 
     // 30초마다 폴링 (단, CLOSED가 되면 fetchQuote 내부에서 중단)
     intervalRef.current = setInterval(() => {
-      // ACTIVE 상태에서만 계속 폴링 (마지막으로 알고 있는 marketState 기준)
-      setMarketState((prev) => {
-        if (prev !== null && !ACTIVE_MARKET_STATES.includes(prev)) {
-          clearPolling();
-          return prev;
-        }
-        fetchQuote(symbol);
-        return prev;
-      });
+      const prev = marketStateRef.current;
+      if (prev !== null && !ACTIVE_MARKET_STATES.includes(prev)) {
+        clearPolling();
+        return;
+      }
+      fetchQuote(symbol);
     }, POLL_INTERVAL_MS);
 
     return () => {

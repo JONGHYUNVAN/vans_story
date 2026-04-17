@@ -6,6 +6,7 @@ import type { StockPrice, StocksApiResponse, StockPricesData } from '@/types/sto
 import { STOCK_DISPLAY_NAME, MACRO_SYMBOLS } from '@/types/stocks';
 import { symbolToSlug } from '@/utils/stockSymbol';
 import { API_URLS } from '@/constants/apiUrl';
+import { formatPriceSimple as formatPrice, formatPercent as formatPct } from '@/utils/stockFormatting';
 
 interface RelatedStock {
   symbol: string;
@@ -22,16 +23,6 @@ function getDisplayName(symbol: string): string {
   const macro = MACRO_SYMBOLS.find((m) => m.symbol === symbol);
   if (macro) return macro.displayName;
   return symbol;
-}
-
-function formatPrice(price: number, currency: string): string {
-  if (currency === 'KRW') return price.toLocaleString('ko-KR') + '원';
-  return '$' + price.toFixed(2);
-}
-
-function formatPct(pct: number): string {
-  const sign = pct >= 0 ? '+' : '';
-  return sign + pct.toFixed(2) + '%';
 }
 
 export default function RelatedStocksSection({ title, stocks }: RelatedStocksSectionProps) {

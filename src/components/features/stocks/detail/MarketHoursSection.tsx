@@ -1,6 +1,7 @@
 'use client';
 
 import type { MarketState } from '@/types/stocks';
+import { formatPriceSimple as formatP } from '@/utils/stockFormatting';
 
 interface MarketHoursSectionProps {
   marketState: MarketState;
@@ -13,12 +14,6 @@ interface MarketHoursSectionProps {
   regularPrice: number;
   currency: string;
 }
-
-function formatP(p: number, currency: string) {
-  if (currency === 'KRW') return p.toLocaleString('ko-KR') + '원';
-  return '$' + p.toFixed(2);
-}
-
 
 export default function MarketHoursSection({
   marketState,

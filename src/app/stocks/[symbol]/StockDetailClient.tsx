@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { StocksThemeProvider, useStocksTheme } from '@/components/features/stocks/StocksThemeContext';
 import StocksThemeToggle from '@/components/features/stocks/StocksThemeToggle';
@@ -20,11 +20,15 @@ import KisRealtimePrice from '@/components/features/stocks/detail/KisRealtimePri
 import KisOrderbook from '@/components/features/stocks/detail/KisOrderbook';
 import { useKisRealtime } from '@/hooks/useKisRealtime';
 import { useUsRealtime } from '@/hooks/useUsRealtime';
-import type { StockDetailData, StocksApiResponse } from '@/types/stocks';
+import { useStockDetail } from '@/hooks/useStockDetail';
 import { MACRO_SYMBOLS, STOCK_DISPLAY_NAME } from '@/types/stocks';
 import { getStockRelation } from '@/constants/stockRelations';
 import { getSymbolType } from '@/utils/stockSymbol';
-import { API_URLS } from '@/constants/apiUrl';
+import {
+  formatPriceDetailed,
+  formatVolume,
+  formatMarketCap,
+} from '@/utils/stockFormatting';
 
 interface Props {
   symbol: string;
@@ -38,35 +42,6 @@ export default function StockDetailClient({ symbol }: Props) {
   );
 }
 
-function formatPrice(price: number, currency: string, symbol: string): string {
-  if (currency === 'KRW') return price.toLocaleString('ko-KR') + '원';
-  if (symbol === '^TNX') return price.toFixed(3) + '%';
-  return price.toLocaleString('en-US', { maximumFractionDigits: 2 });
-}
-
-function formatVolume(v: number, currency: string): string {
-  if (currency === 'KRW') {
-    if (v >= 100_000_000) return (v / 100_000_000).toFixed(1) + '억';
-    if (v >= 10_000) return (v / 10_000).toFixed(0) + '만';
-    return v.toLocaleString('ko-KR');
-  }
-  if (v >= 1_000_000) return (v / 1_000_000).toFixed(1) + 'M';
-  return v.toLocaleString('en-US');
-}
-
-function formatMarketCap(cap: number | null, currency: string): string {
-  if (cap === null) return '—';
-  if (currency === 'KRW') {
-    if (cap >= 1_000_000_000_000) return (cap / 1_000_000_000_000).toFixed(1) + '조';
-    if (cap >= 100_000_000) return (cap / 100_000_000).toFixed(0) + '억';
-    return cap.toLocaleString('ko-KR');
-  }
-  if (cap >= 1_000_000_000_000) return '$' + (cap / 1_000_000_000_000).toFixed(2) + 'T';
-  if (cap >= 1_000_000_000) return '$' + (cap / 1_000_000_000).toFixed(1) + 'B';
-  if (cap >= 1_000_000) return '$' + (cap / 1_000_000).toFixed(1) + 'M';
-  return '$' + cap.toLocaleString('en-US');
-}
-
 function getTypeBadge(symbol: string, type: string): string {
   if (type === 'kr') return '국장';
   if (type === 'us') return '미장';
@@ -77,50 +52,13 @@ function getTypeBadge(symbol: string, type: string): string {
 
 function StockDetailInner({ symbol }: Props) {
   const { tokens: t } = useStocksTheme();
-  const [detail,       setDetail]       = useState<StockDetailData | null>(null);
-  const [isLoading,    setIsLoading]    = useState(true);   // 최초 로드 스켈레톤용
-  const [isRefreshing, setIsRefreshing] = useState(false);  // 새로고침 버튼 스피너용
-  const [isError,      setIsError]      = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [rangeStats,   setRangeStats]   = useState<{
+  const {
+    detail, isLoading, isRefreshing, isError, errorMessage,
+    refetch: fetchDetail,
+  } = useStockDetail(symbol);
+  const [rangeStats, setRangeStats] = useState<{
     range: string; firstClose: number; lastClose: number;
   } | null>(null);
-  const hasLoadedRef = useRef(false);  // 최초 로드 완료 여부
-
-  const fetchDetail = useCallback(async () => {
-    // 최초 로드이면 스켈레톤, 이후 새로고침이면 기존 화면 유지
-    if (!hasLoadedRef.current) {
-      setIsLoading(true);
-    } else {
-      setIsRefreshing(true);
-    }
-    setIsError(false);
-    setErrorMessage('');
-    try {
-      const res = await fetch(
-        `${API_URLS.STOCKS.DETAIL}?symbol=${encodeURIComponent(symbol)}`,
-      );
-      const json: StocksApiResponse<StockDetailData> = await res.json();
-      if (json.success) {
-        setDetail(json.data);
-        hasLoadedRef.current = true;
-      } else {
-        throw new Error(json.error.message);
-      }
-    } catch (err) {
-      setIsError(true);
-      setErrorMessage(
-        err instanceof Error ? err.message : '데이터를 불러오는 중 오류가 발생했습니다.',
-      );
-    } finally {
-      setIsLoading(false);
-      setIsRefreshing(false);
-    }
-  }, [symbol]);
-
-  useEffect(() => {
-    fetchDetail();
-  }, [fetchDetail]);
 
   const relation = getStockRelation(symbol);
   const symbolType = getSymbolType(symbol);
@@ -184,16 +122,16 @@ function StockDetailInner({ symbol }: Props) {
     ? [
         {
           label: '시가',
-          value: formatPrice(detail.quote.open, detail.quote.currency, symbol),
+          value: formatPriceDetailed(detail.quote.open, detail.quote.currency, symbol),
         },
         {
           label: '고가',
-          value: formatPrice(detail.quote.high, detail.quote.currency, symbol),
+          value: formatPriceDetailed(detail.quote.high, detail.quote.currency, symbol),
           color: t.quote.up,
         },
         {
           label: '저가',
-          value: formatPrice(detail.quote.low, detail.quote.currency, symbol),
+          value: formatPriceDetailed(detail.quote.low, detail.quote.currency, symbol),
           color: t.quote.down,
         },
         {
@@ -208,7 +146,7 @@ function StockDetailInner({ symbol }: Props) {
           label: '52주 범위',
           value:
             detail.quote.fiftyTwoWeekLow != null && detail.quote.fiftyTwoWeekHigh != null
-              ? `${formatPrice(detail.quote.fiftyTwoWeekLow, detail.quote.currency, symbol)} ~ ${formatPrice(detail.quote.fiftyTwoWeekHigh, detail.quote.currency, symbol)}`
+              ? `${formatPriceDetailed(detail.quote.fiftyTwoWeekLow, detail.quote.currency, symbol)} ~ ${formatPriceDetailed(detail.quote.fiftyTwoWeekHigh, detail.quote.currency, symbol)}`
               : '—',
         },
       ]
@@ -238,11 +176,11 @@ function StockDetailInner({ symbol }: Props) {
             {(detail || kisRealtime.trade) && (
               <div className="flex items-baseline gap-3 mt-1">
                 <span className="text-3xl font-bold tabular-nums text-white">
-                  {formatPrice(displayPrice, displayCurrency, symbol)}
+                  {formatPriceDetailed(displayPrice, displayCurrency, symbol)}
                 </span>
                 <span className={`text-sm font-semibold font-mono ${priceColorClass}`}>
                   {displayChange >= 0 ? '+' : ''}
-                  {formatPrice(displayChange, displayCurrency, symbol)}{' '}
+                  {formatPriceDetailed(displayChange, displayCurrency, symbol)}{' '}
                   ({displayChangePercent >= 0 ? '+' : ''}
                   {displayChangePercent.toFixed(2)}%)
                   {rangeStats && rangeStats.range !== '1D' && (

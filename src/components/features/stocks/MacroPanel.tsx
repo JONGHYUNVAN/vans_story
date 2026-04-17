@@ -1,18 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import type { MacroData, MacroIndicator } from '@/types/stocks';
+import type { MacroData } from '@/types/stocks';
 import { useStocksTheme } from '@/components/features/stocks/StocksThemeContext';
 import { symbolToSlug } from '@/utils/stockSymbol';
+import { formatPercent, formatMacroPrice } from '@/utils/stockFormatting';
 
 interface MacroPanelProps {
   macro: MacroData | null;
   isLoading: boolean;
-}
-
-function formatPercent(pct: number): string {
-  const sign = pct >= 0 ? '+' : '';
-  return sign + pct.toFixed(2) + '%';
 }
 
 function getCategoryLabel(category: string): string {
@@ -23,19 +19,6 @@ function getCategoryLabel(category: string): string {
     case 'commodity': return '원자재';
     default:          return category;
   }
-}
-
-function formatPrice(indicator: MacroIndicator): string {
-  if (indicator.symbol === 'USDKRW=X') {
-    return indicator.price.toLocaleString('ko-KR', { maximumFractionDigits: 2 }) + '원';
-  }
-  if (indicator.symbol === '^TNX') {
-    return indicator.price.toFixed(3) + '%';
-  }
-  if (indicator.category === 'commodity') {
-    return '$' + indicator.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  }
-  return indicator.price.toLocaleString('en-US', { maximumFractionDigits: 2 });
 }
 
 function getArrow(change: number): string {
@@ -97,7 +80,7 @@ export default function MacroPanel({ macro, isLoading }: MacroPanelProps) {
                       {getCategoryLabel(indicator.category)}
                     </span>
                   </div>
-                  <p className={m.price}>{formatPrice(indicator)}</p>
+                  <p className={m.price}>{formatMacroPrice(indicator)}</p>
                   <p className={`${m.changeLine} ${colorClass}`}>
                     {arrow} {formatPercent(indicator.changePercent)}
                   </p>

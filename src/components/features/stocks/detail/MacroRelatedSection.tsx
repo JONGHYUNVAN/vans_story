@@ -5,24 +5,10 @@ import Link from 'next/link';
 import type { MacroIndicator, MacroData, StocksApiResponse } from '@/types/stocks';
 import { symbolToSlug } from '@/utils/stockSymbol';
 import { API_URLS } from '@/constants/apiUrl';
+import { formatMacroPrice, formatPercent as formatPct } from '@/utils/stockFormatting';
 
 interface MacroRelatedSectionProps {
   symbols: string[];
-}
-
-function formatMacroPrice(indicator: MacroIndicator): string {
-  if (indicator.symbol === 'USDKRW=X') {
-    return indicator.price.toLocaleString('ko-KR', { maximumFractionDigits: 2 }) + '원';
-  }
-  if (indicator.symbol === '^TNX') {
-    return indicator.price.toFixed(3) + '%';
-  }
-  return indicator.price.toLocaleString('en-US', { maximumFractionDigits: 2 });
-}
-
-function formatPct(pct: number): string {
-  const sign = pct >= 0 ? '+' : '';
-  return sign + pct.toFixed(2) + '%';
 }
 
 export default function MacroRelatedSection({ symbols }: MacroRelatedSectionProps) {

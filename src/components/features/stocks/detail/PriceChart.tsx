@@ -5,6 +5,7 @@ import type { ChartDataPoint } from '@/types/stocks';
 import { useStocksTheme } from '@/components/features/stocks/StocksThemeContext';
 import { API_URLS } from '@/constants/apiUrl';
 import TermTooltip from '@/components/features/stocks/detail/TermTooltip';
+import { formatPriceDetailed as fmtPrice, formatVolumeCompact as fmtVol } from '@/utils/stockFormatting';
 
 // ───────────────────────────── types ─────────────────────────────
 type ChartRange = '1D' | '1W' | '1M' | '3M' | '6M' | '1Y';
@@ -93,18 +94,6 @@ function fmtDate(ts: number, range: ChartRange): string {
   return `${d.getMonth()+1}. ${d.getDate()}`;
 }
 
-function fmtPrice(p: number, currency: string, symbol?: string): string {
-  if (currency === 'KRW') return p.toLocaleString('ko-KR') + '원';
-  if (symbol === '^TNX') return p.toFixed(3) + '%';
-  return p.toLocaleString('en-US', { maximumFractionDigits: 2 });
-}
-
-function fmtVol(v: number): string {
-  if (v >= 1_000_000) return (v / 1_000_000).toFixed(1) + 'M';
-  if (v >= 1_000)     return (v / 1_000).toFixed(0) + 'K';
-  return String(v);
-}
-
 // ── indicator meta ──
 const IND_COLORS: Record<Indicator, string> = {
   MA5: '#fbbf24', MA20: '#60a5fa', MA60: '#a78bfa',
@@ -124,6 +113,7 @@ const IND_TIPS: Record<Indicator, string> = {
 
 const RANGE_OPTIONS: ChartRange[] = ['1D', '1W', '1M', '3M', '6M', '1Y'];
 const ALL_INDICATORS: Indicator[] = ['MA5', 'MA20', 'MA60', 'BB', 'Volume', 'RSI'];
+const SVG_STYLE = { cursor: 'crosshair', display: 'block' } as const;
 
 // ─────────────────────── main component ───────────────────────────
 interface Props {
@@ -153,6 +143,11 @@ export default function PriceChart({ data: initialData, currency, symbol, prevCl
   const [hoverIdx,   setHoverIdx]   = useState<number | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
 
+  // 부모가 인라인 콜백을 넘겨 매 렌더 참조가 바뀌므로, ref로 최신값을 잡아
+  // effect가 range/symbol 변화에만 반응하도록 한다
+  const onRangeStatsRef = useRef(onRangeStats);
+  useEffect(() => { onRangeStatsRef.current = onRangeStats; }, [onRangeStats]);
+
   useEffect(() => {
     if (!symbol) return;
     setIsFetching(true);
@@ -163,18 +158,18 @@ export default function PriceChart({ data: initialData, currency, symbol, prevCl
         if (j.success && j.data.data.length > 0) {
           const d = j.data.data;
           setChartData(d);
-          onRangeStats?.(range, d[0].close, d[d.length - 1].close);
+          onRangeStatsRef.current?.(range, d[0].close, d[d.length - 1].close);
         } else if (j.success) {
           setChartData(j.data.data);
         }
       })
       .catch(() => {})
       .finally(() => setIsFetching(false));
-  }, [range, symbol]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [range, symbol]);
 
   useEffect(() => {
     if (initialData.length > 0) {
-      onRangeStats?.('1D', initialData[0].close, initialData[initialData.length - 1].close);
+      onRangeStatsRef.current?.('1D', initialData[0].close, initialData[initialData.length - 1].close);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // 마운트 1회
@@ -203,42 +198,52 @@ export default function PriceChart({ data: initialData, currency, symbol, prevCl
                + (showVol ? GAP + VOL_H : 0)
                + (showRSI ? GAP + RSI_H : 0);
 
-  // ── price extent ──
-  const closes = chartData.map((p) => p.close);
+  // ── price extent (메모이제이션: hoverIdx 변화 시 재계산 방지) ──
+  const closes = useMemo(() => chartData.map((p) => p.close), [chartData]);
 
   // 시/고/저/종가 계산
   // 라인 차트: close 기준(intraday 극값 제외 → Y스케일 왜곡 방지)
   // 캔들 차트: 실제 high/low 기준
-  const keyOpen  = chartData[0]?.open  ?? 0;
-  const keyClose = closes[closes.length - 1] ?? 0;
-  const keyHigh  = chartData.length > 0
-    ? (chartType === 'candle' ? Math.max(...chartData.map((p) => p.high)) : Math.max(...closes))
-    : 0;
-  const keyLow   = chartData.length > 0
-    ? (chartType === 'candle' ? Math.min(...chartData.map((p) => p.low))  : Math.min(...closes))
-    : 0;
+  const { keyOpen, keyClose, keyHigh, keyLow } = useMemo(() => {
+    const open = chartData[0]?.open ?? 0;
+    const close = closes[closes.length - 1] ?? 0;
+    if (chartData.length === 0) return { keyOpen: 0, keyClose: 0, keyHigh: 0, keyLow: 0 };
+    let hi = -Infinity, lo = Infinity;
+    if (chartType === 'candle') {
+      for (const p of chartData) { if (p.high > hi) hi = p.high; if (p.low < lo) lo = p.low; }
+    } else {
+      for (const c of closes) { if (c > hi) hi = c; if (c < lo) lo = c; }
+    }
+    return { keyOpen: open, keyClose: close, keyHigh: hi, keyLow: lo };
+  }, [chartData, closes, chartType]);
 
-  const allPrices: number[] = [...closes];
-  // 캔들 모드에서만 실제 고가/저가를 Y 범위에 포함
-  if (chartType === 'candle') chartData.forEach((p) => { allPrices.push(p.high, p.low); });
-  // 1D: 시가를 Y 범위에 포함 (시가 라인이 잘리지 않도록)
-  if (range === '1D' && keyOpen > 0) allPrices.push(keyOpen);
-  if (indicators.has('BB'))  bb.forEach((b) => { if (b) allPrices.push(b.upper, b.lower); });
-  [ma5, ma20, ma60].forEach((arr) => arr.forEach((v) => { if (v !== null) allPrices.push(v); }));
-  // 전일종가: 버튼 ON일 때만 Y 범위에 포함 (OFF시 스케일 왜곡 방지)
-  if (showPrevClose && prevClose && prevClose > 0) allPrices.push(prevClose);
+  const { minP, maxP, pRange } = useMemo(() => {
+    let lo = Infinity, hi = -Infinity;
+    const consider = (v: number) => { if (v && v > hi) hi = v; if (v && v < lo) lo = v; };
+    for (const c of closes) consider(c);
+    if (chartType === 'candle') for (const p of chartData) { consider(p.high); consider(p.low); }
+    if (range === '1D' && keyOpen > 0) consider(keyOpen);
+    if (indicators.has('BB')) for (const b of bb) if (b) { consider(b.upper); consider(b.lower); }
+    for (const arr of [ma5, ma20, ma60]) for (const v of arr) if (v !== null) consider(v);
+    if (showPrevClose && prevClose && prevClose > 0) consider(prevClose);
+    const r = hi - lo || 1;
+    return { minP: lo, maxP: hi, pRange: r };
+  }, [closes, chartData, chartType, range, keyOpen, indicators, bb, ma5, ma20, ma60, showPrevClose, prevClose]);
 
-  const minP = Math.min(...allPrices.filter(Boolean));
-  const maxP = Math.max(...allPrices.filter(Boolean));
-  const pRange = maxP - minP || 1;
-  const maxVol = Math.max(...chartData.map((p) => p.volume), 1);
+  const maxVol = useMemo(
+    () => chartData.reduce((m, p) => (p.volume > m ? p.volume : m), 1),
+    [chartData],
+  );
 
   const xScale = (i: number) => PAD.left + (chartData.length <= 1 ? 0 : (i / (chartData.length - 1)) * CHART_W);
   const yMain  = (p: number) => mainY1 + (1 - (p - minP) / pRange) * MAIN_H;
   const yVol   = (v: number) => volY2 - (v / maxVol) * VOL_H;
   const yRsi   = (r: number) => rsiY1 + (1 - r / 100) * RSI_H;
 
-  const xs = chartData.map((_, i) => xScale(i));
+  const xs = useMemo(
+    () => chartData.map((_, i) => PAD.left + (chartData.length <= 1 ? 0 : (i / (chartData.length - 1)) * CHART_W)),
+    [chartData],
+  );
 
   const isUp      = closes.length > 1 ? closes[closes.length - 1] >= closes[0] : true;
   const lineColor = isUp ? '#f87171' : '#60a5fa';
@@ -246,11 +251,13 @@ export default function PriceChart({ data: initialData, currency, symbol, prevCl
   const candleW   = Math.max(1.5, Math.min(10, (CHART_W / (chartData.length || 1)) * 0.62));
 
   // ── x / y labels ──
-  const maxXLabels = 7;
-  const xStep = Math.max(1, Math.floor(chartData.length / maxXLabels));
-  const xLabels = chartData
-    .map((p, i) => ({ i, x: xs[i], label: fmtDate(p.timestamp, range) }))
-    .filter((_, i) => i % xStep === 0);
+  const xLabels = useMemo(() => {
+    const maxXLabels = 7;
+    const xStep = Math.max(1, Math.floor(chartData.length / maxXLabels));
+    return chartData
+      .map((p, i) => ({ i, x: xs[i], label: fmtDate(p.timestamp, range) }))
+      .filter((_, i) => i % xStep === 0);
+  }, [chartData, xs, range]);
 
   const yTicks = [minP, minP + pRange * 0.33, minP + pRange * 0.67, maxP];
 
@@ -401,7 +408,7 @@ export default function PriceChart({ data: initialData, currency, symbol, prevCl
         className="w-full h-auto"
         onMouseMove={handleMouseMove}
         onMouseLeave={() => setHoverIdx(null)}
-        style={{ cursor: 'crosshair', display: 'block' }}
+        style={SVG_STYLE}
       >
         <defs>
           <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">

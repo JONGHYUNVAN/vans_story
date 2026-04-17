@@ -21,6 +21,7 @@ export function useKisRealtime(symbol: string | null): UseKisRealtimeReturn {
   const [error, setError] = useState<string | null>(null);
   const eventSourceRef = useRef<EventSource | null>(null);
   const retryCountRef = useRef(0);
+  const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const maxRetries = 5;
 
   // 6자리 종목코드 추출 (005930.KS → 005930)
@@ -88,7 +89,11 @@ export function useKisRealtime(symbol: string | null): UseKisRealtimeReturn {
       if (retryCountRef.current < maxRetries) {
         retryCountRef.current += 1;
         const delay = Math.min(1000 * Math.pow(2, retryCountRef.current), 30000);
-        setTimeout(connect, delay);
+        if (retryTimerRef.current) clearTimeout(retryTimerRef.current);
+        retryTimerRef.current = setTimeout(() => {
+          retryTimerRef.current = null;
+          connect();
+        }, delay);
       } else {
         setError('실시간 연결이 끊어졌습니다. 새로고침해주세요.');
         setIsLoading(false);
@@ -122,11 +127,19 @@ export function useKisRealtime(symbol: string | null): UseKisRealtimeReturn {
         eventSourceRef.current.close();
         eventSourceRef.current = null;
       }
+      if (retryTimerRef.current) {
+        clearTimeout(retryTimerRef.current);
+        retryTimerRef.current = null;
+      }
     };
   }, [connect]);
 
   const reconnect = useCallback(() => {
     retryCountRef.current = 0;
+    if (retryTimerRef.current) {
+      clearTimeout(retryTimerRef.current);
+      retryTimerRef.current = null;
+    }
     connect();
   }, [connect]);
 

@@ -51,6 +51,15 @@ function randomPiece(): Piece {
   };
 }
 
+function spawnAt(piece: Piece): Piece {
+  return {
+    ...piece,
+    shape: piece.shape.map(r => [...r]),
+    x: Math.floor(BOARD_COLS / 2) - Math.floor(piece.shape[0].length / 2),
+    y: 0,
+  };
+}
+
 function rotate(shape: number[][]): number[][] {
   const rows = shape.length;
   const cols = shape[0].length;
@@ -103,18 +112,24 @@ function getGhostY(board: BoardRow[], piece: Piece): number {
 }
 
 const LINE_SCORES = [0, 100, 300, 500, 800];
+const LOCK_DELAY = 500;
 
 export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove, onCombo }: GameComponentProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const nextCanvasRef = useRef<HTMLCanvasElement>(null);
+  const holdCanvasRef = useRef<HTMLCanvasElement>(null);
   const boardRef = useRef<BoardRow[]>(createBoard());
   const currentPieceRef = useRef<Piece>(randomPiece());
   const nextPieceRef = useRef<Piece>(randomPiece());
+  const holdPieceRef = useRef<Piece | null>(null);
+  const canHoldRef = useRef(true);
   const scoreRef = useRef(0);
   const levelRef = useRef(1);
   const linesRef = useRef(0);
   const gameStatusRef = useRef<GameStatus>('idle');
   const lastDropRef = useRef<number>(0);
+  const lockStartRef = useRef<number | null>(null);
+  const lockBarRef = useRef<HTMLDivElement>(null);
   const [displayScore, setDisplayScore] = useState(0);
   const [displayLevel, setDisplayLevel] = useState(1);
   const [displayLines, setDisplayLines] = useState(0);
@@ -213,96 +228,144 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
     }
   }, [cellSize]);
 
-  const drawNext = useCallback(() => {
-    const canvas = nextCanvasRef.current;
+  const drawPreview = useCallback((canvas: HTMLCanvasElement | null, piece: Piece | null, dimmed = false) => {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     ctx.fillStyle = '#111827';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    const next = nextPieceRef.current;
-    const offsetX = Math.floor((4 - next.shape[0].length) / 2);
-    const offsetY = Math.floor((4 - next.shape.length) / 2);
-    for (let r = 0; r < next.shape.length; r++) {
-      for (let c = 0; c < next.shape[r].length; c++) {
-        if (!next.shape[r][c]) continue;
-        ctx.fillStyle = next.color;
+    if (!piece) return;
+    const offsetX = Math.floor((4 - piece.shape[0].length) / 2);
+    const offsetY = Math.floor((4 - piece.shape.length) / 2);
+    ctx.globalAlpha = dimmed ? 0.35 : 1;
+    for (let r = 0; r < piece.shape.length; r++) {
+      for (let c = 0; c < piece.shape[r].length; c++) {
+        if (!piece.shape[r][c]) continue;
+        ctx.fillStyle = piece.color;
         ctx.fillRect((offsetX + c) * 24 + 1, (offsetY + r) * 24 + 1, 22, 22);
       }
     }
+    ctx.globalAlpha = 1;
   }, []);
+
+  const drawNext = useCallback(() => {
+    drawPreview(nextCanvasRef.current, nextPieceRef.current);
+  }, [drawPreview]);
+
+  const drawHold = useCallback(() => {
+    drawPreview(holdCanvasRef.current, holdPieceRef.current, !canHoldRef.current);
+  }, [drawPreview]);
+
+  const updateLockBar = useCallback((progress: number) => {
+    const bar = lockBarRef.current;
+    if (!bar) return;
+    if (progress <= 0) {
+      bar.style.opacity = '0';
+      bar.style.transform = 'scaleX(0)';
+    } else {
+      bar.style.opacity = '1';
+      bar.style.transform = `scaleX(${Math.min(progress, 1)})`;
+    }
+  }, []);
+
+  const lockAndSpawn = useCallback(() => {
+    const piece = currentPieceRef.current;
+    boardRef.current = lockPiece(boardRef.current, piece);
+    const { board: clearedBoard, linesCleared } = clearLines(boardRef.current);
+    boardRef.current = clearedBoard;
+    canHoldRef.current = true;
+    lockStartRef.current = null;
+    updateLockBar(0);
+
+    if (linesCleared > 0) {
+      linesRef.current += linesCleared;
+      const newLevel = Math.floor(linesRef.current / 10) + 1;
+      const pts = (LINE_SCORES[linesCleared] ?? 0) * levelRef.current;
+      scoreRef.current += pts;
+      levelRef.current = newLevel;
+      setDisplayScore(scoreRef.current);
+      setDisplayLevel(levelRef.current);
+      setDisplayLines(linesRef.current);
+      onScoreChange(scoreRef.current);
+      onActionRef.current?.();
+
+      const prevLevel = combo.comboLevel;
+      const newComboLevel = combo.increment();
+      if (newComboLevel > 0 && newComboLevel > prevLevel) {
+        onComboRef.current?.(newComboLevel);
+      }
+
+      if (linesCleared >= 4) {
+        triggerShakeRef.current(10, 500);
+        setConfettiActive(true);
+      } else if (linesCleared >= 2) {
+        triggerShakeRef.current(6, 300);
+      }
+      setFlashColor('rgba(99,102,241,0.3)');
+      setFlashActive(true);
+    } else {
+      combo.reset();
+    }
+
+    const newPiece = nextPieceRef.current;
+    nextPieceRef.current = randomPiece();
+    if (!isValid(boardRef.current, newPiece)) {
+      gameStatusRef.current = 'gameover';
+      setGameStatus('gameover');
+      onGameEnd(scoreRef.current, `레벨: ${levelRef.current}, 줄: ${linesRef.current}`);
+      triggerShakeRef.current(10, 600);
+      setFlashColor('rgba(239,68,68,0.35)');
+      setFlashActive(true);
+      drawBoard();
+      drawNext();
+      drawHold();
+      return;
+    }
+    currentPieceRef.current = newPiece;
+    lastDropRef.current = 0;
+    drawNext();
+    drawHold();
+  }, [drawBoard, drawNext, drawHold, onGameEnd, onScoreChange, combo, updateLockBar]);
 
   const gameLoop = useCallback((timestamp: number) => {
     if (gameStatusRef.current !== 'playing') return;
 
-    if (timestamp - lastDropRef.current > getDropInterval()) {
-      lastDropRef.current = timestamp;
-      const piece = currentPieceRef.current;
-      const moved = { ...piece, y: piece.y + 1 };
-      if (isValid(boardRef.current, moved)) {
-        currentPieceRef.current = moved;
-      } else {
-        boardRef.current = lockPiece(boardRef.current, piece);
-        const { board: clearedBoard, linesCleared } = clearLines(boardRef.current);
-        boardRef.current = clearedBoard;
+    const piece = currentPieceRef.current;
+    const canFall = isValid(boardRef.current, { ...piece, y: piece.y + 1 });
 
-        if (linesCleared > 0) {
-          linesRef.current += linesCleared;
-          const newLevel = Math.floor(linesRef.current / 10) + 1;
-          const pts = (LINE_SCORES[linesCleared] ?? 0) * levelRef.current;
-          scoreRef.current += pts;
-          levelRef.current = newLevel;
-          setDisplayScore(scoreRef.current);
-          setDisplayLevel(levelRef.current);
-          setDisplayLines(linesRef.current);
-          onScoreChange(scoreRef.current);
-          onActionRef.current?.();
-
-          const prevLevel = combo.comboLevel;
-          const newComboLevel = combo.increment();
-          if (newComboLevel > 0 && newComboLevel > prevLevel) {
-            onComboRef.current?.(newComboLevel);
-          }
-
-          if (linesCleared >= 4) {
-            triggerShakeRef.current(10, 500);
-            setConfettiActive(true);
-            setFlashColor('rgba(99,102,241,0.3)');
-            setFlashActive(true);
-          } else if (linesCleared >= 2) {
-            triggerShakeRef.current(6, 300);
-            setFlashColor('rgba(99,102,241,0.3)');
-            setFlashActive(true);
-          } else {
-            setFlashColor('rgba(99,102,241,0.3)');
-            setFlashActive(true);
-          }
-        } else {
-          combo.reset();
-        }
-
-        const newPiece = nextPieceRef.current;
-        nextPieceRef.current = randomPiece();
-        if (!isValid(boardRef.current, newPiece)) {
-          gameStatusRef.current = 'gameover';
-          setGameStatus('gameover');
-          onGameEnd(scoreRef.current, `레벨: ${levelRef.current}, 줄: ${linesRef.current}`);
-          triggerShakeRef.current(10, 600);
-          setFlashColor('rgba(239,68,68,0.35)');
-          setFlashActive(true);
-          drawBoard();
-          drawNext();
-          return;
-        }
-        currentPieceRef.current = newPiece;
-        drawNext();
+    if (!canFall) {
+      // Lock delay phase
+      if (lockStartRef.current === null) lockStartRef.current = timestamp;
+      const elapsed = timestamp - lockStartRef.current;
+      updateLockBar(elapsed / LOCK_DELAY);
+      if (elapsed >= LOCK_DELAY) {
+        lockAndSpawn();
+      }
+    } else {
+      // Falling phase — cancel any lock progress
+      if (lockStartRef.current !== null) {
+        lockStartRef.current = null;
+        updateLockBar(0);
+      }
+      if (timestamp - lastDropRef.current > getDropInterval()) {
+        lastDropRef.current = timestamp;
+        currentPieceRef.current = { ...piece, y: piece.y + 1 };
       }
     }
 
     drawBoard();
-  }, [getDropInterval, drawBoard, drawNext, onGameEnd, onScoreChange, combo]);
+  }, [getDropInterval, drawBoard, lockAndSpawn, updateLockBar]);
 
   useGameLoop(gameLoop, gameStatus === 'playing');
+
+  // 락 딜레이 중 움직이면 타이머 리셋 (classic 테트리스 lock-delay reset)
+  const resetLockIfGrounded = useCallback(() => {
+    const piece = currentPieceRef.current;
+    if (!isValid(boardRef.current, { ...piece, y: piece.y + 1 })) {
+      lockStartRef.current = null;
+      updateLockBar(0);
+    }
+  }, [updateLockBar]);
 
   const movePieceLeft = useCallback(() => {
     if (gameStatusRef.current !== 'playing') return;
@@ -310,9 +373,10 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
     const moved = { ...piece, x: piece.x - 1 };
     if (isValid(boardRef.current, moved)) {
       currentPieceRef.current = moved;
+      resetLockIfGrounded();
       onMove?.();
     }
-  }, [onMove]);
+  }, [onMove, resetLockIfGrounded]);
 
   const movePieceRight = useCallback(() => {
     if (gameStatusRef.current !== 'playing') return;
@@ -320,9 +384,10 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
     const moved = { ...piece, x: piece.x + 1 };
     if (isValid(boardRef.current, moved)) {
       currentPieceRef.current = moved;
+      resetLockIfGrounded();
       onMove?.();
     }
-  }, [onMove]);
+  }, [onMove, resetLockIfGrounded]);
 
   const softDrop = useCallback(() => {
     if (gameStatusRef.current !== 'playing') return;
@@ -342,9 +407,10 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
     const rotated = { ...piece, shape: rotate(piece.shape) };
     if (isValid(boardRef.current, rotated)) {
       currentPieceRef.current = rotated;
+      resetLockIfGrounded();
       onMove?.();
     }
-  }, [onMove]);
+  }, [onMove, resetLockIfGrounded]);
 
   const hardDrop = useCallback(() => {
     if (gameStatusRef.current !== 'playing') return;
@@ -356,7 +422,35 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
     scoreRef.current += dist * 2;
     setDisplayScore(scoreRef.current);
     onMove?.();
-  }, [onMove]);
+    lockAndSpawn();
+  }, [onMove, lockAndSpawn]);
+
+  const holdPiece = useCallback(() => {
+    if (gameStatusRef.current !== 'playing') return;
+    if (!canHoldRef.current) return;
+    const current = currentPieceRef.current;
+    const storedShape: Piece = {
+      ...current,
+      shape: current.shape.map(r => [...r]),
+    };
+    if (holdPieceRef.current === null) {
+      holdPieceRef.current = storedShape;
+      currentPieceRef.current = nextPieceRef.current;
+      nextPieceRef.current = randomPiece();
+    } else {
+      const prevHeld = holdPieceRef.current;
+      holdPieceRef.current = storedShape;
+      currentPieceRef.current = spawnAt(prevHeld);
+    }
+    canHoldRef.current = false;
+    lockStartRef.current = null;
+    lastDropRef.current = 0;
+    updateLockBar(0);
+    onMove?.();
+    drawHold();
+    drawNext();
+    drawBoard();
+  }, [onMove, drawHold, drawNext, drawBoard, updateLockBar]);
 
   // D-패드 핸들러: UP=회전, DOWN=소프트드롭, LEFT/RIGHT=이동
   const handleOverlayDirection = useCallback(
@@ -369,16 +463,20 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
     [rotatePiece, softDrop, movePieceLeft, movePieceRight]
   );
 
-  // 액션 버튼 핸들러: A=회전, B=하드드롭
+  // 액션 버튼 핸들러: A=회전, B=하드드롭, Y=홀드
   const handleActionBtn = useCallback((btn: ActionBtn) => {
     if (btn === 'A') rotatePiece();
     else if (btn === 'B') hardDrop();
-  }, [rotatePiece, hardDrop]);
+    else if (btn === 'Y') holdPiece();
+  }, [rotatePiece, hardDrop, holdPiece]);
 
   const startGame = useCallback(() => {
     boardRef.current = createBoard();
     currentPieceRef.current = randomPiece();
     nextPieceRef.current = randomPiece();
+    holdPieceRef.current = null;
+    canHoldRef.current = true;
+    lockStartRef.current = null;
     scoreRef.current = 0;
     levelRef.current = 1;
     linesRef.current = 0;
@@ -390,12 +488,15 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
     gameStatusRef.current = 'playing';
     setGameStatus('playing');
     onScoreChange(0);
-  }, [onScoreChange, combo]);
+    updateLockBar(0);
+    drawHold();
+  }, [onScoreChange, combo, updateLockBar, drawHold]);
 
   useEffect(() => {
     drawBoard();
     drawNext();
-  }, [drawBoard, drawNext]);
+    drawHold();
+  }, [drawBoard, drawNext, drawHold]);
 
   // cellSize 변경 시 재그리기
   useEffect(() => {
@@ -421,6 +522,9 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
       } else if (e.key === ' ') {
         hardDrop();
         e.preventDefault();
+      } else if (e.key === 'c' || e.key === 'C' || e.key === 'Shift') {
+        holdPiece();
+        e.preventDefault();
       } else if (e.key === 'p' || e.key === 'P') {
         if (gameStatusRef.current === 'playing') {
           gameStatusRef.current = 'paused';
@@ -434,7 +538,7 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
 
     document.addEventListener('keydown', handleKey);
     return () => document.removeEventListener('keydown', handleKey);
-  }, [movePieceLeft, movePieceRight, softDrop, rotatePiece, hardDrop]);
+  }, [movePieceLeft, movePieceRight, softDrop, rotatePiece, hardDrop, holdPiece]);
 
   const canvasWidth = cellSize * BOARD_COLS;
   const canvasHeight = cellSize * BOARD_ROWS;
@@ -456,6 +560,14 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
             }}
             className="bg-gray-900 border border-gray-700 rounded-xl"
           />
+          {/* Lock delay progress bar */}
+          <div className="absolute left-0 right-0 bottom-0 h-1.5 pointer-events-none overflow-hidden rounded-b-xl">
+            <div
+              ref={lockBarRef}
+              className="h-full bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 origin-left transition-opacity duration-100"
+              style={{ opacity: 0, transform: 'scaleX(0)' }}
+            />
+          </div>
           <FlashOverlay
             active={flashActive}
             color={flashColor}
@@ -493,6 +605,15 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
 
         {/* Side panel */}
         <div className="flex flex-col gap-4 min-w-[120px]">
+          <div className="bg-gray-900 border border-gray-700 rounded-xl p-3">
+            <p className="text-zinc-400 text-xs mb-1">HOLD</p>
+            <canvas
+              ref={holdCanvasRef}
+              width={96}
+              height={96}
+              className="bg-gray-900 rounded"
+            />
+          </div>
           <div className="bg-gray-900 border border-gray-700 rounded-xl p-3">
             <p className="text-zinc-400 text-xs mb-1">NEXT</p>
             <canvas
@@ -545,12 +666,12 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
         type="dpad"
         onDirection={handleOverlayDirection}
         onActionBtn={handleActionBtn}
-        hiddenActions={['X', 'Y']}
+        hiddenActions={['X']}
         disabled={gameStatus !== 'playing'}
       />
 
-      <p className="text-zinc-500 text-sm">방향키: 이동/회전 | Space: 하드드롭 | P: 일시정지</p>
-      <p className="text-zinc-600 text-xs">모바일 D-패드: ▲회전 ▼소프트드롭 ◀▶이동 | A=회전 B=하드드롭</p>
+      <p className="text-zinc-500 text-sm">방향키: 이동/회전 | Space: 하드드롭 | C/Shift: 홀드 | P: 일시정지</p>
+      <p className="text-zinc-600 text-xs">모바일 D-패드: ▲회전 ▼소프트드롭 ◀▶이동 | A=회전 B=하드드롭 Y=홀드</p>
     </div>
   );
 }

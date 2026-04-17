@@ -84,7 +84,7 @@ function StocksDashboard() {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {isLoading
-                  ? Array.from({ length: KR_STOCKS.length }).map((_, i) => <StockCard key={i} isLoading />)
+                  ? KR_STOCKS.map((meta) => <StockCard key={meta.symbol} isLoading />)
                   : krStocks.map((stock, i) => (
                       <StockCard
                         key={KR_STOCKS[i].symbol}
@@ -106,7 +106,7 @@ function StocksDashboard() {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {isLoading
-                  ? Array.from({ length: US_STOCKS.length }).map((_, i) => <StockCard key={i} isLoading />)
+                  ? US_STOCKS.map((meta) => <StockCard key={meta.symbol} isLoading />)
                   : usStocks.map((stock, i) => (
                       <StockCard
                         key={US_STOCKS[i].symbol}

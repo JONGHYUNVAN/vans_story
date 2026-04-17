@@ -6,6 +6,14 @@ import type { StockPrice } from '@/types/stocks';
 import { KR_STOCKS } from '@/types/stocks';
 import { useStocksTheme } from '@/components/features/stocks/StocksThemeContext';
 import { symbolToSlug } from '@/utils/stockSymbol';
+import {
+  finite,
+  formatPriceSimple,
+  formatChange,
+  formatPercent,
+  formatVolume,
+  formatMarketCap,
+} from '@/utils/stockFormatting';
 
 interface StockCardProps {
   stock?: StockPrice;
@@ -14,58 +22,6 @@ interface StockCardProps {
 }
 
 const KR_SYMBOL_SET = new Set<string>(KR_STOCKS.map((s) => s.symbol));
-
-function finite(value: unknown, fallback = 0): number {
-  const n = Number(value);
-  return Number.isFinite(n) ? n : fallback;
-}
-
-function formatPrice(price: number | null | undefined, currency: string): string {
-  const p = finite(price);
-  if (currency === 'KRW') {
-    return p.toLocaleString('ko-KR') + '원';
-  }
-  return '$' + p.toFixed(2);
-}
-
-function formatChange(change: number | null | undefined, currency: string): string {
-  const c = finite(change);
-  const sign = c >= 0 ? '+' : '';
-  if (currency === 'KRW') {
-    return sign + c.toLocaleString('ko-KR') + '원';
-  }
-  return sign + '$' + Math.abs(c).toFixed(2) + (c < 0 ? '' : '');
-}
-
-function formatPercent(pct: number | null | undefined): string {
-  const p = finite(pct);
-  const sign = p >= 0 ? '+' : '';
-  return sign + p.toFixed(2) + '%';
-}
-
-function formatVolume(volume: number | null | undefined, currency: string): string {
-  const v = finite(volume);
-  if (currency === 'KRW') {
-    if (v >= 100_000_000) return (v / 100_000_000).toFixed(1) + '억';
-    if (v >= 10_000) return (v / 10_000).toFixed(0) + '만';
-    return v.toLocaleString('ko-KR');
-  }
-  if (v >= 1_000_000) return (v / 1_000_000).toFixed(1) + 'M';
-  return v.toLocaleString('en-US');
-}
-
-function formatMarketCap(cap: number | null, currency: string): string {
-  if (cap === null) return '—';
-  if (currency === 'KRW') {
-    if (cap >= 1_000_000_000_000) return (cap / 1_000_000_000_000).toFixed(1) + '조';
-    if (cap >= 100_000_000) return (cap / 100_000_000).toFixed(0) + '억';
-    return cap.toLocaleString('ko-KR');
-  }
-  if (cap >= 1_000_000_000_000) return '$' + (cap / 1_000_000_000_000).toFixed(2) + 'T';
-  if (cap >= 1_000_000_000) return '$' + (cap / 1_000_000_000).toFixed(1) + 'B';
-  if (cap >= 1_000_000) return '$' + (cap / 1_000_000).toFixed(1) + 'M';
-  return '$' + cap.toLocaleString('en-US');
-}
 
 function getArrow(change: number | null | undefined): string {
   const c = finite(change);
@@ -134,7 +90,7 @@ export default function StockCard({ stock, isLoading, isError }: StockCardProps)
       </div>
 
       <div className={c.quoteShell}>
-        <p className={c.price}>{formatPrice(stock.price, stock.currency)}</p>
+        <p className={c.price}>{formatPriceSimple(stock.price, stock.currency)}</p>
         <p className={`${c.changeLine} ${ch}`}>
           {arrow} {formatChange(stock.change, stock.currency)} · {formatPercent(stock.changePercent)}
         </p>
@@ -151,15 +107,15 @@ export default function StockCard({ stock, isLoading, isError }: StockCardProps)
         </Row>
         <Row alt={false}>
           <span className={c.label}>고가</span>
-          <span className={c.high}>{formatPrice(stock.high, stock.currency)}</span>
+          <span className={c.high}>{formatPriceSimple(stock.high, stock.currency)}</span>
         </Row>
         <Row alt={true}>
           <span className={c.label}>저가</span>
-          <span className={c.low}>{formatPrice(stock.low, stock.currency)}</span>
+          <span className={c.low}>{formatPriceSimple(stock.low, stock.currency)}</span>
         </Row>
         <Row alt={false}>
           <span className={c.label}>전일 종가</span>
-          <span className={c.value}>{formatPrice(stock.previousClose, stock.currency)}</span>
+          <span className={c.value}>{formatPriceSimple(stock.previousClose, stock.currency)}</span>
         </Row>
         {isKrx && (
           <Row alt={true}>

@@ -52,7 +52,7 @@ export const GAMES: GameMeta[] = [
     icon: '🟦',
     color: 'bg-cyan-500',
     hexColor: '#06b6d4',
-    controlInfo: '방향키 이동 / 위: 회전 / Space: 드롭',
+    controlInfo: '방향키: 이동 / 위: 회전 / Space: 드롭 / C: 홀드',
   },
   {
     id: 'flappy',

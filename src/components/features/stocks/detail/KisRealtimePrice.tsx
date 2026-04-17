@@ -4,6 +4,7 @@ import { useRef, useEffect, useState } from 'react';
 import type { KisTradeData } from '@/types/stocks';
 import { useStocksTheme } from '@/components/features/stocks/StocksThemeContext';
 import { isKrxRegularSession } from '@/utils/marketHours';
+import { formatVolume } from '@/utils/stockFormatting';
 
 interface KisRealtimePriceProps {
   trade: KisTradeData | null;
@@ -15,12 +16,6 @@ interface KisRealtimePriceProps {
 function formatTime(hhmmss: string): string {
   if (hhmmss.length !== 6) return hhmmss;
   return `${hhmmss.slice(0, 2)}:${hhmmss.slice(2, 4)}:${hhmmss.slice(4, 6)}`;
-}
-
-function formatVolume(v: number): string {
-  if (v >= 100_000_000) return (v / 100_000_000).toFixed(1) + '억';
-  if (v >= 10_000) return (v / 10_000).toFixed(0) + '만';
-  return v.toLocaleString('ko-KR');
 }
 
 function getChangeColor(changeSign: string): string {

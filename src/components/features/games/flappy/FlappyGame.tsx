@@ -14,15 +14,15 @@ import GameOverlayController from '@/components/features/games/GameOverlayContro
 const W  = 320, H = 560;
 const GRAVITY = 0.11, LIFT = 0.30, DAMPEN = 0.983;
 const MAX_UP = -6.5, MAX_DOWN = 7.5;
-const GATE_W = 44;
-const ZAP_W  = 82;     // 수평 레이저 폭
 const SPD     = -5;    // 기본 오브젝트 속도
-const ZAP_SPD = -9.5;  // 레이저 속도 (더 빠름)
 const GH  = 24;        // 바닥 높이
 const BX  = 80;        // 새 X
 const SPAWN_MS  = 1050;
 const TRAIL_LEN = 38;
 const TRAIL_DX  = 5.0; // 꼬리 점당 수평 간격
+const ROLL_DUR  = 180; // ms — 급선회 잔상 효과
+const ROLL_CD   = 700; // ms — 쿨다운
+const MSL_SPD   = -10; // 미사일 속도
 
 // ── 정적 데이터 (모듈 1회) ───────────────────────────────
 const mkStars = (n: number, mr: number, ma: number) =>
@@ -44,8 +44,8 @@ const SLINES = Array.from({ length: 52 }, () => ({
 
 // ── 타입 ─────────────────────────────────────────────────
 type GameStatus = 'idle' | 'playing' | 'gameover';
-// top=천장스파이크, bot=바닥스파이크, mine=움직이는지뢰, portal=원형홀벽, zap=수평레이저
-type ObjKind = 'top' | 'bot' | 'mine' | 'portal' | 'zap';
+// missile=유도미사일, mine=부유지뢰
+type ObjKind = 'missile' | 'mine';
 interface Obj { x: number; kind: ObjKind; cy: number; vy: number; r: number; passed: boolean; }
 
 // ══ 순수 렌더 함수 (컴포넌트 외부) ══════════════════════
@@ -90,239 +90,183 @@ function rGrid(ctx: CanvasRenderingContext2D, sc: number) {
   ctx.restore();
 }
 
-function rTrail(ctx: CanvasRenderingContext2D, trail: number[], _ts: number) {
+function rTrail(ctx: CanvasRenderingContext2D, trail: number[], ts: number) {
   if (trail.length < 3) return;
   const len = trail.length;
   const tx  = BX - (len - 1) * TRAIL_DX;
   ctx.save();
 
-  // 날개 기류 V-웨이크 (더 넓게)
-  for (const sign of [-1, 1] as const) {
-    const gW = ctx.createLinearGradient(tx, 0, BX, 0);
-    gW.addColorStop(0,   'rgba(76,29,149,0)');
-    gW.addColorStop(0.4, 'rgba(109,40,217,0.18)');
-    gW.addColorStop(1,   'rgba(139,92,246,0.42)');
+  // 3가닥 난류 배기 (코어 + 상하 와류)
+  for (let w = 0; w < 3; w++) {
+    const isCore = w === 1;
+    const offY   = (w - 1) * 4; // -4, 0, +4
+
+    const g = ctx.createLinearGradient(tx, 0, BX, 0);
+    if (isCore) {
+      g.addColorStop(0,    'rgba(109,40,217,0)');
+      g.addColorStop(0.3,  'rgba(34,211,238,0.44)');
+      g.addColorStop(0.75, 'rgba(186,230,253,0.84)');
+      g.addColorStop(1,    'rgba(255,255,255,1)');
+    } else {
+      g.addColorStop(0,   'rgba(76,29,149,0)');
+      g.addColorStop(0.5, 'rgba(109,40,217,0.24)');
+      g.addColorStop(1,   'rgba(139,92,246,0.52)');
+    }
+
     ctx.beginPath();
-    trail.forEach((y, i) => {
-      const x      = BX - (len - 1 - i) * TRAIL_DX;
-      const spread = sign * (1 - i / len) * 26;
-      i === 0 ? ctx.moveTo(x, y + spread) : ctx.lineTo(x, y + spread);
+    trail.forEach((baseY, i) => {
+      const x    = BX - (len - 1 - i) * TRAIL_DX;
+      const age  = i / len;
+      // 거리에 따라 흩어지는 난류 — 전투기에서 멀수록 더 흔들림
+      const turb = Math.sin(i * 1.9 + w * 2.3 + ts * 0.0028) * (1 - age) * 3;
+      const y    = baseY + offY * (1 - age) + turb;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
     });
-    ctx.strokeStyle = gW; ctx.lineWidth = 11;
+
+    ctx.strokeStyle = g;
+    ctx.lineWidth   = isCore ? 4.5 : 2;
     ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-    ctx.shadowBlur = 20; ctx.shadowColor = '#7c3aed'; ctx.stroke();
+    if (isCore) { ctx.shadowBlur = 22; ctx.shadowColor = '#22d3ee'; }
+    ctx.stroke();
     ctx.shadowBlur = 0;
   }
 
-  // 플라즈마 코어 (시안 → 흰색)
-  const g1 = ctx.createLinearGradient(tx, 0, BX, 0);
-  g1.addColorStop(0,   'rgba(34,211,238,0)');
-  g1.addColorStop(0.45,'rgba(34,211,238,0.55)');
-  g1.addColorStop(1,   'rgba(255,255,255,1)');
-  ctx.beginPath();
-  trail.forEach((y, i) => {
-    const x = BX - (len - 1 - i) * TRAIL_DX;
-    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-  });
-  ctx.strokeStyle = g1; ctx.lineWidth = 5;
-  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-  ctx.shadowBlur = 32; ctx.shadowColor = '#22d3ee'; ctx.stroke();
-  ctx.shadowBlur = 0;
-
-  // 화이트 핫 코어
-  const g2 = ctx.createLinearGradient(tx, 0, BX, 0);
-  g2.addColorStop(0,   'rgba(255,255,255,0)');
-  g2.addColorStop(0.6, 'rgba(255,255,255,0.65)');
-  g2.addColorStop(1,   'rgba(255,255,255,1)');
-  ctx.beginPath();
-  trail.forEach((y, i) => {
-    const x = BX - (len - 1 - i) * TRAIL_DX;
-    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-  });
-  ctx.strokeStyle = g2; ctx.lineWidth = 2.2; ctx.stroke();
   ctx.restore();
 }
 
-function rBird(ctx: CanvasRenderingContext2D, y: number, vel: number, ts: number, holding: boolean) {
-  const tilt    = Math.max(-0.48, Math.min(0.70, vel * 0.088));
-  const flapSpd = holding ? 0.022 : 0.007;
-  const wingDip = Math.sin(ts * flapSpd) * (holding ? 14 : 5);
-  const eyeP    = 0.65 + 0.35 * Math.sin(ts * 0.005); // 눈 맥동
+// ── 전투기 렌더 ─────────────────────────────────────────
+function rBird(ctx: CanvasRenderingContext2D, y: number, vel: number, ts: number, upHeld: boolean, downHeld: boolean, rollPct: number) {
+  const tilt   = Math.max(-0.44, Math.min(0.62, vel * 0.082));
+  const thrust = upHeld || downHeld;
+  const exLen  = thrust ? 18 + Math.sin(ts * 0.05) * 8 : 5 + Math.sin(ts * 0.02) * 3;
+  const exA    = thrust ? 0.72 + 0.28 * Math.sin(ts * 0.04) : 0.28;
+  const exCol  = upHeld ? '#22d3ee' : downHeld ? '#f97316' : '#8b5cf6';
+  const wink   = 0.55 + 0.45 * Math.sin(ts * 0.007);
 
   ctx.save();
   ctx.translate(BX, y);
   ctx.rotate(tilt);
 
-  // 왼쪽 델타 날개 (날카롭고 길게 뒤로 sweep)
-  ctx.beginPath();
-  ctx.moveTo(-4, 2);
-  ctx.lineTo(-34, wingDip + 10);
-  ctx.lineTo(-30, wingDip + 20);
-  ctx.lineTo(-16, wingDip + 14);
-  ctx.lineTo(-4, 7);
-  ctx.closePath();
-  ctx.fillStyle = '#0d0620';
-  ctx.shadowBlur = 14; ctx.shadowColor = '#7c3aed'; ctx.fill();
-  ctx.strokeStyle = '#8b5cf6'; ctx.lineWidth = 1.3; ctx.stroke();
-  ctx.shadowBlur = 0;
-
-  // 오른쪽 델타 날개
-  ctx.beginPath();
-  ctx.moveTo(3, 2);
-  ctx.lineTo(30, wingDip + 10);
-  ctx.lineTo(26, wingDip + 20);
-  ctx.lineTo(14, wingDip + 14);
-  ctx.lineTo(3, 7);
-  ctx.closePath();
-  ctx.fillStyle = '#0d0620';
-  ctx.shadowBlur = 10; ctx.shadowColor = '#6d28d9'; ctx.fill();
-  ctx.strokeStyle = '#6d28d9'; ctx.lineWidth = 1; ctx.stroke();
-  ctx.shadowBlur = 0;
-
-  // 몸통 (장갑판 느낌)
-  ctx.beginPath(); ctx.arc(0, 1, 13, 0, Math.PI * 2);
-  ctx.fillStyle = '#0f0720';
-  ctx.shadowBlur = 26; ctx.shadowColor = '#4c1d95'; ctx.fill();
-  ctx.strokeStyle = '#5b21b6'; ctx.lineWidth = 2; ctx.stroke();
-  ctx.shadowBlur = 0;
-  // 장갑 디테일 라인
-  ctx.beginPath(); ctx.moveTo(-9, -3); ctx.lineTo(9, -3);
-  ctx.strokeStyle = 'rgba(139,92,246,0.35)'; ctx.lineWidth = 0.9; ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(-7, 5); ctx.lineTo(7, 5);
-  ctx.strokeStyle = 'rgba(139,92,246,0.22)'; ctx.lineWidth = 0.7; ctx.stroke();
-
-  // 얼굴 디스크
-  ctx.beginPath(); ctx.ellipse(0, 0, 10, 11, 0, 0, Math.PI * 2);
-  ctx.fillStyle = '#1a0c38'; ctx.fill();
-
-  // 날카로운 귀 스파이크 (길고 가늘게)
-  for (const ex of [-5, 5]) {
-    ctx.beginPath();
-    ctx.moveTo(ex - 2.5, -10);
-    ctx.lineTo(ex + 0.5, -26);
-    ctx.lineTo(ex + 3, -10);
-    ctx.closePath();
-    ctx.fillStyle = '#0a0518';
-    ctx.strokeStyle = '#6d28d9'; ctx.lineWidth = 1.1; ctx.fill(); ctx.stroke();
+  // ── 급선회 충격파 링 (속도 버스트 시각 피드백) ─────────
+  if (rollPct > 0) {
+    const rad = 18 + (1 - rollPct) * 32; // 18→50 확장
+    ctx.shadowBlur = 36 * rollPct; ctx.shadowColor = '#22d3ee';
+    ctx.strokeStyle = `rgba(34,211,238,${rollPct * 0.92})`;
+    ctx.lineWidth = 2.5 * rollPct + 0.5;
+    ctx.beginPath(); ctx.ellipse(0, 0, rad, rad * 0.48, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
   }
 
-  // 눈 — 시안 포식자 (슬릿 동공)
-  ctx.shadowBlur = 22 * eyeP; ctx.shadowColor = '#22d3ee';
-  // 눈 홍채
-  ctx.beginPath(); ctx.ellipse(-3.5, -1, 4.8, 3.2, 0, 0, Math.PI * 2);
-  ctx.fillStyle = '#0e7490'; ctx.fill();
-  ctx.beginPath(); ctx.ellipse( 4.5, -1, 4.8, 3.2, 0, 0, Math.PI * 2);
-  ctx.fillStyle = '#0e7490'; ctx.fill();
-  // 시안 글로우
-  ctx.shadowBlur = 18 * eyeP; ctx.shadowColor = '#22d3ee';
-  ctx.beginPath(); ctx.ellipse(-3.5, -1, 3.8, 2.4, 0, 0, Math.PI * 2);
-  ctx.fillStyle = `rgba(34,211,238,${0.8 + 0.2 * eyeP})`; ctx.fill();
-  ctx.beginPath(); ctx.ellipse( 4.5, -1, 3.8, 2.4, 0, 0, Math.PI * 2);
-  ctx.fillStyle = `rgba(34,211,238,${0.8 + 0.2 * eyeP})`; ctx.fill();
-  ctx.shadowBlur = 0;
-  // 수직 슬릿 동공
-  ctx.beginPath(); ctx.ellipse(-3.5, -1, 1.1, 2.6, 0, 0, Math.PI * 2);
-  ctx.fillStyle = '#000'; ctx.fill();
-  ctx.beginPath(); ctx.ellipse( 4.5, -1, 1.1, 2.6, 0, 0, Math.PI * 2);
-  ctx.fillStyle = '#000'; ctx.fill();
-  // 눈 반사광
-  ctx.beginPath(); ctx.arc(-2.4, -2, 0.85, 0, Math.PI * 2);
-  ctx.fillStyle = 'rgba(255,255,255,0.75)'; ctx.fill();
-  ctx.beginPath(); ctx.arc( 5.6, -2, 0.85, 0, Math.PI * 2);
-  ctx.fillStyle = 'rgba(255,255,255,0.75)'; ctx.fill();
+  // ── 애프터버너 (맨 뒤에 먼저) ────────────────────────
+  {
+    const eg = ctx.createLinearGradient(-17, 0, -17 - exLen, 0);
+    eg.addColorStop(0, upHeld ? `rgba(34,211,238,${exA})`
+                   : downHeld ? `rgba(249,115,22,${exA})`
+                   :            `rgba(139,92,246,${exA * 0.7})`);
+    eg.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.shadowBlur = thrust ? 24 : 8; ctx.shadowColor = exCol;
+    ctx.beginPath(); ctx.moveTo(-17, 0); ctx.lineTo(-17 - exLen, 0);
+    ctx.strokeStyle = eg; ctx.lineWidth = thrust ? 10 : 4;
+    ctx.lineCap = 'round'; ctx.stroke();
+    ctx.shadowBlur = 0;
+  }
 
-  // 날카로운 갈고리 부리
+  // ── 델타 날개 (위·아래 대칭) ─────────────────────────
+  for (const s of [-1, 1] as const) {
+    ctx.beginPath();
+    ctx.moveTo( 5, s * 2);
+    ctx.lineTo(-12, s * 21);   // 날개 끝
+    ctx.lineTo(-17, s *  4);   // 날개 후연
+    ctx.lineTo(-10, s *  2);
+    ctx.closePath();
+    ctx.fillStyle = '#11072a';
+    ctx.shadowBlur = 8; ctx.shadowColor = '#4c1d95'; ctx.fill();
+    ctx.strokeStyle = '#5b21b6'; ctx.lineWidth = 1.1; ctx.stroke();
+    ctx.shadowBlur = 0;
+  }
+
+  // ── 동체 (유선형) ────────────────────────────────────
+  ctx.save();
+  ctx.shadowBlur = 18; ctx.shadowColor = '#3b0764';
   ctx.beginPath();
-  ctx.moveTo(0, 3); ctx.lineTo(8, 6); ctx.lineTo(3, 10); ctx.lineTo(0, 7);
+  ctx.moveTo(22,  0);                              // 기수
+  ctx.bezierCurveTo(18, -5,  4, -5, -11, -4);     // 등면
+  ctx.lineTo(-18, -3); ctx.lineTo(-18, 3);         // 엔진 나셀
+  ctx.lineTo(-11,  4);
+  ctx.bezierCurveTo( 4,  5, 18,  5, 22,  0);      // 배면
   ctx.closePath();
-  ctx.fillStyle = '#78350f';
-  ctx.strokeStyle = '#92400e'; ctx.lineWidth = 0.8; ctx.fill(); ctx.stroke();
-
-  ctx.restore();
-}
-
-// ── 천장 스파이크 (cy = 천장에서 내려오는 길이) ──────────
-function rTop(ctx: CanvasRenderingContext2D, o: Obj, ts: number) {
-  const p = 0.55 + 0.45 * Math.sin(ts * 0.004 + o.x * 0.018);
-  ctx.fillStyle = 'rgba(9,7,28,0.94)';
-  ctx.fillRect(o.x, 0, GATE_W, o.cy);
-  ctx.strokeStyle = 'rgba(109,40,217,0.4)'; ctx.lineWidth = 1;
-  ctx.strokeRect(o.x+.5, .5, GATE_W-1, o.cy-.5);
-  ctx.save(); ctx.strokeStyle = 'rgba(109,40,217,0.12)'; ctx.lineWidth = 0.6;
-  for (let y = 14; y < o.cy-6; y += 14) { ctx.beginPath(); ctx.moveTo(o.x+6, y); ctx.lineTo(o.x+GATE_W-6, y); ctx.stroke(); }
-  ctx.restore();
-  ctx.shadowBlur = 16*p; ctx.shadowColor = '#e879f9';
-  ctx.fillStyle = `rgba(232,121,249,${0.88*p})`;
-  ctx.fillRect(o.x, o.cy-3, GATE_W, 3); ctx.shadowBlur = 0;
-  ctx.shadowBlur = 12*p; ctx.shadowColor = '#e879f9'; ctx.fillStyle = '#f0abfc';
-  ctx.beginPath(); ctx.arc(o.x+GATE_W/2, o.cy-1.5, 4.5, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#0d0620';
+  ctx.fill();
+  ctx.strokeStyle = '#5b21b6'; ctx.lineWidth = 1.6; ctx.stroke();
   ctx.shadowBlur = 0;
-}
-
-// ── 바닥 스파이크 (cy = 바닥에서 올라오는 길이) ──────────
-function rBot(ctx: CanvasRenderingContext2D, o: Obj, ts: number) {
-  const sy = H - GH - o.cy; // 스파이크 시작 y
-  const p  = 0.55 + 0.45 * Math.sin(ts * 0.004 + o.x * 0.018);
-  ctx.fillStyle = 'rgba(9,7,28,0.94)';
-  ctx.fillRect(o.x, sy, GATE_W, o.cy);
-  ctx.strokeStyle = 'rgba(109,40,217,0.4)'; ctx.lineWidth = 1;
-  ctx.strokeRect(o.x+.5, sy+.5, GATE_W-1, o.cy-.5);
-  ctx.save(); ctx.strokeStyle = 'rgba(109,40,217,0.12)'; ctx.lineWidth = 0.6;
-  for (let y = sy+10; y < H-GH-6; y += 14) { ctx.beginPath(); ctx.moveTo(o.x+6, y); ctx.lineTo(o.x+GATE_W-6, y); ctx.stroke(); }
   ctx.restore();
-  ctx.shadowBlur = 16*p; ctx.shadowColor = '#e879f9';
-  ctx.fillStyle = `rgba(232,121,249,${0.88*p})`;
-  ctx.fillRect(o.x, sy, GATE_W, 3); ctx.shadowBlur = 0;
-  ctx.shadowBlur = 12*p; ctx.shadowColor = '#e879f9'; ctx.fillStyle = '#f0abfc';
-  ctx.beginPath(); ctx.arc(o.x+GATE_W/2, sy+1.5, 4.5, 0, Math.PI*2); ctx.fill();
-  ctx.shadowBlur = 0;
-}
 
-// ── 원형 포탈 벽 (cy = 홀 중심 y, r = 반지름) ──────────
-function rPortal(ctx: CanvasRenderingContext2D, o: Obj, ts: number) {
-  const bH = H - GH, hx = o.x + GATE_W / 2;
-  const p  = 0.6 + 0.4 * Math.sin(ts * 0.003 + o.x * 0.015);
-  // 홀이 뚫린 벽 (evenodd)
-  ctx.save();
+  // ── 수직 꼬리날개 ────────────────────────────────────
   ctx.beginPath();
-  ctx.rect(o.x, 0, GATE_W, bH);
-  ctx.arc(hx, o.cy, o.r, 0, Math.PI * 2);
-  ctx.fillStyle = 'rgba(9,7,28,0.94)';
-  ctx.fill('evenodd');
-  ctx.strokeStyle = 'rgba(109,40,217,0.4)'; ctx.lineWidth = 1;
-  ctx.strokeRect(o.x+.5, .5, GATE_W-1, bH-.5);
-  ctx.restore();
-  // 포탈 링 글로우
-  ctx.shadowBlur = 22*p; ctx.shadowColor = '#818cf8';
-  ctx.strokeStyle = `rgba(165,180,252,${p})`; ctx.lineWidth = 3;
-  ctx.beginPath(); ctx.arc(hx, o.cy, o.r, 0, Math.PI*2); ctx.stroke();
+  ctx.moveTo(-11, -4); ctx.lineTo(-15, -15); ctx.lineTo(-18, -4);
+  ctx.closePath();
+  ctx.fillStyle = '#0f0828';
+  ctx.strokeStyle = '#4c1d95'; ctx.lineWidth = 1; ctx.fill(); ctx.stroke();
+
+  // ── 콕핏 캐노피 ──────────────────────────────────────
+  ctx.save();
+  ctx.beginPath(); ctx.ellipse(9, -3.5, 5.5, 3, 0, 0, Math.PI * 2);
+  ctx.fillStyle = '#071224';
+  ctx.shadowBlur = 10; ctx.shadowColor = '#22d3ee'; ctx.fill();
+  ctx.strokeStyle = '#22d3ee'; ctx.lineWidth = 0.9; ctx.stroke();
   ctx.shadowBlur = 0;
-  // 내부 방사형 글로우
-  const ig = ctx.createRadialGradient(hx, o.cy, 0, hx, o.cy, o.r);
-  ig.addColorStop(0, `rgba(99,102,241,${0.14*p})`);
-  ig.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.beginPath(); ctx.arc(hx, o.cy, o.r, 0, Math.PI*2);
-  ctx.fillStyle = ig; ctx.fill();
+  const cg = ctx.createLinearGradient(6, -6, 11, -2);
+  cg.addColorStop(0, 'rgba(186,230,253,0.32)');
+  cg.addColorStop(1, 'rgba(34,211,238,0.04)');
+  ctx.fillStyle = cg; ctx.fill();
+  ctx.restore();
+
+  // ── 날개 끝 항법등 ───────────────────────────────────
+  ctx.shadowBlur = 12 * wink; ctx.shadowColor = '#22d3ee';
+  ctx.fillStyle = `rgba(34,211,238,${0.55 + 0.45 * wink})`;
+  ctx.beginPath(); ctx.arc(-12, -21, 2.2, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(-12,  21, 2.2, 0, Math.PI * 2); ctx.fill();
+  ctx.shadowBlur = 0;
+
+  ctx.restore();
 }
 
-// ── 수평 레이저 빔 (cy = y 위치) ─────────────────────────
-function rZap(ctx: CanvasRenderingContext2D, o: Obj, ts: number) {
-  const p = 0.6 + 0.4 * Math.sin(ts * 0.007 + o.x * 0.03);
-  ctx.save();
-  ctx.shadowBlur = 18*p; ctx.shadowColor = '#38bdf8';
-  const g = ctx.createLinearGradient(o.x, 0, o.x + ZAP_W, 0);
-  g.addColorStop(0,    'rgba(56,189,248,0)');
-  g.addColorStop(0.15, `rgba(56,189,248,${p})`);
-  g.addColorStop(0.85, `rgba(56,189,248,${p})`);
-  g.addColorStop(1,    'rgba(56,189,248,0)');
-  ctx.beginPath(); ctx.moveTo(o.x, o.cy); ctx.lineTo(o.x+ZAP_W, o.cy);
-  ctx.strokeStyle = g; ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.stroke();
-  ctx.strokeStyle = `rgba(255,255,255,${p*0.85})`; ctx.lineWidth = 1.8;
-  ctx.shadowBlur = 0; ctx.stroke();
-  ctx.fillStyle = '#7dd3fc'; ctx.shadowBlur = 8; ctx.shadowColor = '#38bdf8';
-  ctx.beginPath(); ctx.arc(o.x,       o.cy, 5, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(o.x+ZAP_W, o.cy, 5, 0, Math.PI*2); ctx.fill();
-  ctx.shadowBlur = 0; ctx.restore();
+// ── 미사일 (우→좌 고속 이동) ─────────────────────────────
+function rMissile(ctx: CanvasRenderingContext2D, o: Obj, ts: number) {
+  const p = 0.6 + 0.4 * Math.sin(ts * 0.014 + o.x * 0.02);
+  ctx.save(); ctx.translate(o.x, o.cy);
+  // 배기 불꽃 (오른쪽)
+  const fLen = 10 + Math.sin(ts * 0.04) * 5;
+  const fg = ctx.createLinearGradient(10, 0, 10 + fLen, 0);
+  fg.addColorStop(0, `rgba(249,115,22,${p})`);
+  fg.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.shadowBlur = 12; ctx.shadowColor = '#f97316';
+  ctx.beginPath(); ctx.moveTo(10, 0); ctx.lineTo(10 + fLen, 0);
+  ctx.strokeStyle = fg; ctx.lineWidth = 7; ctx.lineCap = 'round'; ctx.stroke();
+  ctx.shadowBlur = 0;
+  // 기체
+  ctx.shadowBlur = 14; ctx.shadowColor = '#ef4444';
+  ctx.beginPath();
+  ctx.moveTo(-14, 0);
+  ctx.bezierCurveTo(-10, -4, 4, -4, 10, -3);
+  ctx.lineTo(10, 3);
+  ctx.bezierCurveTo(4, 4, -10, 4, -14, 0);
+  ctx.closePath();
+  ctx.fillStyle = '#2a0000'; ctx.fill();
+  ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 1.4; ctx.stroke();
+  ctx.shadowBlur = 0;
+  // 기수
+  ctx.beginPath();
+  ctx.moveTo(-14, 0); ctx.lineTo(-20, 0); ctx.lineTo(-17, -3); ctx.lineTo(-14, -3);
+  ctx.closePath(); ctx.fillStyle = '#fca5a5'; ctx.fill();
+  // 경고등
+  const wl = 0.4 + 0.6 * Math.sin(ts * 0.025);
+  ctx.shadowBlur = 10*wl; ctx.shadowColor = '#ef4444';
+  ctx.fillStyle = `rgba(239,68,68,${wl})`;
+  ctx.beginPath(); ctx.arc(-8, -4, 2.5, 0, Math.PI*2); ctx.fill();
+  ctx.shadowBlur = 0;
+  ctx.restore();
 }
 
 function rMine(ctx: CanvasRenderingContext2D, o: Obj, ts: number) {
@@ -359,20 +303,10 @@ function rGround(ctx: CanvasRenderingContext2D) {
 function hitTest(by: number, objs: Obj[]): boolean {
   if (by - 10 <= 0 || by + 10 >= H - GH) return true;
   for (const o of objs) {
-    if (o.kind === 'top') {
-      if (BX+13 > o.x+2 && BX-13 < o.x+GATE_W-2)
-        if (by - 10 < o.cy) return true;
-    } else if (o.kind === 'bot') {
-      if (BX+13 > o.x+2 && BX-13 < o.x+GATE_W-2)
-        if (by + 10 > H - GH - o.cy) return true;
+    if (o.kind === 'missile') {
+      if (Math.hypot(BX - o.x, by - o.cy) < 10 + o.r) return true;
     } else if (o.kind === 'mine') {
       if (Math.hypot(BX - o.x, by - o.cy) < 10 + o.r) return true;
-    } else if (o.kind === 'portal') {
-      if (BX+13 > o.x+2 && BX-13 < o.x+GATE_W-2)
-        if (Math.hypot(BX - (o.x + GATE_W/2), by - o.cy) > o.r - 10) return true;
-    } else if (o.kind === 'zap') {
-      if (BX+10 > o.x && BX-10 < o.x+ZAP_W)
-        if (Math.abs(by - o.cy) < 8) return true;
     }
   }
   return false;
@@ -388,7 +322,10 @@ export default function FlappyGame({ onGameEnd, onScoreChange, onAction, onCombo
   const scoreRef   = useRef(0);
   const statRef    = useRef<GameStatus>('idle');
   const spawnRef   = useRef(0);
-  const holdRef    = useRef(false);
+  const upRef      = useRef(false);
+  const downRef    = useRef(false);
+  const rollEndRef = useRef(0);   // 급선회 충격파 효과 종료 시각 (performance.now)
+  const rollCdRef  = useRef(0);   // 급선회 쿨다운 종료 시각
   const trailRef   = useRef<number[]>([]);
   const scRef      = useRef(0);       // scroll
 
@@ -414,39 +351,24 @@ export default function FlappyGame({ onGameEnd, onScoreChange, onAction, onCombo
   const spawnObj = useCallback((): Obj => {
     const sc = scoreRef.current;
     const rand = Math.random();
-    const minePct   = Math.min(0.28, 0.05 + sc * 0.022);
-    const portalPct = sc >= 3  ? Math.min(0.18, 0.03 + (sc - 3)  * 0.018) : 0;
-    const zapPct    = sc >= 5  ? Math.min(0.18, 0.03 + (sc - 5)  * 0.018) : 0;
     const playH = H - GH;
+    // 점수 올수록 미사일 비중 증가 (3점부터 등장)
+    const mslPct = sc >= 3 ? Math.min(0.45, 0.08 + (sc - 3) * 0.04) : 0;
 
-    if (rand < minePct) {
-      const spd = (0.9 + Math.random() * 1.7) * (1 + sc * 0.025);
+    if (rand < mslPct) {
       return {
-        x: W + 10, kind: 'mine',
-        cy: 65 + Math.random() * (playH - 130),
-        vy: (Math.random() < 0.5 ? 1 : -1) * spd,
-        r: 17 + Math.random() * 14, passed: false,
+        x: W + 10, kind: 'missile',
+        cy: 40 + Math.random() * (playH - 80),
+        vy: 0, r: 8, passed: false,
       };
     }
-    if (rand < minePct + portalPct) {
-      return {
-        x: W + 10, kind: 'portal',
-        cy: 90 + Math.random() * (playH - 180),
-        vy: 0, r: 46 + Math.random() * 18, passed: false,
-      };
-    }
-    if (rand < minePct + portalPct + zapPct) {
-      return {
-        x: W + 10, kind: 'zap',
-        cy: 80 + Math.random() * (playH - 160),
-        vy: 0, r: 0, passed: false,
-      };
-    }
-    // top 또는 bot 단일 기둥
+    // 기본: 지뢰 (크기/속도 점수에 따라 증가)
+    const spd = (0.8 + Math.random() * 1.6) * (1 + sc * 0.025);
     return {
-      x: W + 10, kind: Math.random() < 0.5 ? 'top' : 'bot',
-      cy: 70 + Math.random() * 140,
-      vy: 0, r: 0, passed: false,
+      x: W + 10, kind: 'mine',
+      cy: 65 + Math.random() * (playH - 130),
+      vy: (Math.random() < 0.5 ? 1 : -1) * spd,
+      r: 17 + Math.random() * 14, passed: false,
     };
   }, []);
 
@@ -468,33 +390,31 @@ export default function FlappyGame({ onGameEnd, onScoreChange, onAction, onCombo
         spawnRef.current = ts;
         objsRef.current.push(spawnObj());
       }
-      velRef.current = holdRef.current
-        ? Math.max(velRef.current - LIFT, MAX_UP)
-        : Math.min(velRef.current + GRAVITY, MAX_DOWN);
+      if (upRef.current) {
+        velRef.current = Math.max(velRef.current - LIFT, MAX_UP);
+      } else if (downRef.current) {
+        velRef.current = Math.min(velRef.current + LIFT * 0.88, MAX_DOWN);
+      } else {
+        velRef.current = Math.min(velRef.current + GRAVITY, MAX_DOWN);
+      }
       velRef.current *= DAMPEN;
       byRef.current  += velRef.current;
 
       for (const o of objsRef.current) {
-        o.x += o.kind === 'zap' ? ZAP_SPD : SPD;
+        o.x += o.kind === 'missile' ? MSL_SPD : SPD;
         if (o.kind === 'mine') {
           o.cy += o.vy;
           const mn = 28 + o.r, mx = H - GH - o.r - 8;
           if (o.cy < mn || o.cy > mx) o.vy *= -1;
         }
       }
-      objsRef.current = objsRef.current.filter(o => {
-        if (o.kind === 'mine')   return o.x + o.r + 12 > -10;
-        if (o.kind === 'zap')    return o.x + ZAP_W    > -10;
-        return o.x + GATE_W > -10; // top / bot / portal
-      });
+      objsRef.current = objsRef.current.filter(o => o.x + o.r + 24 > -10);
 
       trailRef.current.push(byRef.current);
       if (trailRef.current.length > TRAIL_LEN) trailRef.current.shift();
 
       for (const o of objsRef.current) {
-        const edge = o.kind === 'mine'   ? o.x + o.r
-                   : o.kind === 'zap'    ? o.x + ZAP_W
-                   : o.x + GATE_W; // top / bot / portal
+        const edge = o.x + o.r;
         if (!o.passed && edge < BX - 13) {
           o.passed = true; scoreRef.current++;
           setDisplayScore(scoreRef.current);
@@ -516,27 +436,22 @@ export default function FlappyGame({ onGameEnd, onScoreChange, onAction, onCombo
         shakeRef.current(10, 500);
         setFlashColor('rgba(239,68,68,0.38)'); setFlashActive(true);
         objsRef.current.forEach(o => {
-          if      (o.kind === 'top')    rTop(ctx, o, ts);
-          else if (o.kind === 'bot')    rBot(ctx, o, ts);
-          else if (o.kind === 'portal') rPortal(ctx, o, ts);
-          else if (o.kind === 'zap')    rZap(ctx, o, ts);
-          else                          rMine(ctx, o, ts);
+          if (o.kind === 'missile') rMissile(ctx, o, ts);
+          else                      rMine(ctx, o, ts);
         });
-        rGround(ctx); rTrail(ctx, trailRef.current, ts); rBird(ctx, byRef.current, velRef.current, ts, holdRef.current);
+        rGround(ctx); rTrail(ctx, trailRef.current, ts); rBird(ctx, byRef.current, velRef.current, ts, upRef.current, downRef.current, 0);
         return;
       }
     }
 
+    const rollPct = ts < rollEndRef.current ? (rollEndRef.current - ts) / ROLL_DUR : 0;
     objsRef.current.forEach(o => {
-          if      (o.kind === 'top')    rTop(ctx, o, ts);
-          else if (o.kind === 'bot')    rBot(ctx, o, ts);
-          else if (o.kind === 'portal') rPortal(ctx, o, ts);
-          else if (o.kind === 'zap')    rZap(ctx, o, ts);
-          else                          rMine(ctx, o, ts);
-        });
+      if (o.kind === 'missile') rMissile(ctx, o, ts);
+      else                      rMine(ctx, o, ts);
+    });
     rGround(ctx);
     rTrail(ctx, trailRef.current, ts);
-    rBird(ctx, byRef.current, velRef.current, ts, holdRef.current);
+    rBird(ctx, byRef.current, velRef.current, ts, upRef.current, downRef.current, rollPct);
 
     ctx.save();
     ctx.shadowBlur = 14; ctx.shadowColor = '#a5f3fc';
@@ -557,7 +472,7 @@ export default function FlappyGame({ onGameEnd, onScoreChange, onAction, onCombo
       ctx.fillStyle = 'rgba(165,243,252,0.5)';
       ctx.font = '11.5px "Courier New",monospace';
       ctx.textAlign = 'center';
-      ctx.fillText('hold to rise  ·  release to fall', W/2, H/2 + 14);
+      ctx.fillText('↑/A 상승  ↓/B 하강  Space 급선회', W/2, H/2 + 14);
       ctx.restore();
     }
 
@@ -577,38 +492,53 @@ export default function FlappyGame({ onGameEnd, onScoreChange, onAction, onCombo
 
   const restart = useCallback(() => {
     combo.reset();
-    holdRef.current = false; trailRef.current = [];
+    upRef.current = false; downRef.current = false;
+    rollEndRef.current = 0; rollCdRef.current = 0;
+    trailRef.current = [];
     statRef.current = 'idle'; setStat('idle');
     byRef.current = H/2; velRef.current = 0;
     objsRef.current = []; scoreRef.current = 0; setDisplayScore(0);
   }, [combo]);
 
-  const handleTap = useCallback(() => {
-    if (!holdRef.current) playJump();
-    holdRef.current = true;
+  const handleUp = useCallback(() => {
+    if (!upRef.current) playJump();
+    upRef.current = true;
     startGame();
   }, [playJump, startGame]);
 
-  const handleTapRelease = useCallback(() => {
-    holdRef.current = false;
-  }, []);
+  const handleUpRelease   = useCallback(() => { upRef.current   = false; }, []);
+  const handleDown        = useCallback(() => { downRef.current = true;  }, []);
+  const handleDownRelease = useCallback(() => { downRef.current = false; }, []);
 
   useEffect(() => {
     const dn = (e: KeyboardEvent) => {
-      if (e.code === 'Space' || e.key === 'ArrowUp') {
+      if (e.code === 'Space') {
         e.preventDefault();
-        if (!holdRef.current) {
-          playJump();
-          holdRef.current = true;
-          startGame();
+        const now = performance.now();
+        if (statRef.current === 'playing' && now > rollCdRef.current) {
+          // 급선회: 현재 방향으로 속도를 즉시 최대치로 당김
+          if (upRef.current)        velRef.current = MAX_UP;
+          else if (downRef.current) velRef.current = MAX_DOWN * 0.85;
+          else                      velRef.current = MAX_UP * 0.7;
+          rollEndRef.current = now + ROLL_DUR; // 충격파 링 시각 효과
+          rollCdRef.current  = now + ROLL_CD;
         }
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (!upRef.current) { playJump(); upRef.current = true; startGame(); }
+      }
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        downRef.current = true;
       }
     };
     const up = (e: KeyboardEvent) => {
-      if (e.code === 'Space' || e.key === 'ArrowUp') holdRef.current = false;
+      if (e.key === 'ArrowUp')   upRef.current   = false;
+      if (e.key === 'ArrowDown') downRef.current = false;
     };
     document.addEventListener('keydown', dn);
-    document.addEventListener('keyup', up);
+    document.addEventListener('keyup',   up);
     return () => { document.removeEventListener('keydown', dn); document.removeEventListener('keyup', up); };
   }, [startGame, playJump]);
 
@@ -631,21 +561,7 @@ export default function FlappyGame({ onGameEnd, onScoreChange, onAction, onCombo
               background: '#03030b',
               display: 'block',
             }}
-            className="rounded-2xl cursor-pointer"
-            onMouseDown={() => {
-              if (!holdRef.current) playJump();
-              holdRef.current = true;
-              startGame();
-            }}
-            onMouseUp={()   => { holdRef.current = false; }}
-            onMouseLeave={() => { holdRef.current = false; }}
-            onTouchStart={e => {
-              e.preventDefault();
-              if (!holdRef.current) playJump();
-              holdRef.current = true;
-              startGame();
-            }}
-            onTouchEnd={() =>  { holdRef.current = false; }}
+            className="rounded-2xl"
           />
           <FlashOverlay active={flashActive} color={flashColor} duration={380} onDone={() => setFlashActive(false)} />
           {stat === 'gameover' && (
@@ -665,13 +581,19 @@ export default function FlappyGame({ onGameEnd, onScoreChange, onAction, onCombo
 
       <GameOverlayController
         type="dpad"
-        hiddenActions={['B', 'X', 'Y']}
-        onActionBtn={(btn) => { if (btn === 'A') handleTap(); }}
-        onActionBtnRelease={(btn) => { if (btn === 'A') handleTapRelease(); }}
+        hiddenActions={['X', 'Y']}
+        onActionBtn={(btn) => {
+          if (btn === 'A') handleUp();
+          if (btn === 'B') handleDown();
+        }}
+        onActionBtnRelease={(btn) => {
+          if (btn === 'A') handleUpRelease();
+          if (btn === 'B') handleDownRelease();
+        }}
         disabled={stat === 'gameover'}
       />
 
-      <p className="text-zinc-600 text-xs font-mono">hold space / click / A버튼 · fly up</p>
+      <p className="text-zinc-600 text-xs font-mono">A = 위  ·  B = 아래  ·  ↑↓ 키</p>
     </div>
   );
 }

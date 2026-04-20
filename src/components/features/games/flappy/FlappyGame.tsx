@@ -11,18 +11,18 @@ import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
 import GameOverlayController from '@/components/features/games/GameOverlayController';
 
 // ── 상수 ────────────────────────────────────────────────
-const W  = 320, H = 480;
+const W  = 320, H = 560;
 const GRAVITY = 0.11, LIFT = 0.30, DAMPEN = 0.983;
 const MAX_UP = -6.5, MAX_DOWN = 7.5;
 const GATE_W = 44;
 const ZAP_W  = 82;     // 수평 레이저 폭
 const SPD     = -5;    // 기본 오브젝트 속도
 const ZAP_SPD = -9.5;  // 레이저 속도 (더 빠름)
-const GH  = 22;        // 바닥 높이
+const GH  = 24;        // 바닥 높이
 const BX  = 80;        // 새 X
 const SPAWN_MS  = 1050;
-const TRAIL_LEN = 30;
-const TRAIL_DX  = 5.2; // 꼬리 점당 수평 간격
+const TRAIL_LEN = 38;
+const TRAIL_DX  = 5.0; // 꼬리 점당 수평 간격
 
 // ── 정적 데이터 (모듈 1회) ───────────────────────────────
 const mkStars = (n: number, mr: number, ma: number) =>
@@ -34,12 +34,12 @@ const L1 = mkStars(52, 0.7, 0.35);
 const L2 = mkStars(28, 1.2, 0.60);
 const L3 = mkStars(12, 1.9, 0.90);
 
-const SLINES = Array.from({ length: 32 }, () => ({
+const SLINES = Array.from({ length: 52 }, () => ({
   sx:  Math.random() * W * 2.5,
   y:   Math.random() * H * 0.94,
-  len: 30 + Math.random() * 70,
-  spd: 2.8 + Math.random() * 3.8,
-  a:   0.06 + Math.random() * 0.22,
+  len: 48 + Math.random() * 100,
+  spd: 5.0 + Math.random() * 6.0,
+  a:   0.14 + Math.random() * 0.38,
 }));
 
 // ── 타입 ─────────────────────────────────────────────────
@@ -90,46 +90,154 @@ function rGrid(ctx: CanvasRenderingContext2D, sc: number) {
   ctx.restore();
 }
 
-function rTrail(ctx: CanvasRenderingContext2D, trail: number[]) {
+function rTrail(ctx: CanvasRenderingContext2D, trail: number[], _ts: number) {
   if (trail.length < 3) return;
-  const tx = BX - (trail.length - 1) * TRAIL_DX;
+  const len = trail.length;
+  const tx  = BX - (len - 1) * TRAIL_DX;
   ctx.save();
+
+  // 날개 기류 V-웨이크 (더 넓게)
+  for (const sign of [-1, 1] as const) {
+    const gW = ctx.createLinearGradient(tx, 0, BX, 0);
+    gW.addColorStop(0,   'rgba(76,29,149,0)');
+    gW.addColorStop(0.4, 'rgba(109,40,217,0.18)');
+    gW.addColorStop(1,   'rgba(139,92,246,0.42)');
+    ctx.beginPath();
+    trail.forEach((y, i) => {
+      const x      = BX - (len - 1 - i) * TRAIL_DX;
+      const spread = sign * (1 - i / len) * 26;
+      i === 0 ? ctx.moveTo(x, y + spread) : ctx.lineTo(x, y + spread);
+    });
+    ctx.strokeStyle = gW; ctx.lineWidth = 11;
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.shadowBlur = 20; ctx.shadowColor = '#7c3aed'; ctx.stroke();
+    ctx.shadowBlur = 0;
+  }
+
+  // 플라즈마 코어 (시안 → 흰색)
   const g1 = ctx.createLinearGradient(tx, 0, BX, 0);
-  g1.addColorStop(0,   'rgba(14,165,233,0)');
-  g1.addColorStop(0.5, 'rgba(56,189,248,0.35)');
-  g1.addColorStop(1,   'rgba(125,211,252,0.9)');
+  g1.addColorStop(0,   'rgba(34,211,238,0)');
+  g1.addColorStop(0.45,'rgba(34,211,238,0.55)');
+  g1.addColorStop(1,   'rgba(255,255,255,1)');
   ctx.beginPath();
   trail.forEach((y, i) => {
-    const x = BX - (trail.length - 1 - i) * TRAIL_DX;
+    const x = BX - (len - 1 - i) * TRAIL_DX;
     i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
   });
-  ctx.strokeStyle = g1; ctx.lineWidth = 9;
+  ctx.strokeStyle = g1; ctx.lineWidth = 5;
   ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-  ctx.shadowBlur = 18; ctx.shadowColor = '#0ea5e9'; ctx.stroke();
+  ctx.shadowBlur = 32; ctx.shadowColor = '#22d3ee'; ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // 화이트 핫 코어
   const g2 = ctx.createLinearGradient(tx, 0, BX, 0);
-  g2.addColorStop(0, 'rgba(255,255,255,0)');
-  g2.addColorStop(1, 'rgba(255,255,255,0.92)');
+  g2.addColorStop(0,   'rgba(255,255,255,0)');
+  g2.addColorStop(0.6, 'rgba(255,255,255,0.65)');
+  g2.addColorStop(1,   'rgba(255,255,255,1)');
   ctx.beginPath();
   trail.forEach((y, i) => {
-    const x = BX - (trail.length - 1 - i) * TRAIL_DX;
+    const x = BX - (len - 1 - i) * TRAIL_DX;
     i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
   });
-  ctx.strokeStyle = g2; ctx.lineWidth = 2.5; ctx.shadowBlur = 0; ctx.stroke();
+  ctx.strokeStyle = g2; ctx.lineWidth = 2.2; ctx.stroke();
   ctx.restore();
 }
 
-function rBird(ctx: CanvasRenderingContext2D, y: number, vel: number) {
-  const tilt = Math.max(-0.55, Math.min(0.65, vel * 0.065));
-  ctx.save(); ctx.translate(BX, y); ctx.rotate(tilt);
-  ctx.shadowBlur = 24; ctx.shadowColor = '#7dd3fc';
-  ctx.beginPath(); ctx.ellipse(0, 0, 15, 10, 0, 0, Math.PI * 2);
-  ctx.fillStyle = '#f0f9ff'; ctx.fill();
-  ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 1.8; ctx.stroke();
+function rBird(ctx: CanvasRenderingContext2D, y: number, vel: number, ts: number, holding: boolean) {
+  const tilt    = Math.max(-0.48, Math.min(0.70, vel * 0.088));
+  const flapSpd = holding ? 0.022 : 0.007;
+  const wingDip = Math.sin(ts * flapSpd) * (holding ? 14 : 5);
+  const eyeP    = 0.65 + 0.35 * Math.sin(ts * 0.005); // 눈 맥동
+
+  ctx.save();
+  ctx.translate(BX, y);
+  ctx.rotate(tilt);
+
+  // 왼쪽 델타 날개 (날카롭고 길게 뒤로 sweep)
+  ctx.beginPath();
+  ctx.moveTo(-4, 2);
+  ctx.lineTo(-34, wingDip + 10);
+  ctx.lineTo(-30, wingDip + 20);
+  ctx.lineTo(-16, wingDip + 14);
+  ctx.lineTo(-4, 7);
+  ctx.closePath();
+  ctx.fillStyle = '#0d0620';
+  ctx.shadowBlur = 14; ctx.shadowColor = '#7c3aed'; ctx.fill();
+  ctx.strokeStyle = '#8b5cf6'; ctx.lineWidth = 1.3; ctx.stroke();
   ctx.shadowBlur = 0;
-  ctx.beginPath(); ctx.arc(6, -3, 3.2, 0, Math.PI * 2); ctx.fillStyle = '#0c4a6e'; ctx.fill();
-  ctx.beginPath(); ctx.arc(7.2, -4, 1.2, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill();
-  ctx.beginPath(); ctx.moveTo(15, -1); ctx.lineTo(21, -2.5); ctx.lineTo(21, 3);
-  ctx.closePath(); ctx.fillStyle = '#fb923c'; ctx.fill();
+
+  // 오른쪽 델타 날개
+  ctx.beginPath();
+  ctx.moveTo(3, 2);
+  ctx.lineTo(30, wingDip + 10);
+  ctx.lineTo(26, wingDip + 20);
+  ctx.lineTo(14, wingDip + 14);
+  ctx.lineTo(3, 7);
+  ctx.closePath();
+  ctx.fillStyle = '#0d0620';
+  ctx.shadowBlur = 10; ctx.shadowColor = '#6d28d9'; ctx.fill();
+  ctx.strokeStyle = '#6d28d9'; ctx.lineWidth = 1; ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // 몸통 (장갑판 느낌)
+  ctx.beginPath(); ctx.arc(0, 1, 13, 0, Math.PI * 2);
+  ctx.fillStyle = '#0f0720';
+  ctx.shadowBlur = 26; ctx.shadowColor = '#4c1d95'; ctx.fill();
+  ctx.strokeStyle = '#5b21b6'; ctx.lineWidth = 2; ctx.stroke();
+  ctx.shadowBlur = 0;
+  // 장갑 디테일 라인
+  ctx.beginPath(); ctx.moveTo(-9, -3); ctx.lineTo(9, -3);
+  ctx.strokeStyle = 'rgba(139,92,246,0.35)'; ctx.lineWidth = 0.9; ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-7, 5); ctx.lineTo(7, 5);
+  ctx.strokeStyle = 'rgba(139,92,246,0.22)'; ctx.lineWidth = 0.7; ctx.stroke();
+
+  // 얼굴 디스크
+  ctx.beginPath(); ctx.ellipse(0, 0, 10, 11, 0, 0, Math.PI * 2);
+  ctx.fillStyle = '#1a0c38'; ctx.fill();
+
+  // 날카로운 귀 스파이크 (길고 가늘게)
+  for (const ex of [-5, 5]) {
+    ctx.beginPath();
+    ctx.moveTo(ex - 2.5, -10);
+    ctx.lineTo(ex + 0.5, -26);
+    ctx.lineTo(ex + 3, -10);
+    ctx.closePath();
+    ctx.fillStyle = '#0a0518';
+    ctx.strokeStyle = '#6d28d9'; ctx.lineWidth = 1.1; ctx.fill(); ctx.stroke();
+  }
+
+  // 눈 — 시안 포식자 (슬릿 동공)
+  ctx.shadowBlur = 22 * eyeP; ctx.shadowColor = '#22d3ee';
+  // 눈 홍채
+  ctx.beginPath(); ctx.ellipse(-3.5, -1, 4.8, 3.2, 0, 0, Math.PI * 2);
+  ctx.fillStyle = '#0e7490'; ctx.fill();
+  ctx.beginPath(); ctx.ellipse( 4.5, -1, 4.8, 3.2, 0, 0, Math.PI * 2);
+  ctx.fillStyle = '#0e7490'; ctx.fill();
+  // 시안 글로우
+  ctx.shadowBlur = 18 * eyeP; ctx.shadowColor = '#22d3ee';
+  ctx.beginPath(); ctx.ellipse(-3.5, -1, 3.8, 2.4, 0, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(34,211,238,${0.8 + 0.2 * eyeP})`; ctx.fill();
+  ctx.beginPath(); ctx.ellipse( 4.5, -1, 3.8, 2.4, 0, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(34,211,238,${0.8 + 0.2 * eyeP})`; ctx.fill();
+  ctx.shadowBlur = 0;
+  // 수직 슬릿 동공
+  ctx.beginPath(); ctx.ellipse(-3.5, -1, 1.1, 2.6, 0, 0, Math.PI * 2);
+  ctx.fillStyle = '#000'; ctx.fill();
+  ctx.beginPath(); ctx.ellipse( 4.5, -1, 1.1, 2.6, 0, 0, Math.PI * 2);
+  ctx.fillStyle = '#000'; ctx.fill();
+  // 눈 반사광
+  ctx.beginPath(); ctx.arc(-2.4, -2, 0.85, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(255,255,255,0.75)'; ctx.fill();
+  ctx.beginPath(); ctx.arc( 5.6, -2, 0.85, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(255,255,255,0.75)'; ctx.fill();
+
+  // 날카로운 갈고리 부리
+  ctx.beginPath();
+  ctx.moveTo(0, 3); ctx.lineTo(8, 6); ctx.lineTo(3, 10); ctx.lineTo(0, 7);
+  ctx.closePath();
+  ctx.fillStyle = '#78350f';
+  ctx.strokeStyle = '#92400e'; ctx.lineWidth = 0.8; ctx.fill(); ctx.stroke();
+
   ctx.restore();
 }
 
@@ -301,7 +409,7 @@ export default function FlappyGame({ onGameEnd, onScoreChange, onAction, onCombo
   const combo = useCombo();
 
   // CSS 스케일링 방식: canvas 내부 좌표계는 W x H 고정, CSS width/height로 크기 조정
-  const size = useGameSize({ aspectRatio: W / H, maxWidth: 400, maxHeight: 680 });
+  const size = useGameSize({ aspectRatio: W / H, maxWidth: 400, maxHeight: 840 });
 
   const spawnObj = useCallback((): Obj => {
     const sc = scoreRef.current;
@@ -414,7 +522,7 @@ export default function FlappyGame({ onGameEnd, onScoreChange, onAction, onCombo
           else if (o.kind === 'zap')    rZap(ctx, o, ts);
           else                          rMine(ctx, o, ts);
         });
-        rGround(ctx); rTrail(ctx, trailRef.current); rBird(ctx, byRef.current, velRef.current);
+        rGround(ctx); rTrail(ctx, trailRef.current, ts); rBird(ctx, byRef.current, velRef.current, ts, holdRef.current);
         return;
       }
     }
@@ -427,8 +535,8 @@ export default function FlappyGame({ onGameEnd, onScoreChange, onAction, onCombo
           else                          rMine(ctx, o, ts);
         });
     rGround(ctx);
-    rTrail(ctx, trailRef.current);
-    rBird(ctx, byRef.current, velRef.current);
+    rTrail(ctx, trailRef.current, ts);
+    rBird(ctx, byRef.current, velRef.current, ts, holdRef.current);
 
     ctx.save();
     ctx.shadowBlur = 14; ctx.shadowColor = '#a5f3fc';

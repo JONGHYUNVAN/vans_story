@@ -18,6 +18,7 @@ import { API_URLS } from '@/constants/apiUrl'
 import { tokenStorage } from '@/utils/token'
 import { ApiFetch } from '@/lib/apiFetch'
 import { getPostForEdit, saveTempPost, updatePost, loadTempPost } from '@/lib/posts/client-actions'
+import { resolveCategoryIds, lastPathSegment } from '@/lib/posts/categoryIds'
 
 export interface UsePostOptions {
   mode: 'create' | 'edit'
@@ -228,6 +229,11 @@ export function usePost({
       newErrors.topic = '주제를 입력해주세요'
     }
     
+    // 백엔드 DTO가 description을 필수(IsNotEmpty)로 받는다
+    if (!formData.description?.trim()) {
+      newErrors.description = '설명을 입력해주세요'
+    }
+    
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -265,12 +271,19 @@ export function usePost({
         finalContent = await uploadAndReplace(finalContent)
       }
       
+      // 백엔드 DTO는 카테고리를 value가 아니라 Category 문서의 ObjectId(mainCategoryId/subCategoryId)로 받는다.
+      // 화면 하위 카테고리 key(i18n)가 백엔드 value와 다를 수 있어 path의 마지막 세그먼트도 후보로 넣는다.
+      const { mainCategoryId, subCategoryId } = await resolveCategoryIds(formData.mainCategory || '', [
+        formData.subCategory || '',
+        lastPathSegment(selectedSubCategory?.path) || ''
+      ])
+
       // API 호출용 데이터 준비 (백엔드 DTO에 맞게 필터링)
       const submitData = {
         title: formData.title,
         content: finalContent,
-        mainCategory: formData.mainCategory,
-        subCategory: formData.subCategory,
+        mainCategoryId,
+        subCategoryId,
         topic: formData.topic,
         description: formData.description,
         tags: formData.tags || [],

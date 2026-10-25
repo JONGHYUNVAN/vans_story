@@ -145,7 +145,12 @@ export function usePost({
         subCategory: post.subCategory
       } as PostEditData
       
-      setFormData(convertedData)
+      // 응답에 subCategory가 없으면(구 백엔드 응답) 폼이 이미 자동 선택한 하위 카테고리를 유지한다.
+      // 통째로 덮어쓰면 subCategory가 비어 저장 시 "하위 카테고리를 선택해주세요"에 걸린다.
+      setFormData(prev => ({
+        ...convertedData,
+        subCategory: convertedData.subCategory || prev.subCategory || ''
+      }))
       originalDataRef.current = convertedData
       
       // 하위 카테고리 설정

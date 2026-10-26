@@ -3,18 +3,7 @@
  * 기존 themes.ts를 대체하며 명확한 네이밍 사용
  */
 
-import {
-  SiNestjs,
-  SiSpring,
-  SiMariadb,
-  SiMongodb,
-  SiNextdotjs,
-  SiDocker,
-  SiJest,
-  SiCypress,
-  SiGit,
-  SiJunit5,
-} from 'react-icons/si';
+import { SiNestjs, SiSpring, SiMariadb, SiMongodb, SiNextdotjs, SiDocker } from 'react-icons/si';
 import { TbBinaryTree2, TbDatabase } from 'react-icons/tb';
 import { RiShieldKeyholeLine } from 'react-icons/ri';
 import type { MainCategoryOption, SubCategoryOption } from '@/types/post';
@@ -28,7 +17,7 @@ const MESSAGES_BY_LANGUAGE: Record<string, any> = {
 };
 
 // 카테고리 그룹 타입
-export type CategoryGroup = 'frontend' | 'backend' | 'database' | 'devops' | 'testing' | 'cs';
+export type CategoryGroup = 'frontend' | 'backend' | 'database' | 'devops' | 'cs';
 
 // 그룹별 메인 카테고리
 export const CATEGORY_GROUPS = {
@@ -54,18 +43,7 @@ export const CATEGORY_GROUPS = {
   },
   devops: {
     label: 'DevOps',
-    categories: [
-      { value: 'docker', label: 'Docker', icon: SiDocker, color: '#2496ED' },
-      { value: 'git', label: 'Git', icon: SiGit, color: '#F05032' },
-    ],
-  },
-  testing: {
-    label: '테스트',
-    categories: [
-      { value: 'jest', label: 'Jest', icon: SiJest, color: '#C21325' },
-      { value: 'cypress', label: 'Cypress', icon: SiCypress, color: '#17202C' },
-      { value: 'junit5', label: 'JUnit5', icon: SiJunit5, color: '#25A162' },
-    ],
+    categories: [{ value: 'docker', label: 'Docker', icon: SiDocker, color: '#2496ED' }],
   },
   cs: {
     label: 'CS',
@@ -79,7 +57,6 @@ export const MAIN_CATEGORIES: MainCategoryOption[] = [
   ...CATEGORY_GROUPS.backend.categories,
   ...CATEGORY_GROUPS.database.categories,
   ...CATEGORY_GROUPS.devops.categories,
-  ...CATEGORY_GROUPS.testing.categories,
   ...CATEGORY_GROUPS.cs.categories,
 ] as MainCategoryOption[];
 
@@ -93,10 +70,6 @@ const MAIN_CATEGORY_NAME_MAPPING: { [key: string]: string } = {
   mongodb: 'MongoDB',
   docker: 'Docker',
   jwt: 'JWT',
-  jest: 'Jest',
-  cypress: 'Cypress',
-  junit5: 'JUnit5',
-  git: 'Git',
   algorithm: 'Algorithm',
 };
 

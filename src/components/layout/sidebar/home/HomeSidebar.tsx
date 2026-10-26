@@ -5,13 +5,18 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { MdKeyboardArrowRight } from 'react-icons/md';
 import { useTranslation } from '@/lib/i18n';
-import { main_categories } from '@/constants/categoryThemes';
+import { POST_THEMES, POST_THEME_GROUPS } from '@/constants/postThemes';
 
 export default function HomeSidebar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation('');
   const menuText = t('Sidebar.sidebarMenu');
+  // 라우트가 있는 카테고리만 메뉴에 나온다
+  const menuGroups = Object.entries(POST_THEME_GROUPS).map(([category, keys]) => ({
+    category,
+    items: keys.map((key) => POST_THEMES[key]),
+  }));
 
   return (
     <div
@@ -46,7 +51,7 @@ export default function HomeSidebar() {
         </div>
 
         <nav className="max-h-[calc(100vh-80px)] space-y-8 overflow-y-auto p-6">
-          {Object.entries(main_categories).map(([category, items]) => (
+          {menuGroups.map(({ category, items }) => (
             <div key={category} className="space-y-4">
               <h2 className="border-b pb-2 text-xl font-bold text-gray-800">{category}</h2>
               <ul className="space-y-3">

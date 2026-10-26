@@ -43,3 +43,10 @@ next-env.d.ts
 
 # Claude Code local settings
 .claude/settings.local.json
+
+# Playwright 시각 회귀 스냅샷 (로컬 데이터 상태에 종속)
+e2e/**/*-snapshots/
+
+# Playwright 실행 산출물
+test-results/
+playwright-report/

@@ -39,24 +39,6 @@ export interface GroupedCategories {
 }
 
 /**
- * 메인 카테고리 옵션 (기존 호환성)
- */
-export interface MainCategoryOption {
-  value: string;
-  label: string;
-}
-
-/**
- * 서브 카테고리 옵션 (기존 호환성)
- */
-export interface SubCategoryOption {
-  value: string;
-  label: string;
-  description?: string;
-  path?: string;
-}
-
-/**
  * 카테고리 API 응답 타입들
  */
 export interface CategoryApiResponse {

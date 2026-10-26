@@ -12,11 +12,7 @@ import type { RootState } from '@/store/store';
 import { checkAuth } from '@/store/auth/slice';
 import AuthButtons from './AuthButtons';
 
-interface HeaderProps {
-  isStorybook?: boolean;
-}
-
-export default function Header({ isStorybook = false }: HeaderProps) {
+export default function Header() {
   const [isHovered, setIsHovered] = useState(false);
   const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
   const { t } = useTranslation('');
@@ -29,7 +25,7 @@ export default function Header({ isStorybook = false }: HeaderProps) {
 
   return (
     <header
-      className={`${isStorybook ? 'relative' : 'fixed left-0 top-0'} w-full ${isHovered ? 'z-[100]' : 'z-[50]'} transition-all duration-300 ease-in-out`}
+      className={`fixed left-0 top-0 w-full ${isHovered ? 'z-[100]' : 'z-[50]'} transition-all duration-300 ease-in-out`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -49,7 +45,7 @@ export default function Header({ isStorybook = false }: HeaderProps) {
             href="/"
             className="flex items-center gap-2 text-xl font-bold text-gray-800 transition-colors hover:text-blue-600"
           >
-            {!isStorybook && <img src="/favicon.ico" alt="logo" className="h-6 w-6" />}
+            <img src="/favicon.ico" alt="logo" className="h-6 w-6" />
             <span>Van&apos;s Dev Blog</span>
           </Link>
           {/* 인사 문구 추가 */}

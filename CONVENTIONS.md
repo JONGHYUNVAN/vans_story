@@ -60,7 +60,7 @@ e2e/                           Playwright 테스트
 
 - `app/` 안에서 `page.tsx`·`layout.tsx` 등 Next 예약 파일이 아닌 파일은 반드시 `_` 폴더 안에 둔다. `_` 폴더는 라우팅에서 제외되므로 실수로 URL이 생기지 않는다.
 - 배럴 파일(`index.ts`)은 만들지 않는다. 순환 참조와 번들 크기의 원인이 된다. 예외: 서드파티 호환이 필요한 경우.
-- 카테고리별 중복 세트(`app/post/view/<category>/_components/XxxLayout·XxxList`, `components/features/post/postcard/<category>/`, `components/layout/sidebar/post/XxxSidebar`)는 NEXT_STEPS.md D단계에서 단일 컴포넌트 + `THEME_CONFIG`로 통합할 예정이며, 그 전까지는 새 카테고리를 복사해서 추가하지 않는다.
+- 포스트 카테고리 화면은 `app/post/view/[mainCategory]/` 동적 라우트 한 세트 + `components/features/post/view/*` 한 벌이다. 카테고리별 차이는 `constants/postThemes.ts`의 `POST_THEMES`에만 적는다. 새 카테고리는 테마 항목 하나 + `constants/mainCategories.ts`의 에디터 목록 + `public/` 이미지로 끝나며, 컴포넌트를 복사하지 않는다(키 집합 일치는 테스트가 검사한다).
 
 ## 2. 이름
 

@@ -48,7 +48,7 @@ FRONTEND_AUDIT.md의 보안·동작 지적은 코드 정적 분석 결과라서,
 | 수정      | `npm i -D eslint@9 eslint-config-next@16.4.3`, `eslint.config.mjs` 생성, `"lint": "eslint ."`로 교체(현재 `next lint`는 Next 16에서 제거된 명령). `import/no-extraneous-dependencies`로 선언 없는 패키지 사용 재발 방지. `package.json`에 `engines.node >= 22.12`, `.nvmrc` 추가 |
 | 완료 기준 | `npm run lint`가 동작. 기존 위반(`any` 54곳, `console.log` 83곳)은 `warn`으로 시작하고 D 단계에서 통합되는 파일부터 정리                                                                                                                                                         |
 
-### D. 카테고리 컴포넌트 통합 — REVIEW_RECHECK 2-3 (2~3일, 가장 큰 작업)
+### D. 카테고리 컴포넌트 통합 — REVIEW_RECHECK 2-3 (완료 2026-10-26)
 
 순서가 중요하다. 타입을 먼저 하나로 만들어야 뒤 단계에서 `Post`/`PostInfo` 불일치를 만나지 않는다.
 
@@ -64,6 +64,8 @@ FRONTEND_AUDIT.md의 보안·동작 지적은 코드 정적 분석 결과라서,
 | 완료 기준 | 9개 카테고리 × 3페이지(목록·카테고리별 목록·상세) 시각 확인, 정렬·notFound 동작이 전 카테고리 동일, 파일 64개 → 10개 내외. `THEME_CONFIG` 키 집합 = `main_categories` 경로 집합을 검증하는 테스트 추가 |
 | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | 위험      | 중간. 카테고리별 배경 영상·색상 회귀. 통합 전 각 페이지 스크린샷을 기준선으로 남긴다(Playwright `e2e/`에 추가)                                                                                         |
+
+결과: 64개 파일 → 11개(`constants/postThemes.ts` + `components/features/post/view/{PostLayout,PostList,PostCard,PostDetail}` + `layout/sidebar/post/PostSidebar` + `app/post/view/[mainCategory]/{page,[id]/page,category/[category]/page}` + `_components/{SidebarWrapper,ViewCountHandler}`). 카테고리별 차이(배경·패턴·영상·색·카드·사이드바·본문 스타일)는 `POST_THEMES` 한 객체에, 새 카테고리는 항목 하나 추가. 모르는 카테고리·ObjectId 형식 불량·조회 실패는 전부 404. 정렬 select는 9개 카테고리 공통(예전엔 6개만). `jest/cypress/git/junit5`는 메뉴·에디터에서 제거. 동작 변화: algorithm 하위 카테고리 페이지는 예전에 항상 500이었고(상대 경로 fetch) 지금은 정상, database-theory 카드는 다른 카테고리와 같은 호버 카드로 통일. 시각 회귀: `e2e/post-view-visual.spec.ts` 27페이지 중 26개 기준선과 2% 이내 일치(mock Post BE 기준). 테마 키 집합 = 에디터 카테고리 집합 테스트 추가.
 
 ### E. 의존성 major — REVIEW_RECHECK 6단계, Storybook 제외 (반나절)
 

@@ -1,0 +1,112 @@
+# vans_story 다음 작업 계획 (2026-10-26)
+
+## 0. 현재 상태
+
+| 항목 | 상태 |
+|---|---|
+| 의존성 | 72개 → 48개. next 16.4.3, react 19.3.1, @tiptap 3.32.0. `npm audit` 48건(critical 6) → 5건(Tailwind 4·mermaid 12 major 건만) |
+| Storybook | 제거 완료 (devDeps 8개, `.storybook/`, `src/stories/`, `storybook-static/` 27MB) |
+| 테스트 | `npm test` 9파일 89개 전부 통과. 테스트 중 외부 네트워크 호출 없음 |
+| 타입·빌드 | `tsc --noEmit` 오류 0, `next build` 통과(정적 페이지 95개) |
+| 미처리 | REVIEW_RECHECK.md 4장의 4~7단계, FRONTEND_AUDIT.md 1장(인증·보안)·3장(성능)·2-5(i18n) |
+
+## 1. 우선순위 원칙
+
+**동작 결함(인증·보안) → 도구(린트) → 구조(중복 통합) → 대규모 마이그레이션(Tailwind 4) → 성능·i18n.**
+의존성 정리는 끝났으니, 사용자에게 직접 영향이 있는 결함을 먼저 잡고, 그다음 리팩토링 중 실수를 잡아줄 린트를 세운 뒤, 가장 큰 구조 작업으로 들어간다. Tailwind 4는 파일 수가 줄어든 뒤에 해야 수정 범위가 작다.
+
+FRONTEND_AUDIT.md의 보안·동작 지적은 코드 정적 분석 결과라서, **각 항목은 재현으로 확인한 뒤 수정한다.** 재현되지 않으면 그 항목은 닫는다.
+
+## 2. 단계별 계획
+
+### A. 인증 플로우 검증·복구 — FRONTEND_AUDIT 1-1, 1-2, 1-7 (약 1일)
+
+| 구분 | 내용 |
+|---|---|
+| 재현 | ① 로그인 후 Spring이 내려준 Refresh 쿠키가 브라우저에 저장되는지 ② access 만료 상태(토큰 exp 조작)에서 `/api/auth/refresh`가 성공하는지 ③ 서버 로그아웃이 401일 때 `authFetch → refresh → logout` 재귀가 실제로 발생하는지 ④ OAuth 콜백이 `state` 없이도 통과하는지, JWT 디코딩 실패 시 `user@example.com`으로 로그인되는지 |
+| 수정 | `login`/`callback` 라우트에서 `res.headers.getSetCookie()`를 응답에 그대로 전달. `refresh`/`logout` 라우트에서 들어온 `Cookie` 헤더를 백엔드로 전달. `authService.logout()`은 토큰 없는 `basicPost`로 보내고 `finally`에서 로컬 토큰 제거 + Redux 초기화. `oauthUtils.generateState/validateState`를 로그인 시작·콜백에 연결. JWT 디코딩 실패는 로그인 실패로 처리 |
+| 완료 기준 | access 만료 후 첫 인증 요청이 refresh를 거쳐 성공. 서버 로그아웃 실패에도 클라이언트는 로그아웃 상태. 잘못된 `state` 콜백은 거부. 네 라우트에 vitest 추가(쿠키 전달 여부를 mock fetch로 검증) |
+| 대상 파일 | `src/app/api/auth/(server)/{login,refresh,logout}/route.ts`, `src/app/api/auth/callback/route.ts`, `src/components/features/auth/authService.ts`, `src/lib/apiFetch.ts`, `src/utils/oauth.ts`, `src/app/oauth/callback/page.tsx` |
+
+### B. 열린 BFF 라우트 잠그기 — FRONTEND_AUDIT 1-3, 1-4, 1-5, 5장 주식 (약 1일)
+
+| 구분 | 내용 |
+|---|---|
+| 수정 | `imageUpload`, `ai/chat` 라우트에 `Authorization` 필수 + 백엔드로 전달. `posts`, `search` 라우트는 토큰이 있으면 `cache: 'no-store'`, 없을 때만 `revalidate`. `post/view/[id]/page.tsx`의 상대경로 fetch는 공용 라우트를 D에서 통합하므로 여기서는 삭제 또는 절대 URL로 수정. 주식 라우트는 `symbol`을 `^\d{6}$` 또는 허용 목록으로 검증, 에러 응답에서 내부 `targetUrl` 제거, 상류 fetch에 `revalidate 30~60`, heatmap·KOSPI 선물 폴링은 `marketOpen`일 때만 |
+| 완료 기준 | 토큰 없는 `imageUpload`/`ai/chat` 요청은 401. 심볼 주입(`..%2F`) 요청은 400. 라우트별 vitest 추가 |
+| 대상 파일 | `src/app/api/imageUpload/(server)/route.ts`, `src/app/api/ai/chat/route.ts`, `src/app/api/posts/route.ts`, `src/app/api/search/route.ts`, `src/app/api/stocks/kis/**`, `src/app/api/stocks/detail/route.ts`, `src/hooks/useSectorHeatmap.ts`, `src/components/features/stocks/KospiFuturesCard.tsx` |
+
+### C. ESLint 9 flat config — REVIEW_RECHECK 4단계 (반나절)
+
+| 구분 | 내용 |
+|---|---|
+| 수정 | `npm i -D eslint@9 eslint-config-next@16.4.3`, `eslint.config.mjs` 생성, `"lint": "eslint ."`로 교체(현재 `next lint`는 Next 16에서 제거된 명령). `import/no-extraneous-dependencies`로 선언 없는 패키지 사용 재발 방지. `package.json`에 `engines.node >= 22.12`, `.nvmrc` 추가 |
+| 완료 기준 | `npm run lint`가 동작. 기존 위반(`any` 54곳, `console.log` 83곳)은 `warn`으로 시작하고 D 단계에서 통합되는 파일부터 정리 |
+
+### D. 카테고리 컴포넌트 통합 — REVIEW_RECHECK 2-3 (2~3일, 가장 큰 작업)
+
+순서가 중요하다. 타입을 먼저 하나로 만들어야 뒤 단계에서 `Post`/`PostInfo` 불일치를 만나지 않는다.
+
+1. **타입 통일**: `interfaces/post/types.ts`를 없애고 `types/post.ts` 하나로. `SubCategoryOption`(3곳), `MainCategoryOption`(2곳)도 한 곳으로. 11개 import 경로 수정
+2. **`THEME_CONFIG[mainCategory]`** 객체 생성: 아이콘, 색상 hex, 배경 영상 경로, 링크 prefix, PostCard 대체 이미지, Sidebar 스타일 props. `interfaces/post/categories.ts`의 `main_categories`와 키를 맞춘다
+3. **동적 라우트 1세트**: `app/post/view/[mainCategory]/page.tsx`, `[id]/page.tsx`, `category/[category]/page.tsx`. 모르는 `mainCategory`는 `notFound()`. `[id]`는 전 카테고리에서 ObjectId 검증 + `notFound()`
+4. **단일 컴포넌트**: `PostLayout`(props `{ children, title?, isPreview? }`), `PostList`(정렬 select + 10개 slice 기본, JWT의 클라이언트 재fetch 제거), `PostCard`(테마는 `THEME_CONFIG`에서, `renderBadge?: (post) => ReactNode`로 통일), `PostSidebar`(`BaseSidebar` + `THEME_CONFIG`)
+5. **소비자 교체**: `PostPreview.tsx`, `EditorPreview.tsx`가 9개씩 import하던 것을 단일 컴포넌트 + `THEME_CONFIG`로
+6. **삭제**: `app/post/view/{nextjs,…,database-theory}/` 9개 디렉터리, `postcard/*/PostCard.tsx` 10개, `sidebar/post/*Sidebar.tsx` 9개, 공용 `view/[id]/page.tsx`와 `ViewPostHeader/Content`(3단계와 중복)
+7. **죽은 코드**: `hooks/useCategories.ts`(import 0), `CursorRipple.tsx`·`AdvancedCursorRipple.tsx`(import 0), `Header.tsx`의 `isStorybook` prop, `SidebarWrapper`와 `useSidebarMargin` 중 하나, `utils/errorHandling.ts`를 `lib/errorHandler.ts`로 흡수
+8. **`main_categories` 정리**: 라우트가 없는 `jest, cypress, git, junit5` 제거(또는 `THEME_CONFIG`에 추가해 페이지 생성)
+
+| 완료 기준 | 9개 카테고리 × 3페이지(목록·카테고리별 목록·상세) 시각 확인, 정렬·notFound 동작이 전 카테고리 동일, 파일 64개 → 10개 내외. `THEME_CONFIG` 키 집합 = `main_categories` 경로 집합을 검증하는 테스트 추가 |
+|---|---|
+| 위험 | 중간. 카테고리별 배경 영상·색상 회귀. 통합 전 각 페이지 스크린샷을 기준선으로 남긴다(Playwright `e2e/`에 추가) |
+
+### E. 의존성 major — REVIEW_RECHECK 6단계, Storybook 제외 (반나절)
+
+| 패키지 | 메모 |
+|---|---|
+| `lucide-react` 0.575 → 1.61 | 사용 중 24개 아이콘 전부 일반 아이콘, 영향 없음 |
+| `@types/node` 22 → 26 | 런타임이 Node 26 |
+| `jsdom` 27 → 30 | 컴포넌트 테스트 4개만 사용 |
+| `emoji-picker-react` 4 → 5, `mermaid` 10 → 12 | 릴리스 노트 확인 후. 이모지 삽입·projects 페이지 다이어그램 수동 확인 |
+
+각각 `tsc` + `npm test` + 해당 화면 확인.
+
+### F. Tailwind 4 — REVIEW_RECHECK 7단계 (별도 브랜치, 1일)
+
+`npx @tailwindcss/upgrade` → `tailwind.config.js`의 keyframes/animation/fontFamily를 `globals.css`의 `@theme`로 → `@tailwindcss/postcss`로 교체, `autoprefixer` 삭제 → `!important` 접두 문법 139곳 결과 확인 → 전 페이지 시각 확인. **D 이후에** 해야 수정 대상 파일이 적다.
+
+### G. 성능·i18n — FRONTEND_AUDIT 3장, 2-5 (이후)
+
+- 배경 영상 `preload="none"` + `poster`, `prefers-reduced-motion`에서 비활성. `public/` 38MB 정리
+- 에디터용 Google 폰트 8종을 `post/new`·`post/edit`에만 로드
+- Viewer는 에디터 extension 대신 읽기 전용 경량 세트, highlight.js 언어는 한 곳에서만 등록
+- 게임 12개 `dynamic()` import, 음소거 상태를 전역으로
+- i18n: `next-intl` 같은 라우팅 기반으로 교체하거나 최소한 하드코딩 문자열 정리, `src/messages/ko.json`·`en.json` 미사용 파일 삭제
+
+### 보류
+
+- **TypeScript 7**: Next 공식 지원 확인 후
+- **Storybook 재도입**: D가 끝나 공유 UI가 정리된 뒤 필요하면 Storybook 10 + `@storybook/nextjs-vite`로 새로 구성
+
+## 3. 진행 순서 요약
+
+| 순서 | 단계 | 예상 | 위험 | 확인 |
+|---|---|---|---|---|
+| 1 | A 인증 복구 | 1일 | 중간 | 로그인·만료·로그아웃·OAuth 수동 + 라우트 vitest |
+| 2 | B 라우트 잠그기 | 1일 | 낮음 | 401/400 응답 vitest, 주식 대시보드 수동 |
+| 3 | C ESLint | 반나절 | 낮음 | `npm run lint` |
+| 4 | D 컴포넌트 통합 | 2~3일 | 중간 | 27페이지 시각 확인, 파일 수 |
+| 5 | E major 업데이트 | 반나절 | 낮음 | tsc·test·해당 화면 |
+| 6 | F Tailwind 4 | 1일 | 높음 | 전 페이지 시각 확인 |
+| 7 | G 성능·i18n | 이후 | 낮음 | Lighthouse, 번들 크기 |
+
+단계마다 커밋을 나누고, 매 단계 끝에 `npm test`와 `npm run build`를 통과시킨다.
+
+## 4. 바로 다음 작업 (A 시작 체크리스트)
+
+- [ ] 로컬 백엔드(Spring) 기동, 로그인 후 응답 헤더에서 `Set-Cookie`(Refresh) 확인
+- [ ] 브라우저 쿠키 저장소에 Refresh 쿠키가 있는지 확인 → 없으면 1-1 재현 확정
+- [ ] access 토큰 exp를 과거로 바꿔 `/api/posts` 호출 → refresh 성공/실패 기록
+- [ ] 서버 로그아웃을 401로 강제(토큰 삭제)한 뒤 로그아웃 버튼 → 네트워크 탭에서 재귀 여부 확인
+- [ ] `/oauth/callback?code=xxx`를 `state` 없이 호출 → 통과 여부 확인
+- [ ] 재현된 항목만 수정 → 라우트 vitest 추가 → 커밋

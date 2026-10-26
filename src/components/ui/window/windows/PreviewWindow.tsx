@@ -6,7 +6,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { Eye } from 'lucide-react'
-import { PostPreview } from '@/components/post/PostPreview'
+import { PostPreview } from '@/components/features/post/form/PostPreview'
 import { BasePost } from '@/types/post'
 
 interface PreviewWindowContentProps {

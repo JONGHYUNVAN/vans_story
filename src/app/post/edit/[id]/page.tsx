@@ -1,7 +1,7 @@
 'use client'
 
 import { use } from 'react'
-import { PostFormWindows } from '@/components/post/PostFormWindows'
+import { PostFormWindows } from '@/components/features/post/form/PostFormWindows'
 
 interface PostEditPageProps {
   params: Promise<{

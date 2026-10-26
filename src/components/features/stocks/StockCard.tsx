@@ -4,8 +4,8 @@ import type { ReactNode } from 'react';
 import Link from 'next/link';
 import type { StockPrice } from '@/types/stocks';
 import { KR_STOCKS } from '@/types/stocks';
-import { useStocksTheme } from '@/components/features/stocks/StocksThemeContext';
-import { symbolToSlug } from '@/utils/stockSymbol';
+import { useStocksTheme } from './StocksThemeContext';
+import { symbolToSlug } from '@/lib/stocks/stockSymbol';
 import {
   finite,
   formatPriceSimple,
@@ -13,7 +13,7 @@ import {
   formatPercent,
   formatVolume,
   formatMarketCap,
-} from '@/utils/stockFormatting';
+} from '@/lib/stocks/stockFormatting';
 
 interface StockCardProps {
   stock?: StockPrice;

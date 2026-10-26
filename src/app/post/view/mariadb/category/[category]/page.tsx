@@ -1,8 +1,8 @@
 import { API_URLS } from '@/constants/apiUrl';
-import MariadbLayout from '../../MariadbLayout';
-import { SidebarWrapper } from '../../../components/SidebarWrapper';
-import MariadbList from '../../MariadbList';
-import { getPostList } from '@/lib/posts/client-actions';
+import MariadbLayout from '@/app/post/view/mariadb/_components/MariadbLayout';
+import { SidebarWrapper } from '@/app/post/view/_components/SidebarWrapper';
+import MariadbList from '@/app/post/view/mariadb/_components/MariadbList';
+import { getPostList } from '@/lib/posts/clientActions';
 
 interface PageProps {
   params: Promise<{ category: string }>;

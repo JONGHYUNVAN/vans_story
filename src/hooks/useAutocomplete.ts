@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { ApiFetch } from '@/lib/apiFetch';
+import { ApiFetch } from '@/lib/api/apiFetch';
 import { AutocompleteResponse, AutocompleteSuggestion, AutocompleteApiResponse } from '@/types/api/search';
 
 interface UseAutocompleteOptions {

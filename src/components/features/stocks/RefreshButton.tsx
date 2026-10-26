@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useStocksTheme } from '@/components/features/stocks/StocksThemeContext';
+import { useStocksTheme } from './StocksThemeContext';
 
 interface RefreshButtonProps {
   onClick: () => void;

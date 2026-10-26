@@ -1,7 +1,7 @@
 'use client';
 
 import type { MarketState } from '@/types/stocks';
-import { formatPriceSimple as formatP } from '@/utils/stockFormatting';
+import { formatPriceSimple as formatP } from '@/lib/stocks/stockFormatting';
 
 interface MarketHoursSectionProps {
   marketState: MarketState;

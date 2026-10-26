@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ApiFetch } from '@/lib/apiFetch';
+import { ApiFetch } from '@/lib/api/apiFetch';
 import SearchResultList from './SearchResultList';
 
 interface SearchResultContentProps {

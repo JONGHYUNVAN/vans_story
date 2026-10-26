@@ -1,8 +1,8 @@
 import { API_URLS } from '@/constants/apiUrl';
-import SpringList from '@/app/post/view/spring/SpringList';
-import SpringLayout from '@/app/post/view/spring/SpringLayout';
-import { SidebarWrapper } from '@/app/post/view/components/SidebarWrapper';
-import { getPostList } from '@/lib/posts/client-actions';
+import SpringList from '@/app/post/view/spring/_components/SpringList';
+import SpringLayout from '@/app/post/view/spring/_components/SpringLayout';
+import { SidebarWrapper } from '@/app/post/view/_components/SidebarWrapper';
+import { getPostList } from '@/lib/posts/clientActions';
 
 interface PageProps {
   params: Promise<{ category: string }>;

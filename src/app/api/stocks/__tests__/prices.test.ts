@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach, type MockInstance } from 'vitest';
-import { GET } from '../prices/route';
+import { GET } from '@/app/api/stocks/prices/route';
 import { KR_STOCKS, US_STOCKS } from '@/types/stocks';
 import type { YahooChartResponse } from '@/types/stocks';
 

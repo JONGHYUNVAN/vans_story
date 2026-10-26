@@ -1,7 +1,7 @@
 import { Menu, Transition, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { Fragment } from 'react';
 import { MdKeyboardArrowDown } from "react-icons/md";
-import { useTranslation } from '@/utils/i18n';
+import { useTranslation } from '@/lib/i18n';
 import 'flag-icons/css/flag-icons.min.css';
 
 /**

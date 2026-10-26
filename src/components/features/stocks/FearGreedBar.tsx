@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useStocksTheme } from '@/components/features/stocks/StocksThemeContext';
+import { useStocksTheme } from './StocksThemeContext';
 import { API_URLS } from '@/constants/apiUrl';
 import TermTooltip from '@/components/features/stocks/detail/TermTooltip';
 import type { FearGreedData } from '@/app/api/stocks/fear-greed/route';

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import type { KisOrderbookData } from '@/types/stocks';
 import { useStocksTheme } from '@/components/features/stocks/StocksThemeContext';
-import { isKrxRegularSession } from '@/utils/marketHours';
+import { isKrxRegularSession } from '@/lib/stocks/marketHours';
 
 interface KisOrderbookProps {
   orderbook: KisOrderbookData | null;

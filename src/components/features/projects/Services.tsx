@@ -1,4 +1,4 @@
-import { ProjectService } from '@/interfaces/project';
+import { ProjectService } from '@/types/project';
 import { useState } from 'react';
 import { MdKeyboardArrowDown } from "react-icons/md";
 import MarkdownModal from '@/components/ui/MarkdownModal';

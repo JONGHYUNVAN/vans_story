@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import StocksClient from './StocksClient';
+import StocksClient from '@/app/stocks/_components/StocksClient';
 
 export const metadata: Metadata = {
   title: '주가 대시보드 | Vans Story',

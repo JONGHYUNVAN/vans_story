@@ -7,7 +7,7 @@
  */
 
 import { API_URLS } from '@/constants/apiUrl'
-import { ApiFetch } from '@/lib/apiFetch'
+import { ApiFetch } from '@/lib/api/apiFetch'
 
 /** `GET /api/categories` 응답 한 건 중 여기서 쓰는 필드 */
 interface CategoryRecord {

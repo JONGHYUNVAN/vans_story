@@ -4,8 +4,8 @@ import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import type { ChartDataPoint } from '@/types/stocks';
 import { useStocksTheme } from '@/components/features/stocks/StocksThemeContext';
 import { API_URLS } from '@/constants/apiUrl';
-import TermTooltip from '@/components/features/stocks/detail/TermTooltip';
-import { formatPriceDetailed as fmtPrice, formatVolumeCompact as fmtVol } from '@/utils/stockFormatting';
+import TermTooltip from './TermTooltip';
+import { formatPriceDetailed as fmtPrice, formatVolumeCompact as fmtVol } from '@/lib/stocks/stockFormatting';
 
 // ───────────────────────────── types ─────────────────────────────
 type ChartRange = '1D' | '1W' | '1M' | '3M' | '6M' | '1Y';

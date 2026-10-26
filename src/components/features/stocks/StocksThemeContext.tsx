@@ -13,7 +13,7 @@ import {
   stocksThemeTokens,
   type StocksTheme,
   type StocksThemeTokens,
-} from '@/components/features/stocks/stocksThemeTokens';
+} from './stocksThemeTokens';
 
 const STORAGE_KEY = 'vans-story-stocks-theme';
 

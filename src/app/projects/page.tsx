@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { vansDevBlogProject, stockDashboardProject } from '@/constants/projects';
-import type { Project } from '@/interfaces/project';
+import type { Project } from '@/types/project';
 
 // ---------------------------------------------------------------------------
 // 목록 아이템 타입

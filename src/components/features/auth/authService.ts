@@ -1,8 +1,8 @@
-import { tokenStorage } from '@/utils/token';
-import { ApiFetch } from '@/lib/apiFetch';
+import { tokenStorage } from '@/lib/auth/token';
+import { ApiFetch } from '@/lib/api/apiFetch';
 import { API_URLS } from '@/constants/apiUrl';
-import { oauthUtils } from '@/utils/oauth';
-import type { OAuthProvider, OAuthUserInfo } from '@/interfaces/auth/types';
+import { oauthUtils } from '@/lib/auth/oauth';
+import type { OAuthProvider, OAuthUserInfo } from '@/types/auth';
 
 /**
  * 인증 관련 API 함수들

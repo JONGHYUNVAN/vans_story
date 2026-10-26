@@ -1,7 +1,7 @@
 'use client';
 
 import { SiMariadb } from 'react-icons/si';
-import BaseSidebar from '../base/BaseSidebar';
+import BaseSidebar from '@/components/layout/sidebar/base/BaseSidebar';
 import { IconType } from 'react-icons';
 
 /**

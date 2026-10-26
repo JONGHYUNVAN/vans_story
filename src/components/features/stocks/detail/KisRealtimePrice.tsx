@@ -3,8 +3,8 @@
 import { useRef, useEffect, useState } from 'react';
 import type { KisTradeData } from '@/types/stocks';
 import { useStocksTheme } from '@/components/features/stocks/StocksThemeContext';
-import { isKrxRegularSession } from '@/utils/marketHours';
-import { formatVolume } from '@/utils/stockFormatting';
+import { isKrxRegularSession } from '@/lib/stocks/marketHours';
+import { formatVolume } from '@/lib/stocks/stockFormatting';
 
 interface KisRealtimePriceProps {
   trade: KisTradeData | null;

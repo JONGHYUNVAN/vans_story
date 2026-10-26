@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
-import { API_CONFIG } from '@/config/apiConfig';
-import { proxyGet } from '@/lib/apiProxy';
+import { API_CONFIG } from '@/constants/apiConfig';
+import { proxyGet } from '@/lib/api/apiProxy';
 
 /**
  * 인기 검색어를 가져오는 API 라우트 핸들러 (BFF 프록시)

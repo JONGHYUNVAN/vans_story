@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
-import authReducer from './auth/slice';
-import i18nReducer from './i18n/slice';
-import modalReducer from './modal/slice';
+import authReducer from '@/store/auth/slice';
+import i18nReducer from '@/store/i18n/slice';
+import modalReducer from '@/store/modal/slice';
 /**
  * Redux 스토어 설정
  * - auth: 인증 상태 관리

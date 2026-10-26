@@ -1,9 +1,9 @@
-import { SidebarWrapper } from '../../../components/SidebarWrapper';
-import JWTLayout from '../../JWTLayout';
-import JWTList from '../../JWTList';
-import { handleEmptyData } from '@/utils/errorHandling';
-import { getPostList } from '@/lib/posts/client-actions';
-import { PostInfo } from '@/interfaces/post/types';
+import { SidebarWrapper } from '@/app/post/view/_components/SidebarWrapper';
+import JWTLayout from '@/app/post/view/jwt/_components/JWTLayout';
+import JWTList from '@/app/post/view/jwt/_components/JWTList';
+import { handleEmptyData } from '@/lib/errors/errorHandling';
+import { getPostList } from '@/lib/posts/clientActions';
+import { PostInfo } from '@/types/post';
 
 interface PageProps {
   params: Promise<{ category: string }>;

@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import type { DartDisclosure, StocksApiResponse, DartData } from '@/types/stocks';
 import { KR_STOCKS } from '@/types/stocks';
 import { API_URLS } from '@/constants/apiUrl';
-import { useStocksTheme } from '@/components/features/stocks/StocksThemeContext';
+import { useStocksTheme } from './StocksThemeContext';
 
 function formatDate(raw: string): string {
   if (/^\d{8}$/.test(raw)) {

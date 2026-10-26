@@ -1,8 +1,8 @@
 import { API_URLS } from '@/constants/apiUrl';
-import DockerLayout from '../../DockerLayout';
-import { SidebarWrapper } from '../../../components/SidebarWrapper';
-import DockerList from '../../DockerList';
-import { getPostList } from '@/lib/posts/client-actions';
+import DockerLayout from '@/app/post/view/docker/_components/DockerLayout';
+import { SidebarWrapper } from '@/app/post/view/_components/SidebarWrapper';
+import DockerList from '@/app/post/view/docker/_components/DockerList';
+import { getPostList } from '@/lib/posts/clientActions';
 
 interface PageProps {
   params: Promise<{ category: string }>;

@@ -6,8 +6,8 @@ import { RootState } from '@/store/store';
 import { openLoginModal } from '@/store/modal/slice';
 import { logout } from '@/store/auth/slice';
 import { authService } from '@/components/features/auth/authService';
-import { useTranslation } from '@/utils/i18n';
-import { showLogoutAlert } from '@/utils/alerts';
+import { useTranslation } from '@/lib/i18n';
+import { showLogoutAlert } from '@/lib/alerts';
 
 export default function AuthButtons() {
   const dispatch = useAppDispatch();

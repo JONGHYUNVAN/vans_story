@@ -6,8 +6,8 @@
 
 import React, { useState, useRef, useEffect } from 'react'
 import { Bot, Send, User, AlertCircle, Loader2, Trash2, Zap } from 'lucide-react'
-import { sendChatMessageDirect, type ChatRequest, type ChatResponse } from '@/lib/ai/client-actions'
-import { useWindowManager } from '../WindowContext'
+import { sendChatMessageDirect, type ChatRequest, type ChatResponse } from '@/lib/ai/clientActions'
+import { useWindowManager } from '@/components/ui/window/WindowContext'
 
 interface ChatMessage {
   id: string

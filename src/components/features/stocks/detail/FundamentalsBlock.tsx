@@ -2,7 +2,7 @@
 
 import type { StockFundamentals, StockConsensus, StockPeer } from '@/types/stocks';
 import { useStocksTheme } from '@/components/features/stocks/StocksThemeContext';
-import TermTooltip from '@/components/features/stocks/detail/TermTooltip';
+import TermTooltip from './TermTooltip';
 
 interface Props {
   fundamentals: StockFundamentals;

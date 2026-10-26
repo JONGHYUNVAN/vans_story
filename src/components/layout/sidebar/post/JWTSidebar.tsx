@@ -1,7 +1,7 @@
 'use client';
 
 import { MdSecurity } from 'react-icons/md';
-import BaseSidebar from '../base/BaseSidebar';
+import BaseSidebar from '@/components/layout/sidebar/base/BaseSidebar';
 import { IconType } from 'react-icons';
 
 /**

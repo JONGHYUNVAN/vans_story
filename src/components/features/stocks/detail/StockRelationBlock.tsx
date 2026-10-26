@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { STOCK_DISPLAY_NAME } from '@/types/stocks';
-import { symbolToSlug } from '@/utils/stockSymbol';
+import { symbolToSlug } from '@/lib/stocks/stockSymbol';
 
 interface StockRelationBlockProps {
   description: string;

@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { MdKeyboardArrowRight } from "react-icons/md";
-import { useTranslation } from '@/utils/i18n';
-import { main_categories } from '../../../../interfaces/post/categories';
+import { useTranslation } from '@/lib/i18n';
+import { main_categories } from '@/constants/categoryThemes';
 
 export default function HomeSidebar() {
   const pathname = usePathname();

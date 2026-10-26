@@ -1,7 +1,7 @@
-import DatabaseTheoryList from './DatabaseTheoryList';
-import DatabaseTheoryLayout from './DatabaseTheoryLayout';
-import { SidebarWrapper } from '../components/SidebarWrapper';
-import { getPostList } from '@/lib/posts/client-actions';
+import DatabaseTheoryList from '@/app/post/view/database-theory/_components/DatabaseTheoryList';
+import DatabaseTheoryLayout from '@/app/post/view/database-theory/_components/DatabaseTheoryLayout';
+import { SidebarWrapper } from '@/app/post/view/_components/SidebarWrapper';
+import { getPostList } from '@/lib/posts/clientActions';
 
 
 

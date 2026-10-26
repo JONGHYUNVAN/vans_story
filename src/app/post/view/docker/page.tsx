@@ -1,7 +1,7 @@
-import { getPostList } from '@/lib/posts/client-actions';
-import DockerLayout from './DockerLayout';
-import { SidebarWrapper } from '../components/SidebarWrapper';
-import DockerList from './DockerList';
+import { getPostList } from '@/lib/posts/clientActions';
+import DockerLayout from '@/app/post/view/docker/_components/DockerLayout';
+import { SidebarWrapper } from '@/app/post/view/_components/SidebarWrapper';
+import DockerList from '@/app/post/view/docker/_components/DockerList';
 
 
 export default async function Page() {

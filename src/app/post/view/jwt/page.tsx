@@ -1,7 +1,7 @@
-import { getPostList } from '@/lib/posts/client-actions';
-import { SidebarWrapper } from '../components/SidebarWrapper';
-import JWTLayout from './JWTLayout';
-import JWTList from './JWTList';
+import { getPostList } from '@/lib/posts/clientActions';
+import { SidebarWrapper } from '@/app/post/view/_components/SidebarWrapper';
+import JWTLayout from '@/app/post/view/jwt/_components/JWTLayout';
+import JWTList from '@/app/post/view/jwt/_components/JWTList';
 
 
 

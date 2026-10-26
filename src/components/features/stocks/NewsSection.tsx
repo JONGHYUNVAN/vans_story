@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import type { NewsItem, StocksApiResponse, StockNewsData } from '@/types/stocks';
 import { KR_STOCKS, US_STOCKS } from '@/types/stocks';
 import { API_URLS } from '@/constants/apiUrl';
-import { useStocksTheme } from '@/components/features/stocks/StocksThemeContext';
+import { useStocksTheme } from './StocksThemeContext';
 
 const ALL_STOCKS = [
   ...KR_STOCKS.map((s) => ({ symbol: s.symbol, name: s.name })),

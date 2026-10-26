@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
-import RefreshButton from '../RefreshButton';
+import RefreshButton from '@/components/features/stocks/RefreshButton';
 
 describe('RefreshButton', () => {
   it('isLoading=false일 때 버튼이 disabled 상태가 아니다', () => {

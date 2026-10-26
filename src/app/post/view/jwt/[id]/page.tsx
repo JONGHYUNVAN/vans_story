@@ -1,9 +1,9 @@
 import { Viewer } from '@/components/features/post/viewer/Viewer';
-import { SidebarWrapper } from '../../components/SidebarWrapper';
-import { getPostWithViewCount } from '@/lib/posts/client-actions';
-import { ViewCountHandler } from '../../components/ViewCountHandler';
-import JWTLayout from '../JWTLayout';
-import { showNotFound } from '@/utils/errorHandling';
+import { SidebarWrapper } from '@/app/post/view/_components/SidebarWrapper';
+import { getPostWithViewCount } from '@/lib/posts/clientActions';
+import { ViewCountHandler } from '@/app/post/view/_components/ViewCountHandler';
+import JWTLayout from '@/app/post/view/jwt/_components/JWTLayout';
+import { showNotFound } from '@/lib/errors/errorHandling';
 
 interface PageProps {
   params: Promise<{ id: string }>;

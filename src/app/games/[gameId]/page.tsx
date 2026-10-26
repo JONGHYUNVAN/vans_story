@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { getGameById, GAMES } from '@/constants/games';
-import GamePageClient from './GamePageClient';
+import GamePageClient from '@/app/games/[gameId]/_components/GamePageClient';
 import { notFound } from 'next/navigation';
 
 export function generateStaticParams() {

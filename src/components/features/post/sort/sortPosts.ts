@@ -1,4 +1,4 @@
-import { PostInfo } from "@/interfaces/post/types";
+import { PostInfo } from "@/types/post";
 
 /**
  * 포스트 목록을 지정된 정렬 옵션에 따라 정렬합니다

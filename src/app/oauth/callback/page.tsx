@@ -6,10 +6,10 @@ import { useAppDispatch } from '@/store/hooks';
 import { authService } from '@/components/features/auth/authService';
 import { oauthSuccess, oauthFailure, oauthFinish } from '@/store/auth/slice';
 import { closeLoginModal } from '@/store/modal/slice';
-import { showWelcomeAlert } from '@/utils/alerts';
-import { oauthUtils } from '@/utils/oauth';
-import { tokenStorage } from '@/utils/token';
-import type { OAuthProvider } from '@/interfaces/auth/types';
+import { showWelcomeAlert } from '@/lib/alerts';
+import { oauthUtils } from '@/lib/auth/oauth';
+import { tokenStorage } from '@/lib/auth/token';
+import type { OAuthProvider } from '@/types/auth';
 
 /**
  * OAuth 콜백 처리 컴포넌트 (내부)

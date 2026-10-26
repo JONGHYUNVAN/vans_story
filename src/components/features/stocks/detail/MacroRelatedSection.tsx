@@ -3,9 +3,9 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import type { MacroIndicator, MacroData, StocksApiResponse } from '@/types/stocks';
-import { symbolToSlug } from '@/utils/stockSymbol';
+import { symbolToSlug } from '@/lib/stocks/stockSymbol';
 import { API_URLS } from '@/constants/apiUrl';
-import { formatMacroPrice, formatPercent as formatPct } from '@/utils/stockFormatting';
+import { formatMacroPrice, formatPercent as formatPct } from '@/lib/stocks/stockFormatting';
 
 interface MacroRelatedSectionProps {
   symbols: string[];

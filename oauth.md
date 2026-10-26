@@ -65,7 +65,7 @@ src/
 
 ## 주요 컴포넌트
 
-### 1. OAuth 유틸리티 (`src/utils/oauth.ts`)
+### 1. OAuth 유틸리티 (`src/lib/auth/oauth.ts`)
 
 OAuth 관련 유틸리티 함수들을 제공합니다.
 
@@ -114,7 +114,7 @@ OAuth 제공자에서 리다이렉트된 사용자를 처리합니다.
 3. 백엔드에서 JWT 토큰 수신
 4. 토큰을 클라이언트에 반환
 
-### 5. 로그인 모달 (`src/components/ui/auth/LoginModal.tsx`)
+### 5. 로그인 모달 (`src/components/features/auth/LoginModal.tsx`)
 
 OAuth 로그인 UI를 제공합니다.
 
@@ -124,7 +124,7 @@ OAuth 로그인 UI를 제공합니다.
 - 에러 메시지 표시
 - 일반 로그인 폼
 
-### 6. OAuth 계정 관리 (`src/components/ui/auth/OAuthAccountManager.tsx`)
+### 6. OAuth 계정 관리 (`src/components/features/auth/OAuthAccountManager.tsx`)
 
 연결된 OAuth 계정 관리 기능을 제공합니다.
 

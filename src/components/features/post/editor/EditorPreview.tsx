@@ -1,19 +1,19 @@
-import { PostInfo } from "@/interfaces/post/types"
-import { Viewer } from '../viewer/Viewer'
-import AlgorithmPostCard from '../../../ui/post/postcard/algorithm/PostCard'
-import NextjsPostCard from '../../../ui/post/postcard/nextjs/PostCard'
-import NestjsPostCard from '../../../ui/post/postcard/nestjs/PostCard'
-import MariadbPostCard from '../../../ui/post/postcard/mariadb/PostCard'
-import MongodbPostCard from '../../../ui/post/postcard/mongodb/PostCard'
-import SpringPostCard from '../../../ui/post/postcard/spring/PostCard'
-import DatabaseTheoryPostCard from '../../../ui/post/postcard/database-theory/PostCard'
-import AlgorithmLayout from '../../../../app/post/view/algorithm/AlgorithmLayout'
-import NextjsLayout from '../../../../app/post/view/nextjs/NextjsLayout'
-import NestjsLayout from '../../../../app/post/view/nestjs/NestjsLayout'
-import MariadbLayout from '../../../../app/post/view/mariadb/MariadbLayout'
-import MongodbLayout from '../../../../app/post/view/mongodb/MongodbLayout'
-import SpringLayout from '../../../../app/post/view/spring/SpringLayout'
-import DatabaseTheoryLayout from '../../../../app/post/view/database-theory/DatabaseTheoryLayout'
+import { PostInfo } from "@/types/post"
+import { Viewer } from '@/components/features/post/viewer/Viewer'
+import AlgorithmPostCard from '@/components/features/post/postcard/algorithm/PostCard'
+import NextjsPostCard from '@/components/features/post/postcard/nextjs/PostCard'
+import NestjsPostCard from '@/components/features/post/postcard/nestjs/PostCard'
+import MariadbPostCard from '@/components/features/post/postcard/mariadb/PostCard'
+import MongodbPostCard from '@/components/features/post/postcard/mongodb/PostCard'
+import SpringPostCard from '@/components/features/post/postcard/spring/PostCard'
+import DatabaseTheoryPostCard from '@/components/features/post/postcard/database-theory/PostCard'
+import AlgorithmLayout from '@/app/post/view/algorithm/_components/AlgorithmLayout'
+import NextjsLayout from '@/app/post/view/nextjs/_components/NextjsLayout'
+import NestjsLayout from '@/app/post/view/nestjs/_components/NestjsLayout'
+import MariadbLayout from '@/app/post/view/mariadb/_components/MariadbLayout'
+import MongodbLayout from '@/app/post/view/mongodb/_components/MongodbLayout'
+import SpringLayout from '@/app/post/view/spring/_components/SpringLayout'
+import DatabaseTheoryLayout from '@/app/post/view/database-theory/_components/DatabaseTheoryLayout'
 
 interface PostPreviewProps {
   id: string
@@ -54,6 +54,7 @@ export function PostPreview({
     likeCount: 0,
     topic,
     author: '미리보기',
+    authorEmail: '',
     mainCategory: theme,
     subCategory: category,
     thumbnail,

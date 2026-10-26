@@ -2,10 +2,10 @@ import { useState, useEffect, ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { MdKeyboardArrowRight } from 'react-icons/md';
-import { useTranslation } from '@/utils/i18n';
+import { useTranslation } from '@/lib/i18n';
 import { IconType } from 'react-icons';
 import { useFrameworkCategories } from '@/hooks/useFrameworkCategories';
-import { getIconComponent } from '@/utils/iconMapping';
+import { getIconComponent } from '@/lib/iconMapping';
 
 interface BaseSidebarProps {
   frameworkName: string;        // 'Next', 'Nest', 'Spring'

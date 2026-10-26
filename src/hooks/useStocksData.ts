@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { StockPricesData, MacroData, StocksApiResponse } from '@/types/stocks';
 import { API_URLS } from '@/constants/apiUrl';
-import { getKrMarketState, getUsMarketState, MarketState } from '@/utils/marketHours';
+import { getKrMarketState, getUsMarketState, MarketState } from '@/lib/stocks/marketHours';
 
 const POLL_INTERVAL_MS = 30_000; // 30초
 

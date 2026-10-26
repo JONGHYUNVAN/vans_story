@@ -1,7 +1,7 @@
-import { ViewPostHeader } from '../components/ViewPostHeader';
-import { ViewPostContent } from '../components/ViewPostContent';
+import { ViewPostHeader } from '@/app/post/view/_components/ViewPostHeader';
+import { ViewPostContent } from '@/app/post/view/_components/ViewPostContent';
 import { API_URLS } from '@/constants/apiUrl';
-import { Post } from '@/interfaces/post/types';
+import { Post } from '@/types/post';
 
 interface PageProps {
   params: Promise<{ id: string }>;

@@ -5,19 +5,19 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { useTranslation } from '@/utils/i18n'
+import { useTranslation } from '@/lib/i18n'
 import { 
   PostCreateData, 
   PostEditData, 
   BasePost,
   ViewMode 
 } from '@/types/post'
-import { useSubCategories } from '@/hooks/useSubCategories'
-import { useImageUploadAndReplace } from '@/hooks/useImageUploadAndReplace'
+import { useSubCategories } from './useSubCategories'
+import { useImageUploadAndReplace } from './useImageUploadAndReplace'
 import { API_URLS } from '@/constants/apiUrl'
-import { tokenStorage } from '@/utils/token'
-import { ApiFetch } from '@/lib/apiFetch'
-import { getPostForEdit, saveTempPost, updatePost, loadTempPost } from '@/lib/posts/client-actions'
+import { tokenStorage } from '@/lib/auth/token'
+import { ApiFetch } from '@/lib/api/apiFetch'
+import { getPostForEdit, saveTempPost, updatePost, loadTempPost } from '@/lib/posts/clientActions'
 import { resolveCategoryIds, lastPathSegment } from '@/lib/posts/categoryIds'
 
 export interface UsePostOptions {

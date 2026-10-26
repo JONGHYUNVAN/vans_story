@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
-import { slugToSymbol, symbolToSlug } from '@/utils/stockSymbol';
+import { slugToSymbol, symbolToSlug } from '@/lib/stocks/stockSymbol';
 import { KR_STOCKS, US_STOCKS, MACRO_SYMBOLS, STOCK_DISPLAY_NAME, SECTOR_HEATMAP_STOCKS } from '@/types/stocks';
 import { getStockRelation } from '@/constants/stockRelations';
-import StockDetailClient from './StockDetailClient';
+import StockDetailClient from '@/app/stocks/[symbol]/_components/StockDetailClient';
 
 interface PageProps {
   params: Promise<{ symbol: string }>;

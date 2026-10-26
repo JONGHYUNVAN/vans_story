@@ -1,7 +1,7 @@
 'use client';
 
 import { Moon, Sun } from 'lucide-react';
-import { useStocksTheme } from '@/components/features/stocks/StocksThemeContext';
+import { useStocksTheme } from './StocksThemeContext';
 
 export default function StocksThemeToggle() {
   const { theme, toggleTheme, tokens } = useStocksTheme();

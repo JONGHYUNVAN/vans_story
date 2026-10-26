@@ -1,8 +1,8 @@
 import { Viewer } from '@/components/features/post/viewer/Viewer';
-import DatabaseTheoryLayout from '../DatabaseTheoryLayout';
-import { SidebarWrapper } from '../../components/SidebarWrapper';
-import { getPostWithViewCount } from '@/lib/posts/client-actions';
-import { ViewCountHandler } from '../../components/ViewCountHandler';
+import DatabaseTheoryLayout from '@/app/post/view/database-theory/_components/DatabaseTheoryLayout';
+import { SidebarWrapper } from '@/app/post/view/_components/SidebarWrapper';
+import { getPostWithViewCount } from '@/lib/posts/clientActions';
+import { ViewCountHandler } from '@/app/post/view/_components/ViewCountHandler';
 
 interface PageProps {
   params: Promise<{ id: string }>;

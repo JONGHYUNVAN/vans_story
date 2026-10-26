@@ -1,9 +1,9 @@
 import { Viewer } from '@/components/features/post/viewer/Viewer';
-import { Post } from '@/interfaces/post/types';
-import SpringLayout from '../SpringLayout';
-import { SidebarWrapper } from '../../components/SidebarWrapper';
-import { getPostWithViewCount } from '@/lib/posts/client-actions';
-import { ViewCountHandler } from '../../components/ViewCountHandler';
+import { Post } from '@/types/post';
+import SpringLayout from '@/app/post/view/spring/_components/SpringLayout';
+import { SidebarWrapper } from '@/app/post/view/_components/SidebarWrapper';
+import { getPostWithViewCount } from '@/lib/posts/clientActions';
+import { ViewCountHandler } from '@/app/post/view/_components/ViewCountHandler';
 
 interface PageProps {
   params: Promise<{ id: string }>;

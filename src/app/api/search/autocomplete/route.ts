@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
-import { API_CONFIG } from '@/config/apiConfig';
-import { proxyGet } from '@/lib/apiProxy';
-import { createSuccessResponse } from '@/lib/errorHandler';
+import { API_CONFIG } from '@/constants/apiConfig';
+import { proxyGet } from '@/lib/api/apiProxy';
+import { createSuccessResponse } from '@/lib/api/errorHandler';
 
 /**
  * 자동완성 검색을 위한 API 라우트 핸들러 (BFF 프록시)

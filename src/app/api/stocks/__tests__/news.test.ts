@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach, type MockInstance } from 'vitest';
-import { GET } from '../news/route';
+import { GET } from '@/app/api/stocks/news/route';
 import { KR_STOCKS } from '@/types/stocks';
 
 // -------------------------------------------------------

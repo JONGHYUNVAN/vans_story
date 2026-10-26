@@ -7,7 +7,7 @@ import dynamic from 'next/dynamic';
 
 const LanguageSelector = dynamic(() => import('./LanguageSelector'), { ssr: false });
 import AuthButtons from './AuthButtons';
-import { useTranslation } from '@/utils/i18n';
+import { useTranslation } from '@/lib/i18n';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { useDispatch } from 'react-redux';
@@ -93,7 +93,7 @@ export default function Header({ isStorybook = false }: HeaderProps) {
                 {t('Header.projects')}
               </Link>
               <Link
-                href="/aboutVan"
+                href="/about-van"
                 className="text-gray-600 hover:text-blue-600 transition-colors"
               >
                 {t('Header.aboutVan')}

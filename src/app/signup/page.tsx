@@ -1,9 +1,9 @@
 'use client';
 
 import { FormProvider, useForm } from 'react-hook-form';
-import BackgroundVideo from './BackgroundVideo';
-import ValidationMessage from './ValidationMessage';
-import SignupForm from './Form'; 
+import BackgroundVideo from '@/app/signup/_components/BackgroundVideo';
+import ValidationMessage from '@/app/signup/_components/ValidationMessage';
+import SignupForm from '@/app/signup/_components/Form'; 
 
 export default function SignupPage() {
   const methods = useForm();

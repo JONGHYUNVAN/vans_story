@@ -1,6 +1,6 @@
 'use client';
 
-import type { MarketState } from '@/utils/marketHours';
+import type { MarketState } from '@/lib/stocks/marketHours';
 
 interface MarketStatusBadgeProps {
   state: MarketState;

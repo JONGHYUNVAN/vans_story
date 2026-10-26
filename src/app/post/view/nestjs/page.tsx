@@ -1,7 +1,7 @@
-import { getPostList } from '@/lib/posts/client-actions';
-import NestjsLayout from './NestjsLayout';
-import { SidebarWrapper } from '../components/SidebarWrapper';
-import NestjsList from './NestjsList';
+import { getPostList } from '@/lib/posts/clientActions';
+import NestjsLayout from '@/app/post/view/nestjs/_components/NestjsLayout';
+import { SidebarWrapper } from '@/app/post/view/_components/SidebarWrapper';
+import NestjsList from '@/app/post/view/nestjs/_components/NestjsList';
 
 
 

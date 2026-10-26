@@ -223,7 +223,7 @@ WINDOWS11_REFACTORING.md               # 이 문서
 
 ### 기본 사용
 ```tsx
-import { PostFormWindows } from '@/components/post/PostFormWindows'
+import { PostFormWindows } from '@/components/features/post/form/PostFormWindows'
 
 export default function NewPostPage() {
   return (
@@ -316,7 +316,7 @@ return <PostForm mode="create" />
 
 ### 사용 가이드
 - `src/components/ui/window/README.md`: 상세 가이드
-- `src/components/post/PostFormWindows.tsx`: 실제 예시
+- `src/components/features/post/form/PostFormWindows.tsx`: 실제 예시
 - `src/app/post/new/page.tsx`: 통합 예시
 
 ### API 문서

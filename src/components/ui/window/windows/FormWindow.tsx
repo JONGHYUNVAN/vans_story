@@ -6,7 +6,7 @@
 
 import React from 'react'
 import { FileText } from 'lucide-react'
-import { PostFormInputs } from '@/components/post/PostFormInputs'
+import { PostFormInputs } from '@/components/features/post/form/PostFormInputs'
 import { PostFormInputsProps } from '@/types/post'
 
 interface FormWindowContentProps extends PostFormInputsProps {

@@ -4,9 +4,9 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import type { StockPrice, StocksApiResponse, StockPricesData } from '@/types/stocks';
 import { STOCK_DISPLAY_NAME, MACRO_SYMBOLS } from '@/types/stocks';
-import { symbolToSlug } from '@/utils/stockSymbol';
+import { symbolToSlug } from '@/lib/stocks/stockSymbol';
 import { API_URLS } from '@/constants/apiUrl';
-import { formatPriceSimple as formatPrice, formatPercent as formatPct } from '@/utils/stockFormatting';
+import { formatPriceSimple as formatPrice, formatPercent as formatPct } from '@/lib/stocks/stockFormatting';
 
 interface RelatedStock {
   symbol: string;

@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import type { MacroData } from '@/types/stocks';
-import { useStocksTheme } from '@/components/features/stocks/StocksThemeContext';
-import { symbolToSlug } from '@/utils/stockSymbol';
-import { formatPercent, formatMacroPrice } from '@/utils/stockFormatting';
+import { useStocksTheme } from './StocksThemeContext';
+import { symbolToSlug } from '@/lib/stocks/stockSymbol';
+import { formatPercent, formatMacroPrice } from '@/lib/stocks/stockFormatting';
 
 interface MacroPanelProps {
   macro: MacroData | null;

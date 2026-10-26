@@ -4,7 +4,7 @@
  */
 
 import { MainCategoryOption, SubCategoryOption } from '@/types/post'
-import { main_categories } from '@/interfaces/post/categories'
+import { main_categories } from './categoryThemes'
 import { SiNestjs, SiSpring, SiMariadb, SiMongodb, SiNextdotjs, 
          SiDocker, SiJest, SiCypress, SiGit, SiJunit5 } from "react-icons/si"
 import { TbBinaryTree2, TbDatabase } from "react-icons/tb"

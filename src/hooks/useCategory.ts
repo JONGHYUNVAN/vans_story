@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ApiFetch } from '@/lib/apiFetch';
+import { ApiFetch } from '@/lib/api/apiFetch';
 import { Category } from '@/types/category';
 
 /**

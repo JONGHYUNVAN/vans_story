@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { X, Sparkles, FileText, BookOpen } from 'lucide-react'
-import { sendChatMessage } from '@/lib/ai/client-actions'
+import { sendChatMessage } from '@/lib/ai/clientActions'
 
 interface PostContext {
   title?: string

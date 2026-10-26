@@ -3,7 +3,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSectorHeatmap } from '@/hooks/useSectorHeatmap';
-import { symbolToSlug } from '@/utils/stockSymbol';
+import { symbolToSlug } from '@/lib/stocks/stockSymbol';
 import { SectorHeatmapItem } from '@/types/stocks';
 
 // ---------------------------------------------------------------------------

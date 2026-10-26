@@ -1,4 +1,4 @@
-import { ProjectArchitecture } from '@/interfaces/project';
+import { ProjectArchitecture } from '@/types/project';
 import Image from 'next/image';
 
 interface ArchitectureProps {

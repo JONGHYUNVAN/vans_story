@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { GameComponentProps } from '@/app/games/[gameId]/GamePageClient';
+import { GameComponentProps } from '@/app/games/[gameId]/_components/GamePageClient';
 import { useScreenShake } from '@/hooks/useScreenShake';
 import { useSound } from '@/hooks/useSound';
 import { useCombo } from '@/hooks/useCombo';

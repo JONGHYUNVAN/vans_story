@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
-import MacroPanel from '../MacroPanel';
+import MacroPanel from '@/components/features/stocks/MacroPanel';
 import type { MacroData } from '@/types/stocks';
 
 function makeMockMacroData(): MacroData {

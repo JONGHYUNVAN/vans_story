@@ -1,7 +1,7 @@
 'use client';
 
 import { SiNestjs } from 'react-icons/si';
-import BaseSidebar from '../base/BaseSidebar';
+import BaseSidebar from '@/components/layout/sidebar/base/BaseSidebar';
 
 /**
  * NestJS 전용 사이드바 컴포넌트

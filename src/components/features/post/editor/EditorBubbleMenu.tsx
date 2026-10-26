@@ -6,7 +6,7 @@ import { Bold, Italic, Underline, Palette, Type, Sparkles } from 'lucide-react'
 import { useEditorContext } from './EditorContext'
 import { Trash2 } from 'lucide-react'
 import { useState } from 'react'
-import { sendChatMessage } from '@/lib/ai/client-actions'
+import { sendChatMessage } from '@/lib/ai/clientActions'
 
 // ─── Tiptap 3.20 BubbleMenu React 래퍼 ─────────────────────────────────────
 interface TiptapBubbleMenuProps {

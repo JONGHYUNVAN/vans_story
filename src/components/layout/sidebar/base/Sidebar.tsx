@@ -1,8 +1,8 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import MainSidebar from '../home/HomeSidebar';
-import { THEME_SIDEBARS } from '../../../../interfaces/post/categories';
+import MainSidebar from '@/components/layout/sidebar/home/HomeSidebar';
+import { THEME_SIDEBARS } from '@/constants/categoryThemes';
 
 export default function Sidebar() {
   const pathname = usePathname();

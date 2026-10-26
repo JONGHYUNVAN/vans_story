@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import BaseSidebar from '../base/BaseSidebar';
+import BaseSidebar from '@/components/layout/sidebar/base/BaseSidebar';
 import { RiCodeBoxLine } from 'react-icons/ri';
 import { IconType } from 'react-icons';
 

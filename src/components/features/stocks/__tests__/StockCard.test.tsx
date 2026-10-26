@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
-import StockCard from '../StockCard';
+import StockCard from '@/components/features/stocks/StockCard';
 import type { StockPrice } from '@/types/stocks';
 
 function makeMockStock(overrides: Partial<StockPrice> = {}): StockPrice {

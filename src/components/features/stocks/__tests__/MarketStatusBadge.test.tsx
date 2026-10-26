@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
-import MarketStatusBadge from '../MarketStatusBadge';
+import MarketStatusBadge from '@/components/features/stocks/MarketStatusBadge';
 
 describe('MarketStatusBadge', () => {
   it('state=REGULAR, market=kr일 때 "장중" 텍스트를 렌더링한다', () => {

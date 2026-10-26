@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
-import { createErrorResponse, createSuccessResponse } from '@/lib/errorHandler';
+import { createErrorResponse, createSuccessResponse } from '@/lib/api/errorHandler';
 
 export type ChatRequest = {
   message: string;

@@ -11,7 +11,7 @@ import type {
   StockPeer,
 } from '@/types/stocks';
 import { KR_STOCKS, US_STOCKS, MACRO_SYMBOLS, resolveStockDisplayName } from '@/types/stocks';
-import { getSymbolType } from '@/utils/stockSymbol';
+import { getSymbolType } from '@/lib/stocks/stockSymbol';
 
 const YAHOO_HEADERS = {
   'User-Agent':

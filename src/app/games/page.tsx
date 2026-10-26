@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import GamesClient from './GamesClient';
+import GamesClient from '@/app/games/_components/GamesClient';
 
 export const metadata: Metadata = {
   title: '미니 게임 | Vans Story',

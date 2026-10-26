@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { AuthState, OAuthProvider } from '@/interfaces/auth/types';
-import { decodeToken } from '@/utils/decodeToken';
+import { AuthState, OAuthProvider } from '@/types/auth';
+import { decodeToken } from '@/lib/auth/decodeToken';
 
 /**
  * 인증 상태 초기값

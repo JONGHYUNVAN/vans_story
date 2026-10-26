@@ -1,4 +1,4 @@
-import { ProjectService } from '@/interfaces/project';
+import { ProjectService } from '@/types/project';
 
 interface ServiceDetailsProps {
   services: ProjectService[];

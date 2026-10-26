@@ -77,7 +77,7 @@ export default function ConfettiEffect({
           100% { transform: translateY(110vh) rotate(var(--rotate-end)); opacity: 0; }
         }
       `}</style>
-      {pieces.map(p => (
+      {pieces.map((p) => (
         <div
           key={p.id}
           style={{

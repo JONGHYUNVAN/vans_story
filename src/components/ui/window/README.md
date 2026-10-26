@@ -5,6 +5,7 @@ Next.js 애플리케이션을 위한 완전한 Windows 11 스타일 멀티 윈�
 ## 🎯 주요 기능
 
 ### ✨ 핵심 기능
+
 - **다중 윈도우 관리**: 여러 개의 독립적인 윈도우를 동시에 관리
 - **드래그 & 드롭**: 타이틀바를 드래그하여 윈도우 이동
 - **리사이즈**: 8방향(상/하/좌/우/4개 모서리)으로 크기 조절
@@ -17,12 +18,14 @@ Next.js 애플리케이션을 위한 완전한 Windows 11 스타일 멀티 윈�
 - **상태 저장**: localStorage를 통한 윈도우 위치/크기/상태 저장
 
 ### 🎨 디자인 시스템
+
 - **Fluent Design**: Acrylic 배경, 블러 효과
 - **부드러운 애니메이션**: Framer Motion 기반
 - **다크 모드**: Windows 11 다크 테마
 - **반응형**: 데스크톱(1024px+)에서만 활성화
 
 ### ♿ 접근성
+
 - ARIA 레이블 지원
 - 키보드 네비게이션
 - 스크린 리더 지원
@@ -38,32 +41,32 @@ npm install framer-motion lucide-react
 ### 1. WindowManagerProvider로 앱 감싸기
 
 ```tsx
-import { WindowManagerProvider } from '@/components/ui/window'
+import { WindowManagerProvider } from '@/components/ui/window';
 
 function App() {
   return (
     <WindowManagerProvider persistKey="my-app-windows">
       {/* 여기에 앱 컨텐츠 */}
     </WindowManagerProvider>
-  )
+  );
 }
 ```
 
 ### 2. 윈도우 생성 및 사용
 
 ```tsx
-'use client'
+'use client';
 
-import { useEffect } from 'react'
-import { Window, useWindowManager, Taskbar } from '@/components/ui/window'
-import { FileText } from 'lucide-react'
+import { useEffect } from 'react';
+import { Window, useWindowManager, Taskbar } from '@/components/ui/window';
+import { FileText } from 'lucide-react';
 
 function MyApp() {
-  const { createWindow, windows } = useWindowManager()
+  const { createWindow, windows } = useWindowManager();
 
   useEffect(() => {
     // 윈도우가 없으면 생성
-    if (!Array.from(windows.values()).find(w => w.id === 'my-window')) {
+    if (!Array.from(windows.values()).find((w) => w.id === 'my-window')) {
       createWindow({
         id: 'my-window',
         type: 'form',
@@ -73,9 +76,9 @@ function MyApp() {
         size: { width: 600, height: 400 },
         minSize: { width: 400, height: 300 },
         state: 'normal',
-      })
+      });
     }
-  }, [])
+  }, []);
 
   return (
     <>
@@ -88,26 +91,26 @@ function MyApp() {
 
       <Taskbar />
     </>
-  )
+  );
 }
 ```
 
 ### 3. 반응형 처리
 
 ```tsx
-import { useWindowSystem } from '@/hooks/useWindowSystem'
+import { useWindowSystem } from '@/hooks/useWindowSystem';
 
 function ResponsiveApp() {
   const { shouldUseWindowSystem } = useWindowSystem({
     minWidth: 1024,
     waitForMount: true,
-  })
+  });
 
   if (shouldUseWindowSystem) {
-    return <WindowBasedLayout />
+    return <WindowBasedLayout />;
   }
 
-  return <TraditionalLayout />
+  return <TraditionalLayout />;
 }
 ```
 
@@ -117,8 +120,8 @@ function ResponsiveApp() {
 
 ```tsx
 interface WindowManagerProviderProps {
-  children: React.ReactNode
-  persistKey?: string // localStorage 키 (기본: 'windows-state')
+  children: React.ReactNode;
+  persistKey?: string; // localStorage 키 (기본: 'windows-state')
 }
 ```
 
@@ -126,26 +129,26 @@ interface WindowManagerProviderProps {
 
 ```tsx
 const {
-  windows,           // Map<string, WindowConfig>
-  activeWindowId,    // string | null
-  createWindow,      // (config) => void
-  closeWindow,       // (id) => void
-  minimizeWindow,    // (id) => void
-  maximizeWindow,    // (id) => void
-  restoreWindow,     // (id) => void
-  focusWindow,       // (id) => void
+  windows, // Map<string, WindowConfig>
+  activeWindowId, // string | null
+  createWindow, // (config) => void
+  closeWindow, // (id) => void
+  minimizeWindow, // (id) => void
+  maximizeWindow, // (id) => void
+  restoreWindow, // (id) => void
+  focusWindow, // (id) => void
   updateWindowPosition, // (id, position) => void
-  updateWindowSize,     // (id, size) => void
-  toggleWindowState,    // (id) => void
-} = useWindowManager()
+  updateWindowSize, // (id, size) => void
+  toggleWindowState, // (id) => void
+} = useWindowManager();
 ```
 
 ### Window 컴포넌트
 
 ```tsx
 <Window
-  id="unique-id"      // 고유 ID (필수)
-  className="..."     // 추가 CSS 클래스
+  id="unique-id" // 고유 ID (필수)
+  className="..." // 추가 CSS 클래스
 >
   {children}
 </Window>
@@ -155,51 +158,44 @@ const {
 
 ```tsx
 interface WindowConfig {
-  id: string
-  type: 'form' | 'editor' | 'preview' | 'ai-chat'
-  title: string
-  icon?: React.ReactNode
-  position: { x: number; y: number }
-  size: { width: number; height: number }
-  minSize?: { width: number; height: number }
-  maxSize?: { width: number; height: number }
-  state: 'normal' | 'minimized' | 'maximized'
-  resizable?: boolean   // 기본: true
-  draggable?: boolean   // 기본: true
-  closable?: boolean    // 기본: true
-  minimizable?: boolean // 기본: true
-  maximizable?: boolean // 기본: true
+  id: string;
+  type: 'form' | 'editor' | 'preview' | 'ai-chat';
+  title: string;
+  icon?: React.ReactNode;
+  position: { x: number; y: number };
+  size: { width: number; height: number };
+  minSize?: { width: number; height: number };
+  maxSize?: { width: number; height: number };
+  state: 'normal' | 'minimized' | 'maximized';
+  resizable?: boolean; // 기본: true
+  draggable?: boolean; // 기본: true
+  closable?: boolean; // 기본: true
+  minimizable?: boolean; // 기본: true
+  maximizable?: boolean; // 기본: true
 }
 ```
 
 ### ContextMenu
 
 ```tsx
-import { ContextMenu, useContextMenu } from '@/components/ui/window'
+import { ContextMenu, useContextMenu } from '@/components/ui/window';
 
 function MyComponent() {
-  const { isOpen, position, items, handleContextMenu, close } = useContextMenu()
+  const { isOpen, position, items, handleContextMenu, close } = useContextMenu();
 
   const menuItems = [
     { id: '1', label: '새로 만들기', onClick: () => {} },
     { id: '2', separator: true },
     { id: '3', label: '삭제', danger: true, onClick: () => {} },
-  ]
+  ];
 
   return (
     <>
-      <div onContextMenu={(e) => handleContextMenu(e, menuItems)}>
-        우클릭하세요
-      </div>
-      
-      <ContextMenu
-        items={items}
-        position={position}
-        isOpen={isOpen}
-        onClose={close}
-      />
+      <div onContextMenu={(e) => handleContextMenu(e, menuItems)}>우클릭하세요</div>
+
+      <ContextMenu items={items} position={position} isOpen={isOpen} onClose={close} />
     </>
-  )
+  );
 }
 ```
 
@@ -231,7 +227,7 @@ createWindow({
   minimizable: true,
   maximizable: true,
   state: 'normal',
-})
+});
 ```
 
 ## 💡 사용 예시
@@ -251,28 +247,23 @@ createWindow({
 ### 프로그래밍 방식으로 윈도우 제어
 
 ```tsx
-const { 
-  focusWindow, 
-  minimizeWindow, 
-  maximizeWindow,
-  updateWindowPosition 
-} = useWindowManager()
+const { focusWindow, minimizeWindow, maximizeWindow, updateWindowPosition } = useWindowManager();
 
 // 윈도우 포커스
-focusWindow('my-window')
+focusWindow('my-window');
 
 // 프로그래밍 방식으로 최소화
-minimizeWindow('my-window')
+minimizeWindow('my-window');
 
 // 위치 변경
-updateWindowPosition('my-window', { x: 300, y: 300 })
+updateWindowPosition('my-window', { x: 300, y: 300 });
 ```
 
 ### 상태 초기화
 
 ```tsx
 // localStorage 클리어
-localStorage.removeItem('my-app-windows')
+localStorage.removeItem('my-app-windows');
 ```
 
 ## ⚠️ 주의사항
@@ -285,19 +276,21 @@ localStorage.removeItem('my-app-windows')
 ## 🐛 문제 해결
 
 ### 윈도우가 표시되지 않음
+
 - WindowManagerProvider로 감싸져 있는지 확인
 - 윈도우 ID가 고유한지 확인
 - createWindow가 호출되었는지 확인
 
 ### 드래그/리사이즈가 작동하지 않음
+
 - resizable/draggable 옵션 확인
 - CSS pointer-events 확인
 
 ### 상태가 저장되지 않음
+
 - persistKey 설정 확인
 - localStorage 권한 확인
 
 ## 📝 라이센스
 
 프로젝트 라이센스를 따릅니다.
-

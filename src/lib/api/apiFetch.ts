@@ -32,14 +32,18 @@ export class ApiFetch {
    * @param options - fetch 옵션
    * @returns Promise<Response>
    */
-  private static async fileFetch(url: string, formData: FormData, options: RequestInit = {}): Promise<Response> {
+  private static async fileFetch(
+    url: string,
+    formData: FormData,
+    options: RequestInit = {},
+  ): Promise<Response> {
     const token = tokenStorage.getToken();
-    
+
     return fetch(url, {
       method: 'POST',
       headers: {
         // Content-Type 설정하지 않음 (브라우저가 multipart/form-data로 자동 설정)
-        ...(token && { 'Authorization': `Bearer ${token}` }),
+        ...(token && { Authorization: `Bearer ${token}` }),
         ...options.headers,
       },
       body: formData,
@@ -55,11 +59,11 @@ export class ApiFetch {
    */
   private static async authFetch(url: string, options: RequestInit = {}): Promise<Response> {
     const token = tokenStorage.getToken();
-    
+
     // 기본 헤더 설정
     const headers = {
       ...API_CONFIG.HEADERS.JSON,
-      ...(token && { 'Authorization': `Bearer ${token}` }),
+      ...(token && { Authorization: `Bearer ${token}` }),
       ...options.headers,
     };
 
@@ -78,14 +82,14 @@ export class ApiFetch {
           ...options,
           headers: {
             ...headers,
-            'Authorization': `Bearer ${newToken}`,
+            Authorization: `Bearer ${newToken}`,
           },
         });
       } catch (error) {
         // refresh 실패 시 에러 메시지 추출
         const errorMessage = extractErrorMessage(
           error,
-          '세션이 만료되었습니다. 다시 로그인해주세요.'
+          '세션이 만료되었습니다. 다시 로그인해주세요.',
         );
         await authService.logout();
         throw new Error(errorMessage);
@@ -96,7 +100,7 @@ export class ApiFetch {
   }
 
   // ==================== Basic 메서드들 (토큰 없음) ====================
-  
+
   /**
    * Basic GET 요청 (토큰 없음)
    */
@@ -116,16 +120,20 @@ export class ApiFetch {
   }
 
   // ==================== File 메서드들 (파일 업로드) ====================
-  
+
   /**
    * 파일 업로드 POST 요청
    */
-  static async filePost(url: string, formData: FormData, options: RequestInit = {}): Promise<Response> {
+  static async filePost(
+    url: string,
+    formData: FormData,
+    options: RequestInit = {},
+  ): Promise<Response> {
     return this.fileFetch(url, formData, options);
   }
 
   // ==================== Auth 메서드들 (토큰 포함) ====================
-  
+
   /**
    * Auth GET 요청 (토큰 포함)
    */
@@ -163,7 +171,7 @@ export class ApiFetch {
   }
 
   // ==================== Search 메서드들 ====================
-  
+
   /**
    * 게시물 검색 (토큰 없음)
    * @param query 검색어
@@ -189,26 +197,32 @@ export class ApiFetch {
    * @param options 추가 옵션
    */
   static async getAutocompleteSuggestions(
-    query: string, 
-    limit: number = API_CONFIG.SEARCH.DEFAULT_LIMIT, 
+    query: string,
+    limit: number = API_CONFIG.SEARCH.DEFAULT_LIMIT,
     language: string = API_CONFIG.SEARCH.DEFAULT_LANGUAGE,
-    options: RequestInit = {}
+    options: RequestInit = {},
   ): Promise<Response> {
     const trimmedQuery = query?.trim() || '';
-    
+
     if (trimmedQuery.length < API_CONFIG.SEARCH.MIN_QUERY_LENGTH) {
       // 클라이언트에서 빈 결과 반환 (백엔드 응답 구조에 맞춤)
-      return new Response(JSON.stringify({
-        suggestions: [],
-        query: trimmedQuery
-      }), {
-        status: 200,
-        headers: API_CONFIG.HEADERS.JSON
-      });
+      return new Response(
+        JSON.stringify({
+          suggestions: [],
+          query: trimmedQuery,
+        }),
+        {
+          status: 200,
+          headers: API_CONFIG.HEADERS.JSON,
+        },
+      );
     }
-    
+
     const encodedQuery = encodeURIComponent(trimmedQuery);
-    return this.basicGet(`/api/search/autocomplete?query=${encodedQuery}&language=${language}&limit=${limit}`, options);
+    return this.basicGet(
+      `/api/search/autocomplete?query=${encodedQuery}&language=${language}&limit=${limit}`,
+      options,
+    );
   }
 
   // ==================== 카테고리 API 메서드들 ====================
@@ -221,7 +235,7 @@ export class ApiFetch {
    */
   static async getCategories(
     activeOnly: boolean = true,
-    options: RequestInit = {}
+    options: RequestInit = {},
   ): Promise<Response> {
     const queryParam = activeOnly ? '?activeOnly=true' : '';
     return this.basicGet(`${API_URLS.CATEGORY.LIST}${queryParam}`, options);
@@ -235,7 +249,7 @@ export class ApiFetch {
    */
   static async getCategoriesGrouped(
     activeOnly: boolean = true,
-    options: RequestInit = {}
+    options: RequestInit = {},
   ): Promise<Response> {
     const queryParam = activeOnly ? '?activeOnly=true' : '';
     return this.basicGet(`${API_URLS.CATEGORY.GROUPED}${queryParam}`, options);
@@ -247,10 +261,7 @@ export class ApiFetch {
    * @param options - fetch 옵션
    * @returns Promise<Response>
    */
-  static async getCategoryById(
-    id: string,
-    options: RequestInit = {}
-  ): Promise<Response> {
+  static async getCategoryById(id: string, options: RequestInit = {}): Promise<Response> {
     return this.basicGet(`${API_URLS.CATEGORY.BY_ID}/${id}`, options);
   }
 
@@ -260,11 +271,7 @@ export class ApiFetch {
    * @param options - fetch 옵션
    * @returns Promise<Response>
    */
-  static async getCategoryByValue(
-    value: string,
-    options: RequestInit = {}
-  ): Promise<Response> {
+  static async getCategoryByValue(value: string, options: RequestInit = {}): Promise<Response> {
     return this.basicGet(`${API_URLS.CATEGORY.BY_VALUE}/${value}`, options);
   }
 }
-

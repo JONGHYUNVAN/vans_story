@@ -76,7 +76,3 @@ export interface CategoryLoadingState {
   error: string | null;
   lastUpdated: Date | null;
 }
-
-
-
-

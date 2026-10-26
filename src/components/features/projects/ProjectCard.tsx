@@ -6,16 +6,12 @@ interface ProjectCardProps {
 
 export default function ProjectCard({ project }: ProjectCardProps) {
   return (
-    <div className="flex items-start justify-between mb-6">
+    <div className="mb-6 flex items-start justify-between">
       <div>
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">
-          {project.title}
-        </h2>
-        <p className="text-gray-600 text-lg mb-4 whitespace-pre-line">
-          {project.description}
-        </p>
-        <div className="flex items-center gap-4 mb-4">
-          <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+        <h2 className="mb-2 text-3xl font-bold text-gray-900">{project.title}</h2>
+        <p className="mb-4 whitespace-pre-line text-lg text-gray-600">{project.description}</p>
+        <div className="mb-4 flex items-center gap-4">
+          <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800">
             {project.status}
           </span>
           <span className="text-gray-500">{project.date}</span>
@@ -26,7 +22,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
             href={project.deployUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            className="rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
           >
             사이트 방문
           </a>
@@ -34,7 +30,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
             href={project.githubUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition-colors"
+            className="rounded-lg bg-gray-800 px-4 py-2 text-white transition-colors hover:bg-gray-900"
           >
             GitHub
           </a>
@@ -42,4 +38,4 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       </div>
     </div>
   );
-} 
+}

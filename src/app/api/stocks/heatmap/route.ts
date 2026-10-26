@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import { SECTOR_HEATMAP_STOCKS, SectorHeatmapItem } from '@/types/stocks';
 
 const YAHOO_HEADERS = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+  'User-Agent':
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
   Accept: 'application/json',
   'Accept-Language': 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7',
 };
@@ -21,9 +22,10 @@ async function fetchMarketCaps(symbols: string[]): Promise<Map<string, number>> 
 
     for (const item of results) {
       const symbol = typeof item?.symbol === 'string' ? item.symbol : '';
-      const cap = typeof item?.marketCap === 'number' && isFinite(item.marketCap) && item.marketCap > 0
-        ? item.marketCap
-        : null;
+      const cap =
+        typeof item?.marketCap === 'number' && isFinite(item.marketCap) && item.marketCap > 0
+          ? item.marketCap
+          : null;
       if (symbol && cap) {
         map.set(symbol, cap);
       }
@@ -59,22 +61,23 @@ async function fetchHeatmapItem(
     const prevClose: number = meta?.previousClose || meta?.chartPreviousClose || 0;
     const regularOpen: number = meta?.regularMarketOpen ?? 0;
     const regularBaseline = regularOpen > 0 ? regularOpen : prevClose;
-    const preBaseline     = prevClose; // 프리마켓은 전일종가 기준 유지
+    const preBaseline = prevClose; // 프리마켓은 전일종가 기준 유지
 
-    const regularChangePercent = regularBaseline !== 0
-      ? ((price - regularBaseline) / regularBaseline) * 100
-      : null;
+    const regularChangePercent =
+      regularBaseline !== 0 ? ((price - regularBaseline) / regularBaseline) * 100 : null;
 
     // Pre/post market: use Yahoo fields if present, else fall back to regular
     const prePrice: number = meta?.preMarketPrice ?? 0;
-    const preChangePercent = preBaseline !== 0 && prePrice !== 0
-      ? ((prePrice - preBaseline) / preBaseline) * 100
-      : regularChangePercent;
+    const preChangePercent =
+      preBaseline !== 0 && prePrice !== 0
+        ? ((prePrice - preBaseline) / preBaseline) * 100
+        : regularChangePercent;
 
     const postPrice: number = meta?.postMarketPrice ?? 0;
-    const postChangePercent = regularBaseline !== 0 && postPrice !== 0
-      ? ((postPrice - regularBaseline) / regularBaseline) * 100
-      : regularChangePercent;
+    const postChangePercent =
+      regularBaseline !== 0 && postPrice !== 0
+        ? ((postPrice - regularBaseline) / regularBaseline) * 100
+        : regularChangePercent;
 
     let rawChangePercent: number | null;
     if (marketState === 'PRE') {
@@ -92,7 +95,10 @@ async function fetchHeatmapItem(
       weight: stock.weight,
       marketCap,
       price: typeof price === 'number' && isFinite(price) ? price : null,
-      changePercent: typeof rawChangePercent === 'number' && isFinite(rawChangePercent) ? rawChangePercent : null,
+      changePercent:
+        typeof rawChangePercent === 'number' && isFinite(rawChangePercent)
+          ? rawChangePercent
+          : null,
       marketState: marketState ?? undefined,
     };
   } catch {
@@ -112,7 +118,7 @@ export async function GET() {
   try {
     const marketCapMap = await fetchMarketCaps(SECTOR_HEATMAP_STOCKS.map((s) => s.symbol));
     const results = await Promise.allSettled(
-      SECTOR_HEATMAP_STOCKS.map((s) => fetchHeatmapItem(s, marketCapMap))
+      SECTOR_HEATMAP_STOCKS.map((s) => fetchHeatmapItem(s, marketCapMap)),
     );
 
     const data: SectorHeatmapItem[] = results.map((r, i) => {
@@ -133,8 +139,11 @@ export async function GET() {
     return NextResponse.json({ success: true, data });
   } catch (err) {
     return NextResponse.json(
-      { success: false, error: { message: 'Failed to fetch heatmap data', code: 'INTERNAL_ERROR' } },
-      { status: 500 }
+      {
+        success: false,
+        error: { message: 'Failed to fetch heatmap data', code: 'INTERNAL_ERROR' },
+      },
+      { status: 500 },
     );
   }
 }

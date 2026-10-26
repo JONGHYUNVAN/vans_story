@@ -2,7 +2,10 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { StocksThemeProvider, useStocksTheme } from '@/components/features/stocks/StocksThemeContext';
+import {
+  StocksThemeProvider,
+  useStocksTheme,
+} from '@/components/features/stocks/StocksThemeContext';
 import StocksThemeToggle from '@/components/features/stocks/StocksThemeToggle';
 import RefreshButton from '@/components/features/stocks/RefreshButton';
 import NewsSection from '@/components/features/stocks/NewsSection';
@@ -24,11 +27,7 @@ import { useStockDetail } from '@/hooks/useStockDetail';
 import { MACRO_SYMBOLS, STOCK_DISPLAY_NAME } from '@/types/stocks';
 import { getStockRelation } from '@/constants/stockRelations';
 import { getSymbolType } from '@/lib/stocks/stockSymbol';
-import {
-  formatPriceDetailed,
-  formatVolume,
-  formatMarketCap,
-} from '@/lib/stocks/stockFormatting';
+import { formatPriceDetailed, formatVolume, formatMarketCap } from '@/lib/stocks/stockFormatting';
 
 interface Props {
   symbol: string;
@@ -53,11 +52,17 @@ function getTypeBadge(symbol: string, type: string): string {
 function StockDetailInner({ symbol }: Props) {
   const { tokens: t } = useStocksTheme();
   const {
-    detail, isLoading, isRefreshing, isError, errorMessage,
+    detail,
+    isLoading,
+    isRefreshing,
+    isError,
+    errorMessage,
     refetch: fetchDetail,
   } = useStockDetail(symbol);
   const [rangeStats, setRangeStats] = useState<{
-    range: string; firstClose: number; lastClose: number;
+    range: string;
+    firstClose: number;
+    lastClose: number;
   } | null>(null);
 
   const relation = getStockRelation(symbol);
@@ -70,11 +75,10 @@ function StockDetailInner({ symbol }: Props) {
 
   const macroMeta = MACRO_SYMBOLS.find((m) => m.symbol === symbol);
   // 상세 API가 반환한 name을 최우선으로 사용해, watchlist 밖 심볼도 종목명이 보이도록 함
-  const displayName = detail?.name ?? STOCK_DISPLAY_NAME[symbol] ?? macroMeta?.displayName ?? symbol;
+  const displayName =
+    detail?.name ?? STOCK_DISPLAY_NAME[symbol] ?? macroMeta?.displayName ?? symbol;
 
-  const typeBadge = detail
-    ? getTypeBadge(symbol, detail.type)
-    : getTypeBadge(symbol, symbolType);
+  const typeBadge = detail ? getTypeBadge(symbol, detail.type) : getTypeBadge(symbol, symbolType);
   const badgeColor =
     symbolType === 'kr'
       ? 'border-sky-500/30 bg-sky-500/10 text-sky-300'
@@ -97,26 +101,23 @@ function StockDetailInner({ symbol }: Props) {
         ? (usRealtime.change ?? detail?.quote.change ?? 0)
         : (detail?.quote.change ?? 0);
 
-  const rangeChangePercent = rangeStats && rangeStats.firstClose > 0
-    ? ((rangeStats.lastClose - rangeStats.firstClose) / rangeStats.firstClose) * 100
-    : null;
+  const rangeChangePercent =
+    rangeStats && rangeStats.firstClose > 0
+      ? ((rangeStats.lastClose - rangeStats.firstClose) / rangeStats.firstClose) * 100
+      : null;
 
   const displayChangePercent =
-    (rangeStats === null || rangeStats.range === '1D')
-      ? (symbolType === 'kr'
-          ? (kisRealtime.trade?.changePercent ?? detail?.quote.changePercent ?? 0)
-          : symbolType === 'us'
-            ? (usRealtime.changePercent ?? detail?.quote.changePercent ?? 0)
-            : (detail?.quote.changePercent ?? 0))
+    rangeStats === null || rangeStats.range === '1D'
+      ? symbolType === 'kr'
+        ? (kisRealtime.trade?.changePercent ?? detail?.quote.changePercent ?? 0)
+        : symbolType === 'us'
+          ? (usRealtime.changePercent ?? detail?.quote.changePercent ?? 0)
+          : (detail?.quote.changePercent ?? 0)
       : (rangeChangePercent ?? detail?.quote.changePercent ?? 0);
   const displayCurrency = detail?.quote.currency ?? 'KRW';
 
   const priceColorClass =
-    displayChange > 0
-      ? 'text-rose-400'
-      : displayChange < 0
-        ? 'text-sky-400'
-        : 'text-zinc-400';
+    displayChange > 0 ? 'text-rose-400' : displayChange < 0 ? 'text-sky-400' : 'text-zinc-400';
 
   const keyMetrics = detail
     ? [
@@ -154,19 +155,19 @@ function StockDetailInner({ symbol }: Props) {
 
   return (
     <div className={t.layout.page}>
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         {/* 헤더 */}
         <header className={t.layout.toolbar}>
           <div className="min-w-0 space-y-1">
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex flex-wrap items-center gap-2">
               <Link
                 href="/stocks"
-                className="text-xs text-zinc-500 hover:text-zinc-200 transition-colors flex items-center gap-1"
+                className="flex items-center gap-1 text-xs text-zinc-500 transition-colors hover:text-zinc-200"
               >
                 ← 대시보드
               </Link>
               <span
-                className={`text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${badgeColor}`}
+                className={`rounded border px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${badgeColor}`}
               >
                 {typeBadge}
               </span>
@@ -174,17 +175,17 @@ function StockDetailInner({ symbol }: Props) {
             <h1 className={t.layout.toolbarTitle}>{displayName}</h1>
             <p className={t.layout.toolbarSubtitle}>{symbol}</p>
             {(detail || kisRealtime.trade) && (
-              <div className="flex items-baseline gap-3 mt-1">
+              <div className="mt-1 flex items-baseline gap-3">
                 <span className="text-3xl font-bold tabular-nums text-white">
                   {formatPriceDetailed(displayPrice, displayCurrency, symbol)}
                 </span>
-                <span className={`text-sm font-semibold font-mono ${priceColorClass}`}>
+                <span className={`font-mono text-sm font-semibold ${priceColorClass}`}>
                   {displayChange >= 0 ? '+' : ''}
-                  {formatPriceDetailed(displayChange, displayCurrency, symbol)}{' '}
-                  ({displayChangePercent >= 0 ? '+' : ''}
+                  {formatPriceDetailed(displayChange, displayCurrency, symbol)} (
+                  {displayChangePercent >= 0 ? '+' : ''}
                   {displayChangePercent.toFixed(2)}%)
                   {rangeStats && rangeStats.range !== '1D' && (
-                    <span className="text-xs text-gray-400 ml-1">({rangeStats.range})</span>
+                    <span className="ml-1 text-xs text-gray-400">({rangeStats.range})</span>
                   )}
                 </span>
               </div>
@@ -211,11 +212,11 @@ function StockDetailInner({ symbol }: Props) {
 
         {/* 로딩 스켈레톤 */}
         {isLoading && (
-          <div className="space-y-6 animate-pulse">
-            <div className="h-[200px] bg-zinc-800 rounded-xl" />
+          <div className="animate-pulse space-y-6">
+            <div className="h-[200px] rounded-xl bg-zinc-800" />
             <div className="grid grid-cols-3 gap-3">
               {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="h-16 bg-zinc-800 rounded-xl" />
+                <div key={i} className="h-16 rounded-xl bg-zinc-800" />
               ))}
             </div>
           </div>
@@ -223,7 +224,9 @@ function StockDetailInner({ symbol }: Props) {
 
         {/* 메인 콘텐츠: 최초 로드 후엔 새로고침 시에도 숨기지 않음 */}
         {detail && (
-          <div className={`space-y-6 transition-opacity duration-150 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>
+          <div
+            className={`space-y-6 transition-opacity duration-150 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}
+          >
             {/* 국장: KIS 실시간 현재가 */}
             {symbolType === 'kr' && (
               <KisRealtimePrice
@@ -275,16 +278,24 @@ function StockDetailInner({ symbol }: Props) {
             )}
 
             {/* 미장: 핵심 지표 */}
-            {symbolType === 'us' && (
-              <KeyMetricsGrid metrics={keyMetrics} />
-            )}
+            {symbolType === 'us' && <KeyMetricsGrid metrics={keyMetrics} />}
 
             {/* 미장: 컨센서스 */}
             {symbolType === 'us' && detail.consensusBySource.length > 0 && (
               <FundamentalsBlock
-                fundamentals={{ per: null, forwardPer: null, pbr: null, eps: null, bps: null,
-                                dividendYield: null, marketValueStr: null, tradingValueStr: null,
-                                foreignHoldRatio: null, week52High: null, week52Low: null }}
+                fundamentals={{
+                  per: null,
+                  forwardPer: null,
+                  pbr: null,
+                  eps: null,
+                  bps: null,
+                  dividendYield: null,
+                  marketValueStr: null,
+                  tradingValueStr: null,
+                  foreignHoldRatio: null,
+                  week52High: null,
+                  week52Low: null,
+                }}
                 consensus={detail.consensus ?? null}
                 consensusBySource={detail.consensusBySource}
                 peers={null}
@@ -298,10 +309,14 @@ function StockDetailInner({ symbol }: Props) {
                 marketState={detail.quote.marketState}
                 preMarketPrice={usRealtime.preMarketPrice ?? detail.quote.preMarketPrice}
                 preMarketChange={usRealtime.preMarketChange ?? detail.quote.preMarketChange}
-                preMarketChangePercent={usRealtime.preMarketChangePercent ?? detail.quote.preMarketChangePercent}
+                preMarketChangePercent={
+                  usRealtime.preMarketChangePercent ?? detail.quote.preMarketChangePercent
+                }
                 postMarketPrice={usRealtime.postMarketPrice ?? detail.quote.postMarketPrice}
                 postMarketChange={usRealtime.postMarketChange ?? detail.quote.postMarketChange}
-                postMarketChangePercent={usRealtime.postMarketChangePercent ?? detail.quote.postMarketChangePercent}
+                postMarketChangePercent={
+                  usRealtime.postMarketChangePercent ?? detail.quote.postMarketChangePercent
+                }
                 regularPrice={detail.quote.price}
                 currency={detail.quote.currency}
               />
@@ -337,10 +352,7 @@ function StockDetailInner({ symbol }: Props) {
 
             {/* 거시지표: 설명 */}
             {symbolType === 'macro' && (
-              <IndicatorExplainBlock
-                description={relation.description}
-                sector={relation.sector}
-              />
+              <IndicatorExplainBlock description={relation.description} sector={relation.sector} />
             )}
 
             {/* 거시지표: 연관 종목 */}

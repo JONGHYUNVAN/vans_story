@@ -44,7 +44,10 @@ function buildFullUrl(baseUrl: string, path: string, searchParams?: URLSearchPar
 /**
  * 요청 헤더 생성
  */
-async function buildHeaders(requireAuth: boolean, additionalHeaders?: HeadersInit): Promise<HeadersInit> {
+async function buildHeaders(
+  requireAuth: boolean,
+  additionalHeaders?: HeadersInit,
+): Promise<HeadersInit> {
   const baseHeaders: HeadersInit = {
     ...API_CONFIG.HEADERS.JSON,
   };
@@ -73,17 +76,17 @@ async function buildHeaders(requireAuth: boolean, additionalHeaders?: HeadersIni
  * @param config ProxyConfig
  * @returns NextResponse
  */
-export async function proxyGet(
-  request: NextRequest,
-  config: ProxyConfig
-): Promise<NextResponse> {
+export async function proxyGet(request: NextRequest, config: ProxyConfig): Promise<NextResponse> {
   try {
     const { searchParams } = new URL(request.url);
     const fullUrl = buildFullUrl(config.baseUrl, config.path, searchParams);
 
     console.log('🔄 API 호출:', fullUrl);
 
-    const requestHeaders = await buildHeaders(config.requireAuth || false, config.additionalHeaders);
+    const requestHeaders = await buildHeaders(
+      config.requireAuth || false,
+      config.additionalHeaders,
+    );
 
     const response = await fetch(fullUrl, {
       method: 'GET',
@@ -95,12 +98,12 @@ export async function proxyGet(
       console.error('❌ API 호출 실패:', response.status, response.statusText);
       return await handleExternalApiError(
         response,
-        config.errorMessage || 'API 요청에 실패했습니다.'
+        config.errorMessage || 'API 요청에 실패했습니다.',
       );
     }
 
     const data = await response.json();
-    
+
     if (config.successLog) {
       console.log('✅', config.successLog);
     }
@@ -108,10 +111,7 @@ export async function proxyGet(
     return createSuccessResponse(data);
   } catch (error) {
     console.error('❌ API 오류:', error);
-    return handleException(
-      error,
-      config.errorMessage || 'API 요청 중 오류가 발생했습니다.'
-    );
+    return handleException(error, config.errorMessage || 'API 요청 중 오류가 발생했습니다.');
   }
 }
 
@@ -121,17 +121,17 @@ export async function proxyGet(
  * @param config ProxyConfig
  * @returns NextResponse
  */
-export async function proxyPost(
-  request: NextRequest,
-  config: ProxyConfig
-): Promise<NextResponse> {
+export async function proxyPost(request: NextRequest, config: ProxyConfig): Promise<NextResponse> {
   try {
     const fullUrl = buildFullUrl(config.baseUrl, config.path);
     const body = await request.text();
 
     console.log('🔄 POST API 호출:', fullUrl);
 
-    const requestHeaders = await buildHeaders(config.requireAuth || false, config.additionalHeaders);
+    const requestHeaders = await buildHeaders(
+      config.requireAuth || false,
+      config.additionalHeaders,
+    );
 
     const response = await fetch(fullUrl, {
       method: 'POST',
@@ -144,12 +144,12 @@ export async function proxyPost(
       console.error('❌ POST API 호출 실패:', response.status, response.statusText);
       return await handleExternalApiError(
         response,
-        config.errorMessage || 'API 요청에 실패했습니다.'
+        config.errorMessage || 'API 요청에 실패했습니다.',
       );
     }
 
     const data = await response.json();
-    
+
     if (config.successLog) {
       console.log('✅', config.successLog);
     }
@@ -157,10 +157,7 @@ export async function proxyPost(
     return createSuccessResponse(data);
   } catch (error) {
     console.error('❌ POST API 오류:', error);
-    return handleException(
-      error,
-      config.errorMessage || 'API 요청 중 오류가 발생했습니다.'
-    );
+    return handleException(error, config.errorMessage || 'API 요청 중 오류가 발생했습니다.');
   }
 }
 
@@ -170,17 +167,17 @@ export async function proxyPost(
  * @param config ProxyConfig
  * @returns NextResponse
  */
-export async function proxyPatch(
-  request: NextRequest,
-  config: ProxyConfig
-): Promise<NextResponse> {
+export async function proxyPatch(request: NextRequest, config: ProxyConfig): Promise<NextResponse> {
   try {
     const fullUrl = buildFullUrl(config.baseUrl, config.path);
     const body = await request.text();
 
     console.log('🔄 PATCH API 호출:', fullUrl);
 
-    const requestHeaders = await buildHeaders(config.requireAuth || false, config.additionalHeaders);
+    const requestHeaders = await buildHeaders(
+      config.requireAuth || false,
+      config.additionalHeaders,
+    );
 
     const response = await fetch(fullUrl, {
       method: 'PATCH',
@@ -193,12 +190,12 @@ export async function proxyPatch(
       console.error('❌ PATCH API 호출 실패:', response.status, response.statusText);
       return await handleExternalApiError(
         response,
-        config.errorMessage || 'API 요청에 실패했습니다.'
+        config.errorMessage || 'API 요청에 실패했습니다.',
       );
     }
 
     const data = await response.json();
-    
+
     if (config.successLog) {
       console.log('✅', config.successLog);
     }
@@ -206,10 +203,7 @@ export async function proxyPatch(
     return createSuccessResponse(data);
   } catch (error) {
     console.error('❌ PATCH API 오류:', error);
-    return handleException(
-      error,
-      config.errorMessage || 'API 요청 중 오류가 발생했습니다.'
-    );
+    return handleException(error, config.errorMessage || 'API 요청 중 오류가 발생했습니다.');
   }
 }
 
@@ -221,14 +215,17 @@ export async function proxyPatch(
  */
 export async function proxyDelete(
   request: NextRequest,
-  config: ProxyConfig
+  config: ProxyConfig,
 ): Promise<NextResponse> {
   try {
     const fullUrl = buildFullUrl(config.baseUrl, config.path);
 
     console.log('🔄 DELETE API 호출:', fullUrl);
 
-    const requestHeaders = await buildHeaders(config.requireAuth || false, config.additionalHeaders);
+    const requestHeaders = await buildHeaders(
+      config.requireAuth || false,
+      config.additionalHeaders,
+    );
 
     const response = await fetch(fullUrl, {
       method: 'DELETE',
@@ -240,12 +237,12 @@ export async function proxyDelete(
       console.error('❌ DELETE API 호출 실패:', response.status, response.statusText);
       return await handleExternalApiError(
         response,
-        config.errorMessage || 'API 요청에 실패했습니다.'
+        config.errorMessage || 'API 요청에 실패했습니다.',
       );
     }
 
     const data = await response.json().catch(() => null);
-    
+
     if (config.successLog) {
       console.log('✅', config.successLog);
     }
@@ -253,10 +250,7 @@ export async function proxyDelete(
     return createSuccessResponse(data || { success: true });
   } catch (error) {
     console.error('❌ DELETE API 오류:', error);
-    return handleException(
-      error,
-      config.errorMessage || 'API 요청 중 오류가 발생했습니다.'
-    );
+    return handleException(error, config.errorMessage || 'API 요청 중 오류가 발생했습니다.');
   }
 }
 
@@ -268,7 +262,7 @@ export async function proxyDelete(
  */
 export async function proxyRequest(
   request: NextRequest,
-  config: ProxyConfig
+  config: ProxyConfig,
 ): Promise<NextResponse> {
   const method = request.method.toUpperCase();
 
@@ -284,8 +278,7 @@ export async function proxyRequest(
     default:
       return handleException(
         new Error(`Unsupported HTTP method: ${method}`),
-        '지원하지 않는 HTTP 메서드입니다.'
+        '지원하지 않는 HTTP 메서드입니다.',
       );
   }
 }
-

@@ -44,9 +44,9 @@ function BarRow({
   const sign = isPos ? '+' : '';
 
   return (
-    <div className="flex items-center gap-2 text-[11px] font-mono tabular-nums">
+    <div className="flex items-center gap-2 font-mono text-[11px] tabular-nums">
       <span className={`w-14 shrink-0 text-right text-[10px] ${rowLabel}`}>{label}</span>
-      <div className={`flex-1 relative h-3 rounded-full ${barTrack} overflow-hidden`}>
+      <div className={`relative h-3 flex-1 rounded-full ${barTrack} overflow-hidden`}>
         <div
           className={`absolute top-0 h-full rounded-full transition-all duration-300 ${color}`}
           style={{
@@ -54,10 +54,11 @@ function BarRow({
             width: `${pct / 2}%`,
           }}
         />
-        <div className={`absolute top-0 left-1/2 -translate-x-px w-px h-full ${barCenterLine}`} />
+        <div className={`absolute left-1/2 top-0 h-full w-px -translate-x-px ${barCenterLine}`} />
       </div>
       <span className={`w-20 shrink-0 text-right ${isPos ? 'text-rose-500' : 'text-sky-500'}`}>
-        {sign}{fmt(value)}
+        {sign}
+        {fmt(value)}
       </span>
     </div>
   );
@@ -85,28 +86,69 @@ export default function InvestorTrendBlock({ investors }: Props) {
 
       <div className="divide-y">
         {investors.map((row) => {
-          const total = Math.max(Math.abs(row.foreign), Math.abs(row.institution), Math.abs(row.individual), 1);
+          const total = Math.max(
+            Math.abs(row.foreign),
+            Math.abs(row.institution),
+            Math.abs(row.individual),
+            1,
+          );
           return (
-            <div key={row.date} className={`px-4 py-3 space-y-1.5 ${d.divider}`}>
-              <div className="flex items-center justify-between mb-2">
-                <span className={`text-[12px] font-semibold font-mono ${d.rowValue}`}>
+            <div key={row.date} className={`space-y-1.5 px-4 py-3 ${d.divider}`}>
+              <div className="mb-2 flex items-center justify-between">
+                <span className={`font-mono text-[12px] font-semibold ${d.rowValue}`}>
                   {fmtDate(row.date)}
                 </span>
-                <span className={`text-[10px] font-mono ${d.cardMeta}`}>
-                  {row.close.toLocaleString('ko-KR')}원 · 거래량 {fmt(row.volume)} · 외인 {row.foreignHoldRatio.toFixed(2)}%
+                <span className={`font-mono text-[10px] ${d.cardMeta}`}>
+                  {row.close.toLocaleString('ko-KR')}원 · 거래량 {fmt(row.volume)} · 외인{' '}
+                  {row.foreignHoldRatio.toFixed(2)}%
                 </span>
               </div>
-              <BarRow label="외국인" value={row.foreign} maxAbs={total} posBar={d.posBar} negBar={d.negBar} barTrack={d.barTrack} barCenterLine={d.barCenterLine} rowLabel={d.rowLabel} />
-              <BarRow label="기관" value={row.institution} maxAbs={total} posBar="bg-violet-500/60" negBar="bg-amber-500/60" barTrack={d.barTrack} barCenterLine={d.barCenterLine} rowLabel={d.rowLabel} />
-              <BarRow label="개인" value={row.individual} maxAbs={total} posBar="bg-emerald-500/55" negBar="bg-slate-400/60" barTrack={d.barTrack} barCenterLine={d.barCenterLine} rowLabel={d.rowLabel} />
+              <BarRow
+                label="외국인"
+                value={row.foreign}
+                maxAbs={total}
+                posBar={d.posBar}
+                negBar={d.negBar}
+                barTrack={d.barTrack}
+                barCenterLine={d.barCenterLine}
+                rowLabel={d.rowLabel}
+              />
+              <BarRow
+                label="기관"
+                value={row.institution}
+                maxAbs={total}
+                posBar="bg-violet-500/60"
+                negBar="bg-amber-500/60"
+                barTrack={d.barTrack}
+                barCenterLine={d.barCenterLine}
+                rowLabel={d.rowLabel}
+              />
+              <BarRow
+                label="개인"
+                value={row.individual}
+                maxAbs={total}
+                posBar="bg-emerald-500/55"
+                negBar="bg-slate-400/60"
+                barTrack={d.barTrack}
+                barCenterLine={d.barCenterLine}
+                rowLabel={d.rowLabel}
+              />
             </div>
           );
         })}
       </div>
 
-      <div className={`flex flex-wrap items-center gap-4 px-4 py-3 ${d.subPanel} text-[10px] font-mono ${d.cardMeta}`}>
-        <span><span className="inline-block w-2 h-2 rounded-full bg-rose-500/70 mr-1" />순매수</span>
-        <span><span className="inline-block w-2 h-2 rounded-full bg-sky-500/70 mr-1" />순매도</span>
+      <div
+        className={`flex flex-wrap items-center gap-4 px-4 py-3 ${d.subPanel} font-mono text-[10px] ${d.cardMeta}`}
+      >
+        <span>
+          <span className="mr-1 inline-block h-2 w-2 rounded-full bg-rose-500/70" />
+          순매수
+        </span>
+        <span>
+          <span className="mr-1 inline-block h-2 w-2 rounded-full bg-sky-500/70" />
+          순매도
+        </span>
       </div>
     </section>
   );

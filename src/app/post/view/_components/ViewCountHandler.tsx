@@ -12,7 +12,7 @@ export function ViewCountHandler({ postId }: ViewCountHandlerProps) {
     const getCookie = (name: string) => {
       return document.cookie
         .split('; ')
-        .find(row => row.startsWith(`${name}=`))
+        .find((row) => row.startsWith(`${name}=`))
         ?.split('=')[1];
     };
 
@@ -32,19 +32,19 @@ export function ViewCountHandler({ postId }: ViewCountHandlerProps) {
 
     // 현재 조회한 포스트 목록 가져오기 (세션 또는 쿠키에서)
     const viewedPostsArray = (sessionValue || cookieValue || '').split(',').filter(Boolean);
-    
+
     // 이미 본 포스트가 아니라면 추가
     if (!viewedPostsArray.includes(postId)) {
       viewedPostsArray.push(postId);
       const newViewedPosts = viewedPostsArray.join(',');
-      
+
       // 세션 스토리지에 저장
       sessionStorage.setItem('viewed_posts', newViewedPosts);
-      
+
       // 쿠키에 저장 (24시간)
       document.cookie = `viewed_posts=${newViewedPosts}; path=/; max-age=86400`;
     }
   }, [postId]);
 
   return null;
-} 
+}

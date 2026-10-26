@@ -49,47 +49,48 @@ export function useUsRealtime(symbol: string | null): UsUsRealtimeData {
     }
   }, []);
 
-  const fetchQuote = useCallback(async (sym: string) => {
-    try {
-      const res = await fetch(
-        `${API_URLS.STOCKS.QUOTE}?symbol=${encodeURIComponent(sym)}`,
-      );
-      const json = await res.json();
+  const fetchQuote = useCallback(
+    async (sym: string) => {
+      try {
+        const res = await fetch(`${API_URLS.STOCKS.QUOTE}?symbol=${encodeURIComponent(sym)}`);
+        const json = await res.json();
 
-      if (!json.success) {
-        setError(json.error ?? '시세 조회 실패');
-        return;
+        if (!json.success) {
+          setError(json.error ?? '시세 조회 실패');
+          return;
+        }
+
+        const d = json.data;
+        setPrice(d.price);
+        setChange(d.change);
+        setChangePercent(d.changePercent);
+        setMarketState(d.marketState);
+        marketStateRef.current = d.marketState;
+        setPreMarketPrice(d.preMarketPrice);
+        setPreMarketChange(d.preMarketChange);
+        setPreMarketChangePercent(d.preMarketChangePercent);
+        setPostMarketPrice(d.postMarketPrice);
+        setPostMarketChange(d.postMarketChange);
+        setPostMarketChangePercent(d.postMarketChangePercent);
+        setLastUpdatedAt(Date.now());
+        setError(null);
+
+        if (!hasFirstDataRef.current) {
+          hasFirstDataRef.current = true;
+          setIsLoading(false);
+        }
+
+        // 장이 CLOSED 상태이면 폴링 중단
+        if (d.marketState === 'CLOSED') {
+          clearPolling();
+        }
+      } catch (err) {
+        // 에러 발생 시 기존 데이터 유지, 에러만 기록
+        setError(err instanceof Error ? err.message : '시세 조회 중 오류 발생');
       }
-
-      const d = json.data;
-      setPrice(d.price);
-      setChange(d.change);
-      setChangePercent(d.changePercent);
-      setMarketState(d.marketState);
-      marketStateRef.current = d.marketState;
-      setPreMarketPrice(d.preMarketPrice);
-      setPreMarketChange(d.preMarketChange);
-      setPreMarketChangePercent(d.preMarketChangePercent);
-      setPostMarketPrice(d.postMarketPrice);
-      setPostMarketChange(d.postMarketChange);
-      setPostMarketChangePercent(d.postMarketChangePercent);
-      setLastUpdatedAt(Date.now());
-      setError(null);
-
-      if (!hasFirstDataRef.current) {
-        hasFirstDataRef.current = true;
-        setIsLoading(false);
-      }
-
-      // 장이 CLOSED 상태이면 폴링 중단
-      if (d.marketState === 'CLOSED') {
-        clearPolling();
-      }
-    } catch (err) {
-      // 에러 발생 시 기존 데이터 유지, 에러만 기록
-      setError(err instanceof Error ? err.message : '시세 조회 중 오류 발생');
-    }
-  }, [clearPolling]);
+    },
+    [clearPolling],
+  );
 
   useEffect(() => {
     if (!symbol) {

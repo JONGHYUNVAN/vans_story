@@ -15,7 +15,7 @@ interface TermTooltipProps {
  */
 export default function TermTooltip({ children, text, width = 200 }: TermTooltipProps) {
   const [visible, setVisible] = useState(false);
-  const [pos, setPos]         = useState<{ top: number; left: number }>({ top: 0, left: 0 });
+  const [pos, setPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
 
   function handleMouseEnter(e: React.MouseEvent) {
     setPos({ top: e.clientY, left: e.clientX });
@@ -56,18 +56,18 @@ export default function TermTooltip({ children, text, width = 200 }: TermTooltip
 
       {visible && (
         <div
-          className="fixed z-[9999] pointer-events-none"
+          className="pointer-events-none fixed z-[9999]"
           style={{
-            top:       (Number.isFinite(pos.top)  ? pos.top  : 0) - 12,
-            left:      Number.isFinite(pos.left) ? pos.left : 0,
+            top: (Number.isFinite(pos.top) ? pos.top : 0) - 12,
+            left: Number.isFinite(pos.left) ? pos.left : 0,
             transform: 'translate(-50%, -100%)',
             width,
           }}
         >
-          <div className="rounded-lg bg-zinc-900/95 border border-zinc-700 text-white text-[11px] leading-relaxed px-3 py-2 shadow-xl font-sans tracking-normal normal-case font-normal whitespace-pre-line">
+          <div className="whitespace-pre-line rounded-lg border border-zinc-700 bg-zinc-900/95 px-3 py-2 font-sans text-[11px] font-normal normal-case leading-relaxed tracking-normal text-white shadow-xl">
             {text}
             {/* 아래 삼각형 */}
-            <div className="absolute left-1/2 -translate-x-1/2 bottom-[-5px] w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-zinc-700" />
+            <div className="absolute bottom-[-5px] left-1/2 h-0 w-0 -translate-x-1/2 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-zinc-700" />
           </div>
         </div>
       )}

@@ -6,15 +6,9 @@ type RouteContext = {
 };
 
 // GET /api/posts/[id]/edit - 편집용 게시물 조회 (인증 필요)
-export async function GET(
-  request: NextRequest,
-  context: RouteContext
-) {
+export async function GET(request: NextRequest, context: RouteContext) {
   try {
-    const [{ id }, headersList] = await Promise.all([
-      context.params,
-      headers()
-    ]);
+    const [{ id }, headersList] = await Promise.all([context.params, headers()]);
     const token = headersList.get('Authorization');
 
     if (!token) {
@@ -26,7 +20,7 @@ export async function GET(
       headers: {
         Authorization: token,
       },
-      next: { revalidate: 0 } // 편집용이므로 캐시 없음
+      next: { revalidate: 0 }, // 편집용이므로 캐시 없음
     });
 
     if (!res.ok) {
@@ -39,4 +33,4 @@ export async function GET(
     console.error('Error fetching post for edit:', error);
     return new NextResponse(null, { status: 500 });
   }
-} 
+}

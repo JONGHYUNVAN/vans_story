@@ -46,17 +46,17 @@ export function createErrorResponse(
   status: number,
   message?: string,
   code?: string,
-  details?: any
+  details?: any,
 ): NextResponse<ErrorResponse> {
   const errorMessage = message || getDefaultErrorMessage(status);
-  
+
   const errorResponse: ErrorResponse = {
     success: false,
     error: {
       message: errorMessage,
       ...(code && { code }),
-      ...(process.env.NODE_ENV === 'development' && details && { details })
-    }
+      ...(process.env.NODE_ENV === 'development' && details && { details }),
+    },
   };
 
   return NextResponse.json(errorResponse, { status });
@@ -75,12 +75,12 @@ export function createSuccessResponse<T>(
     total?: number;
     limit?: number;
   },
-  status: number = 200
+  status: number = 200,
 ): NextResponse<SuccessResponse<T>> {
   const successResponse: SuccessResponse<T> = {
     success: true,
     data,
-    ...(meta && { meta })
+    ...(meta && { meta }),
   };
 
   return NextResponse.json(successResponse, { status });
@@ -93,7 +93,7 @@ export function createSuccessResponse<T>(
  */
 export async function handleExternalApiError(
   response: Response,
-  defaultMessage?: string
+  defaultMessage?: string,
 ): Promise<NextResponse<ErrorResponse>> {
   const { message, code } = await extractResponseError(response);
   const finalMessage = defaultMessage || message || getDefaultErrorMessage(response.status);
@@ -108,12 +108,12 @@ export async function handleExternalApiError(
  */
 export function handleException(
   error: unknown,
-  defaultMessage?: string
+  defaultMessage?: string,
 ): NextResponse<ErrorResponse> {
   console.error('Exception occurred:', error);
 
   let message = defaultMessage || '내부 서버 오류가 발생했습니다.';
-  
+
   if (error instanceof Error) {
     message = error.message || message;
   } else if (typeof error === 'string') {
@@ -124,4 +124,3 @@ export function handleException(
 
   return createErrorResponse(500, message, 'INTERNAL_ERROR', stackInfo);
 }
-

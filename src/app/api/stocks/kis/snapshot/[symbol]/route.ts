@@ -11,7 +11,9 @@ export async function GET(
   const targetUrl = `${DJANGO_API_URL}/api/kis/snapshot/${symbol}/`;
   console.log(`[kis/snapshot] ▶ 요청 심볼: ${symbol}`);
   console.log(`[kis/snapshot] ▶ 업스트림 URL: ${targetUrl}`);
-  console.log(`[kis/snapshot] ▶ DJANGO_API_URL 환경변수: ${process.env.DJANGO_API_URL ?? '(미설정 → 기본값 http://localhost:8001)'}`);
+  console.log(
+    `[kis/snapshot] ▶ DJANGO_API_URL 환경변수: ${process.env.DJANGO_API_URL ?? '(미설정 → 기본값 http://localhost:8001)'}`,
+  );
 
   try {
     console.log(`[kis/snapshot] ▶ fetch 시작...`);

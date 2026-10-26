@@ -11,18 +11,18 @@
  */
 export function extractErrorMessage(
   error: unknown,
-  defaultMessage: string = '오류가 발생했습니다.'
+  defaultMessage: string = '오류가 발생했습니다.',
 ): string {
   // Error 객체
   if (error instanceof Error) {
     return error.message || defaultMessage;
   }
-  
+
   // 문자열
   if (typeof error === 'string') {
     return error || defaultMessage;
   }
-  
+
   // Response 객체가 포함된 에러
   if (error && typeof error === 'object' && 'response' in error) {
     try {
@@ -37,7 +37,7 @@ export function extractErrorMessage(
       // JSON 파싱 실패 시 기본 메시지 사용
     }
   }
-  
+
   // 객체에 message 속성이 있는 경우
   if (error && typeof error === 'object' && 'message' in error) {
     const message = (error as any).message;
@@ -45,7 +45,7 @@ export function extractErrorMessage(
       return message || defaultMessage;
     }
   }
-  
+
   // 객체에 error 속성이 있는 경우
   if (error && typeof error === 'object' && 'error' in error) {
     const errorMsg = (error as any).error;
@@ -53,7 +53,7 @@ export function extractErrorMessage(
       return errorMsg || defaultMessage;
     }
   }
-  
+
   return defaultMessage;
 }
 
@@ -63,19 +63,19 @@ export function extractErrorMessage(
  * @returns 에러 정보 객체
  */
 export async function extractResponseError(
-  response: Response
+  response: Response,
 ): Promise<{ message: string; code?: string }> {
   let message = `HTTP ${response.status} 오류가 발생했습니다.`;
   let code: string | undefined;
 
   try {
     const data = await response.json();
-    
+
     // message 필드 확인
     if (data?.message && typeof data.message === 'string') {
       message = data.message;
     }
-    
+
     // error 필드 확인
     if (data?.error) {
       if (typeof data.error === 'string') {
@@ -84,12 +84,12 @@ export async function extractResponseError(
         message = data.error.message;
       }
     }
-    
+
     // code 필드 확인
     if (data?.code && typeof data.code === 'string') {
       code = data.code;
     }
-    
+
     // error_code 필드 확인 (Django 스타일)
     if (data?.error_code && typeof data.error_code === 'string') {
       code = data.error_code;
@@ -128,13 +128,10 @@ export function extractErrorStack(error: unknown): { name?: string; stack?: stri
  * @param separator 구분자 (기본: '\n')
  * @returns 결합된 에러 메시지
  */
-export function combineErrorMessages(
-  errors: unknown[],
-  separator: string = '\n'
-): string {
+export function combineErrorMessages(errors: unknown[], separator: string = '\n'): string {
   return errors
-    .map(error => extractErrorMessage(error, ''))
-    .filter(msg => msg.length > 0)
+    .map((error) => extractErrorMessage(error, ''))
+    .filter((msg) => msg.length > 0)
     .join(separator);
 }
 
@@ -182,4 +179,3 @@ export function isAuthError(error: unknown): boolean {
   }
   return false;
 }
-

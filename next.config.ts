@@ -1,5 +1,5 @@
-import type { NextConfig } from 'next'
-import path from 'path'
+import type { NextConfig } from 'next';
+import path from 'path';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -10,6 +10,6 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [{ source: '/aboutVan', destination: '/about-van', permanent: true }];
   },
-}
+};
 
-export default nextConfig
+export default nextConfig;

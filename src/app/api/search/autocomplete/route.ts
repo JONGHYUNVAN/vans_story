@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     return createSuccessResponse({
       suggestions: [],
       query: query.trim(),
-      total: 0
+      total: 0,
     });
   }
 

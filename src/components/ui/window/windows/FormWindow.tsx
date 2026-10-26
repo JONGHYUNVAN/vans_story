@@ -2,12 +2,12 @@
  * 폼 입력 전용 윈도우
  */
 
-'use client'
+'use client';
 
-import React from 'react'
-import { FileText } from 'lucide-react'
-import { PostFormInputs } from '@/components/features/post/form/PostFormInputs'
-import { PostFormInputsProps } from '@/types/post'
+import React from 'react';
+import { FileText } from 'lucide-react';
+import { PostFormInputs } from '@/components/features/post/form/PostFormInputs';
+import { PostFormInputsProps } from '@/types/post';
 
 interface FormWindowContentProps extends PostFormInputsProps {
   // PostFormInputs의 모든 props를 그대로 사용
@@ -20,9 +20,8 @@ export function FormWindowContent(props: FormWindowContentProps) {
         <PostFormInputs {...props} />
       </div>
     </div>
-  )
+  );
 }
 
 // 기본 아이콘
-export const FormWindowIcon = () => <FileText size={14} />
-
+export const FormWindowIcon = () => <FileText size={14} />;

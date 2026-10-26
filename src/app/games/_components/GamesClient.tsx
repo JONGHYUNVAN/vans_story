@@ -13,7 +13,7 @@ interface CardWrapperProps {
 }
 
 function GameCardWrapper({ gameId, index, onHover, onSelect }: CardWrapperProps) {
-  const game = GAMES.find(g => g.id === gameId)!;
+  const game = GAMES.find((g) => g.id === gameId)!;
   const { bestScore, bestDetail } = useGameScores(gameId);
   return (
     <GameCard
@@ -31,10 +31,10 @@ export default function GamesClient() {
   const { playHover, playSelect, isMuted, toggleMute } = useSound();
 
   return (
-    <div className="min-h-screen bg-[#08080b] py-16 relative overflow-hidden">
+    <div className="relative min-h-screen overflow-hidden bg-[#08080b] py-16">
       {/* Floating orb backgrounds */}
       <div
-        className="absolute rounded-full pointer-events-none"
+        className="pointer-events-none absolute rounded-full"
         style={{
           width: '520px',
           height: '520px',
@@ -45,7 +45,7 @@ export default function GamesClient() {
         }}
       />
       <div
-        className="absolute rounded-full pointer-events-none"
+        className="pointer-events-none absolute rounded-full"
         style={{
           width: '420px',
           height: '420px',
@@ -56,7 +56,7 @@ export default function GamesClient() {
         }}
       />
       <div
-        className="absolute rounded-full pointer-events-none"
+        className="pointer-events-none absolute rounded-full"
         style={{
           width: '360px',
           height: '360px',
@@ -69,7 +69,7 @@ export default function GamesClient() {
 
       {/* Dot grid overlay */}
       <div
-        className="absolute inset-0 pointer-events-none"
+        className="pointer-events-none absolute inset-0"
         style={{
           backgroundImage: 'radial-gradient(circle, #1c1c22 1px, transparent 1px)',
           backgroundSize: '24px 24px',
@@ -77,13 +77,13 @@ export default function GamesClient() {
         }}
       />
 
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-12 flex items-start justify-between">
           <div>
             {/* ARCADE label */}
             <p
-              className="text-xs font-bold tracking-[0.3em] uppercase mb-3"
+              className="mb-3 text-xs font-bold uppercase tracking-[0.3em]"
               style={{
                 background: 'linear-gradient(to right, #818cf8, #c084fc, #f472b6)',
                 WebkitBackgroundClip: 'text',
@@ -108,16 +108,16 @@ export default function GamesClient() {
             </h1>
 
             {/* Subtitle with blinking cursor */}
-            <p className="text-zinc-400 mt-3 flex items-center gap-1">
+            <p className="mt-3 flex items-center gap-1 text-zinc-400">
               막판의 막판, 진짜 마지막
-              <span className="cursor-blink text-indigo-400 font-thin ml-0.5">|</span>
+              <span className="cursor-blink ml-0.5 font-thin text-indigo-400">|</span>
             </p>
           </div>
 
           {/* Sound toggle */}
           <button
             onClick={toggleMute}
-            className="mt-1 w-10 h-10 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-200 flex items-center justify-center text-base"
+            className="mt-1 flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-base transition-all duration-200 hover:border-white/20 hover:bg-white/10"
             title={isMuted ? '소리 켜기' : '소리 끄기'}
           >
             {isMuted ? '🔇' : '🔊'}
@@ -126,14 +126,16 @@ export default function GamesClient() {
 
         {/* Game count badge */}
         <div className="mb-8 flex items-center gap-3">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/8">
-            <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
-            <span className="text-xs text-zinc-400 font-medium">{GAMES.length} Games Available</span>
+          <div className="border-white/8 flex items-center gap-2 rounded-full border bg-white/5 px-3 py-1.5">
+            <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-indigo-400" />
+            <span className="text-xs font-medium text-zinc-400">
+              {GAMES.length} Games Available
+            </span>
           </div>
         </div>
 
         {/* Card grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {GAMES.map((game, index) => (
             <div
               key={game.id}

@@ -13,7 +13,7 @@ export const oauthUtils = {
     const state = {
       provider,
       timestamp: Date.now(),
-      random: Math.random().toString(36).substring(2, 15)
+      random: Math.random().toString(36).substring(2, 15),
     };
     return btoa(JSON.stringify(state));
   },
@@ -33,7 +33,7 @@ export const oauthUtils = {
       return (
         decoded.provider === expectedProvider &&
         decoded.timestamp &&
-        (now - decoded.timestamp) < maxAge
+        now - decoded.timestamp < maxAge
       );
     } catch (error) {
       console.error('State validation error:', error);
@@ -68,14 +68,14 @@ export const oauthUtils = {
   extractCallbackDataFromFragment(hash: string): OAuthCallbackData {
     // # 제거
     const fragment = hash.startsWith('#') ? hash.substring(1) : hash;
-    
+
     if (!fragment) {
       return {};
     }
 
     // Fragment를 URLSearchParams로 파싱
     const params = new URLSearchParams(fragment);
-    
+
     return {
       token: params.get('access_token') || undefined,
       code: params.get('code') || undefined,
@@ -95,13 +95,13 @@ export const oauthUtils = {
   extractCallbackDataUnified(searchParams: URLSearchParams, hash: string): OAuthCallbackData {
     // 1. Query Parameter 방식 먼저 확인
     const queryData = this.extractCallbackData(searchParams);
-    
+
     // 2. Query Parameter에 토큰이나 코드가 없으면 Fragment 방식 확인
     if (!queryData.token && !queryData.code && !queryData.error && hash) {
       const fragmentData = this.extractCallbackDataFromFragment(hash);
       return fragmentData;
     }
-    
+
     return queryData;
   },
 
@@ -113,7 +113,7 @@ export const oauthUtils = {
   getProviderDisplayName(provider: OAuthProvider): string {
     const displayNames = {
       kakao: '카카오',
-      google: '구글'
+      google: '구글',
     };
     return displayNames[provider] || provider;
   },
@@ -126,15 +126,15 @@ export const oauthUtils = {
    */
   getErrorMessage(error: string, provider: OAuthProvider): string {
     const providerName = this.getProviderDisplayName(provider);
-    
+
     const errorMessages: Record<string, string> = {
-      'access_denied': `${providerName} 로그인이 취소되었습니다.`,
-      'invalid_request': '잘못된 요청입니다. 다시 시도해주세요.',
-      'invalid_client': '클라이언트 설정 오류입니다. 관리자에게 문의하세요.',
-      'invalid_grant': '인증 코드가 유효하지 않습니다.',
-      'expired_token': '토큰이 만료되었습니다. 다시 로그인해주세요.',
-      'server_error': '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
-      'temporarily_unavailable': `${providerName} 서비스가 일시적으로 사용할 수 없습니다.`,
+      access_denied: `${providerName} 로그인이 취소되었습니다.`,
+      invalid_request: '잘못된 요청입니다. 다시 시도해주세요.',
+      invalid_client: '클라이언트 설정 오류입니다. 관리자에게 문의하세요.',
+      invalid_grant: '인증 코드가 유효하지 않습니다.',
+      expired_token: '토큰이 만료되었습니다. 다시 로그인해주세요.',
+      server_error: '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
+      temporarily_unavailable: `${providerName} 서비스가 일시적으로 사용할 수 없습니다.`,
     };
 
     return errorMessages[error] || `${providerName} 로그인 중 오류가 발생했습니다: ${error}`;
@@ -148,7 +148,7 @@ export const oauthUtils = {
    */
   buildRedirectUrl(baseUrl: string, data: OAuthCallbackData): string {
     const url = new URL(baseUrl);
-    
+
     if (data.token) url.searchParams.set('token', data.token);
     if (data.error) url.searchParams.set('error', data.error);
     if (data.provider) url.searchParams.set('provider', data.provider);
@@ -166,7 +166,7 @@ export const oauthUtils = {
   buildFragmentRedirectUrl(baseUrl: string, data: OAuthCallbackData): string {
     const url = new URL(baseUrl);
     const fragment = new URLSearchParams();
-    
+
     if (data.token) fragment.set('access_token', data.token);
     if (data.error) fragment.set('error', data.error);
     if (data.provider) fragment.set('provider', data.provider);
@@ -184,7 +184,7 @@ export const oauthUtils = {
   buildOAuthUrl(provider: OAuthProvider, frontendUrl: string): string {
     const oauthServerUrl = process.env.NEXT_PUBLIC_OAUTH_SERVER_URL;
     const endpoint = provider === 'kakao' ? '/api/auth/kakao/login' : '/api/auth/google/login';
-    
+
     return `${oauthServerUrl}${endpoint}?frontend_url=${encodeURIComponent(frontendUrl)}`;
-  }
-}; 
+  },
+};

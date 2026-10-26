@@ -72,7 +72,13 @@ export function formatMacroPrice(indicator: MacroIndicator): string {
     return indicator.price.toFixed(3) + '%';
   }
   if (indicator.category === 'commodity') {
-    return '$' + indicator.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return (
+      '$' +
+      indicator.price.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })
+    );
   }
   return indicator.price.toLocaleString('en-US', { maximumFractionDigits: 2 });
 }

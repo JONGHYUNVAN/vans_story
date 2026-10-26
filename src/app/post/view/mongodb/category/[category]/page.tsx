@@ -18,4 +18,4 @@ export default async function Page({ params }: PageProps) {
       </MongodbLayout>
     </SidebarWrapper>
   );
-} 
+}

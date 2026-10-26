@@ -8,7 +8,9 @@ import { useCombo } from '@/hooks/useCombo';
 import { useGameSize } from '@/hooks/useGameSize';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
-import GameOverlayController, { Direction } from '@/components/features/games/GameOverlayController';
+import GameOverlayController, {
+  Direction,
+} from '@/components/features/games/GameOverlayController';
 
 type GameStatus = 'idle' | 'playing' | 'won' | 'gameover';
 
@@ -20,16 +22,16 @@ interface Game2048State {
 }
 
 const TILE_COLORS: Record<number, { bg: string; text: string }> = {
-  0:    { bg: 'bg-zinc-800/50', text: '' },
-  2:    { bg: 'bg-zinc-700', text: 'text-zinc-200' },
-  4:    { bg: 'bg-zinc-600', text: 'text-zinc-100' },
-  8:    { bg: 'bg-amber-700', text: 'text-white' },
-  16:   { bg: 'bg-amber-600', text: 'text-white' },
-  32:   { bg: 'bg-orange-600', text: 'text-white' },
-  64:   { bg: 'bg-orange-500', text: 'text-white' },
-  128:  { bg: 'bg-yellow-500', text: 'text-white' },
-  256:  { bg: 'bg-yellow-400', text: 'text-gray-900' },
-  512:  { bg: 'bg-yellow-300', text: 'text-gray-900' },
+  0: { bg: 'bg-zinc-800/50', text: '' },
+  2: { bg: 'bg-zinc-700', text: 'text-zinc-200' },
+  4: { bg: 'bg-zinc-600', text: 'text-zinc-100' },
+  8: { bg: 'bg-amber-700', text: 'text-white' },
+  16: { bg: 'bg-amber-600', text: 'text-white' },
+  32: { bg: 'bg-orange-600', text: 'text-white' },
+  64: { bg: 'bg-orange-500', text: 'text-white' },
+  128: { bg: 'bg-yellow-500', text: 'text-white' },
+  256: { bg: 'bg-yellow-400', text: 'text-gray-900' },
+  512: { bg: 'bg-yellow-300', text: 'text-gray-900' },
   1024: { bg: 'bg-yellow-200', text: 'text-gray-900' },
   2048: { bg: 'bg-emerald-400', text: 'text-gray-900' },
 };
@@ -59,7 +61,7 @@ function addRandomTile(board: number[][]): number[][] {
   }
   if (empty.length === 0) return board;
   const [r, c] = empty[Math.floor(Math.random() * empty.length)];
-  const newBoard = board.map(row => [...row]);
+  const newBoard = board.map((row) => [...row]);
   newBoard[r][c] = Math.random() < 0.9 ? 2 : 4;
   return newBoard;
 }
@@ -72,22 +74,25 @@ function initBoard(): number[][] {
 }
 
 function transpose(board: number[][]): number[][] {
-  return board[0].map((_, colIndex) => board.map(row => row[colIndex]));
+  return board[0].map((_, colIndex) => board.map((row) => row[colIndex]));
 }
 
 function reverseRows(board: number[][]): number[][] {
-  return board.map(row => [...row].reverse());
+  return board.map((row) => [...row].reverse());
 }
 
 function slideLeft(row: number[]): { result: number[]; gained: number; merges: number } {
-  const filtered = row.filter(v => v !== 0);
+  const filtered = row.filter((v) => v !== 0);
   let gained = 0;
   let merges = 0;
   const merged: number[] = [];
   let skip = false;
 
   for (let i = 0; i < filtered.length; i++) {
-    if (skip) { skip = false; continue; }
+    if (skip) {
+      skip = false;
+      continue;
+    }
     if (i + 1 < filtered.length && filtered[i] === filtered[i + 1]) {
       const val = filtered[i] * 2;
       merged.push(val);
@@ -103,11 +108,16 @@ function slideLeft(row: number[]): { result: number[]; gained: number; merges: n
   return { result: merged, gained, merges };
 }
 
-function moveLeft(board: number[][]): { board: number[][]; gained: number; changed: boolean; merges: number } {
+function moveLeft(board: number[][]): {
+  board: number[][];
+  gained: number;
+  changed: boolean;
+  merges: number;
+} {
   let gained = 0;
   let changed = false;
   let merges = 0;
-  const newBoard = board.map(row => {
+  const newBoard = board.map((row) => {
     const { result, gained: g, merges: m } = slideLeft(row);
     gained += g;
     merges += m;
@@ -117,19 +127,34 @@ function moveLeft(board: number[][]): { board: number[][]; gained: number; chang
   return { board: newBoard, gained, changed, merges };
 }
 
-function moveRight(board: number[][]): { board: number[][]; gained: number; changed: boolean; merges: number } {
+function moveRight(board: number[][]): {
+  board: number[][];
+  gained: number;
+  changed: boolean;
+  merges: number;
+} {
   const reversed = reverseRows(board);
   const { board: moved, gained, changed, merges } = moveLeft(reversed);
   return { board: reverseRows(moved), gained, changed, merges };
 }
 
-function moveUp(board: number[][]): { board: number[][]; gained: number; changed: boolean; merges: number } {
+function moveUp(board: number[][]): {
+  board: number[][];
+  gained: number;
+  changed: boolean;
+  merges: number;
+} {
   const transposed = transpose(board);
   const { board: moved, gained, changed, merges } = moveLeft(transposed);
   return { board: transpose(moved), gained, changed, merges };
 }
 
-function moveDown(board: number[][]): { board: number[][]; gained: number; changed: boolean; merges: number } {
+function moveDown(board: number[][]): {
+  board: number[][];
+  gained: number;
+  changed: boolean;
+  merges: number;
+} {
   const transposed = transpose(board);
   const { board: moved, gained, changed, merges } = moveRight(transposed);
   return { board: transpose(moved), gained, changed, merges };
@@ -147,14 +172,19 @@ function isGameOver(board: number[][]): boolean {
 }
 
 function hasTile(board: number[][], value: number): boolean {
-  return board.some(row => row.includes(value));
+  return board.some((row) => row.includes(value));
 }
 
 function getBestTile(board: number[][]): number {
   return Math.max(...board.flat());
 }
 
-export default function Game2048({ onGameEnd, onScoreChange, onMove, onCombo }: GameComponentProps) {
+export default function Game2048({
+  onGameEnd,
+  onScoreChange,
+  onMove,
+  onCombo,
+}: GameComponentProps) {
   const [state, setState] = useState<Game2048State>({
     board: emptyBoard(),
     score: 0,
@@ -190,15 +220,23 @@ export default function Game2048({ onGameEnd, onScoreChange, onMove, onCombo }: 
 
   const applyMove = useCallback(
     (direction: 'up' | 'down' | 'left' | 'right') => {
-      setState(prev => {
+      setState((prev) => {
         if (prev.gameStatus !== 'playing') return prev;
 
         let result: { board: number[][]; gained: number; changed: boolean; merges: number };
         switch (direction) {
-          case 'left':  result = moveLeft(prev.board); break;
-          case 'right': result = moveRight(prev.board); break;
-          case 'up':    result = moveUp(prev.board); break;
-          case 'down':  result = moveDown(prev.board); break;
+          case 'left':
+            result = moveLeft(prev.board);
+            break;
+          case 'right':
+            result = moveRight(prev.board);
+            break;
+          case 'up':
+            result = moveUp(prev.board);
+            break;
+          case 'down':
+            result = moveDown(prev.board);
+            break;
         }
 
         if (!result.changed) return prev;
@@ -237,13 +275,18 @@ export default function Game2048({ onGameEnd, onScoreChange, onMove, onCombo }: 
 
         if (isGameOver(newBoard)) {
           onGameEnd(newScore, `최대 타일: ${newBestTile}`);
-          return { board: newBoard, score: newScore, bestTile: newBestTile, gameStatus: 'gameover' };
+          return {
+            board: newBoard,
+            score: newScore,
+            bestTile: newBestTile,
+            gameStatus: 'gameover',
+          };
         }
 
         return { board: newBoard, score: newScore, bestTile: newBestTile, gameStatus: 'playing' };
       });
     },
-    [onGameEnd, onScoreChange, onMove, onCombo, playMoveTick, playCombo, playScore, combo]
+    [onGameEnd, onScoreChange, onMove, onCombo, playMoveTick, playCombo, playScore, combo],
   );
 
   const handleOverlayDirection = useCallback(
@@ -256,7 +299,7 @@ export default function Game2048({ onGameEnd, onScoreChange, onMove, onCombo }: 
       };
       applyMove(map[dir]);
     },
-    [applyMove]
+    [applyMove],
   );
 
   // 이펙트 감지
@@ -269,7 +312,11 @@ export default function Game2048({ onGameEnd, onScoreChange, onMove, onCombo }: 
     if (state.gameStatus === 'gameover') {
       setFlashActive(true);
     }
-    if (state.score > prevScoreRef.current && state.score > bestScoreRef.current && state.score > 0) {
+    if (
+      state.score > prevScoreRef.current &&
+      state.score > bestScoreRef.current &&
+      state.score > 0
+    ) {
       bestScoreRef.current = state.score;
       triggerShake(6, 400);
       setConfettiDuration(1500);
@@ -282,10 +329,14 @@ export default function Game2048({ onGameEnd, onScoreChange, onMove, onCombo }: 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       const map: Record<string, 'up' | 'down' | 'left' | 'right'> = {
-        ArrowUp: 'up', w: 'up',
-        ArrowDown: 'down', s: 'down',
-        ArrowLeft: 'left', a: 'left',
-        ArrowRight: 'right', d: 'right',
+        ArrowUp: 'up',
+        w: 'up',
+        ArrowDown: 'down',
+        s: 'down',
+        ArrowLeft: 'left',
+        a: 'left',
+        ArrowRight: 'right',
+        d: 'right',
       };
       const dir = map[e.key];
       if (!dir) return;
@@ -342,10 +393,7 @@ export default function Game2048({ onGameEnd, onScoreChange, onMove, onCombo }: 
 
   return (
     <div className="flex flex-col items-center gap-4">
-      <ConfettiEffect
-        active={confettiActive}
-        duration={confettiDuration}
-      />
+      <ConfettiEffect active={confettiActive} duration={confettiDuration} />
       <div
         className="flex items-center gap-6"
         style={{ width: size.ready ? size.width : undefined, maxWidth: 480 }}
@@ -361,7 +409,7 @@ export default function Game2048({ onGameEnd, onScoreChange, onMove, onCombo }: 
         </div>
         <button
           onClick={startGame}
-          className="px-4 py-1.5 bg-zinc-700 hover:bg-zinc-600 text-white rounded-lg text-sm font-semibold transition-colors"
+          className="rounded-lg bg-zinc-700 px-4 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-zinc-600"
         >
           새 게임
         </button>
@@ -369,7 +417,7 @@ export default function Game2048({ onGameEnd, onScoreChange, onMove, onCombo }: 
 
       <div
         ref={boardRef}
-        className="relative w-full mx-auto bg-zinc-900 rounded-xl"
+        className="relative mx-auto w-full rounded-xl bg-zinc-900"
         style={boardStyle}
       >
         <FlashOverlay
@@ -378,21 +426,16 @@ export default function Game2048({ onGameEnd, onScoreChange, onMove, onCombo }: 
           duration={400}
           onDone={() => setFlashActive(false)}
         />
-        <div
-          className="grid grid-cols-4 grid-rows-4 w-full h-full"
-          style={{ gap }}
-        >
+        <div className="grid h-full w-full grid-cols-4 grid-rows-4" style={{ gap }}>
           {state.board.flat().map((value, index) => {
             const colors = getTileColor(value);
             return (
               <div
                 key={index}
-                className={`${colors.bg} rounded-lg flex items-center justify-center transition-all duration-150`}
+                className={`${colors.bg} flex items-center justify-center rounded-lg transition-all duration-150`}
               >
                 {value !== 0 && (
-                  <span className={`${getTileFontSize(value)} ${colors.text}`}>
-                    {value}
-                  </span>
+                  <span className={`${getTileFontSize(value)} ${colors.text}`}>{value}</span>
                 )}
               </div>
             );
@@ -401,12 +444,12 @@ export default function Game2048({ onGameEnd, onScoreChange, onMove, onCombo }: 
 
         {/* 게임오버 오버레이 */}
         {state.gameStatus === 'gameover' && (
-          <div className="absolute inset-0 bg-black/70 rounded-xl flex flex-col items-center justify-center gap-4">
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 rounded-xl bg-black/70">
             <p className="text-3xl font-black text-red-400">Game Over!</p>
             <p className="text-lg text-white">최종 점수: {state.score.toLocaleString()}</p>
             <button
               onClick={startGame}
-              className="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-semibold transition-colors"
+              className="rounded-lg bg-indigo-600 px-6 py-2 font-semibold text-white transition-colors hover:bg-indigo-500"
             >
               다시 시작
             </button>
@@ -415,19 +458,19 @@ export default function Game2048({ onGameEnd, onScoreChange, onMove, onCombo }: 
 
         {/* 승리 오버레이 */}
         {state.gameStatus === 'won' && (
-          <div className="absolute inset-0 bg-black/70 rounded-xl flex flex-col items-center justify-center gap-4">
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 rounded-xl bg-black/70">
             <p className="text-3xl font-black text-emerald-400">2048 달성!</p>
             <p className="text-lg text-white">점수: {state.score.toLocaleString()}</p>
             <div className="flex gap-3">
               <button
-                onClick={() => setState(s => ({ ...s, gameStatus: 'playing' }))}
-                className="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 text-white rounded-lg font-semibold transition-colors text-sm"
+                onClick={() => setState((s) => ({ ...s, gameStatus: 'playing' }))}
+                className="rounded-lg bg-zinc-700 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-zinc-600"
               >
                 계속 플레이
               </button>
               <button
                 onClick={startGame}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-semibold transition-colors text-sm"
+                className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-500"
               >
                 새 게임
               </button>
@@ -437,18 +480,17 @@ export default function Game2048({ onGameEnd, onScoreChange, onMove, onCombo }: 
 
         {/* idle 오버레이 */}
         {state.gameStatus === 'idle' && (
-          <div className="absolute inset-0 bg-black/70 rounded-xl flex flex-col items-center justify-center gap-4">
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 rounded-xl bg-black/70">
             <p className="text-xl font-bold text-zinc-300">2048</p>
             <p className="text-sm text-zinc-500">방향키로 타일을 이동하세요</p>
             <button
               onClick={startGame}
-              className="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-semibold transition-colors"
+              className="rounded-lg bg-indigo-600 px-6 py-2 font-semibold text-white transition-colors hover:bg-indigo-500"
             >
               시작
             </button>
           </div>
         )}
-
       </div>
 
       <GameOverlayController
@@ -458,7 +500,9 @@ export default function Game2048({ onGameEnd, onScoreChange, onMove, onCombo }: 
         disabled={state.gameStatus !== 'playing'}
       />
 
-      <p className="text-xs text-zinc-600">방향키 또는 WASD로 이동 · 모바일: 스와이프 또는 D-패드</p>
+      <p className="text-xs text-zinc-600">
+        방향키 또는 WASD로 이동 · 모바일: 스와이프 또는 D-패드
+      </p>
     </div>
   );
 }

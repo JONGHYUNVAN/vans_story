@@ -9,10 +9,7 @@ import { useEffect, useRef } from 'react';
  * 언마운트 또는 active=false 전환 시 자동 cancel.
  * `timestamp`는 `requestAnimationFrame`이 제공하는 DOMHighResTimeStamp 원본.
  */
-export function useGameLoop(
-  callback: (timestamp: number) => boolean | void,
-  active: boolean,
-) {
+export function useGameLoop(callback: (timestamp: number) => boolean | void, active: boolean) {
   const cbRef = useRef(callback);
   const rafRef = useRef(0);
 

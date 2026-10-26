@@ -10,12 +10,14 @@ export default function IndicatorExplainBlock({ description, sector }: Indicator
 
   return (
     <section className="mb-6">
-      <h3 className="text-[11px] font-bold uppercase tracking-wide text-zinc-500 mb-3">
+      <h3 className="mb-3 text-[11px] font-bold uppercase tracking-wide text-zinc-500">
         지표 설명
       </h3>
       <div className="rounded-xl border border-zinc-800/80 bg-zinc-900/40 p-4">
-        <span className="text-[10px] text-zinc-500 uppercase tracking-wide font-mono">{sector}</span>
-        <p className="mt-2 text-sm text-zinc-300 leading-relaxed">{description}</p>
+        <span className="font-mono text-[10px] uppercase tracking-wide text-zinc-500">
+          {sector}
+        </span>
+        <p className="mt-2 text-sm leading-relaxed text-zinc-300">{description}</p>
       </div>
     </section>
   );

@@ -74,8 +74,7 @@ export const STOCK_RELATIONS: Record<string, StockRelationMeta> = {
     relatedKrSymbols: ['005930.KS'],
   },
   AMD: {
-    description:
-      '삼성·하이닉스 메모리 고객. AI 가속기 시장에서 NVDA와 경쟁하며 HBM 수요 창출.',
+    description: '삼성·하이닉스 메모리 고객. AI 가속기 시장에서 NVDA와 경쟁하며 HBM 수요 창출.',
     sector: 'CPU/GPU',
     relatedKrSymbols: ['005930.KS', '000660.KS'],
   },
@@ -92,8 +91,7 @@ export const STOCK_RELATIONS: Record<string, StockRelationMeta> = {
     relatedKrSymbols: ['005380.KS'],
   },
   MSFT: {
-    description:
-      'AI 서버 투자를 통해 NVDA GPU·HBM 수요를 간접 견인. 삼성·하이닉스 수혜.',
+    description: 'AI 서버 투자를 통해 NVDA GPU·HBM 수요를 간접 견인. 삼성·하이닉스 수혜.',
     sector: '클라우드/AI',
     relatedKrSymbols: ['005930.KS', '000660.KS'],
   },
@@ -124,26 +122,22 @@ export const STOCK_RELATIONS: Record<string, StockRelationMeta> = {
     relatedSymbols: ['005930.KS', '000660.KS', '005380.KS'],
   },
   '^KQ11': {
-    description:
-      '중소형·기술주 중심 지수. 개인 투자자 비중이 높아 변동성이 크다.',
+    description: '중소형·기술주 중심 지수. 개인 투자자 비중이 높아 변동성이 크다.',
     sector: '지수',
     relatedSymbols: [],
   },
   '^IXIC': {
-    description:
-      '미국 기술주 중심 종합지수. 국내 반도체·IT주와 동조화 경향이 가장 강하다.',
+    description: '미국 기술주 중심 종합지수. 국내 반도체·IT주와 동조화 경향이 가장 강하다.',
     sector: '지수',
     relatedSymbols: ['NVDA', 'AAPL', 'MSFT', 'TSLA'],
   },
   '^GSPC': {
-    description:
-      '미국 대형주 500개 종합지수. 글로벌 위험자산 투자심리의 기준이 된다.',
+    description: '미국 대형주 500개 종합지수. 글로벌 위험자산 투자심리의 기준이 된다.',
     sector: '지수',
     relatedSymbols: ['NVDA', 'AAPL', 'MSFT', 'TSLA'],
   },
   '^SOX': {
-    description:
-      '필라델피아 반도체 지수. 삼성전자·SK하이닉스 주가와 가장 밀접하게 연동된다.',
+    description: '필라델피아 반도체 지수. 삼성전자·SK하이닉스 주가와 가장 밀접하게 연동된다.',
     sector: '반도체 지수',
     relatedSymbols: ['005930.KS', '000660.KS', 'NVDA', 'AMD'],
   },

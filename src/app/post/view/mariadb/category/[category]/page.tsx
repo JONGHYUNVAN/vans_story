@@ -20,4 +20,4 @@ export default async function MariadbCategoryPage({ params }: PageProps) {
       </MariadbLayout>
     </SidebarWrapper>
   );
-} 
+}

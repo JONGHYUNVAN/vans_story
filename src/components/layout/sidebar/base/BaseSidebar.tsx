@@ -8,26 +8,26 @@ import { useFrameworkCategories } from '@/hooks/useFrameworkCategories';
 import { getIconComponent } from '@/lib/iconMapping';
 
 interface BaseSidebarProps {
-  frameworkName: string;        // 'Next', 'Nest', 'Spring'
-  frameworkValue: string;       // 'nextjs', 'nestjs', 'spring' - DB에서 조회할 값
-  frameworkIcon: IconType;      // SiNextdotjs, SiNestjs, SiSpring
-  frameworkColor: string;       // '#000000', '#E0234E', '#6DB33F'
-  frameworkPath: string;        // '/post/view/nextjs', '/post/view/nestjs', '/post/view/spring'
-  backgroundClasses?: string;   // 배경 스타일 (기본 검정)
+  frameworkName: string; // 'Next', 'Nest', 'Spring'
+  frameworkValue: string; // 'nextjs', 'nestjs', 'spring' - DB에서 조회할 값
+  frameworkIcon: IconType; // SiNextdotjs, SiNestjs, SiSpring
+  frameworkColor: string; // '#000000', '#E0234E', '#6DB33F'
+  frameworkPath: string; // '/post/view/nextjs', '/post/view/nestjs', '/post/view/spring'
+  backgroundClasses?: string; // 배경 스타일 (기본 검정)
   previewButtonBgClasses?: string; // 미리보기 버튼 배경 스타일
-  sidebarContentBgClasses?: string; // 사이드바 콘텐츠 배경 스타일 
-  textColorClasses?: string;    // 텍스트 기본 색상
-  hoverStyles?: string;         // 호버 스타일
-  activeLinkStyles?: string;    // 활성 링크 스타일
-  headerBgClasses?: string;     // 헤더 배경 스타일
-  borderClasses?: string;       // 테두리 스타일
-  logoAnimation?: string;       // 로고 애니메이션
+  sidebarContentBgClasses?: string; // 사이드바 콘텐츠 배경 스타일
+  textColorClasses?: string; // 텍스트 기본 색상
+  hoverStyles?: string; // 호버 스타일
+  activeLinkStyles?: string; // 활성 링크 스타일
+  headerBgClasses?: string; // 헤더 배경 스타일
+  borderClasses?: string; // 테두리 스타일
+  logoAnimation?: string; // 로고 애니메이션
   iconRenderer?: (icon: IconType, color: string) => ReactNode; // 아이콘 렌더링 방식
   // 배경 레이어 커스텀 렌더러 (Spring에만 사용됨)
   backgroundLayerRenderer?: () => ReactNode;
   headerHoverTextClass?: string; // 헤더 텍스트 호버 색상
   descriptionTextClass?: string; // 설명 텍스트 색상
-  categoryTitleClass?: string;   // 카테고리 제목 색상
+  categoryTitleClass?: string; // 카테고리 제목 색상
 }
 
 export default function BaseSidebar({
@@ -36,26 +36,26 @@ export default function BaseSidebar({
   frameworkIcon: FrameworkIcon,
   frameworkColor,
   frameworkPath,
-  backgroundClasses = "bg-black",
-  previewButtonBgClasses = "bg-black/50 backdrop-blur-sm",
-  sidebarContentBgClasses = "bg-black",
-  textColorClasses = "text-[#888888]",
-  hoverStyles = "hover:bg-white/5",
-  activeLinkStyles = "text-white bg-white/5",
-  headerBgClasses = "backdrop-blur-sm bg-black/30",
-  borderClasses = "border-[#333333]",
-  logoAnimation = "transition-transform duration-300 group-hover:scale-105",
-  iconRenderer = (Icon, color) => <Icon className="w-4 h-4" style={{ color }} />,
+  backgroundClasses = 'bg-black',
+  previewButtonBgClasses = 'bg-black/50 backdrop-blur-sm',
+  sidebarContentBgClasses = 'bg-black',
+  textColorClasses = 'text-[#888888]',
+  hoverStyles = 'hover:bg-white/5',
+  activeLinkStyles = 'text-white bg-white/5',
+  headerBgClasses = 'backdrop-blur-sm bg-black/30',
+  borderClasses = 'border-[#333333]',
+  logoAnimation = 'transition-transform duration-300 group-hover:scale-105',
+  iconRenderer = (Icon, color) => <Icon className="h-4 w-4" style={{ color }} />,
   backgroundLayerRenderer,
-  headerHoverTextClass = "hover:text-white",
-  descriptionTextClass = "text-[#666666]",
-  categoryTitleClass = "text-[#666666]"
+  headerHoverTextClass = 'hover:text-white',
+  descriptionTextClass = 'text-[#666666]',
+  categoryTitleClass = 'text-[#666666]',
 }: BaseSidebarProps) {
   const { t } = useTranslation('');
   const [isOpen, setIsOpen] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(true);
   const pathname = usePathname();
-  
+
   // DB에서 서브카테고리 가져오기
   const { subCategories, isLoading, error } = useFrameworkCategories(frameworkValue);
 
@@ -81,8 +81,8 @@ export default function BaseSidebar({
   };
 
   return (
-    (<div 
-      className="w-64 h-full"
+    <div
+      className="h-full w-64"
       onMouseEnter={() => {
         if (isSmallScreen) setIsOpen(true);
       }}
@@ -91,47 +91,48 @@ export default function BaseSidebar({
       }}
     >
       {/* 작은 화면에서만 보이는 미니 사이드바 */}
-      <div className={`
-        absolute left-0 top-0 h-full w-16
-        flex items-center justify-center
-        ${previewButtonBgClasses} rounded-r-lg
-        transform transition-all duration-300 ease-in-out border-r ${borderClasses}
-        ${!isSmallScreen || isOpen ? 'opacity-0 pointer-events-none' : 'opacity-30'}
-      `}>
+      <div
+        className={`absolute left-0 top-0 flex h-full w-16 items-center justify-center ${previewButtonBgClasses} transform rounded-r-lg border-r transition-all duration-300 ease-in-out ${borderClasses} ${!isSmallScreen || isOpen ? 'pointer-events-none opacity-0' : 'opacity-30'} `}
+      >
         <div className="flex flex-col items-center gap-2">
-          <div className="text-center mb-2">
-            <FrameworkIcon className={`w-8 h-8 mb-1 mx-auto`} style={{ color: frameworkColor }} />
+          <div className="mb-2 text-center">
+            <FrameworkIcon className={`mx-auto mb-1 h-8 w-8`} style={{ color: frameworkColor }} />
           </div>
-          <span className="text-base font-bold text-gray-800 font-handwriting text-center">
+          <span className="text-center font-handwriting text-base font-bold text-gray-800">
             {frameworkName}
           </span>
         </div>
-        <MdKeyboardArrowRight className="w-5 h-5 text-gray-800 animate-[bounce-right_1s_infinite] absolute right-1" />
+        <MdKeyboardArrowRight className="absolute right-1 h-5 w-5 animate-[bounce-right_1s_infinite] text-gray-800" />
       </div>
       {/* 사이드바 본체 */}
-      <div className={`
-        absolute top-0 left-0 w-64 h-full
-        ${sidebarContentBgClasses} ${textColorClasses} border-r ${borderClasses} rounded-r-lg overflow-hidden
-        transform transition-all duration-300 ease-in-out
-        ${isOpen 
-          ? 'translate-x-0 opacity-100 pointer-events-auto' 
-          : '-translate-x-64 opacity-0 pointer-events-none'
-        }
-      `}>
+      <div
+        className={`absolute left-0 top-0 h-full w-64 ${sidebarContentBgClasses} ${textColorClasses} border-r ${borderClasses} transform overflow-hidden rounded-r-lg transition-all duration-300 ease-in-out ${
+          isOpen
+            ? 'pointer-events-auto translate-x-0 opacity-100'
+            : 'pointer-events-none -translate-x-64 opacity-0'
+        } `}
+      >
         {/* 배경 레이어 (Spring에서만 사용) */}
         {backgroundLayerRenderer && backgroundLayerRenderer()}
-        
-        <div className={`p-4 border-b ${borderClasses} ${headerBgClasses} ${backgroundLayerRenderer ? 'relative z-10' : ''}`}>
+
+        <div
+          className={`border-b p-4 ${borderClasses} ${headerBgClasses} ${backgroundLayerRenderer ? 'relative z-10' : ''}`}
+        >
           <Link
             href={frameworkPath}
             className={`flex items-center gap-2 text-xl font-bold text-gray-800 transition-colors duration-300 ${headerHoverTextClass}`}
           >
-            <FrameworkIcon className={`w-8 h-8 ${logoAnimation}`} style={{ color: frameworkColor }} />
+            <FrameworkIcon
+              className={`h-8 w-8 ${logoAnimation}`}
+              style={{ color: frameworkColor }}
+            />
             {frameworkName}
           </Link>
         </div>
 
-        <nav className={`px-3 py-4 overflow-y-auto max-h-[calc(100vh-80px)] ${backgroundLayerRenderer ? 'relative z-10' : ''}`}>
+        <nav
+          className={`max-h-[calc(100vh-80px)] overflow-y-auto px-3 py-4 ${backgroundLayerRenderer ? 'relative z-10' : ''}`}
+        >
           {isLoading ? (
             <div className="flex items-center justify-center py-8">
               <div className="text-sm text-gray-500">카테고리 로딩 중...</div>
@@ -141,11 +142,13 @@ export default function BaseSidebar({
               카테고리 로드 실패. 기본 카테고리를 표시합니다.
             </div>
           ) : null}
-          
+
           {/* DB에서 가져온 서브카테고리 또는 폴백으로 하드코딩된 카테고리 */}
           {subCategories.length > 0 ? (
             <div className="mb-8">
-              <h2 className={`mb-4 px-4 text-sm font-semibold tracking-wide ${categoryTitleClass} uppercase`}>
+              <h2
+                className={`mb-4 px-4 text-sm font-semibold tracking-wide ${categoryTitleClass} uppercase`}
+              >
                 {frameworkName} 카테고리
               </h2>
               <div className="space-y-3">
@@ -155,11 +158,11 @@ export default function BaseSidebar({
                     <div key={subCategory.value} className="space-y-1">
                       <Link
                         href={categoryPath}
-                        className={`group block px-4 py-1.5 rounded-md transition-all duration-300 ease-in-out ${hoverStyles} ${
+                        className={`group block rounded-md px-4 py-1.5 transition-all duration-300 ease-in-out ${hoverStyles} ${
                           pathname === categoryPath ? activeLinkStyles : textColorClasses
                         }`}
                       >
-                        <span className="transition-colors duration-300 group-hover:text-white flex items-center gap-2">
+                        <span className="flex items-center gap-2 transition-colors duration-300 group-hover:text-white">
                           {iconRenderer(FrameworkIcon, frameworkColor)}
                           {subCategory.label}
                         </span>
@@ -176,39 +179,45 @@ export default function BaseSidebar({
             </div>
           ) : (
             // 폴백: 하드코딩된 카테고리 (API 실패 시 또는 데이터가 없을 때)
-            Object.entries(t(`${frameworkName}.categories`)).map(([categoryKey, category]: [string, any]) => (
-              <div key={categoryKey} className="mb-8">
-                <h2 className={`mb-4 px-4 text-sm font-semibold tracking-wide ${categoryTitleClass} uppercase`}>
-                  {category.title}
-                </h2>
-                <div className="space-y-3">
-                  {Object.entries(category.items).map(([itemKey, item]: [string, any]) => {
-                    const Icon = getIcon(item.icon);
-                    return (
-                      (<div key={itemKey} className="space-y-1">
-                        <Link
-                          href={item.path}
-                          className={`group block px-4 py-1.5 rounded-md transition-all duration-300 ease-in-out ${hoverStyles} ${
-                            pathname === item.path ? activeLinkStyles : textColorClasses
-                          }`}
-                        >
-                          <span className="transition-colors duration-300 group-hover:text-white flex items-center gap-2">
-                            {iconRenderer(Icon, item.color)}
-                            {item.title}
-                          </span>
-                        </Link>
-                        <p className={`px-4 py-1 text-xs ${descriptionTextClass} leading-relaxed`}>
-                          {item.description}
-                        </p>
-                      </div>)
-                    );
-                  })}
+            Object.entries(t(`${frameworkName}.categories`)).map(
+              ([categoryKey, category]: [string, any]) => (
+                <div key={categoryKey} className="mb-8">
+                  <h2
+                    className={`mb-4 px-4 text-sm font-semibold tracking-wide ${categoryTitleClass} uppercase`}
+                  >
+                    {category.title}
+                  </h2>
+                  <div className="space-y-3">
+                    {Object.entries(category.items).map(([itemKey, item]: [string, any]) => {
+                      const Icon = getIcon(item.icon);
+                      return (
+                        <div key={itemKey} className="space-y-1">
+                          <Link
+                            href={item.path}
+                            className={`group block rounded-md px-4 py-1.5 transition-all duration-300 ease-in-out ${hoverStyles} ${
+                              pathname === item.path ? activeLinkStyles : textColorClasses
+                            }`}
+                          >
+                            <span className="flex items-center gap-2 transition-colors duration-300 group-hover:text-white">
+                              {iconRenderer(Icon, item.color)}
+                              {item.title}
+                            </span>
+                          </Link>
+                          <p
+                            className={`px-4 py-1 text-xs ${descriptionTextClass} leading-relaxed`}
+                          >
+                            {item.description}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            ))
+              ),
+            )
           )}
         </nav>
       </div>
-    </div>)
+    </div>
   );
-} 
+}

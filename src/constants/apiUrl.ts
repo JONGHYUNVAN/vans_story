@@ -1,10 +1,10 @@
 export const API_URLS = {
   AUTH: {
     LOGIN: `/api/auth/login`,
-    LOGOUT: `/api/auth/logout`, 
+    LOGOUT: `/api/auth/logout`,
     REFRESH: `/api/auth/refresh`,
     SIGNUP: `/api/auth/signup`,
-    CALLBACK: `/api/auth/callback`,  // 프론트엔드 OAuth 콜백 API
+    CALLBACK: `/api/auth/callback`, // 프론트엔드 OAuth 콜백 API
   },
   OAUTH: {
     SERVER_URL: process.env.NEXT_PUBLIC_OAUTH_SERVER_URL,
@@ -13,7 +13,7 @@ export const API_URLS = {
     CALLBACK_PAGE: '/oauth/callback',
     BACKEND_LOGIN: '/api/v1/oauth/login',
     BACKEND_UNLINK: '/api/v1/oauth/unlink',
-    BACKEND_LINKED: '/api/v1/oauth/linked'
+    BACKEND_LINKED: '/api/v1/oauth/linked',
   },
   POST: {
     GET: `/api/posts`,
@@ -44,6 +44,6 @@ export const API_URLS = {
     QUOTE: `/api/stocks/quote`,
     HEATMAP: `/api/stocks/heatmap`,
     KOSPI_FUTURES: `/api/stocks/kospi-futures`,
-    FEAR_GREED:    `/api/stocks/fear-greed`,
+    FEAR_GREED: `/api/stocks/fear-greed`,
   },
-} as const; 
+} as const;

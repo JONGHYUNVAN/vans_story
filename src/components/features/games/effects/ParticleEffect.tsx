@@ -61,7 +61,7 @@ export default function ParticleEffect({
           100% { transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
         }
       `}</style>
-      {particles.map(p => {
+      {particles.map((p) => {
         const rad = (p.angle * Math.PI) / 180;
         const tx = Math.cos(rad) * p.distance;
         const ty = Math.sin(rad) * p.distance;

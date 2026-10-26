@@ -1,19 +1,33 @@
-'use client'
-import { useEditorContext } from './EditorContext'
-import { 
-  Bold, Italic, Underline, Strikethrough, 
-  AlignLeft, AlignCenter, AlignRight, AlignJustify,
-  Palette, Code, List, ListOrdered, Table, Quote, 
-  Image, Smile, Video, Bot
-} from 'lucide-react'
-import { useEffect, useState, useCallback } from 'react'
-import { AiGenerateModal } from './AiGenerateModal'
-import EmojiPicker, { EmojiStyle } from 'emoji-picker-react'
+'use client';
+import { useEditorContext } from './EditorContext';
+import {
+  Bold,
+  Italic,
+  Underline,
+  Strikethrough,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  AlignJustify,
+  Palette,
+  Code,
+  List,
+  ListOrdered,
+  Table,
+  Quote,
+  Image,
+  Smile,
+  Video,
+  Bot,
+} from 'lucide-react';
+import { useEffect, useState, useCallback } from 'react';
+import { AiGenerateModal } from './AiGenerateModal';
+import EmojiPicker, { EmojiStyle } from 'emoji-picker-react';
 import { koreanFonts } from '@/app/fonts/editor/kr';
 import { englishFonts } from '@/app/fonts/editor/en';
 import { codeFonts } from '@/app/fonts/editor/co';
-import { FaYoutube } from 'react-icons/fa'
-import { Editor } from '@tiptap/core'
+import { FaYoutube } from 'react-icons/fa';
+import { Editor } from '@tiptap/core';
 const FONT_SIZES = ['12', '14', '16', '18', '20', '24', '28', '32', '36', '40'];
 
 const CODE_LANGUAGE = [
@@ -25,7 +39,7 @@ const CODE_LANGUAGE = [
   { value: 'java', label: 'Java' },
   { value: 'cpp', label: 'C++' },
   { value: 'rust', label: 'Rust' },
-  { value: 'sql', label: 'SQL' }
+  { value: 'sql', label: 'SQL' },
 ];
 
 const FONTS_BY_LANGUAGE = {
@@ -35,17 +49,21 @@ const FONTS_BY_LANGUAGE = {
 };
 
 interface PostContext {
-  title?: string
-  mainCategory?: string
-  subCategory?: string
-  topic?: string
-  tags?: string[]
+  title?: string;
+  mainCategory?: string;
+  subCategory?: string;
+  topic?: string;
+  tags?: string[];
 }
 
-export function EditorMenuBar({ localImages, setLocalImages, postContext }: {
-  localImages: Map<string, File>,
-  setLocalImages: React.Dispatch<React.SetStateAction<Map<string, File>>>,
-  postContext?: PostContext
+export function EditorMenuBar({
+  localImages,
+  setLocalImages,
+  postContext,
+}: {
+  localImages: Map<string, File>;
+  setLocalImages: React.Dispatch<React.SetStateAction<Map<string, File>>>;
+  postContext?: PostContext;
 }) {
   const editor = useEditorContext();
   const [fontSize, setFontSize] = useState('12');
@@ -54,43 +72,37 @@ export function EditorMenuBar({ localImages, setLocalImages, postContext }: {
     bold: false,
     italic: false,
     underline: false,
-    strike: false
+    strike: false,
   });
   const [tableSize, setTableSize] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [inputLanguage, setInputLanguage] = useState<'ko' | 'en' | 'co' >('en');
+  const [inputLanguage, setInputLanguage] = useState<'ko' | 'en' | 'co'>('en');
   const [selectedFont, setSelectedFont] = useState('ko');
   const [isSticky, setIsSticky] = useState(false);
   const [showAiGenerate, setShowAiGenerate] = useState(false);
 
   useEffect(() => {
     if (!editor) return;
-    
+
     editor.commands.updateAttributes('textStyle', {
-      fontSize: `${fontSize}px`
+      fontSize: `${fontSize}px`,
     });
-      
-    editor.chain()
-      .focus()
-      .setFontSize(`${fontSize}px`)
-      .run();
+
+    editor.chain().focus().setFontSize(`${fontSize}px`).run();
   }, [fontSize, editor]);
 
   useEffect(() => {
     if (!editor) return;
-  
+
     if (editor.isActive('textStyle')) {
-      editor.chain()
-        .focus()
-        .setFontFamily(selectedFont)
-        .run();
+      editor.chain().focus().setFontFamily(selectedFont).run();
     }
   }, [selectedFont, editor]);
 
   // 스크롤 이벤트 리스너 추가 (성능 최적화를 위한 throttling 적용)
   useEffect(() => {
     let ticking = false;
-    
+
     const handleScroll = () => {
       if (!ticking) {
         requestAnimationFrame(() => {
@@ -110,24 +122,31 @@ export function EditorMenuBar({ localImages, setLocalImages, postContext }: {
   }, []);
 
   const handlePresetChange = (value: string) => {
-    const newSize = 
-        value === 'h1' ? '40'
-      : value === 'h2' ? '24'
-      : value === 'h3' ? '20'
-      : value === 'p1' ? '16'
-      : value === 'p2' ? '14'
-      : '12';  // p3의 경우
+    const newSize =
+      value === 'h1'
+        ? '40'
+        : value === 'h2'
+          ? '24'
+          : value === 'h3'
+            ? '20'
+            : value === 'p1'
+              ? '16'
+              : value === 'p2'
+                ? '14'
+                : '12'; // p3의 경우
 
     setPreset(value);
     setFontSize(newSize);
 
     // h1, h2, h3일 경우 bold 처리
     if (value.startsWith('h')) {
-      editor?.chain()
+      editor
+        ?.chain()
         .setMark('textStyle', { fontSize: `${newSize}px`, fontWeight: 'bold' })
         .run();
     } else {
-      editor?.chain()
+      editor
+        ?.chain()
         .setMark('textStyle', { fontSize: `${newSize}px`, fontWeight: 'normal' })
         .run();
     }
@@ -141,7 +160,7 @@ export function EditorMenuBar({ localImages, setLocalImages, postContext }: {
         bold: editor.isActive('bold'),
         italic: editor.isActive('italic'),
         underline: editor.isActive('underline'),
-        strike: editor.isActive('strike')
+        strike: editor.isActive('strike'),
       });
     };
 
@@ -161,15 +180,14 @@ export function EditorMenuBar({ localImages, setLocalImages, postContext }: {
     const handleInput = (e: Event) => {
       if (editor?.isActive('codeBlock')) {
         setInputLanguage('co');
-      }
-      else if (e instanceof InputEvent && e.data && /[a-zA-Z]/.test(e.data)) {
+      } else if (e instanceof InputEvent && e.data && /[a-zA-Z]/.test(e.data)) {
         setInputLanguage('en');
       }
     };
 
     document.addEventListener('compositionupdate', handleComposition);
     document.addEventListener('input', handleInput);
-    
+
     return () => {
       document.removeEventListener('compositionupdate', handleComposition);
       document.removeEventListener('input', handleInput);
@@ -177,54 +195,63 @@ export function EditorMenuBar({ localImages, setLocalImages, postContext }: {
   }, [editor]);
 
   // 이미지 선택 핸들러
-  const handleImageSelect = useCallback((file: File) => {
-    if (!editor) return;
-    
-    const localUrl = URL.createObjectURL(file)
-    setLocalImages(prev => new Map(prev).set(localUrl, file))
-    
-    editor.chain().focus().setImage({ 
-      src: localUrl
-    }).run()
-  }, [editor, setLocalImages])
+  const handleImageSelect = useCallback(
+    (file: File) => {
+      if (!editor) return;
+
+      const localUrl = URL.createObjectURL(file);
+      setLocalImages((prev) => new Map(prev).set(localUrl, file));
+
+      editor
+        .chain()
+        .focus()
+        .setImage({
+          src: localUrl,
+        })
+        .run();
+    },
+    [editor, setLocalImages],
+  );
 
   // 이미지 업로드 버튼 클릭 핸들러
   const handleImageUploadClick = useCallback(() => {
     if (!editor) return;
-    
-    const input = document.createElement('input')
-    input.type = 'file'
-    input.accept = 'image/*'
+
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
     input.onchange = (e: Event) => {
-      const target = e.target as HTMLInputElement
-      const file = target.files?.[0]
+      const target = e.target as HTMLInputElement;
+      const file = target.files?.[0];
       if (file) {
-        handleImageSelect(file)
+        handleImageSelect(file);
       }
-    }
-    input.click()
-  }, [editor, handleImageSelect])
+    };
+    input.click();
+  }, [editor, handleImageSelect]);
 
   // 컴포넌트 언마운트 시 URL 해제
   useEffect(() => {
     return () => {
       localImages?.forEach((_, url) => {
-        URL.revokeObjectURL(url)
-      })
-    }
-  }, [localImages])
+        URL.revokeObjectURL(url);
+      });
+    };
+  }, [localImages]);
 
   if (!editor) return null;
 
   return (
-    <div className={`bg-white/90 border-b border-gray-200 ${isSticky ? 'sticky top-16 z-50 shadow-sm' : ''}`}>
+    <div
+      className={`border-b border-gray-200 bg-white/90 ${isSticky ? 'sticky top-16 z-50 shadow-sm' : ''}`}
+    >
       <div className="flex flex-wrap items-center gap-1 p-2">
         {/* 스타일 버튼들 */}
         <div className="flex items-center gap-1 p-1">
           <button
             type="button"
             onClick={() => editor.chain().focus().toggleBold().run()}
-            className={`p-2 rounded text-gray-700 hover:bg-gray-100 ${
+            className={`rounded p-2 text-gray-700 hover:bg-gray-100 ${
               activeStates.bold ? 'bg-gray-200' : ''
             }`}
             title="굵게 (Ctrl+B)"
@@ -234,7 +261,7 @@ export function EditorMenuBar({ localImages, setLocalImages, postContext }: {
           <button
             type="button"
             onClick={() => editor.chain().focus().toggleItalic().run()}
-            className={`p-2 rounded text-gray-900 hover:bg-gray-700 ${
+            className={`rounded p-2 text-gray-900 hover:bg-gray-700 ${
               activeStates.italic ? 'bg-gray-700' : ''
             }`}
             title="기울임 (Ctrl+I)"
@@ -244,7 +271,7 @@ export function EditorMenuBar({ localImages, setLocalImages, postContext }: {
           <button
             type="button"
             onClick={() => editor.chain().focus().toggleUnderline().run()}
-            className={`p-2 rounded text-gray-900 hover:bg-gray-700 ${
+            className={`rounded p-2 text-gray-900 hover:bg-gray-700 ${
               activeStates.underline ? 'bg-gray-700' : ''
             }`}
             title="밑줄 (Ctrl+U)"
@@ -254,7 +281,7 @@ export function EditorMenuBar({ localImages, setLocalImages, postContext }: {
           <button
             type="button"
             onClick={() => editor.chain().focus().toggleStrike().run()}
-            className={`p-2 rounded text-gray-900 hover:bg-gray-700 ${
+            className={`rounded p-2 text-gray-900 hover:bg-gray-700 ${
               activeStates.strike ? 'bg-gray-700' : ''
             }`}
             title="취소선"
@@ -266,7 +293,7 @@ export function EditorMenuBar({ localImages, setLocalImages, postContext }: {
           <button
             type="button"
             onClick={() => editor.chain().focus().setTextAlign('left').run()}
-            className={`p-2 rounded text-gray-700 hover:bg-gray-100 ${
+            className={`rounded p-2 text-gray-700 hover:bg-gray-100 ${
               editor.isActive({ textAlign: 'left' }) ? 'bg-gray-200' : ''
             }`}
             title="왼쪽 정렬"
@@ -276,7 +303,7 @@ export function EditorMenuBar({ localImages, setLocalImages, postContext }: {
           <button
             type="button"
             onClick={() => editor.chain().focus().setTextAlign('center').run()}
-            className={`p-2 rounded text-gray-700 hover:bg-gray-100 ${
+            className={`rounded p-2 text-gray-700 hover:bg-gray-100 ${
               editor.isActive({ textAlign: 'center' }) ? 'bg-gray-200' : ''
             }`}
             title="가운데 정렬"
@@ -286,7 +313,7 @@ export function EditorMenuBar({ localImages, setLocalImages, postContext }: {
           <button
             type="button"
             onClick={() => editor.chain().focus().setTextAlign('right').run()}
-            className={`p-2 rounded text-gray-700 hover:bg-gray-100 ${
+            className={`rounded p-2 text-gray-700 hover:bg-gray-100 ${
               editor.isActive({ textAlign: 'right' }) ? 'bg-gray-200' : ''
             }`}
             title="오른쪽 정렬"
@@ -296,7 +323,7 @@ export function EditorMenuBar({ localImages, setLocalImages, postContext }: {
           <button
             type="button"
             onClick={() => editor.chain().focus().setTextAlign('justify').run()}
-            className={`p-2 rounded text-gray-700 hover:bg-gray-100 ${
+            className={`rounded p-2 text-gray-700 hover:bg-gray-100 ${
               editor.isActive({ textAlign: 'justify' }) ? 'bg-gray-200' : ''
             }`}
             title="양쪽 정렬"
@@ -304,20 +331,33 @@ export function EditorMenuBar({ localImages, setLocalImages, postContext }: {
             <AlignJustify size={18} />
           </button>
 
-          <div className="w-px h-6 bg-gray-300 mx-2" />
+          <div className="mx-2 h-6 w-px bg-gray-300" />
 
           {/* 글자 크기 프리셋 */}
           <div className="relative">
             <select
               onChange={(e) => handlePresetChange(e.target.value)}
-              className="h-9 px-2 border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded [&>option]:p-2 [&>option]:bg-white"
-              value={preset}>
-              <option value="h1" style={{ fontSize: '40px', fontWeight: 'bold' }}>제목1</option>
-              <option value="h2" style={{ fontSize: '24px', fontWeight: 'bold' }}>제목2</option>
-              <option value="h3" style={{ fontSize: '20px', fontWeight: 'bold' }}>제목3</option>
-              <option value="p1" style={{ fontSize: '16px' }}>본문1</option>
-              <option value="p2" style={{ fontSize: '14px' }}>본문2</option>
-              <option value="p3" style={{ fontSize: '12px' }}>본문3</option>
+              className="h-9 rounded border border-gray-300 bg-white px-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 [&>option]:bg-white [&>option]:p-2"
+              value={preset}
+            >
+              <option value="h1" style={{ fontSize: '40px', fontWeight: 'bold' }}>
+                제목1
+              </option>
+              <option value="h2" style={{ fontSize: '24px', fontWeight: 'bold' }}>
+                제목2
+              </option>
+              <option value="h3" style={{ fontSize: '20px', fontWeight: 'bold' }}>
+                제목3
+              </option>
+              <option value="p1" style={{ fontSize: '16px' }}>
+                본문1
+              </option>
+              <option value="p2" style={{ fontSize: '14px' }}>
+                본문2
+              </option>
+              <option value="p3" style={{ fontSize: '12px' }}>
+                본문3
+              </option>
             </select>
           </div>
 
@@ -325,7 +365,7 @@ export function EditorMenuBar({ localImages, setLocalImages, postContext }: {
           <div className="relative">
             <select
               onChange={(e) => setFontSize(e.target.value)}
-              className="h-9 px-2 rounded border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 [&>option]:bg-white"
+              className="h-9 rounded border border-gray-300 bg-white px-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 [&>option]:bg-white"
               value={fontSize}
             >
               {FONT_SIZES.map((size) => (
@@ -341,20 +381,19 @@ export function EditorMenuBar({ localImages, setLocalImages, postContext }: {
             <select
               value={selectedFont}
               onChange={(e) => setSelectedFont(e.target.value)}
-              className="h-9 px-2 rounded border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 [&>option]:bg-white"
+              className="h-9 rounded border border-gray-300 bg-white px-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 [&>option]:bg-white"
             >
-              {editor.isActive('codeBlock') ? 
-              FONTS_BY_LANGUAGE['co'].map(font => (
-                <option key={font.value} value={font.value} style={{ fontFamily: font.value }}>
-                  {font.label}
-                </option>
-              ))
-              :
-              FONTS_BY_LANGUAGE[inputLanguage].map(font => (
-                <option key={font.value} value={font.value} style={{ fontFamily: font.value }}>
-                  {font.label}
-                </option>
-              ))}
+              {editor.isActive('codeBlock')
+                ? FONTS_BY_LANGUAGE['co'].map((font) => (
+                    <option key={font.value} value={font.value} style={{ fontFamily: font.value }}>
+                      {font.label}
+                    </option>
+                  ))
+                : FONTS_BY_LANGUAGE[inputLanguage].map((font) => (
+                    <option key={font.value} value={font.value} style={{ fontFamily: font.value }}>
+                      {font.label}
+                    </option>
+                  ))}
             </select>
           </div>
         </div>
@@ -363,26 +402,38 @@ export function EditorMenuBar({ localImages, setLocalImages, postContext }: {
           {/* 글자색 */}
           <div className="relative flex items-center gap-1" title="글자색">
             <div className="relative">
-              <div className="absolute left-1.5 pointer-events-none">
+              <div className="pointer-events-none absolute left-1.5">
                 <span className="text-xs font-bold">A</span>
                 <Palette size={14} className="text-gray-500" />
               </div>
               <input
                 type="color"
                 onChange={(e) => editor.chain().focus().setColor(e.target.value).run()}
-                className="w-9 h-9 p-1 opacity-0 cursor-pointer"
+                className="h-9 w-9 cursor-pointer p-1 opacity-0"
               />
             </div>
 
             {/* 글자색 팔레트 */}
             <div className="grid grid-cols-7 gap-0.5">
               {[
-                '#ffffff', '#fca5a5', '#fdba74', '#fde047', '#86efac', '#93c5fd', '#d8b4fe',
-                '#000000', '#dc2626', '#ea580c', '#ca8a04', '#16a34a', '#2563eb', '#9333ea',
+                '#ffffff',
+                '#fca5a5',
+                '#fdba74',
+                '#fde047',
+                '#86efac',
+                '#93c5fd',
+                '#d8b4fe',
+                '#000000',
+                '#dc2626',
+                '#ea580c',
+                '#ca8a04',
+                '#16a34a',
+                '#2563eb',
+                '#9333ea',
               ].map((color) => (
                 <button
                   key={color}
-                  className="w-5 h-5 border hover:scale-110 transition-transform"
+                  className="h-5 w-5 border transition-transform hover:scale-110"
                   style={{ backgroundColor: color }}
                   onClick={() => editor.chain().focus().setColor(color).run()}
                 />
@@ -393,16 +444,18 @@ export function EditorMenuBar({ localImages, setLocalImages, postContext }: {
           {/* 배경색 */}
           <div className="relative flex items-center gap-1" title="배경색">
             <div className="relative">
-              <div className="absolute left-1.5 pointer-events-none">
-                <span className="text-xs font-bold bg-yellow-200 px-1">A</span>
+              <div className="pointer-events-none absolute left-1.5">
+                <span className="bg-yellow-200 px-1 text-xs font-bold">A</span>
               </div>
               <input
                 type="color"
-                onChange={(e) => editor.chain().focus().setHighlight({ color: e.target.value }).run()}
-                className="w-9 h-9 p-1 opacity-0 cursor-pointer"
+                onChange={(e) =>
+                  editor.chain().focus().setHighlight({ color: e.target.value }).run()
+                }
+                className="h-9 w-9 cursor-pointer p-1 opacity-0"
               />
             </div>
-            
+
             {/* 형광펜 팔레트 */}
             <div className="flex gap-0.5">
               {[
@@ -412,7 +465,7 @@ export function EditorMenuBar({ localImages, setLocalImages, postContext }: {
               ].map((color) => (
                 <button
                   key={color}
-                  className="w-5 h-5 border hover:scale-110 transition-transform"
+                  className="h-5 w-5 border transition-transform hover:scale-110"
                   style={{ backgroundColor: color }}
                   onClick={() => editor.chain().focus().setHighlight({ color }).run()}
                 />
@@ -420,21 +473,21 @@ export function EditorMenuBar({ localImages, setLocalImages, postContext }: {
             </div>
           </div>
 
-          <div className="w-px h-6 bg-gray-300 mx-2" />
+          <div className="mx-2 h-6 w-px bg-gray-300" />
 
           {/* 코드 블록 */}
           <div className="flex items-center gap-1">
             <button
               type="button"
               onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-              className={`p-2 rounded text-gray-700 hover:bg-gray-100 transition-colors ${
+              className={`rounded p-2 text-gray-700 transition-colors hover:bg-gray-100 ${
                 editor.isActive('codeBlock') ? 'bg-gray-200' : ''
               }`}
               title="코드 블록"
             >
               <Code size={18} />
             </button>
-            
+
             {editor.isActive('codeBlock') && (
               <select
                 onChange={(e) => {
@@ -442,12 +495,9 @@ export function EditorMenuBar({ localImages, setLocalImages, postContext }: {
                   if (preElement) {
                     preElement.className = `hljs language-${e.target.value} font-${selectedFont}`;
                   }
-                  editor.chain()
-                    .focus()
-                    .setCodeBlock({ language: e.target.value })
-                    .run();
+                  editor.chain().focus().setCodeBlock({ language: e.target.value }).run();
                 }}
-                className="h-9 px-2 rounded border border-gray-300 bg-white text-gray-800 focus:outline-none text-sm"
+                className="h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-800 focus:outline-none"
                 value={editor.getAttributes('codeBlock').language || 'javascript'}
               >
                 {CODE_LANGUAGE.map(({ value, label }) => (
@@ -459,170 +509,185 @@ export function EditorMenuBar({ localImages, setLocalImages, postContext }: {
             )}
           </div>
 
+          {/* 리스트, 표, 인용구 등 */}
 
-        {/* 리스트, 표, 인용구 등 */}
-        
-        <div className="flex items-center gap-1">
-          <button
-            type="button"
-            onClick={() => {
-              editor.chain().focus().toggleBulletList().run()
-            }}
-            className={`p-1 hover:bg-gray-100 rounded ${
-              editor.isActive('bulletList') ? 'bg-gray-200' : ''
-            }`}
-            title="글머리 기호"
-          >
-            <List size={16} />
-          </button>
-          
-          <button
-            type="button"
-            onClick={() => editor.chain().focus().toggleOrderedList().run()}
-            className={`p-2 rounded text-gray-700 hover:bg-gray-100 ${
-              editor.isActive('orderedList') ? 'bg-gray-200' : ''
-            }`}
-            title="번호 매기기"
-          >
-            <ListOrdered size={18} />
-          </button>
-
-          <button
-            type="button"
-            onClick={() => editor.chain().focus().toggleBlockquote().run()}
-            className={`p-2 rounded text-gray-700 hover:bg-gray-100 ${
-              editor.isActive('blockquote') ? 'bg-gray-200' : ''
-            }`}
-            title="인용구"
-          >
-            <Quote size={18} />
-          </button>
-
-          <div className="relative group">
+          <div className="flex items-center gap-1">
             <button
               type="button"
-              className="p-2 rounded text-gray-700 hover:bg-gray-100"
-              title="표 삽입"
+              onClick={() => {
+                editor.chain().focus().toggleBulletList().run();
+              }}
+              className={`rounded p-1 hover:bg-gray-100 ${
+                editor.isActive('bulletList') ? 'bg-gray-200' : ''
+              }`}
+              title="글머리 기호"
             >
-              <Table size={18} />
+              <List size={16} />
             </button>
-            
-            {/* 표 크기 선택 그리드 */}
-            <div className="absolute hidden w-30 group-hover:block bg-white border border-gray-300 rounded-lg p-2 shadow-md z-50">
-              <div className="flex flex-col gap-0">
-                {[...Array(5)].map((_, row) => (
-                  <div key={row} className="flex gap-0">
-                    {[...Array(5)].map((_, col) => (
-                      <button
-                        key={`${row}-${col}`}
-                        className="w-[20px] h-[20px] border-t border-l border-gray-300 last:border-r first:border-t [&:nth-child(n)]:border-b"
-                        onMouseEnter={(e) => {
-                          setTableSize(`${row + 1}x${col + 1}`);
-                          const buttons = e.currentTarget.parentElement?.parentElement?.getElementsByTagName('button');
-                          if (buttons) {
-                            for (let r = 0; r <= row; r++) {
-                              for (let c = 0; c <= col; c++) {
-                                const index = r * 5 + c;
-                                buttons[index].style.backgroundColor = '#93c5fd';
+
+            <button
+              type="button"
+              onClick={() => editor.chain().focus().toggleOrderedList().run()}
+              className={`rounded p-2 text-gray-700 hover:bg-gray-100 ${
+                editor.isActive('orderedList') ? 'bg-gray-200' : ''
+              }`}
+              title="번호 매기기"
+            >
+              <ListOrdered size={18} />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => editor.chain().focus().toggleBlockquote().run()}
+              className={`rounded p-2 text-gray-700 hover:bg-gray-100 ${
+                editor.isActive('blockquote') ? 'bg-gray-200' : ''
+              }`}
+              title="인용구"
+            >
+              <Quote size={18} />
+            </button>
+
+            <div className="group relative">
+              <button
+                type="button"
+                className="rounded p-2 text-gray-700 hover:bg-gray-100"
+                title="표 삽입"
+              >
+                <Table size={18} />
+              </button>
+
+              {/* 표 크기 선택 그리드 */}
+              <div className="w-30 absolute z-50 hidden rounded-lg border border-gray-300 bg-white p-2 shadow-md group-hover:block">
+                <div className="flex flex-col gap-0">
+                  {[...Array(5)].map((_, row) => (
+                    <div key={row} className="flex gap-0">
+                      {[...Array(5)].map((_, col) => (
+                        <button
+                          key={`${row}-${col}`}
+                          className="h-[20px] w-[20px] border-l border-t border-gray-300 first:border-t last:border-r [&:nth-child(n)]:border-b"
+                          onMouseEnter={(e) => {
+                            setTableSize(`${row + 1}x${col + 1}`);
+                            const buttons =
+                              e.currentTarget.parentElement?.parentElement?.getElementsByTagName(
+                                'button',
+                              );
+                            if (buttons) {
+                              for (let r = 0; r <= row; r++) {
+                                for (let c = 0; c <= col; c++) {
+                                  const index = r * 5 + c;
+                                  buttons[index].style.backgroundColor = '#93c5fd';
+                                }
                               }
                             }
+                          }}
+                          onMouseLeave={(e) => {
+                            setTableSize('');
+                            const buttons =
+                              e.currentTarget.parentElement?.parentElement?.getElementsByTagName(
+                                'button',
+                              );
+                            if (buttons) {
+                              Array.from(buttons).forEach((button) => {
+                                button.style.backgroundColor = '';
+                              });
+                            }
+                          }}
+                          onClick={() =>
+                            editor
+                              .chain()
+                              .focus()
+                              .insertTable({
+                                rows: row + 1,
+                                cols: col + 1,
+                                withHeaderRow: true,
+                              })
+                              .run()
                           }
-                        }}
-                        onMouseLeave={(e) => {
-                          setTableSize('');
-                          const buttons = e.currentTarget.parentElement?.parentElement?.getElementsByTagName('button');
-                          if (buttons) {
-                            Array.from(buttons).forEach(button => {
-                              button.style.backgroundColor = '';
-                            });
-                          }
-                        }}
-                        onClick={() => editor.chain().focus().insertTable({
-                          rows: row + 1,
-                          cols: col + 1,
-                          withHeaderRow: true
-                        }).run()}
-                      />
-                    ))}
-                  </div>
-                ))}
-              </div>
-              <div className="text-center text-xs mt-1 h-4 text-gray-500 font-medium">
-                {tableSize}
+                        />
+                      ))}
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-1 h-4 text-center text-xs font-medium text-gray-500">
+                  {tableSize}
+                </div>
               </div>
             </div>
-          </div>
 
-          <button
-            type="button"
-            onClick={handleImageUploadClick}
-            className="p-2 rounded text-gray-700 hover:bg-gray-100"
-            title="사진 업로드"
-          >
-            <Image size={18} />
-          </button>
-
-          <div className="relative">
             <button
               type="button"
-              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-              className="p-2 rounded text-gray-700 hover:bg-gray-100"
-              title="이모티콘"
+              onClick={handleImageUploadClick}
+              className="rounded p-2 text-gray-700 hover:bg-gray-100"
+              title="사진 업로드"
             >
-            <span style={{ fontSize: "18px" }}>😀</span>
+              <Image size={18} />
             </button>
-            
-            {showEmojiPicker && (
-              <div className="absolute top-full left-0 z-50">
-                <EmojiPicker
-                  emojiStyle={EmojiStyle.NATIVE}
-                  onEmojiClick={(emojiData) => {
-                    editor.chain().focus().insertContent(emojiData.emoji).run();
-                    setShowEmojiPicker(false);
-                  }}
-                />
-              </div>
-            )}
 
-                    <button
-            type="button"
-            onClick={() => {
-              const url = window.prompt('YouTube URL을 입력하세요:')
-              if (url) {
-                editor.chain().focus().setYoutubeVideo({
-                  src: url,
-                }).run()
-              }
-            }}
-            className="p-2 rounded text-gray-700 hover:bg-gray-100"
-            title="YouTube 영상 삽입"
-            >
-            <FaYoutube size={18} className="text-red-600" />
-          </button>
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                className="rounded p-2 text-gray-700 hover:bg-gray-100"
+                title="이모티콘"
+              >
+                <span style={{ fontSize: '18px' }}>😀</span>
+              </button>
 
-          {/* AI 콘텐츠 생성 버튼 */}
-          <button
-            type="button"
-            onClick={() => setShowAiGenerate(true)}
-            className="p-2 rounded text-gray-700 hover:bg-blue-50 transition-colors"
-            title="AI 콘텐츠 생성"
-          >
-            <Bot size={18} className="text-blue-600" />
-          </button>
+              {showEmojiPicker && (
+                <div className="absolute left-0 top-full z-50">
+                  <EmojiPicker
+                    emojiStyle={EmojiStyle.NATIVE}
+                    onEmojiClick={(emojiData) => {
+                      editor.chain().focus().insertContent(emojiData.emoji).run();
+                      setShowEmojiPicker(false);
+                    }}
+                  />
+                </div>
+              )}
+
+              <button
+                type="button"
+                onClick={() => {
+                  const url = window.prompt('YouTube URL을 입력하세요:');
+                  if (url) {
+                    editor
+                      .chain()
+                      .focus()
+                      .setYoutubeVideo({
+                        src: url,
+                      })
+                      .run();
+                  }
+                }}
+                className="rounded p-2 text-gray-700 hover:bg-gray-100"
+                title="YouTube 영상 삽입"
+              >
+                <FaYoutube size={18} className="text-red-600" />
+              </button>
+
+              {/* AI 콘텐츠 생성 버튼 */}
+              <button
+                type="button"
+                onClick={() => setShowAiGenerate(true)}
+                className="rounded p-2 text-gray-700 transition-colors hover:bg-blue-50"
+                title="AI 콘텐츠 생성"
+              >
+                <Bot size={18} className="text-blue-600" />
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* AI 생성 모달 */}
-      <AiGenerateModal
-        isOpen={showAiGenerate}
-        onClose={() => setShowAiGenerate(false)}
-        onInsertText={(text) => {
-          editor.chain().focus().insertContent(text).run();
-        }}
-        postContext={postContext}
-      />
-    </div>  
+        {/* AI 생성 모달 */}
+        <AiGenerateModal
+          isOpen={showAiGenerate}
+          onClose={() => setShowAiGenerate(false)}
+          onInsertText={(text) => {
+            editor.chain().focus().insertContent(text).run();
+          }}
+          postContext={postContext}
+        />
+      </div>
     </div>
-  )
+  );
 }

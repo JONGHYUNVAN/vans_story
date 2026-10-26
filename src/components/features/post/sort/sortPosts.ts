@@ -1,4 +1,4 @@
-import { PostInfo } from "@/types/post";
+import { PostInfo } from '@/types/post';
 
 /**
  * 포스트 목록을 지정된 정렬 옵션에 따라 정렬합니다
@@ -21,4 +21,4 @@ export function sortPosts<T extends PostInfo>(posts: T[], sortOption: string): T
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     }
   });
-} 
+}

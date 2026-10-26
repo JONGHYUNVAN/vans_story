@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -23,9 +23,14 @@ function OAuthCallbackContent() {
     const handleOAuthCallback = async () => {
       try {
         // URL 파라미터와 Fragment에서 OAuth 콜백 데이터 추출 (둘 다 지원)
-        const callbackData = oauthUtils.extractCallbackDataUnified(searchParams, window.location.hash);
+        const callbackData = oauthUtils.extractCallbackDataUnified(
+          searchParams,
+          window.location.hash,
+        );
         const { token, code, error, provider = 'kakao' } = callbackData;
-        const mode = searchParams.get('mode') || new URLSearchParams(window.location.hash.substring(1)).get('mode'); // 'login' 또는 'link'
+        const mode =
+          searchParams.get('mode') ||
+          new URLSearchParams(window.location.hash.substring(1)).get('mode'); // 'login' 또는 'link'
 
         if (error) {
           // OAuth 에러 처리 (사용자 친화적 메시지)
@@ -65,7 +70,7 @@ function OAuthCallbackContent() {
           }
 
           const data = await response.json();
-          
+
           if (!data.success || !data.token) {
             throw new Error(data.error || 'No JWT token received');
           }
@@ -76,7 +81,7 @@ function OAuthCallbackContent() {
           // 토큰에서 사용자 정보 추출
           let userEmail = 'user@example.com';
           let userName = 'User';
-          
+
           try {
             const payload = JSON.parse(atob(data.token.split('.')[1]));
             userEmail = payload.email || payload.sub || 'user@example.com';
@@ -84,12 +89,14 @@ function OAuthCallbackContent() {
           } catch (decodeError) {
             console.warn('Failed to decode JWT token:', decodeError);
           }
-          
+
           // 로그인 성공 처리
-          dispatch(oauthSuccess({
-            email: userEmail,
-            provider: provider
-          }));
+          dispatch(
+            oauthSuccess({
+              email: userEmail,
+              provider: provider,
+            }),
+          );
 
           // 환영 메시지 표시
           const providerName = oauthUtils.getProviderDisplayName(provider);
@@ -98,17 +105,15 @@ function OAuthCallbackContent() {
 
           // 로그인 모달 닫기
           dispatch(closeLoginModal());
-          
+
           // 메인 페이지로 리다이렉트
           router.push('/');
         }
-
       } catch (error) {
         console.error('OAuth callback error:', error);
-        const errorMessage = error instanceof Error 
-          ? error.message 
-          : 'OAuth 처리 중 오류가 발생했습니다.';
-        
+        const errorMessage =
+          error instanceof Error ? error.message : 'OAuth 처리 중 오류가 발생했습니다.';
+
         dispatch(oauthFailure(errorMessage));
         router.push('/');
       } finally {
@@ -120,15 +125,15 @@ function OAuthCallbackContent() {
   }, [searchParams, dispatch, router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#191919]">
+    <div className="flex min-h-screen items-center justify-center bg-[#191919]">
       <div className="text-center">
         <div className="electric-border rounded-xl p-8">
-          <div className="bg-[#191919] opacity-90 rounded-xl p-6">
-            <h1 className="text-white text-2xl mb-4 neon-text">OAuth 로그인 처리 중...</h1>
+          <div className="rounded-xl bg-[#191919] p-6 opacity-90">
+            <h1 className="neon-text mb-4 text-2xl text-white">OAuth 로그인 처리 중...</h1>
             <div className="flex justify-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2ecc71]"></div>
+              <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-[#2ecc71]"></div>
             </div>
-            <p className="text-gray-300 mt-4">잠시만 기다려주세요...</p>
+            <p className="mt-4 text-gray-300">잠시만 기다려주세요...</p>
           </div>
         </div>
       </div>
@@ -142,22 +147,24 @@ function OAuthCallbackContent() {
  */
 export default function OAuthCallbackPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-[#191919]">
-        <div className="text-center">
-          <div className="electric-border rounded-xl p-8">
-            <div className="bg-[#191919] opacity-90 rounded-xl p-6">
-              <h1 className="text-white text-2xl mb-4 neon-text">OAuth 로그인 처리 중...</h1>
-              <div className="flex justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2ecc71]"></div>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-[#191919]">
+          <div className="text-center">
+            <div className="electric-border rounded-xl p-8">
+              <div className="rounded-xl bg-[#191919] p-6 opacity-90">
+                <h1 className="neon-text mb-4 text-2xl text-white">OAuth 로그인 처리 중...</h1>
+                <div className="flex justify-center">
+                  <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-[#2ecc71]"></div>
+                </div>
+                <p className="mt-4 text-gray-300">잠시만 기다려주세요...</p>
               </div>
-              <p className="text-gray-300 mt-4">잠시만 기다려주세요...</p>
             </div>
           </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <OAuthCallbackContent />
     </Suspense>
   );
-} 
+}

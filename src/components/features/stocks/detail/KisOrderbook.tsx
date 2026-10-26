@@ -42,7 +42,7 @@ export default function KisOrderbook({
         </div>
         <div className="animate-pulse space-y-1 px-2 py-2">
           {Array.from({ length: 20 }).map((_, i) => (
-            <div key={i} className="h-6 bg-zinc-800 rounded" />
+            <div key={i} className="h-6 rounded bg-zinc-800" />
           ))}
         </div>
       </section>
@@ -74,12 +74,12 @@ export default function KisOrderbook({
         <h3 className={t.detail.cardTitle}>호가창 (10호가)</h3>
         <div className="flex items-center gap-2">
           {!isMarketOpen && (
-            <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border border-zinc-600/30 bg-zinc-700/20 text-zinc-400">
+            <span className="rounded border border-zinc-600/30 bg-zinc-700/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-zinc-400">
               장 마감
             </span>
           )}
           {orderbook.time && (
-            <span className="text-[10px] text-zinc-500 font-mono tabular-nums">
+            <span className="font-mono text-[10px] tabular-nums text-zinc-500">
               {orderbook.time.slice(0, 2)}:{orderbook.time.slice(2, 4)}:{orderbook.time.slice(4, 6)}
             </span>
           )}
@@ -87,36 +87,36 @@ export default function KisOrderbook({
       </div>
 
       {/* 컬럼 헤더 */}
-      <div className="grid grid-cols-[1fr_auto_1fr] text-[9px] font-bold uppercase tracking-wider border-b border-zinc-800/60">
-        <div className="px-3 py-1.5 text-sky-400 text-right">잔량</div>
-        <div className="px-3 py-1.5 text-zinc-400 text-center min-w-[80px]">호가</div>
-        <div className="px-3 py-1.5 text-rose-400 text-left">잔량</div>
+      <div className="grid grid-cols-[1fr_auto_1fr] border-b border-zinc-800/60 text-[9px] font-bold uppercase tracking-wider">
+        <div className="px-3 py-1.5 text-right text-sky-400">잔량</div>
+        <div className="min-w-[80px] px-3 py-1.5 text-center text-zinc-400">호가</div>
+        <div className="px-3 py-1.5 text-left text-rose-400">잔량</div>
       </div>
 
       {/* 매도 호가 (위=높은가, 아래=낮은가) */}
       {askRows.map(({ price, volume }, idx) => {
         const barWidth = Math.round((volume / maxAskVol) * 100);
-        const isCurrentPriceLine =
-          currentPrice !== undefined && price === currentPrice;
+        const isCurrentPriceLine = currentPrice !== undefined && price === currentPrice;
         return (
           <div
             key={`ask-${idx}`}
             className={`grid grid-cols-[1fr_auto_1fr] items-center border-b border-zinc-800/30 bg-sky-500/5 ${isCurrentPriceLine ? 'border-l-2 border-l-amber-400' : ''}`}
           >
             {/* 매도 잔량 막대 — 오른쪽 정렬 */}
-            <div className="flex flex-row-reverse items-center px-1 py-1 gap-1">
-              <span className={`text-[11px] font-mono tabular-nums text-right text-sky-300/80 min-w-[48px]`}>
+            <div className="flex flex-row-reverse items-center gap-1 px-1 py-1">
+              <span
+                className={`min-w-[48px] text-right font-mono text-[11px] tabular-nums text-sky-300/80`}
+              >
                 {volume.toLocaleString('ko-KR')}
               </span>
-              <div className="flex-1 flex justify-end overflow-hidden">
-                <div
-                  className="h-3 bg-sky-500/30 rounded-sm"
-                  style={{ width: `${barWidth}%` }}
-                />
+              <div className="flex flex-1 justify-end overflow-hidden">
+                <div className="h-3 rounded-sm bg-sky-500/30" style={{ width: `${barWidth}%` }} />
               </div>
             </div>
             {/* 매도 호가 가격 */}
-            <div className={`px-3 py-1 text-center min-w-[80px] text-[12px] font-mono tabular-nums font-semibold ${getPriceColor(price, prevClose)}`}>
+            <div
+              className={`min-w-[80px] px-3 py-1 text-center font-mono text-[12px] font-semibold tabular-nums ${getPriceColor(price, prevClose)}`}
+            >
               {price.toLocaleString('ko-KR')}
             </div>
             {/* 매수 쪽 빈 공간 */}
@@ -128,8 +128,7 @@ export default function KisOrderbook({
       {/* 매수 호가 (위=높은가, 아래=낮은가) */}
       {bidRows.map(({ price, volume }, idx) => {
         const barWidth = Math.round((volume / maxBidVol) * 100);
-        const isCurrentPriceLine =
-          currentPrice !== undefined && price === currentPrice;
+        const isCurrentPriceLine = currentPrice !== undefined && price === currentPrice;
         return (
           <div
             key={`bid-${idx}`}
@@ -138,18 +137,19 @@ export default function KisOrderbook({
             {/* 매도 쪽 빈 공간 */}
             <div className="px-1 py-1" />
             {/* 매수 호가 가격 */}
-            <div className={`px-3 py-1 text-center min-w-[80px] text-[12px] font-mono tabular-nums font-semibold ${getPriceColor(price, prevClose)}`}>
+            <div
+              className={`min-w-[80px] px-3 py-1 text-center font-mono text-[12px] font-semibold tabular-nums ${getPriceColor(price, prevClose)}`}
+            >
               {price.toLocaleString('ko-KR')}
             </div>
             {/* 매수 잔량 막대 — 왼쪽 정렬 */}
-            <div className="flex items-center px-1 py-1 gap-1">
+            <div className="flex items-center gap-1 px-1 py-1">
               <div className="flex-1 overflow-hidden">
-                <div
-                  className="h-3 bg-rose-500/30 rounded-sm"
-                  style={{ width: `${barWidth}%` }}
-                />
+                <div className="h-3 rounded-sm bg-rose-500/30" style={{ width: `${barWidth}%` }} />
               </div>
-              <span className={`text-[11px] font-mono tabular-nums text-left text-rose-300/80 min-w-[48px]`}>
+              <span
+                className={`min-w-[48px] text-left font-mono text-[11px] tabular-nums text-rose-300/80`}
+              >
                 {volume.toLocaleString('ko-KR')}
               </span>
             </div>
@@ -160,17 +160,17 @@ export default function KisOrderbook({
       {/* 총 잔량 푸터 */}
       <div className="grid grid-cols-[1fr_auto_1fr] border-t border-zinc-700/50 bg-zinc-900/60">
         <div className="px-3 py-2 text-right">
-          <p className="text-[9px] uppercase tracking-wide text-zinc-500 mb-0.5">총매도잔량</p>
-          <p className="text-[11px] font-mono font-semibold tabular-nums text-sky-400">
+          <p className="mb-0.5 text-[9px] uppercase tracking-wide text-zinc-500">총매도잔량</p>
+          <p className="font-mono text-[11px] font-semibold tabular-nums text-sky-400">
             {orderbook.totalAskVolume.toLocaleString('ko-KR')}
           </p>
         </div>
-        <div className="px-3 py-2 flex items-center">
-          <div className="w-px h-full bg-zinc-700/50" />
+        <div className="flex items-center px-3 py-2">
+          <div className="h-full w-px bg-zinc-700/50" />
         </div>
         <div className="px-3 py-2 text-left">
-          <p className="text-[9px] uppercase tracking-wide text-zinc-500 mb-0.5">총매수잔량</p>
-          <p className="text-[11px] font-mono font-semibold tabular-nums text-rose-400">
+          <p className="mb-0.5 text-[9px] uppercase tracking-wide text-zinc-500">총매수잔량</p>
+          <p className="font-mono text-[11px] font-semibold tabular-nums text-rose-400">
             {orderbook.totalBidVolume.toLocaleString('ko-KR')}
           </p>
         </div>

@@ -12,11 +12,11 @@ export default function BackgroundVideo() {
       loop
       muted
       playsInline
-      className="absolute top-0 left-0 w-full h-full object-cover z-0"
+      className="absolute left-0 top-0 z-0 h-full w-full object-cover"
       style={{ backgroundColor: '#1a1a1a' }}
     >
       <source src="/Home_background.webm" type="video/webm" />
       <source src="/Home_background.mp4" type="video/mp4" />
     </video>
   );
-} 
+}

@@ -10,7 +10,9 @@ import { useGameLoop } from '@/hooks/useGameLoop';
 import ParticleEffect from '@/components/features/games/effects/ParticleEffect';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
-import GameOverlayController, { Direction } from '@/components/features/games/GameOverlayController';
+import GameOverlayController, {
+  Direction,
+} from '@/components/features/games/GameOverlayController';
 
 const CANVAS_W = 480;
 const CANVAS_H = 360;
@@ -47,7 +49,12 @@ function createBricks(): Brick[] {
   return bricks;
 }
 
-export default function BreakoutGame({ onGameEnd, onScoreChange, onAction, onCombo }: GameComponentProps) {
+export default function BreakoutGame({
+  onGameEnd,
+  onScoreChange,
+  onAction,
+  onCombo,
+}: GameComponentProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const paddleXRef = useRef((CANVAS_W - PADDLE_W) / 2);
   const ballRef = useRef({ x: CANVAS_W / 2, y: PADDLE_Y - BALL_R - 2, vx: 3, vy: -4 });
@@ -64,7 +71,9 @@ export default function BreakoutGame({ onGameEnd, onScoreChange, onAction, onCom
   const { shakeStyle, triggerShake } = useScreenShake();
   const [flashActive, setFlashActive] = useState(false);
   const [confettiActive, setConfettiActive] = useState(false);
-  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; color: string }>>([]);
+  const [particles, setParticles] = useState<
+    Array<{ id: number; x: number; y: number; color: string }>
+  >([]);
   const particleIdRef = useRef(0);
   const triggerShakeRef = useRef(triggerShake);
   triggerShakeRef.current = triggerShake;
@@ -110,17 +119,28 @@ export default function BreakoutGame({ onGameEnd, onScoreChange, onAction, onCom
     ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
 
     if (gameStatusRef.current === 'playing') {
-      if (keysRef.current.has('ArrowLeft')) paddleXRef.current = Math.max(0, paddleXRef.current - 5);
-      if (keysRef.current.has('ArrowRight')) paddleXRef.current = Math.min(CANVAS_W - PADDLE_W, paddleXRef.current + 5);
+      if (keysRef.current.has('ArrowLeft'))
+        paddleXRef.current = Math.max(0, paddleXRef.current - 5);
+      if (keysRef.current.has('ArrowRight'))
+        paddleXRef.current = Math.min(CANVAS_W - PADDLE_W, paddleXRef.current + 5);
 
       const ball = ballRef.current;
 
       ball.x += ball.vx;
       ball.y += ball.vy;
 
-      if (ball.x - BALL_R < 0) { ball.x = BALL_R; ball.vx = Math.abs(ball.vx); }
-      if (ball.x + BALL_R > CANVAS_W) { ball.x = CANVAS_W - BALL_R; ball.vx = -Math.abs(ball.vx); }
-      if (ball.y - BALL_R < 0) { ball.y = BALL_R; ball.vy = Math.abs(ball.vy); }
+      if (ball.x - BALL_R < 0) {
+        ball.x = BALL_R;
+        ball.vx = Math.abs(ball.vx);
+      }
+      if (ball.x + BALL_R > CANVAS_W) {
+        ball.x = CANVAS_W - BALL_R;
+        ball.vx = -Math.abs(ball.vx);
+      }
+      if (ball.y - BALL_R < 0) {
+        ball.y = BALL_R;
+        ball.vy = Math.abs(ball.vy);
+      }
 
       if (
         ball.y + BALL_R >= PADDLE_Y &&
@@ -181,7 +201,7 @@ export default function BreakoutGame({ onGameEnd, onScoreChange, onAction, onCom
           const brickCY = by + BRICK_H / 2;
           const brickColor = BRICK_COLORS[brick.row];
           const pid = ++particleIdRef.current;
-          setParticles(prev => [...prev, { id: pid, x: brickCX, y: brickCY, color: brickColor }]);
+          setParticles((prev) => [...prev, { id: pid, x: brickCX, y: brickCY, color: brickColor }]);
 
           const overlapLeft = ball.x + BALL_R - bx;
           const overlapRight = bx + BRICK_W - (ball.x - BALL_R);
@@ -235,7 +255,6 @@ export default function BreakoutGame({ onGameEnd, onScoreChange, onAction, onCom
     ctx.textAlign = 'right';
     ctx.fillText(hearts, CANVAS_W - 8, 20);
     ctx.textAlign = 'start';
-
   }, [resetBall, onGameEnd, onScoreChange, playHit, combo]);
 
   useGameLoop(draw, gameStatus === 'playing');
@@ -276,7 +295,10 @@ export default function BreakoutGame({ onGameEnd, onScoreChange, onAction, onCom
       const mouseX = e.clientX - rect.left;
       // CSS 스케일링을 고려한 좌표 변환
       const scaleX = CANVAS_W / rect.width;
-      paddleXRef.current = Math.max(0, Math.min(CANVAS_W - PADDLE_W, mouseX * scaleX - PADDLE_W / 2));
+      paddleXRef.current = Math.max(
+        0,
+        Math.min(CANVAS_W - PADDLE_W, mouseX * scaleX - PADDLE_W / 2),
+      );
     };
     const handleTouchMove = (e: TouchEvent) => {
       if (gameStatusRef.current !== 'playing') return;
@@ -286,7 +308,10 @@ export default function BreakoutGame({ onGameEnd, onScoreChange, onAction, onCom
       const rect = canvas.getBoundingClientRect();
       const touchX = e.touches[0].clientX - rect.left;
       const scaleX = CANVAS_W / rect.width;
-      paddleXRef.current = Math.max(0, Math.min(CANVAS_W - PADDLE_W, touchX * scaleX - PADDLE_W / 2));
+      paddleXRef.current = Math.max(
+        0,
+        Math.min(CANVAS_W - PADDLE_W, touchX * scaleX - PADDLE_W / 2),
+      );
     };
     const handleKeyDown = (e: KeyboardEvent) => {
       keysRef.current.add(e.key);
@@ -307,9 +332,7 @@ export default function BreakoutGame({ onGameEnd, onScoreChange, onAction, onCom
     };
   }, []);
 
-  const canvasStyle = size.ready
-    ? { width: size.width, height: size.height }
-    : {};
+  const canvasStyle = size.ready ? { width: size.width, height: size.height } : {};
 
   return (
     <div className="flex flex-col items-center gap-4 p-4">
@@ -329,33 +352,35 @@ export default function BreakoutGame({ onGameEnd, onScoreChange, onAction, onCom
           duration={300}
           onDone={() => setFlashActive(false)}
         />
-        {particles.map(p => (
+        {particles.map((p) => (
           <ParticleEffect
             key={p.id}
             x={p.x}
             y={p.y}
             color={p.color}
             count={6}
-            onDone={() => setParticles(prev => prev.filter(pt => pt.id !== p.id))}
+            onDone={() => setParticles((prev) => prev.filter((pt) => pt.id !== p.id))}
           />
         ))}
         {gameStatus === 'idle' && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/70 rounded-xl">
+          <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-black/70">
             <button
               onClick={startGame}
-              className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg px-6 py-2 font-bold text-lg"
+              className="rounded-lg bg-indigo-600 px-6 py-2 text-lg font-bold text-white hover:bg-indigo-500"
             >
               게임 시작
             </button>
           </div>
         )}
         {gameStatus === 'gameover' && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 rounded-xl gap-3">
-            <p className="text-red-400 text-2xl font-bold">게임 오버</p>
-            <p className="text-white">점수: {displayScore} | 레벨: {displayLevel}</p>
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-xl bg-black/80">
+            <p className="text-2xl font-bold text-red-400">게임 오버</p>
+            <p className="text-white">
+              점수: {displayScore} | 레벨: {displayLevel}
+            </p>
             <button
               onClick={startGame}
-              className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg px-6 py-2"
+              className="rounded-lg bg-indigo-600 px-6 py-2 text-white hover:bg-indigo-500"
             >
               다시 시작
             </button>
@@ -370,7 +395,7 @@ export default function BreakoutGame({ onGameEnd, onScoreChange, onAction, onCom
         disabled={gameStatus !== 'playing'}
       />
 
-      <p className="text-zinc-500 text-sm">마우스 / 터치 / 방향키 / D-패드: 패들 조작</p>
+      <p className="text-sm text-zinc-500">마우스 / 터치 / 방향키 / D-패드: 패들 조작</p>
     </div>
   );
 }

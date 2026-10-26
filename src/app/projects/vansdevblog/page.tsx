@@ -8,7 +8,7 @@ import {
   TechStack,
   Architecture,
   Services,
-  Impact
+  Impact,
 } from '@/components/features/projects';
 
 export default function VansDevBlogPage() {
@@ -17,22 +17,22 @@ export default function VansDevBlogPage() {
 
   return (
     <div className="min-h-screen bg-black py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <ProjectHeader 
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <ProjectHeader
           title="VansDevBlog"
           description="마이크로서비스 기반 풀스택 블로그 프로젝트"
         />
 
         {/* VansDevBlog Project */}
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
+        <div className="mb-8 rounded-lg bg-white p-8 shadow-lg">
           <ProjectCard project={vansDevBlogProject} />
-          <TechStack 
-            technologies={vansDevBlogProject.totalTech} 
+          <TechStack
+            technologies={vansDevBlogProject.totalTech}
             selectedTech={selectedTech}
             onTechSelect={setSelectedTech}
           />
           <Architecture architecture={vansDevBlogProject.architecture} />
-          <Services 
+          <Services
             services={vansDevBlogProject.services}
             selectedService={selectedService}
             onServiceSelect={setSelectedService}
@@ -43,4 +43,4 @@ export default function VansDevBlogPage() {
       </div>
     </div>
   );
-} 
+}

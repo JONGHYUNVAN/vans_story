@@ -22,7 +22,7 @@ export const authService = {
       name: signupData.nickname, // API 스펙에 맞게 name으로 매핑
       email: signupData.email,
       password: signupData.password,
-      nickname: signupData.nickname
+      nickname: signupData.nickname,
     });
 
     if (!res.ok) {
@@ -30,9 +30,9 @@ export const authService = {
     }
 
     // 성공 시 간단한 결과 반환
-    return { 
+    return {
       success: true,
-      email: signupData.email 
+      email: signupData.email,
     };
   },
 
@@ -58,9 +58,9 @@ export const authService = {
     const accessToken = authHeader ? authHeader.split(' ')[1] : '';
     tokenStorage.setToken(accessToken);
 
-    return { 
+    return {
       accessToken,
-      email: credentials.email 
+      email: credentials.email,
     };
   },
 
@@ -70,9 +70,13 @@ export const authService = {
    * @throws {Error} 로그아웃 실패 시 에러 발생
    */
   async logout() {
-    const res = await ApiFetch.postWithAuth('/api/auth/logout', {}, {
-      credentials: 'include',
-    });
+    const res = await ApiFetch.postWithAuth(
+      '/api/auth/logout',
+      {},
+      {
+        credentials: 'include',
+      },
+    );
 
     if (!res.ok) throw new Error('Logout failed');
     tokenStorage.removeToken();
@@ -84,9 +88,13 @@ export const authService = {
    * @throws {Error} 토큰 갱신 실패 시 에러 발생
    */
   async refresh() {
-    const res = await ApiFetch.basicPost('/api/auth/refresh', {}, {
-      credentials: 'include',
-    });
+    const res = await ApiFetch.basicPost(
+      '/api/auth/refresh',
+      {},
+      {
+        credentials: 'include',
+      },
+    );
 
     if (!res.ok) throw new Error('Token refresh failed');
 
@@ -102,7 +110,7 @@ export const authService = {
   kakaoLogin() {
     const frontendUrl = window.location.origin;
     const oauthUrl = oauthUtils.buildOAuthUrl('kakao', frontendUrl);
-    
+
     // OAuth 중간 서버로 리다이렉트
     window.location.href = oauthUrl;
   },
@@ -114,7 +122,7 @@ export const authService = {
   googleLogin() {
     const frontendUrl = window.location.origin;
     const oauthUrl = oauthUtils.buildOAuthUrl('google', frontendUrl);
-    
+
     // OAuth 중간 서버로 리다이렉트
     window.location.href = oauthUrl;
   },
@@ -129,18 +137,22 @@ export const authService = {
   async exchangeCodeForToken(code: string) {
     try {
       // 프론트엔드 콜백 API 호출 (내부적으로 백엔드로 요청 전달)
-      const response = await ApiFetch.basicPost(API_URLS.AUTH.CALLBACK, {
-        code: code
-      }, {
-        credentials: 'include', // 쿠키 포함 (Refresh Token)
-      });
+      const response = await ApiFetch.basicPost(
+        API_URLS.AUTH.CALLBACK,
+        {
+          code: code,
+        },
+        {
+          credentials: 'include', // 쿠키 포함 (Refresh Token)
+        },
+      );
 
       if (!response.ok) {
         throw new Error(`Token exchange failed: ${response.status}`);
       }
 
       const data = await response.json();
-      
+
       if (!data.success || !data.token) {
         throw new Error(data.error || 'No JWT token received');
       }
@@ -158,8 +170,8 @@ export const authService = {
           email: payload.email || payload.sub,
           user: {
             email: payload.email || payload.sub,
-            name: payload.name || payload.email?.split('@')[0]
-          }
+            name: payload.name || payload.email?.split('@')[0],
+          },
         };
       } catch (decodeError) {
         // 토큰 디코딩 실패 시 기본 정보만 반환
@@ -168,8 +180,8 @@ export const authService = {
           email: 'user@example.com',
           user: {
             email: 'user@example.com',
-            name: 'User'
-          }
+            name: 'User',
+          },
         };
       }
     } catch (error) {
@@ -177,12 +189,6 @@ export const authService = {
       throw error instanceof Error ? error : new Error('Token exchange failed');
     }
   },
-
-
-
-
-
-
 
   /**
    * OAuth 계정 연결 해제
@@ -193,12 +199,12 @@ export const authService = {
    */
   async unlinkOAuthAccount(provider: OAuthProvider) {
     const token = tokenStorage.getToken();
-    
+
     const res = await fetch(API_URLS.OAUTH.BACKEND_UNLINK, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-        ...(token && { 'Authorization': `Bearer ${token}` }),
+        ...(token && { Authorization: `Bearer ${token}` }),
       },
       body: JSON.stringify({ provider }),
     });

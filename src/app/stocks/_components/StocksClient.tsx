@@ -1,7 +1,10 @@
 'use client';
 
 import { useStocksData } from '@/hooks/useStocksData';
-import { StocksThemeProvider, useStocksTheme } from '@/components/features/stocks/StocksThemeContext';
+import {
+  StocksThemeProvider,
+  useStocksTheme,
+} from '@/components/features/stocks/StocksThemeContext';
 import StocksThemeToggle from '@/components/features/stocks/StocksThemeToggle';
 import MarketStatusBadge from '@/components/features/stocks/MarketStatusBadge';
 import RefreshButton from '@/components/features/stocks/RefreshButton';
@@ -23,7 +26,19 @@ export default function StocksClient() {
 }
 
 function StocksDashboard() {
-  const { prices, macro, isLoading, isRefreshing, isError, errorMessage, refetch, refetchPrices, marketOpen, krMarketState, usMarketState } = useStocksData();
+  const {
+    prices,
+    macro,
+    isLoading,
+    isRefreshing,
+    isError,
+    errorMessage,
+    refetch,
+    refetchPrices,
+    marketOpen,
+    krMarketState,
+    usMarketState,
+  } = useStocksData();
   const { tokens: t } = useStocksTheme();
 
   const krStocks = KR_STOCKS.map((s) => prices?.stocks.find((p) => p.symbol === s.symbol));
@@ -31,7 +46,7 @@ function StocksDashboard() {
 
   return (
     <div className={t.layout.page}>
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
         <header className={t.layout.toolbar}>
           <div className="min-w-0 space-y-0.5">
             <div className="flex flex-wrap items-center gap-2 sm:gap-3">
@@ -76,13 +91,13 @@ function StocksDashboard() {
           <div className="grid grid-cols-1 gap-8 xl:grid-cols-2">
             <section className={t.layout.krMarketShell}>
               <div className={t.layout.sectionHeadRow}>
-                <div className="flex items-center gap-3 min-w-0">
+                <div className="flex min-w-0 items-center gap-3">
                   <span className={t.layout.sectionAccentKr} aria-hidden />
                   <h2 className={t.layout.sectionTitle}>한국 시장</h2>
                 </div>
                 <span className={t.layout.sectionMeta}>KRX</span>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {isLoading
                   ? KR_STOCKS.map((meta) => <StockCard key={meta.symbol} isLoading />)
                   : krStocks.map((stock, i) => (
@@ -98,13 +113,13 @@ function StocksDashboard() {
 
             <section className={t.layout.usMarketShell}>
               <div className={t.layout.sectionHeadRow}>
-                <div className="flex items-center gap-3 min-w-0">
+                <div className="flex min-w-0 items-center gap-3">
                   <span className={t.layout.sectionAccentUs} aria-hidden />
                   <h2 className={t.layout.sectionTitle}>미국 시장</h2>
                 </div>
                 <span className={t.layout.sectionMeta}>NYSE · NASDAQ</span>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {isLoading
                   ? US_STOCKS.map((meta) => <StockCard key={meta.symbol} isLoading />)
                   : usStocks.map((stock, i) => (

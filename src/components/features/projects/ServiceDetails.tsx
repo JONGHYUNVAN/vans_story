@@ -6,24 +6,28 @@ interface ServiceDetailsProps {
   selectedTech?: string | null;
 }
 
-export default function ServiceDetails({ services, selectedService, selectedTech }: ServiceDetailsProps) {
+export default function ServiceDetails({
+  services,
+  selectedService,
+  selectedTech,
+}: ServiceDetailsProps) {
   if (!selectedService) return null;
 
-  const service = services.find(s => s.name === selectedService);
+  const service = services.find((s) => s.name === selectedService);
   if (!service) return null;
 
   return (
-    <div className="bg-gray-50 rounded-lg p-6 mb-8">
-      <h4 className="text-lg font-semibold mb-3">{service.name}</h4>
-      <p className="text-gray-600 mb-4 whitespace-pre-line">{service.description}</p>
-      
+    <div className="mb-8 rounded-lg bg-gray-50 p-6">
+      <h4 className="mb-3 text-lg font-semibold">{service.name}</h4>
+      <p className="mb-4 whitespace-pre-line text-gray-600">{service.description}</p>
+
       <div className="mb-4">
-        <h5 className="font-medium mb-2">기술 스택</h5>
+        <h5 className="mb-2 font-medium">기술 스택</h5>
         <div className="flex flex-wrap gap-2">
           {service.tech.map((tech) => (
             <span
               key={tech}
-              className={`px-2 py-1 rounded text-sm ${
+              className={`rounded px-2 py-1 text-sm ${
                 selectedTech === tech
                   ? 'bg-blue-600 text-white shadow-lg'
                   : 'bg-blue-100 text-blue-800'
@@ -36,16 +40,16 @@ export default function ServiceDetails({ services, selectedService, selectedTech
       </div>
 
       <div>
-        <h5 className="font-medium mb-2">주요 기능</h5>
+        <h5 className="mb-2 font-medium">주요 기능</h5>
         <ul className="space-y-1">
           {service.features.map((feature, featureIndex) => (
             <li key={featureIndex} className="flex items-start gap-2">
-              <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-              <span className="text-gray-700 text-sm">{feature}</span>
+              <div className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-blue-500"></div>
+              <span className="text-sm text-gray-700">{feature}</span>
             </li>
           ))}
         </ul>
       </div>
     </div>
   );
-} 
+}

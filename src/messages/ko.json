@@ -355,7 +355,7 @@
         }
       }
     }
-  },  
+  },
   "MariaDB": {
     "categories": {
       "gettingStarted": {
@@ -769,4 +769,4 @@
       }
     }
   }
-} 
+}

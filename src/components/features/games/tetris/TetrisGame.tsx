@@ -8,19 +8,58 @@ import { useGameSize } from '@/hooks/useGameSize';
 import { useGameLoop } from '@/hooks/useGameLoop';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
-import GameOverlayController, { Direction, ActionBtn } from '@/components/features/games/GameOverlayController';
+import GameOverlayController, {
+  Direction,
+  ActionBtn,
+} from '@/components/features/games/GameOverlayController';
 
 const BOARD_COLS = 10;
 const BOARD_ROWS = 20;
 
 const TETROMINOES: Record<string, { shape: number[][]; color: string }> = {
   I: { shape: [[1, 1, 1, 1]], color: '#22d3ee' },
-  O: { shape: [[1, 1], [1, 1]], color: '#facc15' },
-  T: { shape: [[0, 1, 0], [1, 1, 1]], color: '#c084fc' },
-  S: { shape: [[0, 1, 1], [1, 1, 0]], color: '#4ade80' },
-  Z: { shape: [[1, 1, 0], [0, 1, 1]], color: '#f87171' },
-  J: { shape: [[1, 0, 0], [1, 1, 1]], color: '#60a5fa' },
-  L: { shape: [[0, 0, 1], [1, 1, 1]], color: '#fb923c' },
+  O: {
+    shape: [
+      [1, 1],
+      [1, 1],
+    ],
+    color: '#facc15',
+  },
+  T: {
+    shape: [
+      [0, 1, 0],
+      [1, 1, 1],
+    ],
+    color: '#c084fc',
+  },
+  S: {
+    shape: [
+      [0, 1, 1],
+      [1, 1, 0],
+    ],
+    color: '#4ade80',
+  },
+  Z: {
+    shape: [
+      [1, 1, 0],
+      [0, 1, 1],
+    ],
+    color: '#f87171',
+  },
+  J: {
+    shape: [
+      [1, 0, 0],
+      [1, 1, 1],
+    ],
+    color: '#60a5fa',
+  },
+  L: {
+    shape: [
+      [0, 0, 1],
+      [1, 1, 1],
+    ],
+    color: '#fb923c',
+  },
 };
 
 const TETROMINO_KEYS = Object.keys(TETROMINOES);
@@ -44,7 +83,7 @@ function randomPiece(): Piece {
   const key = TETROMINO_KEYS[Math.floor(Math.random() * TETROMINO_KEYS.length)];
   const t = TETROMINOES[key];
   return {
-    shape: t.shape.map(r => [...r]),
+    shape: t.shape.map((r) => [...r]),
     color: t.color,
     x: Math.floor(BOARD_COLS / 2) - Math.floor(t.shape[0].length / 2),
     y: 0,
@@ -54,7 +93,7 @@ function randomPiece(): Piece {
 function spawnAt(piece: Piece): Piece {
   return {
     ...piece,
-    shape: piece.shape.map(r => [...r]),
+    shape: piece.shape.map((r) => [...r]),
     x: Math.floor(BOARD_COLS / 2) - Math.floor(piece.shape[0].length / 2),
     y: 0,
   };
@@ -86,7 +125,7 @@ function isValid(board: BoardRow[], piece: Piece): boolean {
 }
 
 function lockPiece(board: BoardRow[], piece: Piece): BoardRow[] {
-  const next = board.map(row => [...row]) as BoardRow[];
+  const next = board.map((row) => [...row]) as BoardRow[];
   for (let r = 0; r < piece.shape.length; r++) {
     for (let c = 0; c < piece.shape[r].length; c++) {
       if (!piece.shape[r][c]) continue;
@@ -99,9 +138,12 @@ function lockPiece(board: BoardRow[], piece: Piece): BoardRow[] {
 }
 
 function clearLines(board: BoardRow[]): { board: BoardRow[]; linesCleared: number } {
-  const newBoard = board.filter(row => row.some(cell => cell === 0));
+  const newBoard = board.filter((row) => row.some((cell) => cell === 0));
   const linesCleared = BOARD_ROWS - newBoard.length;
-  const emptyRows = Array.from({ length: linesCleared }, () => Array(BOARD_COLS).fill(0) as BoardRow);
+  const emptyRows = Array.from(
+    { length: linesCleared },
+    () => Array(BOARD_COLS).fill(0) as BoardRow,
+  );
   return { board: [...emptyRows, ...newBoard], linesCleared };
 }
 
@@ -114,7 +156,13 @@ function getGhostY(board: BoardRow[], piece: Piece): number {
 const LINE_SCORES = [0, 100, 300, 500, 800];
 const LOCK_DELAY = 500;
 
-export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove, onCombo }: GameComponentProps) {
+export default function TetrisGame({
+  onGameEnd,
+  onScoreChange,
+  onAction,
+  onMove,
+  onCombo,
+}: GameComponentProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const nextCanvasRef = useRef<HTMLCanvasElement>(null);
   const holdCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -228,25 +276,28 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
     }
   }, [cellSize]);
 
-  const drawPreview = useCallback((canvas: HTMLCanvasElement | null, piece: Piece | null, dimmed = false) => {
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    ctx.fillStyle = '#111827';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    if (!piece) return;
-    const offsetX = Math.floor((4 - piece.shape[0].length) / 2);
-    const offsetY = Math.floor((4 - piece.shape.length) / 2);
-    ctx.globalAlpha = dimmed ? 0.35 : 1;
-    for (let r = 0; r < piece.shape.length; r++) {
-      for (let c = 0; c < piece.shape[r].length; c++) {
-        if (!piece.shape[r][c]) continue;
-        ctx.fillStyle = piece.color;
-        ctx.fillRect((offsetX + c) * 24 + 1, (offsetY + r) * 24 + 1, 22, 22);
+  const drawPreview = useCallback(
+    (canvas: HTMLCanvasElement | null, piece: Piece | null, dimmed = false) => {
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      ctx.fillStyle = '#111827';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      if (!piece) return;
+      const offsetX = Math.floor((4 - piece.shape[0].length) / 2);
+      const offsetY = Math.floor((4 - piece.shape.length) / 2);
+      ctx.globalAlpha = dimmed ? 0.35 : 1;
+      for (let r = 0; r < piece.shape.length; r++) {
+        for (let c = 0; c < piece.shape[r].length; c++) {
+          if (!piece.shape[r][c]) continue;
+          ctx.fillStyle = piece.color;
+          ctx.fillRect((offsetX + c) * 24 + 1, (offsetY + r) * 24 + 1, 22, 22);
+        }
       }
-    }
-    ctx.globalAlpha = 1;
-  }, []);
+      ctx.globalAlpha = 1;
+    },
+    [],
+  );
 
   const drawNext = useCallback(() => {
     drawPreview(nextCanvasRef.current, nextPieceRef.current);
@@ -327,34 +378,37 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
     drawHold();
   }, [drawBoard, drawNext, drawHold, onGameEnd, onScoreChange, combo, updateLockBar]);
 
-  const gameLoop = useCallback((timestamp: number) => {
-    if (gameStatusRef.current !== 'playing') return;
+  const gameLoop = useCallback(
+    (timestamp: number) => {
+      if (gameStatusRef.current !== 'playing') return;
 
-    const piece = currentPieceRef.current;
-    const canFall = isValid(boardRef.current, { ...piece, y: piece.y + 1 });
+      const piece = currentPieceRef.current;
+      const canFall = isValid(boardRef.current, { ...piece, y: piece.y + 1 });
 
-    if (!canFall) {
-      // Lock delay phase
-      if (lockStartRef.current === null) lockStartRef.current = timestamp;
-      const elapsed = timestamp - lockStartRef.current;
-      updateLockBar(elapsed / LOCK_DELAY);
-      if (elapsed >= LOCK_DELAY) {
-        lockAndSpawn();
+      if (!canFall) {
+        // Lock delay phase
+        if (lockStartRef.current === null) lockStartRef.current = timestamp;
+        const elapsed = timestamp - lockStartRef.current;
+        updateLockBar(elapsed / LOCK_DELAY);
+        if (elapsed >= LOCK_DELAY) {
+          lockAndSpawn();
+        }
+      } else {
+        // Falling phase — cancel any lock progress
+        if (lockStartRef.current !== null) {
+          lockStartRef.current = null;
+          updateLockBar(0);
+        }
+        if (timestamp - lastDropRef.current > getDropInterval()) {
+          lastDropRef.current = timestamp;
+          currentPieceRef.current = { ...piece, y: piece.y + 1 };
+        }
       }
-    } else {
-      // Falling phase — cancel any lock progress
-      if (lockStartRef.current !== null) {
-        lockStartRef.current = null;
-        updateLockBar(0);
-      }
-      if (timestamp - lastDropRef.current > getDropInterval()) {
-        lastDropRef.current = timestamp;
-        currentPieceRef.current = { ...piece, y: piece.y + 1 };
-      }
-    }
 
-    drawBoard();
-  }, [getDropInterval, drawBoard, lockAndSpawn, updateLockBar]);
+      drawBoard();
+    },
+    [getDropInterval, drawBoard, lockAndSpawn, updateLockBar],
+  );
 
   useGameLoop(gameLoop, gameStatus === 'playing');
 
@@ -431,7 +485,7 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
     const current = currentPieceRef.current;
     const storedShape: Piece = {
       ...current,
-      shape: current.shape.map(r => [...r]),
+      shape: current.shape.map((r) => [...r]),
     };
     if (holdPieceRef.current === null) {
       holdPieceRef.current = storedShape;
@@ -460,15 +514,18 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
       else if (dir === 'LEFT') movePieceLeft();
       else if (dir === 'RIGHT') movePieceRight();
     },
-    [rotatePiece, softDrop, movePieceLeft, movePieceRight]
+    [rotatePiece, softDrop, movePieceLeft, movePieceRight],
   );
 
   // 액션 버튼 핸들러: A=회전, B=하드드롭, Y=홀드
-  const handleActionBtn = useCallback((btn: ActionBtn) => {
-    if (btn === 'A') rotatePiece();
-    else if (btn === 'B') hardDrop();
-    else if (btn === 'Y') holdPiece();
-  }, [rotatePiece, hardDrop, holdPiece]);
+  const handleActionBtn = useCallback(
+    (btn: ActionBtn) => {
+      if (btn === 'A') rotatePiece();
+      else if (btn === 'B') hardDrop();
+      else if (btn === 'Y') holdPiece();
+    },
+    [rotatePiece, hardDrop, holdPiece],
+  );
 
   const startGame = useCallback(() => {
     boardRef.current = createBoard();
@@ -546,7 +603,7 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
   return (
     <div className="flex flex-col items-center gap-4 p-4">
       <ConfettiEffect active={confettiActive} duration={2000} />
-      <div className="flex gap-6 items-start">
+      <div className="flex items-start gap-6">
         {/* Board Canvas */}
         <div className="relative" style={shakeStyle}>
           <canvas
@@ -558,13 +615,13 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
               height: size.ready ? size.height : canvasHeight,
               display: 'block',
             }}
-            className="bg-gray-900 border border-gray-700 rounded-xl"
+            className="rounded-xl border border-gray-700 bg-gray-900"
           />
           {/* Lock delay progress bar */}
-          <div className="absolute left-0 right-0 bottom-0 h-1.5 pointer-events-none overflow-hidden rounded-b-xl">
+          <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-1.5 overflow-hidden rounded-b-xl">
             <div
               ref={lockBarRef}
-              className="h-full bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 origin-left transition-opacity duration-100"
+              className="h-full origin-left bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 transition-opacity duration-100"
               style={{ opacity: 0, transform: 'scaleX(0)' }}
             />
           </div>
@@ -575,27 +632,27 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
             onDone={() => setFlashActive(false)}
           />
           {gameStatus === 'idle' && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/70 rounded-xl">
+            <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-black/70">
               <button
                 onClick={startGame}
-                className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg px-6 py-2 font-bold text-lg"
+                className="rounded-lg bg-indigo-600 px-6 py-2 text-lg font-bold text-white hover:bg-indigo-500"
               >
                 게임 시작
               </button>
             </div>
           )}
           {gameStatus === 'paused' && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/70 rounded-xl">
-              <p className="text-white text-2xl font-bold">일시정지</p>
+            <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-black/70">
+              <p className="text-2xl font-bold text-white">일시정지</p>
             </div>
           )}
           {gameStatus === 'gameover' && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 rounded-xl gap-3">
-              <p className="text-red-400 text-2xl font-bold">게임 오버</p>
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-xl bg-black/80">
+              <p className="text-2xl font-bold text-red-400">게임 오버</p>
               <p className="text-white">점수: {displayScore}</p>
               <button
                 onClick={startGame}
-                className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg px-6 py-2"
+                className="rounded-lg bg-indigo-600 px-6 py-2 text-white hover:bg-indigo-500"
               >
                 다시 시작
               </button>
@@ -604,37 +661,27 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
         </div>
 
         {/* Side panel */}
-        <div className="flex flex-col gap-4 min-w-[120px]">
-          <div className="bg-gray-900 border border-gray-700 rounded-xl p-3">
-            <p className="text-zinc-400 text-xs mb-1">HOLD</p>
-            <canvas
-              ref={holdCanvasRef}
-              width={96}
-              height={96}
-              className="bg-gray-900 rounded"
-            />
+        <div className="flex min-w-[120px] flex-col gap-4">
+          <div className="rounded-xl border border-gray-700 bg-gray-900 p-3">
+            <p className="mb-1 text-xs text-zinc-400">HOLD</p>
+            <canvas ref={holdCanvasRef} width={96} height={96} className="rounded bg-gray-900" />
           </div>
-          <div className="bg-gray-900 border border-gray-700 rounded-xl p-3">
-            <p className="text-zinc-400 text-xs mb-1">NEXT</p>
-            <canvas
-              ref={nextCanvasRef}
-              width={96}
-              height={96}
-              className="bg-gray-900 rounded"
-            />
+          <div className="rounded-xl border border-gray-700 bg-gray-900 p-3">
+            <p className="mb-1 text-xs text-zinc-400">NEXT</p>
+            <canvas ref={nextCanvasRef} width={96} height={96} className="rounded bg-gray-900" />
           </div>
-          <div className="bg-gray-900 border border-gray-700 rounded-xl p-3 space-y-2">
+          <div className="space-y-2 rounded-xl border border-gray-700 bg-gray-900 p-3">
             <div>
-              <p className="text-zinc-400 text-xs">점수</p>
-              <p className="text-white font-mono font-bold text-lg">{displayScore}</p>
+              <p className="text-xs text-zinc-400">점수</p>
+              <p className="font-mono text-lg font-bold text-white">{displayScore}</p>
             </div>
             <div>
-              <p className="text-zinc-400 text-xs">레벨</p>
-              <p className="text-white font-mono font-bold text-lg">{displayLevel}</p>
+              <p className="text-xs text-zinc-400">레벨</p>
+              <p className="font-mono text-lg font-bold text-white">{displayLevel}</p>
             </div>
             <div>
-              <p className="text-zinc-400 text-xs">줄</p>
-              <p className="text-white font-mono font-bold text-lg">{displayLines}</p>
+              <p className="text-xs text-zinc-400">줄</p>
+              <p className="font-mono text-lg font-bold text-white">{displayLines}</p>
             </div>
           </div>
           {gameStatus === 'playing' && (
@@ -643,7 +690,7 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
                 gameStatusRef.current = 'paused';
                 setGameStatus('paused');
               }}
-              className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg px-3 py-1 text-sm"
+              className="rounded-lg bg-indigo-600 px-3 py-1 text-sm text-white hover:bg-indigo-500"
             >
               일시정지 (P)
             </button>
@@ -654,7 +701,7 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
                 gameStatusRef.current = 'playing';
                 setGameStatus('playing');
               }}
-              className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg px-3 py-1 text-sm"
+              className="rounded-lg bg-emerald-600 px-3 py-1 text-sm text-white hover:bg-emerald-500"
             >
               계속하기 (P)
             </button>
@@ -670,8 +717,12 @@ export default function TetrisGame({ onGameEnd, onScoreChange, onAction, onMove,
         disabled={gameStatus !== 'playing'}
       />
 
-      <p className="text-zinc-500 text-sm">방향키: 이동/회전 | Space: 하드드롭 | C/Shift: 홀드 | P: 일시정지</p>
-      <p className="text-zinc-600 text-xs">모바일 D-패드: ▲회전 ▼소프트드롭 ◀▶이동 | A=회전 B=하드드롭 Y=홀드</p>
+      <p className="text-sm text-zinc-500">
+        방향키: 이동/회전 | Space: 하드드롭 | C/Shift: 홀드 | P: 일시정지
+      </p>
+      <p className="text-xs text-zinc-600">
+        모바일 D-패드: ▲회전 ▼소프트드롭 ◀▶이동 | A=회전 B=하드드롭 Y=홀드
+      </p>
     </div>
   );
 }

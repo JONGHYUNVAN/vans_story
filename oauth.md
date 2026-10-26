@@ -70,6 +70,7 @@ src/
 OAuth 관련 유틸리티 함수들을 제공합니다.
 
 #### 주요 함수:
+
 - `generateState()`: OAuth 상태 파라미터 생성
 - `validateState()`: OAuth 상태 파라미터 검증
 - `extractCallbackData()`: URL 파라미터에서 콜백 데이터 추출 (Query Parameter 방식)
@@ -86,6 +87,7 @@ OAuth 관련 유틸리티 함수들을 제공합니다.
 OAuth 로그인 및 계정 관리 기능을 제공합니다.
 
 #### 주요 함수:
+
 - `kakaoLogin()`: 카카오 로그인 시작
 - `googleLogin()`: 구글 로그인 시작
 - `exchangeCodeForToken()`: 임시 코드를 JWT 토큰으로 교환
@@ -97,6 +99,7 @@ OAuth 로그인 및 계정 관리 기능을 제공합니다.
 OAuth 제공자에서 리다이렉트된 사용자를 처리합니다.
 
 #### 처리 과정:
+
 1. URL 파라미터와 Fragment에서 OAuth 콜백 데이터 추출 (`extractCallbackDataUnified` 사용)
 2. 에러 체크 및 처리
 3. 모드 확인 (로그인/계정연결)
@@ -109,6 +112,7 @@ OAuth 제공자에서 리다이렉트된 사용자를 처리합니다.
 프론트엔드에서 받은 임시 코드를 백엔드로 전달하여 JWT 토큰을 획득합니다.
 
 #### 처리 과정:
+
 1. 클라이언트에서 임시 코드 수신
 2. 백엔드 서버로 임시 코드 전송
 3. 백엔드에서 JWT 토큰 수신
@@ -119,6 +123,7 @@ OAuth 제공자에서 리다이렉트된 사용자를 처리합니다.
 OAuth 로그인 UI를 제공합니다.
 
 #### 기능:
+
 - 카카오/구글 로그인 버튼
 - 로딩 상태 표시
 - 에러 메시지 표시
@@ -129,12 +134,14 @@ OAuth 로그인 UI를 제공합니다.
 연결된 OAuth 계정 관리 기능을 제공합니다.
 
 #### 기능:
+
 - 연결된 계정 목록 표시 (`getLinkedOAuthAccounts()` 사용)
 - 새로운 계정 연결 시도 (OAuth 중간 서버로 리다이렉트, 하지만 실제 연결은 미구현)
 - 기존 계정 연결 해제 (`unlinkOAuthAccount()` 사용)
 - 제공자별 아이콘 표시
 
 #### 실제 동작:
+
 - **계정 연결**: `handleLinkAccount()` 함수는 OAuth 중간 서버로 리다이렉트만 합니다.
 - **계정 해제**: `handleUnlinkAccount()` 함수는 실제로 `authService.unlinkOAuthAccount()`를 호출합니다.
 - **계정 연결 완료**: OAuth 콜백 페이지에서 계정 연결 모드는 "아직 미구현"으로 처리됩니다.
@@ -142,15 +149,17 @@ OAuth 로그인 UI를 제공합니다.
 ## 타입 정의
 
 ### OAuth 제공자 타입
+
 ```typescript
 export type OAuthProvider = 'kakao' | 'google';
 ```
 
 ### OAuth 콜백 데이터
+
 ```typescript
 export interface OAuthCallbackData {
-  token?: string;           // 기존 방식 (JWT 토큰)
-  code?: string;            // 새로운 방식 (임시 코드)
+  token?: string; // 기존 방식 (JWT 토큰)
+  code?: string; // 새로운 방식 (임시 코드)
   error?: string;
   provider?: OAuthProvider;
   state?: string;
@@ -158,6 +167,7 @@ export interface OAuthCallbackData {
 ```
 
 ### 연결된 OAuth 계정
+
 ```typescript
 export interface LinkedOAuthAccount {
   provider: OAuthProvider;
@@ -171,6 +181,7 @@ export interface LinkedOAuthAccount {
 Redux Toolkit을 사용하여 OAuth 상태를 관리합니다.
 
 ### 상태 구조
+
 ```typescript
 interface AuthState {
   // OAuth 관련 상태
@@ -181,6 +192,7 @@ interface AuthState {
 ```
 
 ### 액션들
+
 - `oauthStart`: OAuth 로그인 시작
 - `oauthSuccess`: OAuth 로그인 성공
 - `oauthFailure`: OAuth 로그인 실패
@@ -196,14 +208,17 @@ AUTH_API_URL=http://localhost:8080
 ## API 엔드포인트
 
 ### 프론트엔드 API
+
 - `POST /api/auth/callback`: OAuth 콜백 처리 (임시 코드 → JWT 토큰)
 
 ### 백엔드 API
+
 - `POST /oauth/exchange`: 임시 코드를 JWT 토큰으로 교환 (프론트엔드 API를 통해 간접 호출)
 - `DELETE /api/v1/oauth/unlink`: OAuth 계정 연결 해제
 - `GET /api/v1/oauth/linked`: 연결된 OAuth 계정 목록 조회
 
 ### OAuth 중간 서버 API
+
 - `GET /api/auth/kakao/login`: 카카오 로그인 시작
 - `GET /api/auth/google/login`: 구글 로그인 시작
 
@@ -212,6 +227,7 @@ AUTH_API_URL=http://localhost:8080
 한국어와 영어 메시지를 지원합니다.
 
 ### 메시지 파일
+
 - `src/messages/ko/auth.json`: 한국어 메시지
 - `src/messages/en/auth.json`: 영어 메시지
 
@@ -225,6 +241,7 @@ AUTH_API_URL=http://localhost:8080
 ## 에러 처리
 
 ### 일반적인 에러 코드
+
 - `access_denied`: 사용자가 로그인 취소
 - `invalid_request`: 잘못된 요청
 - `invalid_client`: 클라이언트 설정 오류
@@ -234,6 +251,7 @@ AUTH_API_URL=http://localhost:8080
 - `temporarily_unavailable`: 서비스 일시 중단
 
 ### 에러 메시지 처리
+
 OAuth 유틸리티의 `getErrorMessage()` 함수를 통해 사용자 친화적인 에러 메시지를 제공합니다.
 
 ## 개발 가이드
@@ -241,6 +259,7 @@ OAuth 유틸리티의 `getErrorMessage()` 함수를 통해 사용자 친화적�
 ### 현재 구현 상태
 
 #### 구현 완료된 기능:
+
 - OAuth 로그인 (Kakao, Google)
 - JWT 토큰 교환
 - 상태 관리 (Redux)
@@ -249,9 +268,11 @@ OAuth 유틸리티의 `getErrorMessage()` 함수를 통해 사용자 친화적�
 - 토큰 저장 및 인증 상태 관리
 
 #### 미구현 기능:
+
 - OAuth 계정 연결 기능 완료 (UI와 리다이렉트는 구현되었지만, 콜백 처리에서 실제 연결 로직은 미구현)
 
 #### 구현 완료된 기능:
+
 - OAuth 계정 연결 해제 (UI와 API 호출 완전 구현됨)
 - OAuth 계정 목록 조회 (UI와 API 호출 완전 구현됨)
 - 다중 OAuth 계정 관리 UI (실제 연결 완료는 미구현)
@@ -259,6 +280,7 @@ OAuth 유틸리티의 `getErrorMessage()` 함수를 통해 사용자 친화적�
 ### 새로운 OAuth 제공자 추가
 
 1. **타입 정의 수정**
+
    ```typescript
    export type OAuthProvider = 'kakao' | 'google' | 'naver';
    ```
@@ -277,6 +299,7 @@ OAuth 유틸리티의 `getErrorMessage()` 함수를 통해 사용자 친화적�
 ### 개발 시 주의사항
 
 #### 실제 구현된 플로우:
+
 1. **로그인**: `kakaoLogin()` / `googleLogin()` → OAuth 중간 서버 → 콜백 페이지 → `exchangeCodeForToken()` → 완료
 2. **계정 연결**: `handleLinkAccount()` → OAuth 중간 서버 → 콜백 페이지 → "미구현" 메시지
 3. **계정 해제**: `handleUnlinkAccount()` → `unlinkOAuthAccount()` → 완료
@@ -285,6 +308,7 @@ OAuth 유틸리티의 `getErrorMessage()` 함수를 통해 사용자 친화적�
 ### 로컬 개발 환경 설정
 
 1. **환경 변수 설정**
+
    ```env
    NEXT_PUBLIC_OAUTH_SERVER_URL=http://localhost:3001
    AUTH_API_URL=http://localhost:8080
@@ -321,4 +345,4 @@ OAuth 유틸리티의 `getErrorMessage()` 함수를 통해 사용자 친화적�
 - [OAuth 2.0 RFC](https://tools.ietf.org/html/rfc6749)
 - [Kakao Developers OAuth](https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api)
 - [Google OAuth 2.0](https://developers.google.com/identity/protocols/oauth2)
-- [Next.js Authentication](https://nextjs.org/docs/authentication) 
+- [Next.js Authentication](https://nextjs.org/docs/authentication)

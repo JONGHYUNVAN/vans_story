@@ -6,8 +6,8 @@ import { API_URLS } from '@/constants/apiUrl';
 
 export interface UseStockDetailResult {
   detail: StockDetailData | null;
-  isLoading: boolean;      // 최초 로드 스켈레톤용
-  isRefreshing: boolean;   // 새로고침 스피너용
+  isLoading: boolean; // 최초 로드 스켈레톤용
+  isRefreshing: boolean; // 새로고침 스피너용
   isError: boolean;
   errorMessage: string;
   refetch: () => Promise<void>;
@@ -27,9 +27,7 @@ export function useStockDetail(symbol: string): UseStockDetailResult {
     setIsError(false);
     setErrorMessage('');
     try {
-      const res = await fetch(
-        `${API_URLS.STOCKS.DETAIL}?symbol=${encodeURIComponent(symbol)}`,
-      );
+      const res = await fetch(`${API_URLS.STOCKS.DETAIL}?symbol=${encodeURIComponent(symbol)}`);
       const json: StocksApiResponse<StockDetailData> = await res.json();
       if (json.success) {
         setDetail(json.data);

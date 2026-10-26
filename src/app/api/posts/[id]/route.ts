@@ -6,15 +6,9 @@ type RouteContext = {
 };
 
 // GET /api/posts/[id]
-export async function GET(
-  request: NextRequest,
-  context: RouteContext
-) {
+export async function GET(request: NextRequest, context: RouteContext) {
   try {
-    const [{ id }, headersList] = await Promise.all([
-      context.params,
-      headers()
-    ]);
+    const [{ id }, headersList] = await Promise.all([context.params, headers()]);
     const token = headersList.get('Authorization');
 
     const apiUrl = process.env.POST_API_URL || 'http://localhost:3001/api/v1';
@@ -22,7 +16,7 @@ export async function GET(
       headers: {
         Authorization: token || '',
       },
-      next: { revalidate: 0 } // 항상 최신 데이터
+      next: { revalidate: 0 }, // 항상 최신 데이터
     });
 
     if (!res.ok) {
@@ -38,15 +32,12 @@ export async function GET(
 }
 
 // PATCH /api/posts/[id]
-export async function PATCH(
-  request: NextRequest,
-  context: RouteContext
-) {
+export async function PATCH(request: NextRequest, context: RouteContext) {
   try {
     const [{ id }, headersList, body] = await Promise.all([
       context.params,
       headers(),
-      request.json()
+      request.json(),
     ]);
     const token = headersList.get('Authorization');
 
@@ -57,14 +48,14 @@ export async function PATCH(
         'Content-Type': 'application/json',
         Authorization: token || '',
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     });
 
     if (!res.ok) {
       const errorData = await res.json().catch(() => null);
       return NextResponse.json(
         { error: errorData?.message || 'Update failed' },
-        { status: res.status }
+        { status: res.status },
       );
     }
 
@@ -72,9 +63,6 @@ export async function PATCH(
     return NextResponse.json(data);
   } catch (error) {
     console.error('Error updating post:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

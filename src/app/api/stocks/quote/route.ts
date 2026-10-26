@@ -65,15 +65,13 @@ export async function GET(req: NextRequest) {
         : finiteNum(meta.chartPreviousClose);
     const change = prevClose !== 0 ? price - prevClose : finiteNum(meta.regularMarketChange);
     const changePercent =
-      prevClose !== 0
-        ? (change / prevClose) * 100
-        : finiteNum(meta.regularMarketChangePercent);
+      prevClose !== 0 ? (change / prevClose) * 100 : finiteNum(meta.regularMarketChangePercent);
 
     const data: StockQuoteData = {
       price,
       change,
       changePercent,
-      marketState: ((meta.marketState ?? 'CLOSED') as MarketState),
+      marketState: (meta.marketState ?? 'CLOSED') as MarketState,
       preMarketPrice: finiteNum(meta.preMarketPrice) || null,
       preMarketChange: finiteNum(meta.preMarketChange) || null,
       preMarketChangePercent: finiteNum(meta.preMarketChangePercent) || null,
@@ -85,9 +83,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ success: true, data });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    return NextResponse.json(
-      { success: false, error: message },
-      { status: 500 },
-    );
+    return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }

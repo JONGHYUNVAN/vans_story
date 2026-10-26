@@ -26,19 +26,21 @@ export default function SearchSection() {
         if (response.ok) {
           const responseData = await response.json();
           console.log('🔍 Frontend - Received data:', responseData);
-          
+
           // BFF 프록시에서 { success: true, data: {...} } 구조로 반환
           const data = responseData.success && responseData.data ? responseData.data : responseData;
-          
+
           if (data.popular_searches && Array.isArray(data.popular_searches)) {
             // 객체 배열에서 query 필드 추출하고 중복 제거
-            const uniqueSearches = [...new Set(
-              data.popular_searches
-                .filter((item: any) => item && typeof item.query === 'string')
-                .map((item: any) => item.query.trim())
-                .filter((query: string) => query.length > 0)
-            )];
-            
+            const uniqueSearches = [
+              ...new Set(
+                data.popular_searches
+                  .filter((item: any) => item && typeof item.query === 'string')
+                  .map((item: any) => item.query.trim())
+                  .filter((query: string) => query.length > 0),
+              ),
+            ];
+
             if (uniqueSearches.length > 0) {
               setPopularSearches(uniqueSearches as string[]);
             }
@@ -72,27 +74,20 @@ export default function SearchSection() {
   };
 
   return (
-         <section className="relative w-full py-20 pb-32 bg-black overflow-hidden">
-             <div className="container mx-auto px-4">
-         <div className="max-w-4xl mx-auto pt-24">
+    <section className="relative w-full overflow-hidden bg-black py-20 pb-32">
+      <div className="container mx-auto px-4">
+        <div className="mx-auto max-w-4xl pt-24">
           <form
             onSubmit={handleFormSubmit}
-            className="group relative flex items-center bg-gray-800/30 rounded-2xl shadow-2xl border border-gray-700/50 backdrop-blur-xl 
-                       transition-all duration-500 hover:bg-gray-800/40 focus-within:border-blue-500/50 focus-within:ring-4 focus-within:ring-blue-500/20
-                       hover:shadow-blue-500/10"
+            className="group relative flex items-center rounded-2xl border border-gray-700/50 bg-gray-800/30 shadow-2xl backdrop-blur-xl transition-all duration-500 focus-within:border-blue-500/50 focus-within:ring-4 focus-within:ring-blue-500/20 hover:bg-gray-800/40 hover:shadow-blue-500/10"
           >
-            <div className="pl-6 pr-2 text-gray-400 group-focus-within:text-blue-400 transition-colors duration-300">
-              <svg 
-                className="w-5 h-5" 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" 
+            <div className="pl-6 pr-2 text-gray-400 transition-colors duration-300 group-focus-within:text-blue-400">
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                 />
               </svg>
             </div>
@@ -111,40 +106,35 @@ export default function SearchSection() {
             />
             <button
               type="submit"
-              className="m-2 px-6 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-xl 
-                         hover:from-blue-600 hover:to-purple-700 hover:shadow-xl hover:shadow-blue-500/20 
-                         transform transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400/50 
-                         flex items-center gap-2 active:scale-95 group/btn"
+              className="group/btn m-2 flex transform items-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4 font-medium text-white transition-all duration-300 hover:from-blue-600 hover:to-purple-700 hover:shadow-xl hover:shadow-blue-500/20 focus:outline-none focus:ring-2 focus:ring-blue-400/50 active:scale-95"
               aria-label="검색 실행"
             >
-              <svg 
-                className="w-5 h-5 group-hover/btn:rotate-12 transition-transform duration-300" 
-                fill="none" 
-                stroke="currentColor" 
+              <svg
+                className="h-5 w-5 transition-transform duration-300 group-hover/btn:rotate-12"
+                fill="none"
+                stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" 
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                 />
               </svg>
               <span className="text-sm font-semibold tracking-wide">SEARCH</span>
             </button>
           </form>
-          
+
           {/* 인기 검색어 */}
           <div className="mt-8 text-center">
-            <p className="text-gray-500 text-sm mb-3">인기 검색어</p>
+            <p className="mb-3 text-sm text-gray-500">인기 검색어</p>
             <div className="flex flex-wrap justify-center gap-2">
               {popularSearches.map((tag, index) => (
                 <button
                   key={`${tag}-${index}`}
                   onClick={() => handlePopularSearchClick(tag)}
-                  className="px-3 py-1 bg-gray-800/50 text-gray-300 text-sm rounded-full border border-gray-700/50
-                           hover:bg-gray-700/50 hover:border-gray-600/50 hover:text-white transition-all duration-200 cursor-pointer
-                           focus:outline-none focus:ring-2 focus:ring-blue-500/50 active:scale-95"
+                  className="cursor-pointer rounded-full border border-gray-700/50 bg-gray-800/50 px-3 py-1 text-sm text-gray-300 transition-all duration-200 hover:border-gray-600/50 hover:bg-gray-700/50 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 active:scale-95"
                 >
                   {tag}
                 </button>

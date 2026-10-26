@@ -1,7 +1,12 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import type { KisTradeData, KisOrderbookData, KisSnapshotData, StocksApiResponse } from '@/types/stocks';
+import type {
+  KisTradeData,
+  KisOrderbookData,
+  KisSnapshotData,
+  StocksApiResponse,
+} from '@/types/stocks';
 import { API_URLS } from '@/constants/apiUrl';
 
 interface UseKisRealtimeReturn {

@@ -22,12 +22,7 @@ const COLORS = [
 ];
 
 // 사용 가능한 폰트 배열
-const FONTS = [
-  'monospace',
-  'serif',
-  'Helvetica',
-  'Arial',
-];
+const FONTS = ['monospace', 'serif', 'Helvetica', 'Arial'];
 
 /**
  * 타이핑 효과를 구현하는 커스텀 훅
@@ -43,7 +38,7 @@ export function useTypewriter(words: string[]) {
     style: {
       color: COLORS[0],
       fontFamily: FONTS[0],
-    }
+    },
   });
 
   /**
@@ -56,41 +51,44 @@ export function useTypewriter(words: string[]) {
     style: {
       color: COLORS[Math.floor(Math.random() * COLORS.length)],
       fontFamily: FONTS[Math.floor(Math.random() * FONTS.length)],
-    }
+    },
   });
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      const currentWord = words[currentIndex];
-      
-      if (!isDeleting) {
-        // 타이핑 중
-        setCurrentText(currentWord.substring(0, currentText.length + 1));
-        
-        if (currentText === '') {
-          // 새 단어 시작 시 새로운 스타일 적용
-          setStyle(getRandomStyle(currentWord));
+    const timeout = setTimeout(
+      () => {
+        const currentWord = words[currentIndex];
+
+        if (!isDeleting) {
+          // 타이핑 중
+          setCurrentText(currentWord.substring(0, currentText.length + 1));
+
+          if (currentText === '') {
+            // 새 단어 시작 시 새로운 스타일 적용
+            setStyle(getRandomStyle(currentWord));
+          }
+
+          if (currentText === currentWord) {
+            // 단어 완성 시 삭제 모드로 전환
+            setIsDeleting(true);
+            setTimeout(() => {}, 2000); // 2초 대기
+          }
+        } else {
+          // 삭제 중
+          setCurrentText(currentWord.substring(0, currentText.length - 1));
+
+          if (currentText === '') {
+            // 삭제 완료 시 다음 단어로 이동
+            setIsDeleting(false);
+            setCurrentIndex((prev) => (prev + 1) % words.length);
+          }
         }
-        
-        if (currentText === currentWord) {
-          // 단어 완성 시 삭제 모드로 전환
-          setIsDeleting(true);
-          setTimeout(() => {}, 2000); // 2초 대기
-        }
-      } else {
-        // 삭제 중
-        setCurrentText(currentWord.substring(0, currentText.length - 1));
-        
-        if (currentText === '') {
-          // 삭제 완료 시 다음 단어로 이동
-          setIsDeleting(false);
-          setCurrentIndex((prev) => (prev + 1) % words.length);
-        }
-      }
-    }, isDeleting ? 100 : 150); // 삭제 시 더 빠른 속도
+      },
+      isDeleting ? 100 : 150,
+    ); // 삭제 시 더 빠른 속도
 
     return () => clearTimeout(timeout);
   }, [currentText, currentIndex, isDeleting, words]);
 
   return { text: currentText, style: style.style };
-} 
+}

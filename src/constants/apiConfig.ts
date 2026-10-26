@@ -65,4 +65,3 @@ export const API_CONFIG = {
     AUTH_API_URL: 'http://localhost:3000/api',
   } as const,
 } as const;
-

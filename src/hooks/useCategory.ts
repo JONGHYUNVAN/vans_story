@@ -13,7 +13,7 @@ export interface UseCategoryReturn {
 
 /**
  * 단일 카테고리 조회 훅
- * 
+ *
  * @param categoryValue - 조회할 카테고리 값 (예: 'nextjs', 'nestjs', 'spring')
  * @returns UseCategoryReturn
  */
@@ -32,13 +32,13 @@ export function useCategory(categoryValue: string): UseCategoryReturn {
       try {
         setIsLoading(true);
         setError(null);
-        
+
         const response = await ApiFetch.getCategoryByValue(categoryValue);
-        
+
         if (!response.ok) {
           throw new Error(`카테고리 조회 실패: ${response.status}`);
         }
-        
+
         const categoryData: Category = await response.json();
         setCategory(categoryData);
       } catch (err) {
@@ -56,6 +56,6 @@ export function useCategory(categoryValue: string): UseCategoryReturn {
   return {
     category,
     isLoading,
-    error
+    error,
   };
 }

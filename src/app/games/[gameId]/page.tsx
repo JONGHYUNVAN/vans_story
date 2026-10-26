@@ -4,7 +4,7 @@ import GamePageClient from '@/app/games/[gameId]/_components/GamePageClient';
 import { notFound } from 'next/navigation';
 
 export function generateStaticParams() {
-  return GAMES.map(g => ({ gameId: g.id }));
+  return GAMES.map((g) => ({ gameId: g.id }));
 }
 
 export async function generateMetadata({
@@ -21,11 +21,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function GamePage({
-  params,
-}: {
-  params: Promise<{ gameId: string }>;
-}) {
+export default async function GamePage({ params }: { params: Promise<{ gameId: string }> }) {
   const { gameId } = await params;
   const game = getGameById(gameId);
   if (!game) notFound();

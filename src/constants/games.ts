@@ -129,5 +129,5 @@ export const GAMES: GameMeta[] = [
 ];
 
 export function getGameById(id: string): GameMeta | undefined {
-  return GAMES.find(g => g.id === id);
+  return GAMES.find((g) => g.id === id);
 }

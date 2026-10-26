@@ -14,7 +14,12 @@ const ALL_STOCKS = [
 function formatDate(iso: string): string {
   try {
     const d = new Date(iso);
-    return d.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    return d.toLocaleDateString('ko-KR', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
   } catch {
     return iso;
   }
@@ -40,7 +45,9 @@ export default function NewsSection({ fixedSymbol }: NewsSectionProps = {}) {
     setIsLoading(true);
     setIsError(false);
     try {
-      const res = await fetch(`${API_URLS.STOCKS.NEWS}?symbol=${encodeURIComponent(symbol)}&limit=5`);
+      const res = await fetch(
+        `${API_URLS.STOCKS.NEWS}?symbol=${encodeURIComponent(symbol)}&limit=5`,
+      );
       const json: StocksApiResponse<StockNewsData> = await res.json();
       if (json.success) {
         setNews(json.data.news);
@@ -75,7 +82,7 @@ export default function NewsSection({ fixedSymbol }: NewsSectionProps = {}) {
               key={s.symbol}
               type="button"
               onClick={() => setSelectedSymbol(s.symbol)}
-              className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors ${
+              className={`rounded-md px-2.5 py-1 text-[11px] font-medium transition-colors ${
                 selectedSymbol === s.symbol ? n.chipOn : n.chipOff
               }`}
             >
@@ -89,14 +96,14 @@ export default function NewsSection({ fixedSymbol }: NewsSectionProps = {}) {
         <div className="space-y-3">
           {Array.from({ length: 5 }).map((_, i) => (
             <div key={i} className={n.skeletonRow}>
-              <div className={`h-4 ${n.skeletonBar} w-full mb-1.5`} />
-              <div className={`h-4 ${n.skeletonBar} w-4/5 mb-2`} />
+              <div className={`h-4 ${n.skeletonBar} mb-1.5 w-full`} />
+              <div className={`h-4 ${n.skeletonBar} mb-2 w-4/5`} />
               <div className={`h-3 ${n.skeletonBar} w-1/3`} />
             </div>
           ))}
         </div>
       ) : isError ? (
-        <div className="flex flex-col items-center justify-center py-8 gap-3">
+        <div className="flex flex-col items-center justify-center gap-3 py-8">
           <p className={n.empty}>뉴스를 불러오지 못했습니다.</p>
           <button type="button" onClick={() => fetchNews(selectedSymbol)} className={n.retry}>
             다시 시도

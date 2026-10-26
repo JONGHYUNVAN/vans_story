@@ -49,4 +49,4 @@ export const modalSlice = createSlice({
 export const { openLoginModal, closeLoginModal } = modalSlice.actions;
 
 // 리듀서 내보내기
-export default modalSlice.reducer; 
+export default modalSlice.reducer;

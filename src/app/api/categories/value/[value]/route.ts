@@ -10,18 +10,12 @@ type RouteContext = {
 };
 
 // GET /api/categories/value/[value] - 값으로 카테고리 조회
-export async function GET(
-  request: NextRequest,
-  context: RouteContext
-) {
+export async function GET(request: NextRequest, context: RouteContext) {
   try {
     const { value } = await context.params;
-    
+
     if (!value) {
-      return NextResponse.json(
-        { error: '카테고리 값이 필요합니다.' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: '카테고리 값이 필요합니다.' }, { status: 400 });
     }
 
     const apiUrl = process.env.POST_API_URL || 'http://localhost:3001/api/v1';
@@ -33,14 +27,14 @@ export async function GET(
       headers: {
         'Content-Type': 'application/json',
       },
-      next: { revalidate: 300 } // 5분 캐시
+      next: { revalidate: 300 }, // 5분 캐시
     });
 
     if (!res.ok) {
       if (res.status === 404) {
         return NextResponse.json(
           { error: `카테고리 '${value}'를 찾을 수 없습니다.` },
-          { status: 404 }
+          { status: 404 },
         );
       }
       console.error('❌ 카테고리 값별 조회 API 호출 실패:', res.status, res.statusText);
@@ -49,13 +43,10 @@ export async function GET(
 
     const data = await res.json();
     console.log('✅ 카테고리 값별 조회 성공:', value);
-    
+
     return NextResponse.json(data);
   } catch (error) {
     console.error('❌ 카테고리 값별 조회 API 오류:', error);
-    return NextResponse.json(
-      { error: '내부 서버 오류가 발생했습니다.' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: '내부 서버 오류가 발생했습니다.' }, { status: 500 });
   }
 }

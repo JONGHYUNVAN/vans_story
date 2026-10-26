@@ -9,20 +9,32 @@ const KR_SYMBOL_SET = new Set<string>(KR_STOCKS.map((s) => s.symbol as string));
 
 /** 심볼 → 구글 뉴스 검색 쿼리 목록 (여러 언어 동시 지원 가능) */
 const MACRO_QUERY_MAP: Record<string, Array<{ query: string; lang: 'ko' | 'en' }>> = {
-  '^KS11':    [{ query: '코스피 증시',                             lang: 'ko' }],
-  '^KQ11':    [{ query: '코스닥 증시',                             lang: 'ko' }],
-  '^IXIC':    [{ query: 'NASDAQ stock market',                    lang: 'en' },
-               { query: '나스닥 증시',                             lang: 'ko' }],
-  '^GSPC':    [{ query: 'S&P 500 stock market',                   lang: 'en' },
-               { query: 'S&P500 증시',                            lang: 'ko' }],
-  '^SOX':     [{ query: 'Philadelphia Semiconductor Index SOX',   lang: 'en' },
-               { query: '필라델피아 반도체 지수',                   lang: 'ko' }],
-  '^TNX':     [{ query: 'US 10 year treasury bond yield',         lang: 'en' },
-               { query: '미국 국채 금리',                          lang: 'ko' }],
-  'USDKRW=X': [{ query: '원달러 환율',                             lang: 'ko' },
-               { query: 'USD KRW exchange rate',                  lang: 'en' }],
-  'CL=F':     [{ query: 'WTI 유가 원유',                          lang: 'ko' },
-               { query: 'WTI crude oil price',                    lang: 'en' }],
+  '^KS11': [{ query: '코스피 증시', lang: 'ko' }],
+  '^KQ11': [{ query: '코스닥 증시', lang: 'ko' }],
+  '^IXIC': [
+    { query: 'NASDAQ stock market', lang: 'en' },
+    { query: '나스닥 증시', lang: 'ko' },
+  ],
+  '^GSPC': [
+    { query: 'S&P 500 stock market', lang: 'en' },
+    { query: 'S&P500 증시', lang: 'ko' },
+  ],
+  '^SOX': [
+    { query: 'Philadelphia Semiconductor Index SOX', lang: 'en' },
+    { query: '필라델피아 반도체 지수', lang: 'ko' },
+  ],
+  '^TNX': [
+    { query: 'US 10 year treasury bond yield', lang: 'en' },
+    { query: '미국 국채 금리', lang: 'ko' },
+  ],
+  'USDKRW=X': [
+    { query: '원달러 환율', lang: 'ko' },
+    { query: 'USD KRW exchange rate', lang: 'en' },
+  ],
+  'CL=F': [
+    { query: 'WTI 유가 원유', lang: 'ko' },
+    { query: 'WTI crude oil price', lang: 'en' },
+  ],
 };
 
 function extractTagContent(xml: string, tag: string): string {
@@ -42,18 +54,29 @@ function parseRssXml(xml: string, limit: number, defaultSource = 'Yahoo Finance'
 
   while ((match = itemPattern.exec(xml)) !== null && items.length < limit) {
     const block = match[1];
-    const title = extractTagContent(block, 'title').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#39;/g, "'").replace(/&quot;/g, '"');
-    const link  = extractTagContent(block, 'link');
+    const title = extractTagContent(block, 'title')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&#39;/g, "'")
+      .replace(/&quot;/g, '"');
+    const link = extractTagContent(block, 'link');
     const rawDate = extractTagContent(block, 'pubDate');
     const description = extractTagContent(block, 'description');
 
-    const sourceTagMatch = /<source[^>]*url=["']([^"']*)["'][^>]*>([\s\S]*?)<\/source>/i.exec(block);
+    const sourceTagMatch = /<source[^>]*url=["']([^"']*)["'][^>]*>([\s\S]*?)<\/source>/i.exec(
+      block,
+    );
     const source = sourceTagMatch ? sourceTagMatch[2].trim() : defaultSource;
 
     if (!title || !link) continue;
 
     let pubDate = rawDate;
-    try { if (rawDate) pubDate = new Date(rawDate).toISOString(); } catch { /* keep raw */ }
+    try {
+      if (rawDate) pubDate = new Date(rawDate).toISOString();
+    } catch {
+      /* keep raw */
+    }
 
     items.push({ title, link, pubDate, description, source });
   }
@@ -90,8 +113,8 @@ async function fetchYahooRSS(symbol: string, limit: number): Promise<NewsItem[]>
  * - 거시지표 전체: Yahoo RSS가 지수/원자재 심볼에 결과 없음
  */
 function skipYahooRSS(symbol: string): boolean {
-  if (KR_SYMBOL_SET.has(symbol)) return true;       // 국내 주가
-  if (symbol in MACRO_QUERY_MAP) return true;        // 거시지표 전체
+  if (KR_SYMBOL_SET.has(symbol)) return true; // 국내 주가
+  if (symbol in MACRO_QUERY_MAP) return true; // 거시지표 전체
   return false;
 }
 
@@ -110,13 +133,15 @@ function buildGoogleQueries(symbol: string): Array<{ query: string; lang: 'ko' |
 }
 
 async function fetchSingleGoogleRSS(
-  query: string, lang: 'ko' | 'en', limit: number,
+  query: string,
+  lang: 'ko' | 'en',
+  limit: number,
 ): Promise<NewsItem[]> {
   try {
-    const gl   = lang === 'ko' ? 'KR' : 'US';
+    const gl = lang === 'ko' ? 'KR' : 'US';
     const ceid = lang === 'ko' ? 'KR:ko' : 'US:en';
-    const url  = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=${lang}&gl=${gl}&ceid=${ceid}`;
-    const res  = await fetch(url, {
+    const url = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=${lang}&gl=${gl}&ceid=${ceid}`;
+    const res = await fetch(url, {
       headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' },
       next: { revalidate: 300 },
     });
@@ -136,16 +161,21 @@ async function fetchGoogleNewsRSS(symbol: string, limit: number): Promise<NewsIt
   return results.flat();
 }
 
-export async function GET(request: NextRequest): Promise<NextResponse<StocksApiResponse<StockNewsData>>> {
+export async function GET(
+  request: NextRequest,
+): Promise<NextResponse<StocksApiResponse<StockNewsData>>> {
   try {
     const { searchParams } = new URL(request.url);
-    const symbol   = searchParams.get('symbol');
+    const symbol = searchParams.get('symbol');
     const limitParam = parseInt(searchParams.get('limit') ?? String(NEWS_LIMIT_DEFAULT), 10);
-    const limit    = isNaN(limitParam) ? NEWS_LIMIT_DEFAULT : Math.min(limitParam, NEWS_LIMIT_MAX);
+    const limit = isNaN(limitParam) ? NEWS_LIMIT_DEFAULT : Math.min(limitParam, NEWS_LIMIT_MAX);
 
     if (!symbol) {
       return NextResponse.json(
-        { success: false, error: { message: 'symbol 파라미터가 필요합니다.', code: 'MISSING_SYMBOL' } },
+        {
+          success: false,
+          error: { message: 'symbol 파라미터가 필요합니다.', code: 'MISSING_SYMBOL' },
+        },
         { status: 400 },
       );
     }

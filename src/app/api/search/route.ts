@@ -10,37 +10,34 @@ export async function GET(request: NextRequest) {
   try {
     const [headersList, { searchParams }] = await Promise.all([
       headers(),
-      Promise.resolve(new URL(request.url))
+      Promise.resolve(new URL(request.url)),
     ]);
-    
+
     const query = searchParams.get('query');
     const token = headersList.get('Authorization');
 
     if (!query) {
-      return NextResponse.json(
-        { message: '검색어가 필요합니다.' },
-        { status: 400 }
-      );
+      return NextResponse.json({ message: '검색어가 필요합니다.' }, { status: 400 });
     }
 
     // 환경변수 설정 (다른 API들과 동일한 패턴)
     const searchApiUrl = process.env.SEARCH_API_URL || 'http://localhost:8000';
     const encodedQuery = encodeURIComponent(query);
     const fullUrl = `${searchApiUrl}/api/v1/search/posts/?query=${encodedQuery}&language=all&page=1&page_size=20&sort=relevance`;
-    
+
     const response = await fetch(fullUrl, {
       headers: {
         'Content-Type': 'application/json',
         ...(token && { Authorization: token }),
       },
-      next: { revalidate: 60 } // 1분 캐시
+      next: { revalidate: 60 }, // 1분 캐시
     });
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => null);
       return NextResponse.json(
         { error: errorData?.message || '검색 요청이 실패했습니다.' },
-        { status: response.status }
+        { status: response.status },
       );
     }
 
@@ -48,9 +45,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(data);
   } catch (error) {
     console.error('Error searching posts:', error);
-    return NextResponse.json(
-      { error: '내부 서버 오류가 발생했습니다.' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: '내부 서버 오류가 발생했습니다.' }, { status: 500 });
   }
 }

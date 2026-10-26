@@ -44,10 +44,10 @@ export default function StockCard({ stock, isLoading, isError }: StockCardProps)
   if (isLoading) {
     return (
       <div className={c.skeleton}>
-        <div className={`h-4 ${c.skeletonBar} w-2/3 mb-3`} />
-        <div className={`h-8 ${c.skeletonBar} w-1/2 mb-4`} />
-        <div className={`h-3 ${c.skeletonBar} w-full mb-2`} />
-        <div className={`h-3 ${c.skeletonBar} w-full mb-2`} />
+        <div className={`h-4 ${c.skeletonBar} mb-3 w-2/3`} />
+        <div className={`h-8 ${c.skeletonBar} mb-4 w-1/2`} />
+        <div className={`h-3 ${c.skeletonBar} mb-2 w-full`} />
+        <div className={`h-3 ${c.skeletonBar} mb-2 w-full`} />
         <div className={`h-3 ${c.skeletonBar} w-full`} />
       </div>
     );
@@ -64,7 +64,10 @@ export default function StockCard({ stock, isLoading, isError }: StockCardProps)
   const ch = colorClass(stock.change);
   const arrow = getArrow(stock.change);
   const isKrx = KR_SYMBOL_SET.has(stock.symbol);
-  const accentLeft = stock.market === 'kr' ? 'border-l-[3px] border-l-sky-500' : 'border-l-[3px] border-l-violet-500';
+  const accentLeft =
+    stock.market === 'kr'
+      ? 'border-l-[3px] border-l-sky-500'
+      : 'border-l-[3px] border-l-violet-500';
   const accentHoverFull =
     stock.market === 'kr'
       ? 'hover:border-[3px] hover:border-sky-500'
@@ -92,7 +95,8 @@ export default function StockCard({ stock, isLoading, isError }: StockCardProps)
       <div className={c.quoteShell}>
         <p className={c.price}>{formatPriceSimple(stock.price, stock.currency)}</p>
         <p className={`${c.changeLine} ${ch}`}>
-          {arrow} {formatChange(stock.change, stock.currency)} · {formatPercent(stock.changePercent)}
+          {arrow} {formatChange(stock.change, stock.currency)} ·{' '}
+          {formatPercent(stock.changePercent)}
         </p>
       </div>
 

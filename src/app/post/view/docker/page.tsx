@@ -3,7 +3,6 @@ import DockerLayout from '@/app/post/view/docker/_components/DockerLayout';
 import { SidebarWrapper } from '@/app/post/view/_components/SidebarWrapper';
 import DockerList from '@/app/post/view/docker/_components/DockerList';
 
-
 export default async function Page() {
   const posts = await getPostList('docker', undefined, 1, 10);
   return (
@@ -13,4 +12,4 @@ export default async function Page() {
       </DockerLayout>
     </SidebarWrapper>
   );
-} 
+}

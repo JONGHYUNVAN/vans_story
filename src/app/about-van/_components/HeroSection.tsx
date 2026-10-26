@@ -6,13 +6,13 @@ import { useTypewriter } from '@/hooks/useTypewriter';
 const socialLinksKo = [
   { name: 'GitHub', url: 'https://github.com/JONGHYUNVAN', icon: '🐱' },
   { name: 'Email', url: 'whdgus808@naver.com', icon: '📧' },
-  { name: 'Blog', url: 'https://vansdevblog.online', icon: '📝' }
+  { name: 'Blog', url: 'https://vansdevblog.online', icon: '📝' },
 ];
 
 const socialLinksEn = [
   { name: 'GitHub', url: 'https://github.com/JONGHYUNVAN', icon: '🐱' },
   { name: 'Email', url: 'whdgus808@naver.com', icon: '📧' },
-  { name: 'Blog', url: 'https://vansdevblog.online', icon: '📝' }
+  { name: 'Blog', url: 'https://vansdevblog.online', icon: '📝' },
 ];
 
 const heroDataKo = {
@@ -22,7 +22,7 @@ const heroDataKo = {
   백엔드 시스템이 어떻게 사용자 경험과 연결되는지를 고민합니다.
   코드 가독성과 유지보수성에 관심이 많고, 
   Swagger, readme, JavaDoc, JSDoc 등 여러 문서화 도구를 사용합니다.
-  함께 만드는 프로젝트의 가치에 대해 고민하고 성장할 곳을 찾고 있습니다.`
+  함께 만드는 프로젝트의 가치에 대해 고민하고 성장할 곳을 찾고 있습니다.`,
 };
 
 const heroDataEn = {
@@ -32,12 +32,12 @@ By directly designing and implementing various web service features,
 I think about how backend systems connect to user experience.
 I'm interested in code readability and maintainability, 
 and use various documentation tools like Swagger, readme, JavaDoc, JSDoc.
-I'm looking for a place to grow while thinking about the value of projects we build together.`
+I'm looking for a place to grow while thinking about the value of projects we build together.`,
 };
 
 export function HeroSection() {
   const { t, locale } = useTranslation('about');
-  
+
   const backendTermsKo = [
     '월요일보다 배포일이 더 무서운',
     '코드보다 주석이 더 긴',
@@ -46,7 +46,7 @@ export function HeroSection() {
     'AI한테 화내는',
     '카페인으로 동작하는',
     '내 컴퓨터에선 잘 돌아가는',
-    '작명이 제일 어려운'
+    '작명이 제일 어려운',
   ];
 
   const backendTermsEn = [
@@ -57,7 +57,7 @@ export function HeroSection() {
     'getting mad at AI',
     'powered by caffeine',
     'it works on my machine',
-    'struggling most with naming'
+    'struggling most with naming',
   ];
 
   const backendTerms = locale === 'ko' ? backendTermsKo : backendTermsEn;
@@ -68,20 +68,20 @@ export function HeroSection() {
   const heroData = locale === 'ko' ? heroDataKo : heroDataEn;
 
   return (
-    <section className="py-20 border-b border-gray-200 dark:border-gray-800">
-      <div className="grid md:grid-cols-2 gap-12 items-start">
+    <section className="border-b border-gray-200 py-20 dark:border-gray-800">
+      <div className="grid items-start gap-12 md:grid-cols-2">
         {/* Left Side - Main Content */}
         <div className="space-y-8">
           {/* Main Title */}
           <div className="space-y-4">
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white leading-tight">
+            <h1 className="text-4xl font-bold leading-tight text-gray-900 md:text-6xl dark:text-white">
               {/* Typewriter Effect for greeting */}
-              <div className="h-[10rem] md:h-[8rem] w-full relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full">
-                  <span style={typewriterStyle}>
-                    {typewriterText}
+              <div className="relative h-[10rem] w-full overflow-hidden md:h-[8rem]">
+                <div className="absolute left-0 top-0 w-full">
+                  <span style={typewriterStyle}>{typewriterText}</span>
+                  <span className="animate-[blink_1s_steps(1)_infinite] text-gray-900 dark:text-white">
+                    |
                   </span>
-                  <span className="animate-[blink_1s_steps(1)_infinite] text-gray-900 dark:text-white">|</span>
                 </div>
               </div>
               <span className="text-gray-600 dark:text-gray-300">{t('AboutVan.hero.name')}</span>
@@ -90,7 +90,7 @@ export function HeroSection() {
 
           {/* Description */}
           <div className="max-w-2xl">
-            <p className="text-gray-600 dark:text-gray-400 leading-relaxed whitespace-pre-line">
+            <p className="whitespace-pre-line leading-relaxed text-gray-600 dark:text-gray-400">
               {heroData.description}
             </p>
           </div>
@@ -99,7 +99,7 @@ export function HeroSection() {
         {/* Right Side - Contact Info */}
         <div className="space-y-8">
           {/* Contact Information */}
-          <div className="space-y-6 p-6 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+          <div className="space-y-6 rounded-lg border border-gray-200 bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-800/50">
             <div className="space-y-4">
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
                 {t('AboutVan.hero.contactInfo')}
@@ -107,19 +107,21 @@ export function HeroSection() {
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <span className="text-gray-600 dark:text-gray-400">📍</span>
-                  <span className="text-gray-700 dark:text-gray-300">{t('AboutVan.hero.location')}</span>
+                  <span className="text-gray-700 dark:text-gray-300">
+                    {t('AboutVan.hero.location')}
+                  </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-gray-600 dark:text-gray-400">📧</span>
-                  <p 
-                    className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
-                  >
+                  <p className="text-gray-700 transition-colors hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
                     whdgus808@naver.com
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-gray-600 dark:text-gray-400">💼</span>
-                  <span className="text-gray-700 dark:text-gray-300">{t('AboutVan.hero.currentWork')}</span>
+                  <span className="text-gray-700 dark:text-gray-300">
+                    {t('AboutVan.hero.currentWork')}
+                  </span>
                 </div>
               </div>
             </div>
@@ -136,7 +138,7 @@ export function HeroSection() {
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
+                    className="flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 transition-colors hover:border-gray-400 hover:text-gray-900 dark:border-gray-600 dark:text-gray-300 dark:hover:border-gray-500 dark:hover:text-white"
                   >
                     <span>{link.icon}</span>
                     <span>{link.name}</span>
@@ -149,4 +151,4 @@ export function HeroSection() {
       </div>
     </section>
   );
-} 
+}

@@ -34,7 +34,12 @@ function getGradePrefix(avg: number): string {
   return '😴';
 }
 
-export default function ReactionGame({ onGameEnd, onScoreChange, onAction, onCombo }: GameComponentProps) {
+export default function ReactionGame({
+  onGameEnd,
+  onScoreChange,
+  onAction,
+  onCombo,
+}: GameComponentProps) {
   const [state, setState] = useState<ReactionState>({
     gameStatus: 'idle',
     round: 0,
@@ -61,10 +66,10 @@ export default function ReactionGame({ onGameEnd, onScoreChange, onAction, onCom
 
   const startWaiting = useCallback(() => {
     clearTimers();
-    setState(prev => ({ ...prev, gameStatus: 'waiting', startTime: null }));
+    setState((prev) => ({ ...prev, gameStatus: 'waiting', startTime: null }));
     const delay = 1000 + Math.random() * 3000;
     waitTimerRef.current = setTimeout(() => {
-      setState(prev => ({ ...prev, gameStatus: 'ready', startTime: Date.now() }));
+      setState((prev) => ({ ...prev, gameStatus: 'ready', startTime: Date.now() }));
     }, delay);
   }, [clearTimers]);
 
@@ -80,7 +85,7 @@ export default function ReactionGame({ onGameEnd, onScoreChange, onAction, onCom
     });
     const delay = 1000 + Math.random() * 3000;
     waitTimerRef.current = setTimeout(() => {
-      setState(prev => ({ ...prev, gameStatus: 'ready', startTime: Date.now() }));
+      setState((prev) => ({ ...prev, gameStatus: 'ready', startTime: Date.now() }));
     }, delay);
   }, [clearTimers, combo]);
 
@@ -93,7 +98,7 @@ export default function ReactionGame({ onGameEnd, onScoreChange, onAction, onCom
       // Too early
       clearTimers();
       combo.reset();
-      setState(prev => ({ ...prev, gameStatus: 'tooearly' }));
+      setState((prev) => ({ ...prev, gameStatus: 'tooearly' }));
       setFlashColor('rgba(239,68,68,0.4)');
       setFlashActive(true);
       tooEarlyTimerRef.current = setTimeout(() => {
@@ -103,7 +108,7 @@ export default function ReactionGame({ onGameEnd, onScoreChange, onAction, onCom
         if (newRound > TOTAL_ROUNDS) {
           const avg = Math.round(newResults.reduce((a, b) => a + b, 0) / newResults.length);
           const score = Math.max(0, 1000 - avg);
-          setState(prev => ({
+          setState((prev) => ({
             ...prev,
             gameStatus: 'finished',
             results: newResults,
@@ -112,7 +117,7 @@ export default function ReactionGame({ onGameEnd, onScoreChange, onAction, onCom
           onScoreChange(score);
           onGameEnd(score, `평균 ${avg}ms`);
         } else {
-          setState(prev => ({ ...prev, results: newResults, round: newRound }));
+          setState((prev) => ({ ...prev, results: newResults, round: newRound }));
           startWaiting();
         }
       }, 1000);
@@ -139,7 +144,7 @@ export default function ReactionGame({ onGameEnd, onScoreChange, onAction, onCom
         combo.reset();
       }
 
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         gameStatus: 'clicked',
         results: newResults,
@@ -149,7 +154,7 @@ export default function ReactionGame({ onGameEnd, onScoreChange, onAction, onCom
         const avg = Math.round(newResults.reduce((a, b) => a + b, 0) / newResults.length);
         const score = Math.max(0, 1000 - avg);
         setTimeout(() => {
-          setState(prev => ({
+          setState((prev) => ({
             ...prev,
             gameStatus: 'finished',
             averageMs: avg,
@@ -162,7 +167,7 @@ export default function ReactionGame({ onGameEnd, onScoreChange, onAction, onCom
         }, 800);
       } else {
         setTimeout(() => {
-          setState(prev => ({ ...prev, round: newRound }));
+          setState((prev) => ({ ...prev, round: newRound }));
           startWaiting();
         }, 800);
       }
@@ -177,10 +182,14 @@ export default function ReactionGame({ onGameEnd, onScoreChange, onAction, onCom
 
   const getBgClass = () => {
     switch (gameStatus) {
-      case 'ready': return 'bg-emerald-700';
-      case 'tooearly': return 'bg-red-800';
-      case 'clicked': return 'bg-blue-900';
-      default: return 'bg-zinc-800';
+      case 'ready':
+        return 'bg-emerald-700';
+      case 'tooearly':
+        return 'bg-red-800';
+      case 'clicked':
+        return 'bg-blue-900';
+      default:
+        return 'bg-zinc-800';
     }
   };
 
@@ -200,8 +209,12 @@ export default function ReactionGame({ onGameEnd, onScoreChange, onAction, onCom
             <div
               key={i}
               className={[
-                'w-8 h-2 rounded-full',
-                i < results.length ? 'bg-emerald-500' : i === results.length ? 'bg-indigo-400' : 'bg-zinc-600',
+                'h-2 w-8 rounded-full',
+                i < results.length
+                  ? 'bg-emerald-500'
+                  : i === results.length
+                    ? 'bg-indigo-400'
+                    : 'bg-zinc-600',
               ].join(' ')}
             />
           ))}
@@ -211,64 +224,70 @@ export default function ReactionGame({ onGameEnd, onScoreChange, onAction, onCom
       {/* Main click area */}
       <div
         className={[
-          'w-full max-w-sm min-h-[300px] rounded-xl border border-gray-700 flex flex-col items-center justify-center cursor-pointer select-none transition-colors duration-100',
+          'flex min-h-[300px] w-full max-w-sm cursor-pointer select-none flex-col items-center justify-center rounded-xl border border-gray-700 transition-colors duration-100',
           getBgClass(),
         ].join(' ')}
         onClick={handleClick}
       >
         {gameStatus === 'idle' && (
           <div className="text-center">
-            <p className="text-white text-xl font-bold mb-2">반응속도 테스트</p>
-            <p className="text-zinc-400 text-sm">화면이 초록색으로 변하면 클릭하세요</p>
+            <p className="mb-2 text-xl font-bold text-white">반응속도 테스트</p>
+            <p className="text-sm text-zinc-400">화면이 초록색으로 변하면 클릭하세요</p>
           </div>
         )}
         {gameStatus === 'waiting' && (
           <div className="text-center">
-            <p className="text-zinc-300 text-lg">잠시 기다리세요...</p>
-            <p className="text-zinc-500 text-sm mt-2">{round} / {TOTAL_ROUNDS} 라운드</p>
+            <p className="text-lg text-zinc-300">잠시 기다리세요...</p>
+            <p className="mt-2 text-sm text-zinc-500">
+              {round} / {TOTAL_ROUNDS} 라운드
+            </p>
           </div>
         )}
-        {gameStatus === 'ready' && (
-          <p className="text-white text-4xl font-black">지금 클릭!</p>
-        )}
+        {gameStatus === 'ready' && <p className="text-4xl font-black text-white">지금 클릭!</p>}
         {gameStatus === 'tooearly' && (
           <div className="text-center">
-            <p className="text-white text-2xl font-bold">너무 빨라요!</p>
-            <p className="text-zinc-300 text-sm mt-1">페널티: 1000ms</p>
+            <p className="text-2xl font-bold text-white">너무 빨라요!</p>
+            <p className="mt-1 text-sm text-zinc-300">페널티: 1000ms</p>
           </div>
         )}
         {gameStatus === 'clicked' && lastResult !== undefined && (
           <div className="text-center">
-            <p className="text-white text-4xl font-black">{lastResult}ms</p>
-            <p className="text-zinc-300 text-sm mt-1">{round} / {TOTAL_ROUNDS} 라운드</p>
+            <p className="text-4xl font-black text-white">{lastResult}ms</p>
+            <p className="mt-1 text-sm text-zinc-300">
+              {round} / {TOTAL_ROUNDS} 라운드
+            </p>
           </div>
         )}
         {gameStatus === 'finished' && (
           <div className="text-center">
-            <p className="text-zinc-400 text-sm">완료</p>
+            <p className="text-sm text-zinc-400">완료</p>
           </div>
         )}
       </div>
 
       {/* Results */}
       {gameStatus === 'finished' && (
-        <div className="flex flex-col items-center gap-3 bg-gray-900 border border-gray-700 rounded-xl p-5 w-full max-w-sm">
-          <p className="text-white text-2xl font-black">
+        <div className="flex w-full max-w-sm flex-col items-center gap-3 rounded-xl border border-gray-700 bg-gray-900 p-5">
+          <p className="text-2xl font-black text-white">
             {getGradePrefix(averageMs)} {getGrade(averageMs)}
           </p>
-          <p className="text-zinc-300 text-lg">평균: <span className="font-bold text-white">{averageMs}ms</span></p>
+          <p className="text-lg text-zinc-300">
+            평균: <span className="font-bold text-white">{averageMs}ms</span>
+          </p>
           <div className="w-full">
             {results.map((ms, i) => (
-              <div key={i} className="flex justify-between text-sm py-1 border-b border-zinc-700">
+              <div key={i} className="flex justify-between border-b border-zinc-700 py-1 text-sm">
                 <span className="text-zinc-400">{i + 1}라운드</span>
-                <span className={ms >= 1000 ? 'text-red-400' : 'text-white'}>{ms}ms{ms >= 1000 ? ' (페널티)' : ''}</span>
+                <span className={ms >= 1000 ? 'text-red-400' : 'text-white'}>
+                  {ms}ms{ms >= 1000 ? ' (페널티)' : ''}
+                </span>
               </div>
             ))}
           </div>
-          <p className="text-zinc-400 text-sm">점수: {Math.max(0, 1000 - averageMs)}</p>
+          <p className="text-sm text-zinc-400">점수: {Math.max(0, 1000 - averageMs)}</p>
           <button
             onClick={startGame}
-            className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg px-6 py-2 w-full"
+            className="w-full rounded-lg bg-indigo-600 px-6 py-2 text-white hover:bg-indigo-500"
           >
             다시 시작
           </button>
@@ -278,7 +297,7 @@ export default function ReactionGame({ onGameEnd, onScoreChange, onAction, onCom
       {gameStatus === 'idle' && (
         <button
           onClick={startGame}
-          className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg px-6 py-2 font-bold"
+          className="rounded-lg bg-indigo-600 px-6 py-2 font-bold text-white hover:bg-indigo-500"
         >
           게임 시작
         </button>

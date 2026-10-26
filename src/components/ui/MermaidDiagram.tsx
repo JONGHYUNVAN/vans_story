@@ -41,13 +41,13 @@ const MermaidDiagram: React.FC<MermaidDiagramProps> = ({ chart, className = '' }
             secondBkg: '#f5f5f5',
             edgeLabelBackground: '#ffffff',
             clusterBkg: '#f5f5f5',
-            clusterBorder: '#cccccc'
-          }
+            clusterBorder: '#cccccc',
+          },
         });
 
         // 고유한 ID 생성
         const diagramId = `mermaid-diagram-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
-        
+
         // SVG 렌더링
         const { svg: renderedSvg } = await mermaid.render(diagramId, chart);
         setSvg(renderedSvg);
@@ -67,7 +67,7 @@ const MermaidDiagram: React.FC<MermaidDiagramProps> = ({ chart, className = '' }
   if (isLoading) {
     return (
       <div className={`flex items-center justify-center p-8 ${className}`}>
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-500"></div>
         <span className="ml-2 text-gray-600">다이어그램 로딩 중...</span>
       </div>
     );
@@ -75,25 +75,25 @@ const MermaidDiagram: React.FC<MermaidDiagramProps> = ({ chart, className = '' }
 
   if (error) {
     return (
-      <div className={`p-4 bg-red-50 border border-red-200 rounded-lg ${className}`}>
-        <p className="text-red-800 font-medium">다이어그램 렌더링 오류</p>
-        <p className="text-red-600 text-sm mt-1">{error}</p>
+      <div className={`rounded-lg border border-red-200 bg-red-50 p-4 ${className}`}>
+        <p className="font-medium text-red-800">다이어그램 렌더링 오류</p>
+        <p className="mt-1 text-sm text-red-600">{error}</p>
       </div>
     );
   }
 
   return (
-    <div 
-      className={`mermaid-container relative bg-gray-50 border border-gray-300 rounded-lg p-6 my-6 overflow-auto shadow-md ${className}`}
+    <div
+      className={`mermaid-container relative my-6 overflow-auto rounded-lg border border-gray-300 bg-gray-50 p-6 shadow-md ${className}`}
       ref={elementRef}
-      style={{ 
+      style={{
         minHeight: '200px',
         maxWidth: '100%',
-        backgroundColor: '#fafafa'
+        backgroundColor: '#fafafa',
       }}
       dangerouslySetInnerHTML={{ __html: svg }}
     />
   );
 };
 
-export default MermaidDiagram; 
+export default MermaidDiagram;

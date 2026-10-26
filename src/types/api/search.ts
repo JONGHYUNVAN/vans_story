@@ -21,7 +21,7 @@ export interface SearchResult {
   title: string;
   content: string;
   summary: string;
-  theme: string;        // 실제 데이터에 있는 필드
+  theme: string; // 실제 데이터에 있는 필드
   category: string;
   tags: string[];
   author: Author;

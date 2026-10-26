@@ -9,11 +9,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import {
-  stocksThemeTokens,
-  type StocksTheme,
-  type StocksThemeTokens,
-} from './stocksThemeTokens';
+import { stocksThemeTokens, type StocksTheme, type StocksThemeTokens } from './stocksThemeTokens';
 
 const STORAGE_KEY = 'vans-story-stocks-theme';
 

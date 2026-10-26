@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 
 const YAHOO_HEADERS = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+  'User-Agent':
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
   Accept: 'application/json',
   'Accept-Language': 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7',
 };
@@ -25,9 +26,12 @@ function toSnapshot(meta: Record<string, unknown> | null) {
   if (!meta) return null;
   const price = toNumber(meta.regularMarketPrice);
   if (price === null) return null;
-  const prevClose = toNumber(meta.chartPreviousClose) ?? toNumber(meta.regularMarketPreviousClose) ?? 0;
-  const change = toNumber(meta.regularMarketChange) ?? (price - prevClose);
-  const changePercent = toNumber(meta.regularMarketChangePercent) ?? (prevClose !== 0 ? ((price - prevClose) / prevClose) * 100 : 0);
+  const prevClose =
+    toNumber(meta.chartPreviousClose) ?? toNumber(meta.regularMarketPreviousClose) ?? 0;
+  const change = toNumber(meta.regularMarketChange) ?? price - prevClose;
+  const changePercent =
+    toNumber(meta.regularMarketChangePercent) ??
+    (prevClose !== 0 ? ((price - prevClose) / prevClose) * 100 : 0);
   return { price, change, changePercent };
 }
 
@@ -39,9 +43,14 @@ export async function GET() {
       fetchYahooMeta('^KS200'),
     ]);
 
-    const kospiMeta = kospiResult.status === 'fulfilled' ? (kospiResult.value as Record<string, unknown>) : null;
-    const kkFuturesMeta = kkFuturesResult.status === 'fulfilled' ? (kkFuturesResult.value as Record<string, unknown>) : null;
-    const ks200Meta = ks200Result.status === 'fulfilled' ? (ks200Result.value as Record<string, unknown>) : null;
+    const kospiMeta =
+      kospiResult.status === 'fulfilled' ? (kospiResult.value as Record<string, unknown>) : null;
+    const kkFuturesMeta =
+      kkFuturesResult.status === 'fulfilled'
+        ? (kkFuturesResult.value as Record<string, unknown>)
+        : null;
+    const ks200Meta =
+      ks200Result.status === 'fulfilled' ? (ks200Result.value as Record<string, unknown>) : null;
 
     const kospi = toSnapshot(kospiMeta);
     if (!kospi) {
@@ -75,8 +84,11 @@ export async function GET() {
     });
   } catch (err) {
     return NextResponse.json(
-      { success: false, error: { message: 'Failed to fetch KOSPI futures', code: 'INTERNAL_ERROR' } },
-      { status: 500 }
+      {
+        success: false,
+        error: { message: 'Failed to fetch KOSPI futures', code: 'INTERNAL_ERROR' },
+      },
+      { status: 500 },
     );
   }
 }

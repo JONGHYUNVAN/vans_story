@@ -90,12 +90,13 @@ describe('GET /api/stocks/dart', () => {
   it('성공 시 DartDisclosure[] 구조를 올바르게 반환한다', async () => {
     process.env.DART_API_KEY = 'test-api-key';
 
-    const items = [makeDartItem(), makeDartItem({ rcept_no: '20260327000002', report_nm: '분기보고서' })];
+    const items = [
+      makeDartItem(),
+      makeDartItem({ rcept_no: '20260327000002', report_nm: '분기보고서' }),
+    ];
     const mockResponse = makeDartApiResponse('000', items);
 
-    fetchSpy.mockResolvedValueOnce(
-      new Response(JSON.stringify(mockResponse), { status: 200 }),
-    );
+    fetchSpy.mockResolvedValueOnce(new Response(JSON.stringify(mockResponse), { status: 200 }));
 
     const req = new Request('http://localhost/api/stocks/dart?symbol=005930.KS');
     const res = await GET(req as never);
@@ -142,9 +143,7 @@ describe('GET /api/stocks/dart', () => {
     process.env.DART_API_KEY = 'test-api-key';
 
     const mockResponse = makeDartApiResponse('013');
-    fetchSpy.mockResolvedValueOnce(
-      new Response(JSON.stringify(mockResponse), { status: 200 }),
-    );
+    fetchSpy.mockResolvedValueOnce(new Response(JSON.stringify(mockResponse), { status: 200 }));
 
     const req = new Request('http://localhost/api/stocks/dart?symbol=005930.KS');
     const res = await GET(req as never);
@@ -166,9 +165,7 @@ describe('GET /api/stocks/dart', () => {
     );
     const mockResponse = makeDartApiResponse('000', items);
 
-    fetchSpy.mockResolvedValueOnce(
-      new Response(JSON.stringify(mockResponse), { status: 200 }),
-    );
+    fetchSpy.mockResolvedValueOnce(new Response(JSON.stringify(mockResponse), { status: 200 }));
 
     const req = new Request('http://localhost/api/stocks/dart?symbol=005930.KS');
     const res = await GET(req as never);

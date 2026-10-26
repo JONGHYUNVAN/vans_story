@@ -35,4 +35,4 @@ export interface Project {
   architecture: ProjectArchitecture;
   impact: string;
   totalTech: string[];
-} 
+}

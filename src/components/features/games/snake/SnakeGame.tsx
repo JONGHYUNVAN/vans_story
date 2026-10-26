@@ -8,7 +8,9 @@ import { useCombo } from '@/hooks/useCombo';
 import { useGameSize } from '@/hooks/useGameSize';
 import ParticleEffect from '@/components/features/games/effects/ParticleEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
-import GameOverlayController, { Direction as OverlayDirection } from '@/components/features/games/GameOverlayController';
+import GameOverlayController, {
+  Direction as OverlayDirection,
+} from '@/components/features/games/GameOverlayController';
 
 const GRID_SIZE = 20;
 const INITIAL_SPEED = 150;
@@ -41,7 +43,7 @@ function randomFood(snake: Point[]): Point {
       x: Math.floor(Math.random() * GRID_SIZE),
       y: Math.floor(Math.random() * GRID_SIZE),
     };
-  } while (snake.some(s => s.x === pos.x && s.y === pos.y));
+  } while (snake.some((s) => s.x === pos.x && s.y === pos.y));
   return pos;
 }
 
@@ -82,7 +84,12 @@ interface ParticleItem {
   y: number;
 }
 
-export default function SnakeGame({ onGameEnd, onScoreChange, onMove, onCombo }: GameComponentProps) {
+export default function SnakeGame({
+  onGameEnd,
+  onScoreChange,
+  onMove,
+  onCombo,
+}: GameComponentProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [state, setState] = useState<SnakeState>(initialState());
   const stateRef = useRef<SnakeState>(state);
@@ -120,7 +127,7 @@ export default function SnakeGame({ onGameEnd, onScoreChange, onMove, onCombo }:
         const px = prevFood.x * cellSize + cellSize / 2;
         const py = prevFood.y * cellSize + cellSize / 2;
         const id = ++particleIdRef.current;
-        setParticles(prev => [...prev, { id, x: px, y: py }]);
+        setParticles((prev) => [...prev, { id, x: px, y: py }]);
       }
     }
     prevScoreRef.current = state.score;
@@ -239,7 +246,7 @@ export default function SnakeGame({ onGameEnd, onScoreChange, onMove, onCombo }:
         let gameEndScore: number | null = null;
         let ateFoodScore: number | null = null;
         let moved = false;
-        setState(prev => {
+        setState((prev) => {
           if (prev.gameStatus !== 'playing') return prev;
           moved = true;
 
@@ -257,15 +264,13 @@ export default function SnakeGame({ onGameEnd, onScoreChange, onMove, onCombo }:
           }
 
           // 자기 몸 충돌
-          if (prev.snake.slice(1).some(s => s.x === head.x && s.y === head.y)) {
+          if (prev.snake.slice(1).some((s) => s.x === head.x && s.y === head.y)) {
             gameEndScore = prev.score;
             return { ...prev, gameStatus: 'gameover', direction: dir };
           }
 
           const ateFood = head.x === prev.food.x && head.y === prev.food.y;
-          const newSnake = ateFood
-            ? [head, ...prev.snake]
-            : [head, ...prev.snake.slice(0, -1)];
+          const newSnake = ateFood ? [head, ...prev.snake] : [head, ...prev.snake.slice(0, -1)];
 
           const newScore = ateFood ? prev.score + SCORE_PER_FOOD : prev.score;
           if (ateFood) ateFoodScore = newScore;
@@ -273,7 +278,7 @@ export default function SnakeGame({ onGameEnd, onScoreChange, onMove, onCombo }:
           const newFood = ateFood ? randomFood(newSnake) : prev.food;
           const newSpeed = Math.max(
             MIN_SPEED,
-            INITIAL_SPEED - Math.floor(newScore / SCORE_PER_FOOD) * SPEED_INCREMENT
+            INITIAL_SPEED - Math.floor(newScore / SCORE_PER_FOOD) * SPEED_INCREMENT,
           );
 
           return {
@@ -311,7 +316,7 @@ export default function SnakeGame({ onGameEnd, onScoreChange, onMove, onCombo }:
         }
       }, speed);
     },
-    [stopLoop, onGameEnd, onScoreChange, onCombo, playMoveTick, playCombo, playScore, combo]
+    [stopLoop, onGameEnd, onScoreChange, onCombo, playMoveTick, playCombo, playScore, combo],
   );
 
   // 속도 변경 시 루프 재시작
@@ -324,7 +329,7 @@ export default function SnakeGame({ onGameEnd, onScoreChange, onMove, onCombo }:
   }, [state.speed, state.gameStatus]);
 
   const handleStart = useCallback(() => {
-    setState(s => {
+    setState((s) => {
       if (s.gameStatus === 'idle' || s.gameStatus === 'gameover') {
         foodComboRef.current = 0;
         combo.reset();
@@ -343,21 +348,21 @@ export default function SnakeGame({ onGameEnd, onScoreChange, onMove, onCombo }:
 
   const changeDirection = useCallback(
     (newDir: Direction) => {
-      setState(prev => {
+      setState((prev) => {
         if (prev.gameStatus !== 'playing') return prev;
         if (OPPOSITE[newDir] === prev.direction) return prev;
         onMove?.();
         return { ...prev, nextDirection: newDir };
       });
     },
-    [onMove]
+    [onMove],
   );
 
   const handleOverlayDirection = useCallback(
     (dir: OverlayDirection) => {
       changeDirection(dir as Direction);
     },
-    [changeDirection]
+    [changeDirection],
   );
 
   // 키보드 핸들러
@@ -426,16 +431,23 @@ export default function SnakeGame({ onGameEnd, onScoreChange, onMove, onCombo }:
 
   const buttonLabel = () => {
     switch (state.gameStatus) {
-      case 'idle': return '시작';
-      case 'playing': return '일시정지';
-      case 'paused': return '계속하기';
-      case 'gameover': return '다시 시작';
+      case 'idle':
+        return '시작';
+      case 'playing':
+        return '일시정지';
+      case 'paused':
+        return '계속하기';
+      case 'gameover':
+        return '다시 시작';
     }
   };
 
   return (
     <div className="flex flex-col items-center gap-4">
-      <div className="flex items-center gap-6" style={{ width: size.ready ? size.width : undefined, maxWidth: 520 }}>
+      <div
+        className="flex items-center gap-6"
+        style={{ width: size.ready ? size.width : undefined, maxWidth: 520 }}
+      >
         <div className="text-center">
           <p className="text-xs text-zinc-500">점수</p>
           <p className="text-2xl font-black text-white">{state.score}</p>
@@ -472,14 +484,14 @@ export default function SnakeGame({ onGameEnd, onScoreChange, onMove, onCombo }:
             duration={400}
             onDone={() => setFlashActive(false)}
           />
-          {particles.map(p => (
+          {particles.map((p) => (
             <ParticleEffect
               key={p.id}
               x={p.x}
               y={p.y}
               color="#34d399"
               count={8}
-              onDone={() => setParticles(prev => prev.filter(pt => pt.id !== p.id))}
+              onDone={() => setParticles((prev) => prev.filter((pt) => pt.id !== p.id))}
             />
           ))}
         </div>
@@ -494,12 +506,14 @@ export default function SnakeGame({ onGameEnd, onScoreChange, onMove, onCombo }:
 
       <button
         onClick={handleStart}
-        className="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-semibold transition-colors"
+        className="rounded-lg bg-indigo-600 px-6 py-2 font-semibold text-white transition-colors hover:bg-indigo-500"
       >
         {buttonLabel()}
       </button>
 
-      <p className="text-xs text-zinc-600">방향키로 이동 · Space로 일시정지 · 모바일: 스와이프 또는 D-패드</p>
+      <p className="text-xs text-zinc-600">
+        방향키로 이동 · Space로 일시정지 · 모바일: 스와이프 또는 D-패드
+      </p>
     </div>
   );
 }

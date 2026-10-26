@@ -13,8 +13,8 @@ function calcLevel(count: number): number {
   if (count >= 20) return 5;
   if (count >= 15) return 4;
   if (count >= 10) return 3;
-  if (count >= 6)  return 2;
-  if (count >= 3)  return 1;
+  if (count >= 6) return 2;
+  if (count >= 3) return 1;
   return 0;
 }
 
@@ -23,8 +23,12 @@ export function useCombo(): UseComboReturn {
   const comboLevelRef = useRef(0);
 
   const proxy = useRef<UseComboReturn>({
-    get comboCount() { return comboCountRef.current; },
-    get comboLevel() { return comboLevelRef.current; },
+    get comboCount() {
+      return comboCountRef.current;
+    },
+    get comboLevel() {
+      return comboLevelRef.current;
+    },
     increment() {
       comboCountRef.current += 1;
       const newLevel = calcLevel(comboCountRef.current);

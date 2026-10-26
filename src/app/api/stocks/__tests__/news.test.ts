@@ -53,7 +53,10 @@ function urlOf(input: Parameters<typeof fetch>[0]): string {
 }
 
 /** Yahoo RSS / Google News RSS 요청을 URL로 구분해 응답하는 fetch mock. 문자열은 XML 본문, 숫자는 HTTP 실패 상태 */
-function mockRss(spy: MockInstance<typeof fetch>, feeds: { yahoo?: string | number; google?: string | number }) {
+function mockRss(
+  spy: MockInstance<typeof fetch>,
+  feeds: { yahoo?: string | number; google?: string | number },
+) {
   spy.mockImplementation(async (input) => {
     const url = urlOf(input);
     const pick = url.includes('feeds.finance.yahoo.com')
@@ -126,8 +129,14 @@ describe('GET /api/stocks/news', () => {
 
     const urls = fetchSpy.mock.calls.map(([input]) => urlOf(input));
     expect(urls).toHaveLength(2);
-    expect(urls.some((u) => u.includes('feeds.finance.yahoo.com') && u.includes('s=AAPL'))).toBe(true);
-    expect(urls.some((u) => u.includes('news.google.com') && u.includes(encodeURIComponent('AAPL stock')))).toBe(true);
+    expect(urls.some((u) => u.includes('feeds.finance.yahoo.com') && u.includes('s=AAPL'))).toBe(
+      true,
+    );
+    expect(
+      urls.some(
+        (u) => u.includes('news.google.com') && u.includes(encodeURIComponent('AAPL stock')),
+      ),
+    ).toBe(true);
   });
 
   // ----------------------------------------------------------
@@ -182,7 +191,9 @@ describe('GET /api/stocks/news', () => {
 
     expect(res.status).toBe(200);
     expect(body.data.news).toHaveLength(3);
-    const byTitle = Object.fromEntries(body.data.news.map((n: { title: string; source: string }) => [n.title, n.source]));
+    const byTitle = Object.fromEntries(
+      body.data.news.map((n: { title: string; source: string }) => [n.title, n.source]),
+    );
     expect(byTitle).toEqual({
       'Alpha earnings beat': 'Yahoo Finance',
       'Beta guidance cut': 'Yahoo Finance', // Yahoo 항목이 먼저 들어오므로 Yahoo 것이 남는다
@@ -192,7 +203,10 @@ describe('GET /api/stocks/news', () => {
 
   it('뉴스를 pubDate 역순(최신 먼저)으로 정렬한다', async () => {
     mockRss(fetchSpy, {
-      yahoo: yahooFeed(['Older', 'Newer'], ['Mon, 23 Mar 2026 09:00:00 +0000', 'Fri, 27 Mar 2026 09:00:00 +0000']),
+      yahoo: yahooFeed(
+        ['Older', 'Newer'],
+        ['Mon, 23 Mar 2026 09:00:00 +0000', 'Fri, 27 Mar 2026 09:00:00 +0000'],
+      ),
       google: EMPTY_RSS,
     });
 
@@ -227,7 +241,9 @@ describe('GET /api/stocks/news', () => {
     // ^IXIC → 영문/한글 쿼리 2개
     mockRss(fetchSpy, { google: makeRssXml(titles(1, 'Nasdaq')) });
 
-    const req = new Request(`http://localhost/api/stocks/news?symbol=${encodeURIComponent('^IXIC')}`);
+    const req = new Request(
+      `http://localhost/api/stocks/news?symbol=${encodeURIComponent('^IXIC')}`,
+    );
     const res = await GET(req as never);
 
     expect(res.status).toBe(200);

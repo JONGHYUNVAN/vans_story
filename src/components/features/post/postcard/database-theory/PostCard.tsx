@@ -1,6 +1,6 @@
 'use client';
 
-import { PostInfo } from "@/types/post";
+import { PostInfo } from '@/types/post';
 import { TbDatabase } from 'react-icons/tb';
 import { useTranslation } from '@/lib/i18n';
 
@@ -13,21 +13,21 @@ export default function PostCard({ post, renderBadge }: PostCardProps) {
   const { t } = useTranslation('');
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
+    <div className="rounded-lg border border-gray-200 bg-white p-6 transition-shadow hover:shadow-lg">
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <div className="flex items-center gap-2 mb-2">
-            <TbDatabase className="w-5 h-5 text-gray-700" />
+          <div className="mb-2 flex items-center gap-2">
+            <TbDatabase className="h-5 w-5 text-gray-700" />
             <span className="text-sm text-gray-600">{post.topic}</span>
           </div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">{post.title}</h2>
-          <p className="text-gray-600 mb-4 line-clamp-2">{post.description}</p>
-          
-          <div className="flex flex-wrap gap-2 mb-4">
+          <h2 className="mb-2 text-xl font-semibold text-gray-900">{post.title}</h2>
+          <p className="mb-4 line-clamp-2 text-gray-600">{post.description}</p>
+
+          <div className="mb-4 flex flex-wrap gap-2">
             {post.tags.map((tag, index) => (
-              <span 
+              <span
                 key={index}
-                className="px-2 py-1 bg-gray-100 text-gray-700 text-sm rounded-full"
+                className="rounded-full bg-gray-100 px-2 py-1 text-sm text-gray-700"
               >
                 {tag}
               </span>
@@ -44,13 +44,9 @@ export default function PostCard({ post, renderBadge }: PostCardProps) {
             </div>
           </div>
         </div>
-        
-        {renderBadge && (
-          <div className="ml-4">
-            {renderBadge()}
-          </div>
-        )}
+
+        {renderBadge && <div className="ml-4">{renderBadge()}</div>}
       </div>
     </div>
   );
-} 
+}

@@ -17,19 +17,23 @@ export async function generateMetadata() {
 
 export default function AboutVanPage() {
   return (
-    <div className="min-h-screen bg-black transition-colors duration-300 relative">
+    <div className="relative min-h-screen bg-black transition-colors duration-300">
       {/* Left Side Background */}
-      <div className="fixed left-0 top-0 w-1/6 h-full bg-gradient-to-r from-black via-gray-900 to-transparent opacity-80 z-0"></div>
-      
+      <div className="fixed left-0 top-0 z-0 h-full w-1/6 bg-gradient-to-r from-black via-gray-900 to-transparent opacity-80"></div>
+
       {/* Right Side Background */}
-      <div className="fixed right-0 top-0 w-1/6 h-full bg-gradient-to-l from-black via-gray-900 to-transparent opacity-80 z-0"></div>
-      
+      <div className="fixed right-0 top-0 z-0 h-full w-1/6 bg-gradient-to-l from-black via-gray-900 to-transparent opacity-80"></div>
+
       {/* Main Content */}
       <div className="relative z-10">
-        <div className="w-full max-w-6xl mx-auto px-12 py-16 bg-white dark:bg-gray-900 min-h-screen shadow-2xl">
-          <Suspense fallback={<div className="flex items-center justify-center min-h-screen">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-white"></div>
-          </div>}>
+        <div className="mx-auto min-h-screen w-full max-w-6xl bg-white px-12 py-16 shadow-2xl dark:bg-gray-900">
+          <Suspense
+            fallback={
+              <div className="flex min-h-screen items-center justify-center">
+                <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-gray-900 dark:border-white"></div>
+              </div>
+            }
+          >
             <div id="hero">
               <HeroSection />
             </div>
@@ -53,4 +57,4 @@ export default function AboutVanPage() {
       </div>
     </div>
   );
-} 
+}

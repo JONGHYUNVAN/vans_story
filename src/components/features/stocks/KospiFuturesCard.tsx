@@ -44,10 +44,10 @@ export function KospiFuturesCard() {
 
   if (isLoading) {
     return (
-      <div className="rounded-xl border border-zinc-700/50 bg-zinc-900/60 p-4 animate-pulse">
-        <div className="h-4 w-28 bg-zinc-700 rounded mb-2" />
-        <div className="h-7 w-20 bg-zinc-700 rounded mb-1" />
-        <div className="h-3 w-16 bg-zinc-700 rounded" />
+      <div className="animate-pulse rounded-xl border border-zinc-700/50 bg-zinc-900/60 p-4">
+        <div className="mb-2 h-4 w-28 rounded bg-zinc-700" />
+        <div className="mb-1 h-7 w-20 rounded bg-zinc-700" />
+        <div className="h-3 w-16 rounded bg-zinc-700" />
       </div>
     );
   }
@@ -63,41 +63,47 @@ export function KospiFuturesCard() {
   const futuresColorClass = futuresIsUp ? 'text-rose-400' : 'text-sky-400';
 
   return (
-    <div className="rounded-xl border border-zinc-700/50 bg-zinc-900/60 p-4 space-y-3">
+    <div className="space-y-3 rounded-xl border border-zinc-700/50 bg-zinc-900/60 p-4">
       <div className="flex items-start justify-between gap-2">
         <div>
           <p className="text-sm font-semibold text-zinc-100">{data.label}</p>
           <p className="text-[11px] text-zinc-500">{data.sublabel}</p>
         </div>
         <div className="text-right">
-          <p className="text-lg font-bold text-zinc-100 tabular-nums">
+          <p className="text-lg font-bold tabular-nums text-zinc-100">
             {data.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}
           </p>
           <p className={`text-xs font-medium tabular-nums ${colorClass}`}>
-            {sign}{data.change.toFixed(2)} ({sign}{data.changePercent.toFixed(2)}%)
+            {sign}
+            {data.change.toFixed(2)} ({sign}
+            {data.changePercent.toFixed(2)}%)
           </p>
         </div>
       </div>
 
-      <div className="pt-3 border-t border-zinc-700/50">
+      <div className="border-t border-zinc-700/50 pt-3">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <p className="text-xs font-semibold text-zinc-300">{futures?.label ?? '야간 선물 지수'}</p>
+            <p className="text-xs font-semibold text-zinc-300">
+              {futures?.label ?? '야간 선물 지수'}
+            </p>
             <p className="text-[10px] text-zinc-500">{futures?.sublabel ?? '데이터 소스 없음'}</p>
           </div>
           <div className="text-right">
             {futures ? (
               <>
-                <p className="text-sm font-semibold text-zinc-100 tabular-nums">
+                <p className="text-sm font-semibold tabular-nums text-zinc-100">
                   {futures.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}
                 </p>
                 <p className={`text-[11px] font-medium tabular-nums ${futuresColorClass}`}>
-                  {futuresSign}{futures.change.toFixed(2)} ({futuresSign}{futures.changePercent.toFixed(2)}%)
+                  {futuresSign}
+                  {futures.change.toFixed(2)} ({futuresSign}
+                  {futures.changePercent.toFixed(2)}%)
                 </p>
               </>
             ) : (
               <>
-                <p className="text-sm font-semibold text-zinc-400 tabular-nums">—</p>
+                <p className="text-sm font-semibold tabular-nums text-zinc-400">—</p>
                 <p className="text-[11px] font-medium text-zinc-500">데이터 없음</p>
               </>
             )}

@@ -16,9 +16,9 @@ const experiencesKo = [
       'Spring Boot 기반 RESTful API 설계 및 구현',
       'JPA를 이용한 ORM 매핑 및 관계형 DB 모델링 실습',
       'AWS 및 Docker를 활용한 개발·배포 환경 구성',
-      'TDD, 예외 처리, 로깅 등 실무 중심 백엔드 설계 능력 습득'
+      'TDD, 예외 처리, 로깅 등 실무 중심 백엔드 설계 능력 습득',
     ],
-    tech: ['Java', 'Spring Boot', 'JPA', 'MySQL', 'Git', 'AWS', 'Docker', 'TDD']
+    tech: ['Java', 'Spring Boot', 'JPA', 'MySQL', 'Git', 'AWS', 'Docker', 'TDD'],
   },
   {
     id: 2,
@@ -32,9 +32,9 @@ const experiencesKo = [
       '2개월간의 직무교육과 3개월 현장실습을 통한 프로젝트 수행',
       '팀 프로젝트 개발 및 결과물 산출',
       'Spring 기반 REST API 설계 및 클라우드 인프라 구성 경험',
-      '현업 개발자 멘토링을 통한 기술 역량 및 협업 능력 향상'
+      '현업 개발자 멘토링을 통한 기술 역량 및 협업 능력 향상',
     ],
-    tech: ['Java', 'Spring Boot', 'JavaScript', 'MySQL', 'Git', 'AWS', 'Docker']
+    tech: ['Java', 'Spring Boot', 'JavaScript', 'MySQL', 'Git', 'AWS', 'Docker'],
   },
   {
     id: 3,
@@ -48,9 +48,9 @@ const experiencesKo = [
       'A팀 팀장으로 프로젝트 일정 조율 및 팀원 역할 분담',
       'Spring Boot 기반 백엔드 아키텍처 설계 및 API 구현',
       'MySQL을 활용한 데이터베이스 모델링 및 쿼리 최적화',
-      'Next.js 및 NestJS 연동을 통한 풀스택 시스템 개발 완료'
+      'Next.js 및 NestJS 연동을 통한 풀스택 시스템 개발 완료',
     ],
-    tech: ['Java', 'Spring Boot', 'MySQL', 'Git', 'AWS']
+    tech: ['Java', 'Spring Boot', 'MySQL', 'Git', 'AWS'],
   },
   {
     id: 4,
@@ -64,10 +64,10 @@ const experiencesKo = [
       'C# 기반 전자의무기록(EMR) 시스템 유지보수 및 기능 개선',
       '진료, 간호, 수술 등 의료 현장 요구에 따른 서식 신규 생성 및 개정',
       '병원 내 정보관리팀 및 사용자와의 협업을 통한 요구사항 분석',
-      '오류 수정, UI 개선, 버전 배포 등 안정적인 시스템 운영 지원'
+      '오류 수정, UI 개선, 버전 배포 등 안정적인 시스템 운영 지원',
     ],
-    tech: ['C#', '.NET Framework', 'WinForms', 'Oracle']
-  }
+    tech: ['C#', '.NET Framework', 'WinForms', 'Oracle'],
+  },
 ];
 
 const experiencesEn = [
@@ -83,9 +83,9 @@ const experiencesEn = [
       'Spring Boot-based RESTful API design and implementation',
       'ORM mapping using JPA and relational DB modeling practice',
       'Development and deployment environment configuration using AWS and Docker',
-      'Acquired practical-oriented backend design skills including TDD, exception handling, and logging'
+      'Acquired practical-oriented backend design skills including TDD, exception handling, and logging',
     ],
-    tech: ['Java', 'Spring Boot', 'JPA', 'MySQL', 'Git', 'AWS', 'Docker', 'TDD']
+    tech: ['Java', 'Spring Boot', 'JPA', 'MySQL', 'Git', 'AWS', 'Docker', 'TDD'],
   },
   {
     id: 2,
@@ -99,9 +99,9 @@ const experiencesEn = [
       'Project execution through 2 months of job training and 3 months of field practice',
       'Team project development and deliverable production',
       'Experience in Spring-based REST API design and cloud infrastructure configuration',
-      'Enhanced technical capabilities and collaboration skills through industry developer mentoring'
+      'Enhanced technical capabilities and collaboration skills through industry developer mentoring',
     ],
-    tech: ['Java', 'Spring Boot', 'JavaScript', 'MySQL', 'Git', 'AWS', 'Docker']
+    tech: ['Java', 'Spring Boot', 'JavaScript', 'MySQL', 'Git', 'AWS', 'Docker'],
   },
   {
     id: 3,
@@ -115,9 +115,9 @@ const experiencesEn = [
       'Project schedule coordination and team member role assignment as Team A leader',
       'Spring Boot-based backend architecture design and API implementation',
       'Database modeling and query optimization using MySQL',
-      'Full-stack system development completion through Next.js and NestJS integration'
+      'Full-stack system development completion through Next.js and NestJS integration',
     ],
-    tech: ['Java', 'Spring Boot', 'MySQL', 'Git', 'AWS']
+    tech: ['Java', 'Spring Boot', 'MySQL', 'Git', 'AWS'],
   },
   {
     id: 4,
@@ -131,10 +131,10 @@ const experiencesEn = [
       'C#-based Electronic Medical Record (EMR) system maintenance and functional improvement',
       'New form creation and revision according to medical field requirements for treatment, nursing, surgery, etc.',
       'Requirements analysis through collaboration with hospital information management team and users',
-      'Stable system operation support including error correction, UI improvement, and version deployment'
+      'Stable system operation support including error correction, UI improvement, and version deployment',
     ],
-    tech: ['C#', '.NET Framework', 'WinForms', 'Oracle']
-  }
+    tech: ['C#', '.NET Framework', 'WinForms', 'Oracle'],
+  },
 ];
 
 export function ExperienceSection() {
@@ -145,14 +145,14 @@ export function ExperienceSection() {
   const experiences = locale === 'ko' ? experiencesKo : experiencesEn;
 
   return (
-    <section className="py-20 border-b border-gray-200 dark:border-gray-800">
+    <section className="border-b border-gray-200 py-20 dark:border-gray-800">
       <div className="space-y-12">
         {/* Section Header */}
         <div className="space-y-4">
-          <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white">
+          <h2 className="text-3xl font-bold text-gray-900 md:text-5xl dark:text-white">
             {t('AboutVan.experience.title')}
           </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl">
+          <p className="max-w-2xl text-lg text-gray-600 dark:text-gray-400">
             {t('AboutVan.experience.description')}
           </p>
         </div>
@@ -163,10 +163,10 @@ export function ExperienceSection() {
             <button
               key={exp.id}
               onClick={() => setSelectedIndex(index)}
-              className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+              className={`border-b-2 px-4 py-2 text-sm font-medium transition-colors ${
                 selectedIndex === index
-                  ? 'border-gray-900 dark:border-white text-gray-900 dark:text-white'
-                  : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                  ? 'border-gray-900 text-gray-900 dark:border-white dark:text-white'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
               }`}
             >
               {exp.company}
@@ -189,7 +189,7 @@ export function ExperienceSection() {
             </div>
           </div>
 
-          <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+          <p className="leading-relaxed text-gray-700 dark:text-gray-300">
             {experiences[selectedIndex].description}
           </p>
 
@@ -201,7 +201,7 @@ export function ExperienceSection() {
             <ul className="space-y-2">
               {experiences[selectedIndex].achievements.map((achievement, index) => (
                 <li key={index} className="flex items-start gap-3">
-                  <span className="text-gray-400 mt-1.5 text-sm">•</span>
+                  <span className="mt-1.5 text-sm text-gray-400">•</span>
                   <span className="text-gray-700 dark:text-gray-300">{achievement}</span>
                 </li>
               ))}
@@ -217,7 +217,7 @@ export function ExperienceSection() {
               {experiences[selectedIndex].tech.map((tech) => (
                 <span
                   key={tech}
-                  className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full"
+                  className="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700 dark:bg-gray-800 dark:text-gray-300"
                 >
                   {tech}
                 </span>
@@ -228,4 +228,4 @@ export function ExperienceSection() {
       </div>
     </section>
   );
-} 
+}

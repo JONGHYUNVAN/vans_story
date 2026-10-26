@@ -14,7 +14,7 @@ interface I18nState {
  * @type {I18nState}
  */
 const initialState: I18nState = {
-  locale: 'ko', 
+  locale: 'ko',
 };
 
 /**
@@ -41,4 +41,4 @@ const i18nSlice = createSlice({
 export const { setLocale } = i18nSlice.actions;
 
 // reducer 내보내기
-export default i18nSlice.reducer; 
+export default i18nSlice.reducer;

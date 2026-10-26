@@ -84,9 +84,11 @@ export default function MarketStatusBadge({ state, market }: MarketStatusBadgePr
   const cfg = getBadgeConfig(state, market);
   const flag = market === 'kr' ? '🇰🇷' : '🇺🇸';
   return (
-    <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full ${cfg.badgeClass}`}>
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${cfg.badgeClass}`}
+    >
       <span
-        className={`w-1.5 h-1.5 rounded-full ${cfg.dotClass} ${cfg.showPulse ? 'animate-pulse' : ''}`}
+        className={`h-1.5 w-1.5 rounded-full ${cfg.dotClass} ${cfg.showPulse ? 'animate-pulse' : ''}`}
       />
       <span
         aria-hidden

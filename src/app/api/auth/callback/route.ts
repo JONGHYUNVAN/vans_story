@@ -7,12 +7,9 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(request: NextRequest) {
   try {
     const { code } = await request.json();
-    
+
     if (!code) {
-      return NextResponse.json(
-        { error: '임시 코드가 필요합니다.' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: '임시 코드가 필요합니다.' }, { status: 400 });
     }
 
     // 백엔드 서버로 임시 코드 전달하여 JWT 토큰 교환
@@ -31,7 +28,7 @@ export async function POST(request: NextRequest) {
       console.error('Backend token exchange failed:', errorText);
       return NextResponse.json(
         { error: '토큰 교환에 실패했습니다.' },
-        { status: exchangeResponse.status }
+        { status: exchangeResponse.status },
       );
     }
 
@@ -42,7 +39,7 @@ export async function POST(request: NextRequest) {
     if (!jwtToken) {
       return NextResponse.json(
         { error: '백엔드에서 JWT 토큰을 받지 못했습니다.' },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -50,7 +47,7 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json({
       success: true,
       token: jwtToken,
-      message: '토큰 교환이 완료되었습니다.'
+      message: '토큰 교환이 완료되었습니다.',
     });
 
     // 백엔드의 쿠키를 프론트엔드로 전달
@@ -60,12 +57,8 @@ export async function POST(request: NextRequest) {
     }
 
     return response;
-
   } catch (error) {
     console.error('OAuth callback API error:', error);
-    return NextResponse.json(
-      { error: '서버 오류가 발생했습니다.' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: '서버 오류가 발생했습니다.' }, { status: 500 });
   }
-} 
+}

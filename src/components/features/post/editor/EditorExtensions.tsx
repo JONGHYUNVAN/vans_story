@@ -1,80 +1,79 @@
-'use client'
-import StarterKit from '@tiptap/starter-kit'
-import Image from '@tiptap/extension-image'
-import Link from '@tiptap/extension-link'
-import TextAlign from '@tiptap/extension-text-align'
-import Underline from '@tiptap/extension-underline'
-import { TextStyle as TextStyleExtension, FontSize } from '@tiptap/extension-text-style'
-import Color from '@tiptap/extension-color'
-import FontFamily from '@tiptap/extension-font-family'
-import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
-import Highlight from '@tiptap/extension-highlight'
-import { createLowlight } from 'lowlight'
-import js from 'highlight.js/lib/languages/javascript'
-import java from 'highlight.js/lib/languages/java'
-import python from 'highlight.js/lib/languages/python'
-import typescript from 'highlight.js/lib/languages/typescript'
-import xml from 'highlight.js/lib/languages/xml'
-import css from 'highlight.js/lib/languages/css'
-import kotlin from 'highlight.js/lib/languages/kotlin'
+'use client';
+import StarterKit from '@tiptap/starter-kit';
+import Image from '@tiptap/extension-image';
+import Link from '@tiptap/extension-link';
+import TextAlign from '@tiptap/extension-text-align';
+import Underline from '@tiptap/extension-underline';
+import { TextStyle as TextStyleExtension, FontSize } from '@tiptap/extension-text-style';
+import Color from '@tiptap/extension-color';
+import FontFamily from '@tiptap/extension-font-family';
+import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
+import Highlight from '@tiptap/extension-highlight';
+import { createLowlight } from 'lowlight';
+import js from 'highlight.js/lib/languages/javascript';
+import java from 'highlight.js/lib/languages/java';
+import python from 'highlight.js/lib/languages/python';
+import typescript from 'highlight.js/lib/languages/typescript';
+import xml from 'highlight.js/lib/languages/xml';
+import css from 'highlight.js/lib/languages/css';
+import kotlin from 'highlight.js/lib/languages/kotlin';
 import sql from 'highlight.js/lib/languages/sql';
-import { Table, TableRow, TableCell, TableHeader } from '@tiptap/extension-table'
-import cpp from 'highlight.js/lib/languages/cpp'
-import csharp from 'highlight.js/lib/languages/csharp'
-import rust from 'highlight.js/lib/languages/rust'
-import go from 'highlight.js/lib/languages/go'
-import ruby from 'highlight.js/lib/languages/ruby'
-import swift from 'highlight.js/lib/languages/swift'
-import php from 'highlight.js/lib/languages/php'
-import json from 'highlight.js/lib/languages/json'
-import yaml from 'highlight.js/lib/languages/yaml'
-import bash from 'highlight.js/lib/languages/bash'
-import markdown from 'highlight.js/lib/languages/markdown'
-import Youtube from '@tiptap/extension-youtube'
-import { Extension, Editor } from '@tiptap/core'
-import { RawCommands } from '@tiptap/core'
-import { ResizableDraggableImage } from './ResizableDraggableImage'
-import { AiDiffBlock } from './AiDiffBlockExtension'
+import { Table, TableRow, TableCell, TableHeader } from '@tiptap/extension-table';
+import cpp from 'highlight.js/lib/languages/cpp';
+import csharp from 'highlight.js/lib/languages/csharp';
+import rust from 'highlight.js/lib/languages/rust';
+import go from 'highlight.js/lib/languages/go';
+import ruby from 'highlight.js/lib/languages/ruby';
+import swift from 'highlight.js/lib/languages/swift';
+import php from 'highlight.js/lib/languages/php';
+import json from 'highlight.js/lib/languages/json';
+import yaml from 'highlight.js/lib/languages/yaml';
+import bash from 'highlight.js/lib/languages/bash';
+import markdown from 'highlight.js/lib/languages/markdown';
+import Youtube from '@tiptap/extension-youtube';
+import { Extension, Editor } from '@tiptap/core';
+import { RawCommands } from '@tiptap/core';
+import { ResizableDraggableImage } from './ResizableDraggableImage';
+import { AiDiffBlock } from './AiDiffBlockExtension';
 
-
-const lowlight = createLowlight()
-lowlight.register('js', js)
-lowlight.register('javascript', js)
-lowlight.register('typescript', typescript)
-lowlight.register('html', xml)
-lowlight.register('xml', xml)
-lowlight.register('css', css)
-lowlight.register('python', python)
-lowlight.register('java', java)
-lowlight.register('kotlin', kotlin)
-lowlight.register('python', python)
+const lowlight = createLowlight();
+lowlight.register('js', js);
+lowlight.register('javascript', js);
+lowlight.register('typescript', typescript);
+lowlight.register('html', xml);
+lowlight.register('xml', xml);
+lowlight.register('css', css);
+lowlight.register('python', python);
+lowlight.register('java', java);
+lowlight.register('kotlin', kotlin);
+lowlight.register('python', python);
 lowlight.register('sql', sql);
-lowlight.register('cpp', cpp)
-lowlight.register('csharp', csharp)
-lowlight.register('rust', rust)
-lowlight.register('go', go)
-lowlight.register('ruby', ruby)
-lowlight.register('swift', swift)
-lowlight.register('php', php)
-lowlight.register('json', json)
-lowlight.register('yaml', yaml)
-lowlight.register('bash', bash)
-lowlight.register('markdown', markdown)
+lowlight.register('cpp', cpp);
+lowlight.register('csharp', csharp);
+lowlight.register('rust', rust);
+lowlight.register('go', go);
+lowlight.register('ruby', ruby);
+lowlight.register('swift', swift);
+lowlight.register('php', php);
+lowlight.register('json', json);
+lowlight.register('yaml', yaml);
+lowlight.register('bash', bash);
+lowlight.register('markdown', markdown);
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     uploadImage: {
-      uploadImage: (url: string) => ReturnType
-    }
+      uploadImage: (url: string) => ReturnType;
+    };
     resizableDraggableImage: {
       setResizableDraggableImage: (options: {
-        src: string
-        width?: string
-        height?: string
-        class?: string
-        'data-local'?: string
-      }) => ReturnType
-    }
+        src: string;
+        width?: string;
+        height?: string;
+        class?: string;
+        'data-local'?: string;
+      }) => ReturnType;
+    };
   }
 }
 
@@ -97,10 +96,10 @@ const CustomImage = Image.extend({
       },
       class: {
         default: 'float-none',
-      }
-    }
-  }
-})
+      },
+    };
+  },
+});
 
 export const EditorExtensions = [
   // 기본적인 편집 기능들을 포함하는 확장 모음
@@ -174,7 +173,7 @@ export const EditorExtensions = [
     lastColumnResizable: true,
     allowTableNodeSelection: true,
     HTMLAttributes: {
-      style: 'margin-left: auto; margin-right: auto;'
+      style: 'margin-left: auto; margin-right: auto;',
     },
   }),
   TableRow,
@@ -193,4 +192,4 @@ export const EditorExtensions = [
   }),
   // AI Diff Block 확장
   AiDiffBlock,
-]
+];

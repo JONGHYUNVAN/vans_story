@@ -8,17 +8,61 @@ import { useScreenShake } from '@/hooks/useScreenShake';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 
 const WORDS = [
-  'array', 'async', 'await', 'build', 'cache',
-  'class', 'clone', 'const', 'crash', 'debug',
-  'defer', 'error', 'fetch', 'final', 'float',
-  'frame', 'graph', 'hooks', 'index', 'input',
-  'light', 'linux', 'local', 'loops', 'merge',
-  'modal', 'mount', 'mutex', 'nginx', 'nodes',
-  'oauth', 'often', 'patch', 'proxy', 'query',
-  'queue', 'realm', 'redux', 'regex', 'repos',
-  'route', 'scope', 'setup', 'stack', 'state',
-  'store', 'style', 'swift', 'token', 'types',
-  'union', 'vague', 'valid', 'value', 'watch',
+  'array',
+  'async',
+  'await',
+  'build',
+  'cache',
+  'class',
+  'clone',
+  'const',
+  'crash',
+  'debug',
+  'defer',
+  'error',
+  'fetch',
+  'final',
+  'float',
+  'frame',
+  'graph',
+  'hooks',
+  'index',
+  'input',
+  'light',
+  'linux',
+  'local',
+  'loops',
+  'merge',
+  'modal',
+  'mount',
+  'mutex',
+  'nginx',
+  'nodes',
+  'oauth',
+  'often',
+  'patch',
+  'proxy',
+  'query',
+  'queue',
+  'realm',
+  'redux',
+  'regex',
+  'repos',
+  'route',
+  'scope',
+  'setup',
+  'stack',
+  'state',
+  'store',
+  'style',
+  'swift',
+  'token',
+  'types',
+  'union',
+  'vague',
+  'valid',
+  'value',
+  'watch',
 ];
 
 const QWERTY_ROWS = [
@@ -36,7 +80,7 @@ interface GuessResult {
 }
 
 function evaluateGuess(guess: string[], answer: string): GuessResult[] {
-  const result: GuessResult[] = guess.map(l => ({ letter: l, status: 'absent' as LetterStatus }));
+  const result: GuessResult[] = guess.map((l) => ({ letter: l, status: 'absent' as LetterStatus }));
   const answerArr = answer.split('');
   const used = Array(5).fill(false);
 
@@ -65,7 +109,12 @@ function randomWord(): string {
   return WORDS[Math.floor(Math.random() * WORDS.length)];
 }
 
-export default function WordleGame({ onGameEnd, onScoreChange, onKeyClick, onCombo }: GameComponentProps) {
+export default function WordleGame({
+  onGameEnd,
+  onScoreChange,
+  onKeyClick,
+  onCombo,
+}: GameComponentProps) {
   const [answer, setAnswer] = useState(() => randomWord());
   const [guesses, setGuesses] = useState<GuessResult[][]>([]);
   const [currentGuess, setCurrentGuess] = useState<string[]>([]);
@@ -113,7 +162,7 @@ export default function WordleGame({ onGameEnd, onScoreChange, onKeyClick, onCom
     setLetterStatus(newLetterStatus);
 
     // 콤보 처리 - 정확 글자 수 기반
-    const correctCount = result.filter(r => r.status === 'correct').length;
+    const correctCount = result.filter((r) => r.status === 'correct').length;
     if (correctCount > 0) {
       for (let i = 0; i < correctCount; i++) {
         const prevLevel = combo.comboLevel;
@@ -137,7 +186,18 @@ export default function WordleGame({ onGameEnd, onScoreChange, onKeyClick, onCom
       onGameEnd(0, '실패');
       setMessage(`정답: ${answer.toUpperCase()}`);
     }
-  }, [currentGuess, guesses, answer, letterStatus, onGameEnd, onScoreChange, onCombo, playSelect, combo, triggerShake]);
+  }, [
+    currentGuess,
+    guesses,
+    answer,
+    letterStatus,
+    onGameEnd,
+    onScoreChange,
+    onCombo,
+    playSelect,
+    combo,
+    triggerShake,
+  ]);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -147,28 +207,31 @@ export default function WordleGame({ onGameEnd, onScoreChange, onKeyClick, onCom
         submitGuess();
       } else if (key === 'backspace') {
         playKeyClick();
-        setCurrentGuess(prev => prev.slice(0, -1));
+        setCurrentGuess((prev) => prev.slice(0, -1));
       } else if (/^[a-z]$/.test(key) && currentGuess.length < 5) {
         onKeyClick?.();
-        setCurrentGuess(prev => [...prev, key]);
+        setCurrentGuess((prev) => [...prev, key]);
       }
     };
     document.addEventListener('keydown', handleKey);
     return () => document.removeEventListener('keydown', handleKey);
   }, [gameStatus, currentGuess, submitGuess, onKeyClick, playKeyClick]);
 
-  const handleVirtualKey = useCallback((key: string) => {
-    if (gameStatus !== 'playing') return;
-    if (key === 'Enter') {
-      submitGuess();
-    } else if (key === '⌫') {
-      playKeyClick();
-      setCurrentGuess(prev => prev.slice(0, -1));
-    } else if (currentGuess.length < 5) {
-      onKeyClick?.();
-      setCurrentGuess(prev => [...prev, key]);
-    }
-  }, [gameStatus, currentGuess, submitGuess, onKeyClick, playKeyClick]);
+  const handleVirtualKey = useCallback(
+    (key: string) => {
+      if (gameStatus !== 'playing') return;
+      if (key === 'Enter') {
+        submitGuess();
+      } else if (key === '⌫') {
+        playKeyClick();
+        setCurrentGuess((prev) => prev.slice(0, -1));
+      } else if (currentGuess.length < 5) {
+        onKeyClick?.();
+        setCurrentGuess((prev) => [...prev, key]);
+      }
+    },
+    [gameStatus, currentGuess, submitGuess, onKeyClick, playKeyClick],
+  );
 
   const restart = useCallback(() => {
     combo.reset();
@@ -182,7 +245,8 @@ export default function WordleGame({ onGameEnd, onScoreChange, onKeyClick, onCom
   }, [onScoreChange, combo]);
 
   const getKeyClass = (key: string): string => {
-    const base = 'flex items-center justify-center rounded font-bold text-xs cursor-pointer select-none transition-colors ';
+    const base =
+      'flex items-center justify-center rounded font-bold text-xs cursor-pointer select-none transition-colors ';
     if (key === 'Enter' || key === '⌫') {
       return base + 'bg-zinc-500 hover:bg-zinc-400 text-white px-2 py-3 min-w-[40px]';
     }
@@ -195,7 +259,8 @@ export default function WordleGame({ onGameEnd, onScoreChange, onKeyClick, onCom
   };
 
   const getCellClass = (rowIdx: number, colIdx: number): string => {
-    const base = 'w-[clamp(38px,9.5vw,52px)] h-[clamp(38px,9.5vw,52px)] flex items-center justify-center text-xl font-black border-2 rounded-md uppercase ';
+    const base =
+      'w-[clamp(38px,9.5vw,52px)] h-[clamp(38px,9.5vw,52px)] flex items-center justify-center text-xl font-black border-2 rounded-md uppercase ';
     if (rowIdx < guesses.length) {
       const status = guesses[rowIdx][colIdx].status;
       if (status === 'correct') return base + 'bg-emerald-600 border-emerald-600 text-white';
@@ -213,10 +278,12 @@ export default function WordleGame({ onGameEnd, onScoreChange, onKeyClick, onCom
   return (
     <div className="flex flex-col items-center gap-4 p-4" style={shakeStyle}>
       <ConfettiEffect active={confettiActive} duration={2500} />
-      <div className="text-zinc-400 text-sm">개발자 워들 — 5글자 IT 용어 맞추기</div>
+      <div className="text-sm text-zinc-400">개발자 워들 — 5글자 IT 용어 맞추기</div>
 
       {message && (
-        <div className="bg-zinc-700 text-white px-4 py-2 rounded-lg text-sm font-bold">{message}</div>
+        <div className="rounded-lg bg-zinc-700 px-4 py-2 text-sm font-bold text-white">
+          {message}
+        </div>
       )}
 
       {/* Game grid */}
@@ -228,8 +295,8 @@ export default function WordleGame({ onGameEnd, onScoreChange, onKeyClick, onCom
                 {rowIdx < guesses.length
                   ? guesses[rowIdx][colIdx].letter
                   : rowIdx === guesses.length
-                  ? currentGuess[colIdx] ?? ''
-                  : ''}
+                    ? (currentGuess[colIdx] ?? '')
+                    : ''}
               </div>
             ))}
           </div>
@@ -237,10 +304,10 @@ export default function WordleGame({ onGameEnd, onScoreChange, onKeyClick, onCom
       </div>
 
       {/* Virtual keyboard */}
-      <div className="flex flex-col items-center gap-1 mt-2">
+      <div className="mt-2 flex flex-col items-center gap-1">
         {QWERTY_ROWS.map((row, ri) => (
           <div key={ri} className="flex gap-1">
-            {row.map(key => (
+            {row.map((key) => (
               <div key={key} className={getKeyClass(key)} onClick={() => handleVirtualKey(key)}>
                 {key}
               </div>
@@ -252,14 +319,14 @@ export default function WordleGame({ onGameEnd, onScoreChange, onKeyClick, onCom
       {(gameStatus === 'won' || gameStatus === 'lost') && (
         <div className="flex flex-col items-center gap-2">
           {gameStatus === 'won' && (
-            <p className="text-emerald-400 font-bold">정답! 점수: {(7 - guesses.length) * 100}</p>
+            <p className="font-bold text-emerald-400">정답! 점수: {(7 - guesses.length) * 100}</p>
           )}
           {gameStatus === 'lost' && (
-            <p className="text-red-400 font-bold">실패! 정답: {answer.toUpperCase()}</p>
+            <p className="font-bold text-red-400">실패! 정답: {answer.toUpperCase()}</p>
           )}
           <button
             onClick={restart}
-            className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg px-6 py-2"
+            className="rounded-lg bg-indigo-600 px-6 py-2 text-white hover:bg-indigo-500"
           >
             다시 시작
           </button>

@@ -4,13 +4,7 @@
 
 export type Market = 'kr' | 'us';
 
-export type MarketState =
-  | 'PRE'
-  | 'REGULAR'
-  | 'POST'
-  | 'CLOSED'
-  | 'PREPRE'
-  | 'POSTPOST';
+export type MarketState = 'PRE' | 'REGULAR' | 'POST' | 'CLOSED' | 'PREPRE' | 'POSTPOST';
 
 export type StocksApiResponse<T> =
   | { success: true; data: T }
@@ -246,14 +240,29 @@ export function resolveStockDisplayName(
 }
 
 export const MACRO_SYMBOLS = [
-  { symbol: 'USDKRW=X', name: 'USD/KRW', displayName: '원/달러 환율', category: 'currency' as const },
-  { symbol: '^TNX', name: 'US 10Y Treasury', displayName: '미국 10년 국채', category: 'bond' as const },
+  {
+    symbol: 'USDKRW=X',
+    name: 'USD/KRW',
+    displayName: '원/달러 환율',
+    category: 'currency' as const,
+  },
+  {
+    symbol: '^TNX',
+    name: 'US 10Y Treasury',
+    displayName: '미국 10년 국채',
+    category: 'bond' as const,
+  },
   { symbol: '^KS11', name: 'KOSPI', displayName: '코스피', category: 'index' as const },
   { symbol: '^KQ11', name: 'KOSDAQ', displayName: '코스닥', category: 'index' as const },
   { symbol: '^IXIC', name: 'NASDAQ', displayName: '나스닥', category: 'index' as const },
   { symbol: '^GSPC', name: 'S&P 500', displayName: 'S&P 500', category: 'index' as const },
   { symbol: '^SOX', name: 'SOX', displayName: '필라델피아 반도체', category: 'index' as const },
-  { symbol: 'CL=F', name: 'WTI Crude Oil', displayName: 'WTI 유가', category: 'commodity' as const },
+  {
+    symbol: 'CL=F',
+    name: 'WTI Crude Oil',
+    displayName: 'WTI 유가',
+    category: 'commodity' as const,
+  },
   { symbol: 'GC=F', name: 'Gold', displayName: '금', category: 'commodity' as const },
 ] as const;
 
@@ -269,37 +278,37 @@ export const DART_CORP_CODE_MAP: Record<string, string> = {
 
 /** KIS 체결가 데이터 */
 export interface KisTradeData {
-  price: number;           // 현재가
-  change: number;          // 전일대비
-  changePercent: number;   // 전일대비율(%)
-  changeSign: string;      // 대비부호 (1:상한,2:상승,3:보합,4:하한,5:하락)
-  volume: number;          // 누적거래량
-  amount: number;          // 누적거래대금
-  open: number;            // 시가
-  high: number;            // 고가
-  low: number;             // 저가
-  prevClose: number;       // 전일종가
-  time: string;            // 체결시간 "HHMMSS"
+  price: number; // 현재가
+  change: number; // 전일대비
+  changePercent: number; // 전일대비율(%)
+  changeSign: string; // 대비부호 (1:상한,2:상승,3:보합,4:하한,5:하락)
+  volume: number; // 누적거래량
+  amount: number; // 누적거래대금
+  open: number; // 시가
+  high: number; // 고가
+  low: number; // 저가
+  prevClose: number; // 전일종가
+  time: string; // 체결시간 "HHMMSS"
 }
 
 /** KIS 호가 데이터 (10호가) */
 export interface KisOrderbookData {
-  askPrices: number[];     // 매도호가 1~10 (낮은가->높은가)
-  askVolumes: number[];    // 매도호가 잔량 1~10
-  bidPrices: number[];     // 매수호가 1~10 (높은가->낮은가)
-  bidVolumes: number[];    // 매수호가 잔량 1~10
-  totalAskVolume: number;  // 총 매도호가 잔량
-  totalBidVolume: number;  // 총 매수호가 잔량
-  time: string;            // 호가시간 "HHMMSS"
+  askPrices: number[]; // 매도호가 1~10 (낮은가->높은가)
+  askVolumes: number[]; // 매도호가 잔량 1~10
+  bidPrices: number[]; // 매수호가 1~10 (높은가->낮은가)
+  bidVolumes: number[]; // 매수호가 잔량 1~10
+  totalAskVolume: number; // 총 매도호가 잔량
+  totalBidVolume: number; // 총 매수호가 잔량
+  time: string; // 호가시간 "HHMMSS"
 }
 
 /** KIS 스냅샷 응답 */
 export interface KisSnapshotData {
-  symbol: string;          // 종목코드 6자리
-  name: string;            // 종목명
+  symbol: string; // 종목코드 6자리
+  name: string; // 종목명
   trade: KisTradeData;
   orderbook: KisOrderbookData;
-  updatedAt: string;       // ISO 8601
+  updatedAt: string; // ISO 8601
 }
 
 // ============================================================
@@ -340,15 +349,20 @@ export interface StockFundamentals {
 }
 
 export interface StockConsensus {
-  targetPrice: number | null;       // 평균 목표주가
-  targetHigh: number | null;        // 최고 목표주가
-  targetLow: number | null;         // 최저 목표주가
-  recommendation: number | null;    // 투자의견 점수 (1=강매도 ~ 5=강매수)
+  targetPrice: number | null; // 평균 목표주가
+  targetHigh: number | null; // 최고 목표주가
+  targetLow: number | null; // 최저 목표주가
+  recommendation: number | null; // 투자의견 점수 (1=강매도 ~ 5=강매수)
   recommendationKey: string | null; // 'strong_buy' | 'buy' | 'hold' | 'sell' | 'strong_sell'
-  numberOfAnalysts: number | null;  // 참여 애널리스트 수
-  sources: string[];                // 데이터 출처 목록
+  numberOfAnalysts: number | null; // 참여 애널리스트 수
+  sources: string[]; // 데이터 출처 목록
   /** 최근 애널리스트 리포트 목록 (증권사명 + 날짜 + 개별 목표주가) */
-  analystReports?: Array<{ broker: string; date: string; title: string; targetPrice?: number | null }>;
+  analystReports?: Array<{
+    broker: string;
+    date: string;
+    title: string;
+    targetPrice?: number | null;
+  }>;
 }
 
 export interface StockPeer {
@@ -401,37 +415,37 @@ export interface StockDetailData {
 
 export const SECTOR_HEATMAP_STOCKS = [
   // KR semiconductor/tech
-  { symbol: '005930.KS', name: '삼성전자',      market: 'kr', weight: 12 },
-  { symbol: '000660.KS', name: 'SK하이닉스',    market: 'kr', weight: 9  },
-  { symbol: '035420.KS', name: 'NAVER',         market: 'kr', weight: 4  },
-  { symbol: '035720.KS', name: '카카오',         market: 'kr', weight: 3  },
-  { symbol: '066570.KS', name: 'LG전자',        market: 'kr', weight: 4  },
-  { symbol: '009150.KS', name: '삼성전기',       market: 'kr', weight: 3  },
-  { symbol: '042700.KS', name: '한미반도체',     market: 'kr', weight: 3  },
-  { symbol: '267260.KS', name: 'HD현대일렉트릭', market: 'kr', weight: 3  },
-  { symbol: '000990.KS', name: 'DB하이텍',      market: 'kr', weight: 2  },
+  { symbol: '005930.KS', name: '삼성전자', market: 'kr', weight: 12 },
+  { symbol: '000660.KS', name: 'SK하이닉스', market: 'kr', weight: 9 },
+  { symbol: '035420.KS', name: 'NAVER', market: 'kr', weight: 4 },
+  { symbol: '035720.KS', name: '카카오', market: 'kr', weight: 3 },
+  { symbol: '066570.KS', name: 'LG전자', market: 'kr', weight: 4 },
+  { symbol: '009150.KS', name: '삼성전기', market: 'kr', weight: 3 },
+  { symbol: '042700.KS', name: '한미반도체', market: 'kr', weight: 3 },
+  { symbol: '267260.KS', name: 'HD현대일렉트릭', market: 'kr', weight: 3 },
+  { symbol: '000990.KS', name: 'DB하이텍', market: 'kr', weight: 2 },
   // US semiconductor/tech
-  { symbol: 'NVDA',  name: 'NVIDIA',       market: 'us', weight: 14 },
-  { symbol: 'AAPL',  name: 'Apple',        market: 'us', weight: 12 },
-  { symbol: 'MSFT',  name: 'Microsoft',    market: 'us', weight: 11 },
-  { symbol: 'TSM',   name: 'TSMC',         market: 'us', weight: 10 },
-  { symbol: 'GOOGL', name: 'Alphabet',     market: 'us', weight: 9  },
-  { symbol: 'AMZN',  name: 'Amazon',       market: 'us', weight: 9  },
-  { symbol: 'META',  name: 'Meta',         market: 'us', weight: 8  },
-  { symbol: 'AVGO',  name: 'Broadcom',     market: 'us', weight: 7  },
-  { symbol: 'TSLA',  name: 'Tesla',        market: 'us', weight: 6  },
-  { symbol: 'AMD',   name: 'AMD',          market: 'us', weight: 6  },
-  { symbol: 'QCOM',  name: 'Qualcomm',     market: 'us', weight: 5  },
-  { symbol: 'ARM',   name: 'ARM',          market: 'us', weight: 4  },
-  { symbol: 'MU',    name: 'Micron',       market: 'us', weight: 4  },
-  { symbol: 'INTC',  name: 'Intel',        market: 'us', weight: 4  },
-  { symbol: 'AMAT',  name: 'AMAT',         market: 'us', weight: 3  },
-  { symbol: 'ASML',  name: 'ASML',         market: 'us', weight: 3  },
-  { symbol: 'LRCX',  name: 'Lam Research', market: 'us', weight: 3  },
-  { symbol: 'TXN',   name: 'Texas Inst.',  market: 'us', weight: 3  },
+  { symbol: 'NVDA', name: 'NVIDIA', market: 'us', weight: 14 },
+  { symbol: 'AAPL', name: 'Apple', market: 'us', weight: 12 },
+  { symbol: 'MSFT', name: 'Microsoft', market: 'us', weight: 11 },
+  { symbol: 'TSM', name: 'TSMC', market: 'us', weight: 10 },
+  { symbol: 'GOOGL', name: 'Alphabet', market: 'us', weight: 9 },
+  { symbol: 'AMZN', name: 'Amazon', market: 'us', weight: 9 },
+  { symbol: 'META', name: 'Meta', market: 'us', weight: 8 },
+  { symbol: 'AVGO', name: 'Broadcom', market: 'us', weight: 7 },
+  { symbol: 'TSLA', name: 'Tesla', market: 'us', weight: 6 },
+  { symbol: 'AMD', name: 'AMD', market: 'us', weight: 6 },
+  { symbol: 'QCOM', name: 'Qualcomm', market: 'us', weight: 5 },
+  { symbol: 'ARM', name: 'ARM', market: 'us', weight: 4 },
+  { symbol: 'MU', name: 'Micron', market: 'us', weight: 4 },
+  { symbol: 'INTC', name: 'Intel', market: 'us', weight: 4 },
+  { symbol: 'AMAT', name: 'AMAT', market: 'us', weight: 3 },
+  { symbol: 'ASML', name: 'ASML', market: 'us', weight: 3 },
+  { symbol: 'LRCX', name: 'Lam Research', market: 'us', weight: 3 },
+  { symbol: 'TXN', name: 'Texas Inst.', market: 'us', weight: 3 },
 ] as const;
 
-export type SectorHeatmapStock = typeof SECTOR_HEATMAP_STOCKS[number];
+export type SectorHeatmapStock = (typeof SECTOR_HEATMAP_STOCKS)[number];
 export type SectorHeatmapItem = {
   symbol: string;
   name: string;

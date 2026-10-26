@@ -25,7 +25,10 @@ function symbolFromUrl(url: string): string {
 }
 
 /** Yahoo v8 chart 응답 mock (interval=1d&range=1d, 캔들 1개) */
-function makeV8ChartResponse(symbol: string, metaOverrides: Partial<ChartMeta> = {}): YahooChartResponse {
+function makeV8ChartResponse(
+  symbol: string,
+  metaOverrides: Partial<ChartMeta> = {},
+): YahooChartResponse {
   return {
     chart: {
       result: [
@@ -49,7 +52,9 @@ function makeV8ChartResponse(symbol: string, metaOverrides: Partial<ChartMeta> =
           },
           timestamp: [1700000000],
           indicators: {
-            quote: [{ open: [59800], high: [60500], low: [59300], close: [60000], volume: [1000000] }],
+            quote: [
+              { open: [59800], high: [60500], low: [59300], close: [60000], volume: [1000000] },
+            ],
           },
         },
       ],
@@ -89,7 +94,9 @@ describe('GET /api/stocks/prices', () => {
     const krSymbol = KR_STOCKS[0].symbol; // '005930.KS'
     mockV8ByUrl(fetchSpy, { [krSymbol]: makeV8ChartResponse(krSymbol, { currency: 'KRW' }) });
 
-    const res = await GET(makeRequest(`http://localhost/api/stocks/prices?symbols=${krSymbol}`) as never);
+    const res = await GET(
+      makeRequest(`http://localhost/api/stocks/prices?symbols=${krSymbol}`) as never,
+    );
     const body = await res.json();
 
     expect(res.status).toBe(200);
@@ -107,10 +114,16 @@ describe('GET /api/stocks/prices', () => {
   it('US 종목에 대해 market=us, currency=USD를 반환한다', async () => {
     const usSymbol = US_STOCKS[0].symbol; // 'NVDA'
     mockV8ByUrl(fetchSpy, {
-      [usSymbol]: makeV8ChartResponse(usSymbol, { currency: 'USD', exchangeName: 'NMS', fullExchangeName: 'NasdaqGS' }),
+      [usSymbol]: makeV8ChartResponse(usSymbol, {
+        currency: 'USD',
+        exchangeName: 'NMS',
+        fullExchangeName: 'NasdaqGS',
+      }),
     });
 
-    const res = await GET(makeRequest(`http://localhost/api/stocks/prices?symbols=${usSymbol}`) as never);
+    const res = await GET(
+      makeRequest(`http://localhost/api/stocks/prices?symbols=${usSymbol}`) as never,
+    );
     const body = await res.json();
 
     expect(res.status).toBe(200);
@@ -131,7 +144,9 @@ describe('GET /api/stocks/prices', () => {
       [symbols[1]]: makeV8ChartResponse(symbols[1], { currency: 'USD' }),
     });
 
-    await GET(makeRequest(`http://localhost/api/stocks/prices?symbols=${symbols.join(',')}`) as never);
+    await GET(
+      makeRequest(`http://localhost/api/stocks/prices?symbols=${symbols.join(',')}`) as never,
+    );
 
     expect(fetchSpy).toHaveBeenCalledTimes(2);
     const urls = fetchSpy.mock.calls.map(([input]) => urlOf(input));
@@ -159,7 +174,9 @@ describe('GET /api/stocks/prices', () => {
       }),
     });
 
-    const res = await GET(makeRequest(`http://localhost/api/stocks/prices?symbols=${krSymbol},${usSymbol}`) as never);
+    const res = await GET(
+      makeRequest(`http://localhost/api/stocks/prices?symbols=${krSymbol},${usSymbol}`) as never,
+    );
     const body = await res.json();
 
     expect(body.success).toBe(true);
@@ -184,7 +201,14 @@ describe('GET /api/stocks/prices', () => {
       updatedAt: 1700000000,
     });
     expect(kr.changePercent).toBeCloseTo((500 / 59500) * 100, 5);
-    expect(us).toMatchObject({ symbol: usSymbol, name: US_STOCKS[0].name, market: 'us', currency: 'USD', price: 120, change: 2 });
+    expect(us).toMatchObject({
+      symbol: usSymbol,
+      name: US_STOCKS[0].name,
+      market: 'us',
+      currency: 'USD',
+      price: 120,
+      change: 2,
+    });
   });
 
   // ----------------------------------------------------------
@@ -193,10 +217,15 @@ describe('GET /api/stocks/prices', () => {
   it('regularMarketOpen이 없으면 previousClose를 기준으로 change와 changePercent를 계산한다', async () => {
     const krSymbol = KR_STOCKS[0].symbol;
     mockV8ByUrl(fetchSpy, {
-      [krSymbol]: makeV8ChartResponse(krSymbol, { regularMarketPrice: 60000, previousClose: 59500 }),
+      [krSymbol]: makeV8ChartResponse(krSymbol, {
+        regularMarketPrice: 60000,
+        previousClose: 59500,
+      }),
     });
 
-    const res = await GET(makeRequest(`http://localhost/api/stocks/prices?symbols=${krSymbol}`) as never);
+    const res = await GET(
+      makeRequest(`http://localhost/api/stocks/prices?symbols=${krSymbol}`) as never,
+    );
     const body = await res.json();
 
     expect(res.status).toBe(200);
@@ -215,7 +244,9 @@ describe('GET /api/stocks/prices', () => {
       }),
     });
 
-    const res = await GET(makeRequest(`http://localhost/api/stocks/prices?symbols=${krSymbol}`) as never);
+    const res = await GET(
+      makeRequest(`http://localhost/api/stocks/prices?symbols=${krSymbol}`) as never,
+    );
     const body = await res.json();
 
     expect(res.status).toBe(200);
@@ -230,7 +261,9 @@ describe('GET /api/stocks/prices', () => {
   it('v8 응답이 모두 실패하면 502 에러를 반환한다', async () => {
     fetchSpy.mockResolvedValue(new Response('error', { status: 500 }));
 
-    const res = await GET(makeRequest(`http://localhost/api/stocks/prices?symbols=${KR_STOCKS[0].symbol}`) as never);
+    const res = await GET(
+      makeRequest(`http://localhost/api/stocks/prices?symbols=${KR_STOCKS[0].symbol}`) as never,
+    );
     const body = await res.json();
 
     expect(res.status).toBe(502);
@@ -246,7 +279,9 @@ describe('GET /api/stocks/prices', () => {
       [usSymbol]: { failStatus: 500 },
     });
 
-    const res = await GET(makeRequest(`http://localhost/api/stocks/prices?symbols=${krSymbol},${usSymbol}`) as never);
+    const res = await GET(
+      makeRequest(`http://localhost/api/stocks/prices?symbols=${krSymbol},${usSymbol}`) as never,
+    );
     const body = await res.json();
 
     expect(res.status).toBe(200);

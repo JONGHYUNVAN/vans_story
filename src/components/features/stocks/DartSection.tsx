@@ -75,7 +75,7 @@ export default function DartSection({ fixedSymbol }: DartSectionProps = {}) {
               key={s.symbol}
               type="button"
               onClick={() => setSelectedSymbol(s.symbol)}
-              className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors ${
+              className={`rounded-md px-2.5 py-1 text-[11px] font-medium transition-colors ${
                 selectedSymbol === s.symbol ? d.chipOn : d.chipOff
               }`}
             >
@@ -89,13 +89,13 @@ export default function DartSection({ fixedSymbol }: DartSectionProps = {}) {
         <div>
           {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className={d.skeletonRow}>
-              <div className={`h-4 ${d.skeletonBar} w-full mb-1.5`} />
+              <div className={`h-4 ${d.skeletonBar} mb-1.5 w-full`} />
               <div className={`h-3 ${d.skeletonBar} w-1/3`} />
             </div>
           ))}
         </div>
       ) : isError ? (
-        <div className="flex flex-col items-center justify-center py-8 gap-3">
+        <div className="flex flex-col items-center justify-center gap-3 py-8">
           <p className={d.empty}>공시를 불러오지 못했습니다.</p>
           <button type="button" onClick={() => fetchDart(selectedSymbol)} className={d.retry}>
             다시 시도
@@ -115,7 +115,12 @@ export default function DartSection({ fixedSymbol }: DartSectionProps = {}) {
         <ul className={d.divide}>
           {disclosures.map((x) => (
             <li key={x.receiptNo} className="py-3 first:pt-0 last:pb-0">
-              <a href={x.detailUrl} target="_blank" rel="noopener noreferrer" className="group block">
+              <a
+                href={x.detailUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group block"
+              >
                 <p className={`${d.itemTitle} ${d.itemTitleHover}`}>{x.reportName}</p>
                 <div className={d.itemMeta}>
                   <span className={d.itemSource}>{x.filerName}</span>

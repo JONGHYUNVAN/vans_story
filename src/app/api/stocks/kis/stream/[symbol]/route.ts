@@ -10,10 +10,10 @@ const SSE_HEADERS = {
 };
 
 function sseError(payload: Record<string, string>): Response {
-  return new Response(
-    `event: error\ndata: ${JSON.stringify(payload)}\n\n`,
-    { status: 502, headers: { 'Content-Type': 'text/event-stream' } },
-  );
+  return new Response(`event: error\ndata: ${JSON.stringify(payload)}\n\n`, {
+    status: 502,
+    headers: { 'Content-Type': 'text/event-stream' },
+  });
 }
 
 export async function GET(
@@ -26,7 +26,9 @@ export async function GET(
 
   console.log(`[kis/stream] ▶ 요청 심볼: ${symbol}`);
   console.log(`[kis/stream] ▶ 업스트림 URL: ${targetUrl}`);
-  console.log(`[kis/stream] ▶ DJANGO_API_URL 환경변수: ${process.env.DJANGO_API_URL ?? '(미설정 → 기본값 http://localhost:8000)'}`);
+  console.log(
+    `[kis/stream] ▶ DJANGO_API_URL 환경변수: ${process.env.DJANGO_API_URL ?? '(미설정 → 기본값 http://localhost:8000)'}`,
+  );
 
   // 초기 연결 타임아웃: 헤더 수신까지만 30초 제한
   // 연결 성공 후엔 타임아웃을 해제해야 SSE body 스트리밍이 끊기지 않음
@@ -58,7 +60,9 @@ export async function GET(
   }
 
   if (!upstream.ok || !upstream.body) {
-    console.error(`[kis/stream] ✖ 업스트림 비정상 응답: status=${upstream.status}, hasBody=${!!upstream.body}`);
+    console.error(
+      `[kis/stream] ✖ 업스트림 비정상 응답: status=${upstream.status}, hasBody=${!!upstream.body}`,
+    );
     return new Response(
       `event: error\ndata: ${JSON.stringify({ code: 'UPSTREAM_ERROR', status: String(upstream.status), url: targetUrl })}\n\n`,
       { status: upstream.status, headers: { 'Content-Type': 'text/event-stream' } },

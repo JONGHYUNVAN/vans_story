@@ -62,13 +62,13 @@ export default function KisRealtimePrice({
   if (isLoading && !trade) {
     return (
       <section className={`${t.detail.card} animate-pulse`}>
-        <div className="px-4 py-4 space-y-3">
-          <div className="h-8 w-40 bg-zinc-800 rounded" />
-          <div className="h-4 w-24 bg-zinc-800 rounded" />
+        <div className="space-y-3 px-4 py-4">
+          <div className="h-8 w-40 rounded bg-zinc-800" />
+          <div className="h-4 w-24 rounded bg-zinc-800" />
           <div className="flex gap-4">
-            <div className="h-4 w-16 bg-zinc-800 rounded" />
-            <div className="h-4 w-16 bg-zinc-800 rounded" />
-            <div className="h-4 w-16 bg-zinc-800 rounded" />
+            <div className="h-4 w-16 rounded bg-zinc-800" />
+            <div className="h-4 w-16 rounded bg-zinc-800" />
+            <div className="h-4 w-16 rounded bg-zinc-800" />
           </div>
         </div>
       </section>
@@ -79,7 +79,7 @@ export default function KisRealtimePrice({
   if (error && !trade) {
     return (
       <section className={t.detail.card}>
-        <div className="px-4 py-3 text-xs text-red-400 font-mono">{error}</div>
+        <div className="px-4 py-3 font-mono text-xs text-red-400">{error}</div>
       </section>
     );
   }
@@ -87,7 +87,12 @@ export default function KisRealtimePrice({
   if (!trade) return null;
 
   const changeColor = getChangeColor(trade.changeSign);
-  const changePrefix = trade.changeSign === '1' || trade.changeSign === '2' ? '+' : trade.changeSign === '3' ? '' : '-';
+  const changePrefix =
+    trade.changeSign === '1' || trade.changeSign === '2'
+      ? '+'
+      : trade.changeSign === '3'
+        ? ''
+        : '-';
   const absChange = Math.abs(trade.change);
   const absChangePercent = Math.abs(trade.changePercent);
 
@@ -98,20 +103,20 @@ export default function KisRealtimePrice({
         <div className="flex items-center gap-2">
           {/* 장 마감 배지 */}
           {!isMarketOpen && (
-            <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border border-zinc-600/30 bg-zinc-700/20 text-zinc-400">
+            <span className="rounded border border-zinc-600/30 bg-zinc-700/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-zinc-400">
               장 마감
             </span>
           )}
           {/* LIVE 배지 */}
           {isConnected && isMarketOpen && (
             <span className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wider text-emerald-400">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
               LIVE
             </span>
           )}
           {/* 체결 시각 */}
           {trade.time && (
-            <span className="text-[10px] text-zinc-500 font-mono tabular-nums">
+            <span className="font-mono text-[10px] tabular-nums text-zinc-500">
               {formatTime(trade.time)}
             </span>
           )}
@@ -120,33 +125,34 @@ export default function KisRealtimePrice({
 
       <div className="px-4 py-4">
         {/* 현재가 + 전일대비 */}
-        <div className="flex items-baseline gap-3 flex-wrap">
+        <div className="flex flex-wrap items-baseline gap-3">
           <span className="text-3xl font-bold tabular-nums text-white">
             {trade.price.toLocaleString('ko-KR')}원
           </span>
-          <span className={`text-sm font-semibold font-mono ${changeColor}`}>
-            {changePrefix}{absChange.toLocaleString('ko-KR')}원
-            {' '}({changePrefix}{absChangePercent.toFixed(2)}%)
+          <span className={`font-mono text-sm font-semibold ${changeColor}`}>
+            {changePrefix}
+            {absChange.toLocaleString('ko-KR')}원 ({changePrefix}
+            {absChangePercent.toFixed(2)}%)
           </span>
         </div>
 
         {/* 시가 / 고가 / 저가 */}
-        <div className="mt-3 flex items-center gap-4 flex-wrap">
+        <div className="mt-3 flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-1.5">
             <span className={`text-[10px] uppercase tracking-wide ${t.detail.rowLabel}`}>시가</span>
-            <span className="text-xs font-mono tabular-nums text-zinc-300">
+            <span className="font-mono text-xs tabular-nums text-zinc-300">
               {trade.open.toLocaleString('ko-KR')}
             </span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className={`text-[10px] uppercase tracking-wide ${t.detail.rowLabel}`}>고가</span>
-            <span className={`text-xs font-mono tabular-nums ${t.quote.up}`}>
+            <span className={`font-mono text-xs tabular-nums ${t.quote.up}`}>
               {trade.high.toLocaleString('ko-KR')}
             </span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className={`text-[10px] uppercase tracking-wide ${t.detail.rowLabel}`}>저가</span>
-            <span className={`text-xs font-mono tabular-nums ${t.quote.down}`}>
+            <span className={`font-mono text-xs tabular-nums ${t.quote.down}`}>
               {trade.low.toLocaleString('ko-KR')}
             </span>
           </div>
@@ -154,8 +160,10 @@ export default function KisRealtimePrice({
 
         {/* 누적거래량 */}
         <div className="mt-2 flex items-center gap-1.5">
-          <span className={`text-[10px] uppercase tracking-wide ${t.detail.rowLabel}`}>누적거래량</span>
-          <span className="text-xs font-mono tabular-nums text-zinc-300">
+          <span className={`text-[10px] uppercase tracking-wide ${t.detail.rowLabel}`}>
+            누적거래량
+          </span>
+          <span className="font-mono text-xs tabular-nums text-zinc-300">
             {formatVolume(trade.volume)}주
           </span>
         </div>

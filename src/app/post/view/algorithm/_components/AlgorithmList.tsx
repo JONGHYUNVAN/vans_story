@@ -3,7 +3,7 @@
 import { TbBinaryTree, TbGraph } from 'react-icons/tb';
 import PostCard from '@/components/features/post/postcard/algorithm/PostCard';
 import { useTranslation } from '@/lib/i18n';
-import { PostInfo } from "@/types/post";
+import { PostInfo } from '@/types/post';
 import { sortPosts } from '@/components/features/post/sort/sortPosts';
 import Link from 'next/link';
 
@@ -20,8 +20,8 @@ export default function AlgorithmList({ posts }: Props) {
   const sortedPosts = sortPosts(posts, 'latest');
 
   return (
-    (<div className="grid grid-cols-1 gap-6">
-      {sortedPosts.map(post => (
+    <div className="grid grid-cols-1 gap-6">
+      {sortedPosts.map((post) => (
         <Link
           key={post.id}
           href={`/post/view/algorithm/${post.id}`}
@@ -30,17 +30,17 @@ export default function AlgorithmList({ posts }: Props) {
           <PostCard
             post={post}
             renderBadge={() => (
-              <span className="flex items-center justify-center w-10 h-8 rounded-full bg-gray-200 text-gray-700">
+              <span className="flex h-8 w-10 items-center justify-center rounded-full bg-gray-200 text-gray-700">
                 {post.topic === '그래프' ? (
-                  <TbGraph className="w-5 h-5" />
+                  <TbGraph className="h-5 w-5" />
                 ) : (
-                  <TbBinaryTree className="w-5 h-5" />
+                  <TbBinaryTree className="h-5 w-5" />
                 )}
               </span>
             )}
           />
         </Link>
       ))}
-    </div>)
+    </div>
   );
-} 
+}

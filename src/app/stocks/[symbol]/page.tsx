@@ -1,6 +1,12 @@
 import type { Metadata } from 'next';
 import { slugToSymbol, symbolToSlug } from '@/lib/stocks/stockSymbol';
-import { KR_STOCKS, US_STOCKS, MACRO_SYMBOLS, STOCK_DISPLAY_NAME, SECTOR_HEATMAP_STOCKS } from '@/types/stocks';
+import {
+  KR_STOCKS,
+  US_STOCKS,
+  MACRO_SYMBOLS,
+  STOCK_DISPLAY_NAME,
+  SECTOR_HEATMAP_STOCKS,
+} from '@/types/stocks';
 import { getStockRelation } from '@/constants/stockRelations';
 import StockDetailClient from '@/app/stocks/[symbol]/_components/StockDetailClient';
 
@@ -45,10 +51,10 @@ export default async function StockDetailPage({ params }: PageProps) {
 
   if (!symbol) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-zinc-950 text-white">
+      <div className="flex min-h-screen items-center justify-center bg-zinc-950 text-white">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-2">종목을 찾을 수 없습니다</h1>
-          <p className="text-zinc-400 text-sm">잘못된 심볼: {slug}</p>
+          <h1 className="mb-2 text-2xl font-bold">종목을 찾을 수 없습니다</h1>
+          <p className="text-sm text-zinc-400">잘못된 심볼: {slug}</p>
         </div>
       </div>
     );

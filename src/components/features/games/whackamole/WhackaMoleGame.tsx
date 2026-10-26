@@ -13,7 +13,12 @@ const GAME_DURATION = 30;
 
 type GameStatus = 'idle' | 'playing' | 'gameover';
 
-export default function WhackaMoleGame({ onGameEnd, onScoreChange, onAction, onCombo }: GameComponentProps) {
+export default function WhackaMoleGame({
+  onGameEnd,
+  onScoreChange,
+  onAction,
+  onCombo,
+}: GameComponentProps) {
   const [moles, setMoles] = useState<boolean[]>(Array(TOTAL_HOLES).fill(false));
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
@@ -34,7 +39,7 @@ export default function WhackaMoleGame({ onGameEnd, onScoreChange, onAction, onC
   const soundCombo = useCombo();
 
   const clearMoleTimeouts = useCallback(() => {
-    moleTimeoutsRef.current.forEach(t => clearTimeout(t));
+    moleTimeoutsRef.current.forEach((t) => clearTimeout(t));
     moleTimeoutsRef.current = [];
   }, []);
 
@@ -47,7 +52,9 @@ export default function WhackaMoleGame({ onGameEnd, onScoreChange, onAction, onC
     const count = Math.random() < 0.3 ? 2 : 1;
     const indices = new Set<number>();
     while (indices.size < count) indices.add(Math.floor(Math.random() * TOTAL_HOLES));
-    indices.forEach(i => { newMoles[i] = true; });
+    indices.forEach((i) => {
+      newMoles[i] = true;
+    });
     setMoles(newMoles);
 
     const duration = Math.max(600, 1000 - (level - 1) * 50);
@@ -72,89 +79,98 @@ export default function WhackaMoleGame({ onGameEnd, onScoreChange, onAction, onC
   }, [clearMoleTimeouts, spawnMoles, onScoreChange, soundCombo]);
 
   // 카운트다운
-  useGameTimer(() => {
-    const next = timeLeft - 1;
-    if (next <= 0) {
-      setTimeLeft(0);
-      setGameStatus('gameover');
-      setMoles(Array(TOTAL_HOLES).fill(false));
-      onGameEnd(scoreRef.current);
-      triggerShake(8, 400);
-    } else {
-      setTimeLeft(next);
-    }
-  }, gameStatus === 'playing' ? 1000 : null);
+  useGameTimer(
+    () => {
+      const next = timeLeft - 1;
+      if (next <= 0) {
+        setTimeLeft(0);
+        setGameStatus('gameover');
+        setMoles(Array(TOTAL_HOLES).fill(false));
+        onGameEnd(scoreRef.current);
+        triggerShake(8, 400);
+      } else {
+        setTimeLeft(next);
+      }
+    },
+    gameStatus === 'playing' ? 1000 : null,
+  );
 
   // 두더지 스폰
-  useGameTimer(() => {
-    const elapsed = GAME_DURATION - timeLeft;
-    const currentLevel = Math.floor(elapsed / 10) + 1;
-    spawnMoles(currentLevel);
-  }, gameStatus === 'playing' ? 1000 : null);
+  useGameTimer(
+    () => {
+      const elapsed = GAME_DURATION - timeLeft;
+      const currentLevel = Math.floor(elapsed / 10) + 1;
+      spawnMoles(currentLevel);
+    },
+    gameStatus === 'playing' ? 1000 : null,
+  );
 
-  const handleHoleClick = useCallback((idx: number) => {
-    if (gameStatus !== 'playing') return;
+  const handleHoleClick = useCallback(
+    (idx: number) => {
+      if (gameStatus !== 'playing') return;
 
-    if (moles[idx]) {
-      // Hit
-      onAction?.();
-      const now = Date.now();
-      let newCombo = comboRef.current;
-      if (now - lastHitTimeRef.current < 1000) {
-        newCombo++;
+      if (moles[idx]) {
+        // Hit
+        onAction?.();
+        const now = Date.now();
+        let newCombo = comboRef.current;
+        if (now - lastHitTimeRef.current < 1000) {
+          newCombo++;
+        } else {
+          newCombo = 1;
+        }
+        comboRef.current = newCombo;
+        lastHitTimeRef.current = now;
+        setCombo(newCombo);
+
+        // 사운드 콤보 추적
+        const prevLevel = soundCombo.comboLevel;
+        const newLevel = soundCombo.increment();
+        if (newLevel > 0 && newLevel > prevLevel) {
+          onCombo?.(newLevel);
+        }
+
+        const pts = 10 + (newCombo - 1) * 5;
+        scoreRef.current += pts;
+        setScore(scoreRef.current);
+        onScoreChange(scoreRef.current);
+
+        // 파티클 (grid cell 중앙 위치 계산: padding=24, gap=16, cell=80)
+        const col = idx % 3;
+        const row = Math.floor(idx / 3);
+        const cellSize = 80;
+        const gap = 16;
+        const padding = 24;
+        const px = padding + col * (cellSize + gap) + cellSize / 2;
+        const py = padding + row * (cellSize + gap) + cellSize / 2;
+        const pid = ++particleIdRef.current;
+        setParticles((prev) => [...prev, { id: pid, x: px, y: py }]);
+
+        setLastHit(idx);
+        setHitAnim(idx);
+        setTimeout(() => {
+          setHitAnim(null);
+          setLastHit(null);
+        }, 150);
+
+        setMoles((prev) => {
+          const next = [...prev];
+          next[idx] = false;
+          return next;
+        });
       } else {
-        newCombo = 1;
+        // Miss — penalty
+        scoreRef.current = Math.max(0, scoreRef.current - 5);
+        setScore(scoreRef.current);
+        onScoreChange(scoreRef.current);
+        comboRef.current = 0;
+        setCombo(0);
+        soundCombo.reset();
+        setFlashActive(true);
       }
-      comboRef.current = newCombo;
-      lastHitTimeRef.current = now;
-      setCombo(newCombo);
-
-      // 사운드 콤보 추적
-      const prevLevel = soundCombo.comboLevel;
-      const newLevel = soundCombo.increment();
-      if (newLevel > 0 && newLevel > prevLevel) {
-        onCombo?.(newLevel);
-      }
-
-      const pts = 10 + (newCombo - 1) * 5;
-      scoreRef.current += pts;
-      setScore(scoreRef.current);
-      onScoreChange(scoreRef.current);
-
-      // 파티클 (grid cell 중앙 위치 계산: padding=24, gap=16, cell=80)
-      const col = idx % 3;
-      const row = Math.floor(idx / 3);
-      const cellSize = 80;
-      const gap = 16;
-      const padding = 24;
-      const px = padding + col * (cellSize + gap) + cellSize / 2;
-      const py = padding + row * (cellSize + gap) + cellSize / 2;
-      const pid = ++particleIdRef.current;
-      setParticles(prev => [...prev, { id: pid, x: px, y: py }]);
-
-      setLastHit(idx);
-      setHitAnim(idx);
-      setTimeout(() => {
-        setHitAnim(null);
-        setLastHit(null);
-      }, 150);
-
-      setMoles(prev => {
-        const next = [...prev];
-        next[idx] = false;
-        return next;
-      });
-    } else {
-      // Miss — penalty
-      scoreRef.current = Math.max(0, scoreRef.current - 5);
-      setScore(scoreRef.current);
-      onScoreChange(scoreRef.current);
-      comboRef.current = 0;
-      setCombo(0);
-      soundCombo.reset();
-      setFlashActive(true);
-    }
-  }, [gameStatus, moles, onScoreChange, onAction, onCombo, soundCombo]);
+    },
+    [gameStatus, moles, onScoreChange, onAction, onCombo, soundCombo],
+  );
 
   return (
     <div className="flex flex-col items-center gap-4 p-4" style={shakeStyle}>
@@ -165,33 +181,36 @@ export default function WhackaMoleGame({ onGameEnd, onScoreChange, onAction, onC
         onDone={() => setFlashActive(false)}
       />
       {/* Header */}
-      <div className="flex items-center gap-6 bg-gray-900 border border-gray-700 rounded-xl px-6 py-3">
-        <span className="text-white font-mono text-lg">점수: <span className="font-bold text-yellow-400">{score}</span></span>
+      <div className="flex items-center gap-6 rounded-xl border border-gray-700 bg-gray-900 px-6 py-3">
+        <span className="font-mono text-lg text-white">
+          점수: <span className="font-bold text-yellow-400">{score}</span>
+        </span>
         {combo > 1 && (
-          <span className="text-orange-400 font-bold text-lg animate-pulse">{combo}x 콤보!</span>
+          <span className="animate-pulse text-lg font-bold text-orange-400">{combo}x 콤보!</span>
         )}
-        <span className="text-white font-mono text-lg">
-          {timeLeft > 5
-            ? `⏱ ${timeLeft}s`
-            : <span className="text-red-400 font-bold">⏱ {timeLeft}s</span>
-          }
+        <span className="font-mono text-lg text-white">
+          {timeLeft > 5 ? (
+            `⏱ ${timeLeft}s`
+          ) : (
+            <span className="font-bold text-red-400">⏱ {timeLeft}s</span>
+          )}
         </span>
       </div>
 
       {gameStatus === 'gameover' && (
-        <div className="text-emerald-400 font-bold text-lg">최종 점수: {score}</div>
+        <div className="text-lg font-bold text-emerald-400">최종 점수: {score}</div>
       )}
 
       {/* 3x3 grid */}
-      <div className="relative grid grid-cols-3 gap-4 bg-gray-900 border border-gray-700 rounded-xl p-6">
-        {particles.map(p => (
+      <div className="relative grid grid-cols-3 gap-4 rounded-xl border border-gray-700 bg-gray-900 p-6">
+        {particles.map((p) => (
           <ParticleEffect
             key={p.id}
             x={p.x}
             y={p.y}
             color="#facc15"
             count={8}
-            onDone={() => setParticles(prev => prev.filter(pt => pt.id !== p.id))}
+            onDone={() => setParticles((prev) => prev.filter((pt) => pt.id !== p.id))}
           />
         ))}
         {moles.map((hasMole, idx) => (
@@ -199,17 +218,17 @@ export default function WhackaMoleGame({ onGameEnd, onScoreChange, onAction, onC
             key={idx}
             onClick={() => handleHoleClick(idx)}
             className={[
-              'w-[clamp(60px,22vw,88px)] h-[clamp(60px,22vw,88px)] rounded-full flex items-center justify-center cursor-pointer border-2 transition-all duration-100 select-none',
+              'flex h-[clamp(60px,22vw,88px)] w-[clamp(60px,22vw,88px)] cursor-pointer select-none items-center justify-center rounded-full border-2 transition-all duration-100',
               hasMole
-                ? 'bg-amber-900 border-amber-600'
-                : 'bg-zinc-800 border-zinc-700 hover:bg-zinc-700',
+                ? 'border-amber-600 bg-amber-900'
+                : 'border-zinc-700 bg-zinc-800 hover:bg-zinc-700',
               hitAnim === idx ? 'scale-125' : '',
             ].join(' ')}
           >
             {hasMole ? (
               <span className="text-4xl">{lastHit === idx ? '💥' : '🦔'}</span>
             ) : (
-              <span className="text-zinc-600 text-2xl">○</span>
+              <span className="text-2xl text-zinc-600">○</span>
             )}
           </div>
         ))}
@@ -218,7 +237,7 @@ export default function WhackaMoleGame({ onGameEnd, onScoreChange, onAction, onC
       {gameStatus === 'idle' && (
         <button
           onClick={startGame}
-          className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg px-6 py-2 font-bold"
+          className="rounded-lg bg-indigo-600 px-6 py-2 font-bold text-white hover:bg-indigo-500"
         >
           게임 시작
         </button>
@@ -226,12 +245,12 @@ export default function WhackaMoleGame({ onGameEnd, onScoreChange, onAction, onC
       {gameStatus === 'gameover' && (
         <button
           onClick={startGame}
-          className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg px-6 py-2"
+          className="rounded-lg bg-indigo-600 px-6 py-2 text-white hover:bg-indigo-500"
         >
           다시 시작
         </button>
       )}
-      <p className="text-zinc-500 text-sm">두더지 클릭 +10점 / 빈 구멍 클릭 -5점</p>
+      <p className="text-sm text-zinc-500">두더지 클릭 +10점 / 빈 구멍 클릭 -5점</p>
     </div>
   );
 }

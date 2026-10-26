@@ -12,9 +12,9 @@ interface SearchResultListProps {
 function SearchResultList({ results, total }: SearchResultListProps) {
   if (total === 0) {
     return (
-      <div className="text-center py-10 bg-gray-800 rounded-lg">
+      <div className="rounded-lg bg-gray-800 py-10 text-center">
         <p className="text-xl text-gray-300">검색 결과가 없습니다.</p>
-        <p className="text-gray-500 mt-2">다른 키워드로 검색해보세요.</p>
+        <p className="mt-2 text-gray-500">다른 키워드로 검색해보세요.</p>
       </div>
     );
   }
@@ -34,13 +34,13 @@ function SearchResultList({ results, total }: SearchResultListProps) {
  */
 SearchResultList.Skeleton = function Skeleton() {
   return (
-    <div className="space-y-6 animate-pulse">
-      <div className="h-4 bg-gray-700 rounded w-1/4"></div>
+    <div className="animate-pulse space-y-6">
+      <div className="h-4 w-1/4 rounded bg-gray-700"></div>
       {[...Array(5)].map((_, i) => (
-        <div key={i} className="bg-gray-800 p-6 rounded-lg border border-gray-700">
-          <div className="h-6 bg-gray-700 rounded w-3/4 mb-4"></div>
-          <div className="h-4 bg-gray-700 rounded w-full mb-2"></div>
-          <div className="h-4 bg-gray-700 rounded w-5/6"></div>
+        <div key={i} className="rounded-lg border border-gray-700 bg-gray-800 p-6">
+          <div className="mb-4 h-6 w-3/4 rounded bg-gray-700"></div>
+          <div className="mb-2 h-4 w-full rounded bg-gray-700"></div>
+          <div className="h-4 w-5/6 rounded bg-gray-700"></div>
         </div>
       ))}
     </div>

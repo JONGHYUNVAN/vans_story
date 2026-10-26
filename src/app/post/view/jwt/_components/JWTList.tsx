@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { SiJsonwebtokens } from 'react-icons/si';
 import { API_URLS } from '@/constants/apiUrl';
-import { PostInfo } from "@/types/post";
+import { PostInfo } from '@/types/post';
 import PostCard from '@/components/features/post/postcard/jwt/PostCard';
 import { useTranslation } from '@/lib/i18n';
 import { sortPosts } from '@/components/features/post/sort/sortPosts';
@@ -21,17 +21,17 @@ export default function JWTList({ posts }: JWTListProps) {
     const fetchPosts = async () => {
       try {
         const response = await fetch(`${API_URLS.POST.LIST}?mainCategory=jwt&page=1&limit=10`, {
-          next: { revalidate: 0 }
+          next: { revalidate: 0 },
         });
-        
+
         if (!response.ok) {
           throw new Error('게시글을 불러오는데 실패했습니다.');
         }
-        
+
         const data = await response.json();
         const mappedData = (data.data || []).map((post: any) => ({
           ...post,
-          id: post._id || post.id
+          id: post._id || post.id,
         }));
         setJwtPosts(sortPosts(mappedData, 'latest'));
       } catch (error) {
@@ -43,7 +43,7 @@ export default function JWTList({ posts }: JWTListProps) {
   }, []);
 
   return (
-    (<div className="grid grid-cols-1 gap-6">
+    <div className="grid grid-cols-1 gap-6">
       {jwtPosts.map((post) => (
         <Link
           key={post.id}
@@ -53,13 +53,13 @@ export default function JWTList({ posts }: JWTListProps) {
           <PostCard
             post={post}
             renderBadge={() => (
-              <span className="flex items-center justify-center w-10 h-8 rounded-full bg-gray-200 text-gray-700">
-                <SiJsonwebtokens className="w-5 h-5" />
+              <span className="flex h-8 w-10 items-center justify-center rounded-full bg-gray-200 text-gray-700">
+                <SiJsonwebtokens className="h-5 w-5" />
               </span>
             )}
           />
         </Link>
       ))}
-    </div>)
+    </div>
   );
-} 
+}

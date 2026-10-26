@@ -37,7 +37,7 @@ export function joinUrl(baseUrl: string, path?: string): string {
 
   // baseUrl 끝의 슬래시 제거
   const cleanBaseUrl = baseUrl.replace(/\/$/, '');
-  
+
   // path 시작의 슬래시 확인
   const cleanPath = path.startsWith('/') ? path : `/${path}`;
 
@@ -51,11 +51,7 @@ export function joinUrl(baseUrl: string, path?: string): string {
  * @param params 쿼리 파라미터 (선택사항)
  * @returns 완전한 URL
  */
-export function buildApiUrl(
-  baseUrl: string,
-  path: string,
-  params?: QueryParams
-): string {
+export function buildApiUrl(baseUrl: string, path: string, params?: QueryParams): string {
   const url = joinUrl(baseUrl, path);
 
   if (!params || Object.keys(params).length === 0) {
@@ -87,10 +83,7 @@ export function extractQueryParams(searchParams: URLSearchParams): QueryParams {
  * @param params 파라미터 값 (예: { id: '123', commentId: '456' })
  * @returns 치환된 경로
  */
-export function buildPathWithParams(
-  path: string,
-  params: Record<string, string | number>
-): string {
+export function buildPathWithParams(path: string, params: Record<string, string | number>): string {
   let result = path;
 
   Object.entries(params).forEach(([key, value]) => {
@@ -173,10 +166,8 @@ export class ApiUrlBuilder {
    * @returns 완전한 URL
    */
   build(): string {
-    const path = this.pathSegments.length > 0 
-      ? `/${this.pathSegments.join('/')}`
-      : '';
-    
+    const path = this.pathSegments.length > 0 ? `/${this.pathSegments.join('/')}` : '';
+
     return buildApiUrl(this.baseUrl, path, this.queryParams);
   }
 
@@ -196,4 +187,3 @@ export class ApiUrlBuilder {
 export function createUrlBuilder(baseUrl: string): ApiUrlBuilder {
   return new ApiUrlBuilder(baseUrl);
 }
-

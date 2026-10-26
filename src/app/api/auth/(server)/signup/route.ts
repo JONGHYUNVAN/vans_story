@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(request: Request) {
   try {
     const signupData = await request.json();
-    
+
     const res = await fetch(`${process.env.AUTH_API_URL}/auth/signup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -20,4 +20,4 @@ export async function POST(request: Request) {
   } catch (error) {
     return new NextResponse(null, { status: 500 });
   }
-} 
+}

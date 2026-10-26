@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { useState, useEffect } from 'react';
 
 /**
@@ -10,21 +10,21 @@ export function useSidebarMargin() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    
+
     const checkMargin = () => {
       const width = window.innerWidth;
       setShouldApplyMargin(width > 1280 && width < 1536);
     };
-    
+
     checkMargin();
-    
+
     const handleResize = () => {
       checkMargin();
     };
-    
+
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   return { shouldApplyMargin };
-} 
+}

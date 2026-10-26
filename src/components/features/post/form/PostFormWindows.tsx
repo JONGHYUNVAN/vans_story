@@ -3,34 +3,33 @@
  * 다중 윈도우 기반 레이아웃
  */
 
-'use client'
+'use client';
 
-import { useEffect } from 'react'
-import { useTranslation } from '@/lib/i18n'
-import { PostFormProps } from '@/types/post'
-import { usePost } from '@/hooks/usePost'
-import { WindowManagerProvider, useWindowManager, Window } from '@/components/ui/window'
-import { Taskbar } from '@/components/ui/window/Taskbar'
-import {
-  FormWindowContent,
-  FormWindowIcon,
-} from '@/components/ui/window/windows/FormWindow'
-import {
-  EditorWindowContent,
-  EditorWindowIcon,
-} from '@/components/ui/window/windows/EditorWindow'
+import { useEffect } from 'react';
+import { useTranslation } from '@/lib/i18n';
+import { PostFormProps } from '@/types/post';
+import { usePost } from '@/hooks/usePost';
+import { WindowManagerProvider, useWindowManager, Window } from '@/components/ui/window';
+import { Taskbar } from '@/components/ui/window/Taskbar';
+import { FormWindowContent, FormWindowIcon } from '@/components/ui/window/windows/FormWindow';
+import { EditorWindowContent, EditorWindowIcon } from '@/components/ui/window/windows/EditorWindow';
 import {
   PreviewWindowContent,
   PreviewWindowIcon,
-} from '@/components/ui/window/windows/PreviewWindow'
-import {
-  AiChatWindowContent,
-  AiChatWindowIcon,
-} from '@/components/ui/window/windows/AiChatWindow'
+} from '@/components/ui/window/windows/PreviewWindow';
+import { AiChatWindowContent, AiChatWindowIcon } from '@/components/ui/window/windows/AiChatWindow';
 
-function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave, onSuccess, onError, redirectPath }: PostFormProps) {
-  const { t } = useTranslation('')
-  const { createWindow, windows } = useWindowManager()
+function PostFormWindowsContent({
+  mode,
+  initialData,
+  onSubmit,
+  onTempSave,
+  onSuccess,
+  onError,
+  redirectPath,
+}: PostFormProps) {
+  const { t } = useTranslation('');
+  const { createWindow, windows } = useWindowManager();
 
   // 통합 Post 훅 사용
   const {
@@ -57,7 +56,7 @@ function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave, onSuc
     onSuccess,
     onError,
     redirectPath,
-  })
+  });
 
   // 초기 윈도우 생성 (마운트 시에만 한 번)
   useEffect(() => {
@@ -74,7 +73,7 @@ function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave, onSuc
           size: { width: 500, height: 700 },
           minSize: { width: 400, height: 500 },
           state: 'normal',
-        })
+        });
       }
 
       // 에디터 윈도우
@@ -88,7 +87,7 @@ function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave, onSuc
           size: { width: 800, height: 700 },
           minSize: { width: 500, height: 400 },
           state: 'normal',
-        })
+        });
       }
 
       // 미리보기 윈도우 - 닫힌 상태로 시작 (작업표시줄에서 열 수 있음)
@@ -103,7 +102,7 @@ function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave, onSuc
           minSize: { width: 600, height: 400 },
           state: 'normal',
           isOpen: false, // 기본적으로 닫힌 상태
-        })
+        });
       }
 
       // AI 채팅 윈도우 - 닫힌 상태로 시작 (작업표시줄에서 열 수 있음)
@@ -118,72 +117,72 @@ function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave, onSuc
           minSize: { width: 350, height: 400 },
           state: 'normal',
           isOpen: false, // 기본적으로 닫힌 상태
-        })
+        });
       }
-    }, 100) // 100ms 지연
+    }, 100); // 100ms 지연
 
-    return () => clearTimeout(timer)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []) // 마운트 시에만 실행
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // 마운트 시에만 실행
 
   // 커스텀 제출 핸들러
   const handleFormSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     try {
-      await handleSubmit(e)
+      await handleSubmit(e);
 
       // 커스텀 onSubmit 콜백 호출
       if (onSubmit) {
-        await onSubmit(formData as any)
+        await onSubmit(formData as any);
       }
     } catch (error) {
       // usePost에서 이미 에러를 처리했으므로 여기서는 로그만 남김
-      console.error('폼 제출 실패:', error)
+      console.error('폼 제출 실패:', error);
       // 필요시 추가 에러 처리 가능
     }
-  }
+  };
 
   // 커스텀 임시저장 핸들러
   const handleTempSaveClick = () => {
-    handleTempSave()
+    handleTempSave();
 
     // 커스텀 onTempSave 콜백 호출
     if (onTempSave) {
-      onTempSave(formData)
+      onTempSave(formData);
     }
-  }
+  };
 
   // AI에서 에디터로 텍스트 삽입
   const handleInsertTextToEditor = (text: string) => {
     if (editorRef.current) {
-      const editor = editorRef.current
-      editor.commands.insertContent(text)
+      const editor = editorRef.current;
+      editor.commands.insertContent(text);
     }
-  }
+  };
 
   // 로딩 상태
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-900">
+      <div className="flex min-h-screen items-center justify-center bg-gray-900">
         <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+          <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-blue-500"></div>
           <span className="text-white">포스트를 불러오는 중...</span>
         </div>
       </div>
-    )
+    );
   }
 
   // 에러 상태
   if (errors.load) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-900">
-        <div className="bg-red-900/50 border border-red-700 text-red-300 px-6 py-4 rounded-lg">
+      <div className="flex min-h-screen items-center justify-center bg-gray-900">
+        <div className="rounded-lg border border-red-700 bg-red-900/50 px-6 py-4 text-red-300">
           <strong className="font-bold">오류!</strong>
-          <span className="block sm:inline ml-2">{errors.load}</span>
+          <span className="ml-2 block sm:inline">{errors.load}</span>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -192,21 +191,19 @@ function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave, onSuc
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="text-center">
           <div className="mb-6">
-            <div className="w-24 h-24 mx-auto mb-6 rounded-3xl bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center shadow-lg">
-              <svg className="w-12 h-12 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z"/>
+            <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-blue-100 to-blue-200 shadow-lg">
+              <svg className="h-12 w-12 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" />
               </svg>
             </div>
-            <h1 className="text-3xl font-semibold text-gray-400 mb-3">
+            <h1 className="mb-3 text-3xl font-semibold text-gray-400">
               {mode === 'create' ? '새 글 작성' : '포스트 편집'}
             </h1>
-            <p className="text-gray-300 text-sm">
-               멀티 윈도우 에디터
-            </p>
+            <p className="text-sm text-gray-300">멀티 윈도우 에디터</p>
           </div>
-          
+
           {/* 설명명 */}
-          <div className="mt-12 space-y-2 text-gray-300 text-xs">
+          <div className="mt-12 space-y-2 text-xs text-gray-300">
             <p>• 윈도우를 드래그하여 이동하세요</p>
             <p>• 모서리를 드래그하여 크기를 조절하세요</p>
             <p>• 작업표시줄에서 윈도우를 관리하세요</p>
@@ -216,7 +213,7 @@ function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave, onSuc
 
       {/* 폼 윈도우 */}
       <Window id="form-window" icon={<FormWindowIcon />}>
-        <form onSubmit={handleFormSubmit} className="h-full flex flex-col">
+        <form onSubmit={handleFormSubmit} className="flex h-full flex-col">
           <div className="flex-1 overflow-auto">
             <FormWindowContent
               data={formData}
@@ -230,15 +227,15 @@ function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave, onSuc
           </div>
 
           {/* 액션 버튼 영역 */}
-          <div className="p-4 border-t border-gray-200 bg-white/60 space-y-2.5">
+          <div className="space-y-2.5 border-t border-gray-200 bg-white/60 p-4">
             <button
               type="submit"
               disabled={isSaving}
-              className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:from-gray-300 disabled:to-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition-all shadow-md disabled:shadow-none"
+              className="w-full rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-3 font-semibold text-white shadow-md transition-all hover:from-blue-600 hover:to-blue-700 disabled:from-gray-300 disabled:to-gray-400 disabled:shadow-none"
             >
               {isSaving ? (
                 <span className="flex items-center justify-center gap-2">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
                   <span className="text-sm">{mode === 'create' ? '작성 중...' : '수정 중...'}</span>
                 </span>
               ) : (
@@ -250,21 +247,21 @@ function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave, onSuc
               type="button"
               onClick={handleTempSaveClick}
               disabled={isSaving}
-              className="w-full bg-gray-200/60 hover:bg-gray-300/60 disabled:bg-gray-100/60 text-gray-700 hover:text-gray-900 disabled:text-gray-400 font-medium py-3 px-4 rounded-lg transition-all border border-gray-300"
+              className="w-full rounded-lg border border-gray-300 bg-gray-200/60 px-4 py-3 font-medium text-gray-700 transition-all hover:bg-gray-300/60 hover:text-gray-900 disabled:bg-gray-100/60 disabled:text-gray-400"
             >
               <span className="text-sm">임시저장</span>
             </button>
 
             {/* 상태 표시 */}
             {hasUnsavedChanges && (
-              <div className="flex items-center justify-center gap-1.5 text-yellow-700 text-xs py-2 bg-yellow-50 rounded-lg border border-yellow-200">
-                <div className="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse"></div>
+              <div className="flex items-center justify-center gap-1.5 rounded-lg border border-yellow-200 bg-yellow-50 py-2 text-xs text-yellow-700">
+                <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-yellow-500"></div>
                 <span>저장되지 않은 변경사항이 있습니다</span>
               </div>
             )}
 
             {errors.submit && (
-              <div className="flex items-center justify-center gap-1.5 text-red-700 text-xs py-2 bg-red-50 rounded-lg border border-red-200">
+              <div className="flex items-center justify-center gap-1.5 rounded-lg border border-red-200 bg-red-50 py-2 text-xs text-red-700">
                 <span>{errors.submit}</span>
               </div>
             )}
@@ -285,18 +282,14 @@ function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave, onSuc
             mainCategory: formData.mainCategory,
             subCategory: formData.subCategory,
             topic: formData.topic,
-            tags: formData.tags
+            tags: formData.tags,
           }}
         />
       </Window>
 
       {/* 미리보기 윈도우 */}
       <Window id="preview-window" icon={<PreviewWindowIcon />}>
-        <PreviewWindowContent
-          post={formData}
-          showCard={true}
-          showLayout={true}
-        />
+        <PreviewWindowContent post={formData} showCard={true} showLayout={true} />
       </Window>
 
       {/* AI 채팅 윈도우 */}
@@ -307,7 +300,7 @@ function PostFormWindowsContent({ mode, initialData, onSubmit, onTempSave, onSuc
       {/* 작업표시줄 */}
       <Taskbar />
     </div>
-  )
+  );
 }
 
 export function PostFormWindows(props: PostFormProps) {
@@ -315,6 +308,5 @@ export function PostFormWindows(props: PostFormProps) {
     <WindowManagerProvider persistKey="post-editor-windows">
       <PostFormWindowsContent {...props} />
     </WindowManagerProvider>
-  )
+  );
 }
-

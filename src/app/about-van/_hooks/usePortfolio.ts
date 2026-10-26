@@ -38,7 +38,7 @@ export function usePortfolio() {
     isVisible,
     setIsVisible,
     activeSection,
-    scrollToSection
+    scrollToSection,
   };
 }
 
@@ -53,7 +53,7 @@ export function useIntersectionObserver(elementRef: React.RefObject<Element>, th
       ([entry]) => {
         setIsIntersecting(entry.isIntersecting);
       },
-      { threshold }
+      { threshold },
     );
 
     observer.observe(element);
@@ -64,4 +64,4 @@ export function useIntersectionObserver(elementRef: React.RefObject<Element>, th
   }, [elementRef, threshold]);
 
   return isIntersecting;
-} 
+}

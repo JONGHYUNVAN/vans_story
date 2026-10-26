@@ -12,4 +12,4 @@ export default async function Page() {
       </MongodbLayout>
     </SidebarWrapper>
   );
-} 
+}

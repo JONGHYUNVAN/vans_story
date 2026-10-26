@@ -16,10 +16,10 @@ export interface GameSizeResult {
   ready: boolean;
 }
 
-const MOBILE_BREAKPOINT = 768;    // md breakpoint
+const MOBILE_BREAKPOINT = 768; // md breakpoint
 const MOBILE_CONTROLLER_H = 180; // fixed 게임패드 높이
-const APPROX_HEADER_H = 60;       // 페이지 헤더 높이
-const MARGIN_V = 40;              // 상하 여백
+const APPROX_HEADER_H = 60; // 페이지 헤더 높이
+const MARGIN_V = 40; // 상하 여백
 
 function calculate(options: GameSizeOptions): Omit<GameSizeResult, 'ready'> {
   const { aspectRatio, maxWidth, maxHeight, gridCols } = options;

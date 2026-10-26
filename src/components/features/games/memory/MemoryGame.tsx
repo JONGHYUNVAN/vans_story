@@ -38,7 +38,12 @@ function createCards(): Card[] {
   }));
 }
 
-export default function MemoryGame({ onGameEnd, onScoreChange, onAction, onCombo }: GameComponentProps) {
+export default function MemoryGame({
+  onGameEnd,
+  onScoreChange,
+  onAction,
+  onCombo,
+}: GameComponentProps) {
   const [cards, setCards] = useState<Card[]>(createCards());
   const [flippedIds, setFlippedIds] = useState<number[]>([]);
   const [moves, setMoves] = useState(0);
@@ -53,7 +58,7 @@ export default function MemoryGame({ onGameEnd, onScoreChange, onAction, onCombo
   const { playSelect } = useSound();
   const combo = useCombo();
 
-  useGameTimer(() => setTime(t => t + 1), gameStatus === 'playing' ? 1000 : null);
+  useGameTimer(() => setTime((t) => t + 1), gameStatus === 'playing' ? 1000 : null);
 
   const startGame = useCallback(() => {
     combo.reset();
@@ -67,76 +72,94 @@ export default function MemoryGame({ onGameEnd, onScoreChange, onAction, onCombo
     onScoreChange(0);
   }, [onScoreChange, combo]);
 
-  const handleCardClick = useCallback((id: number) => {
-    if (gameStatus !== 'playing') return;
-    if (lockRef.current) return;
-    const card = cards[id];
-    if (card.isFlipped || card.isMatched) return;
+  const handleCardClick = useCallback(
+    (id: number) => {
+      if (gameStatus !== 'playing') return;
+      if (lockRef.current) return;
+      const card = cards[id];
+      if (card.isFlipped || card.isMatched) return;
 
-    // 카드 뒤집기 즉시 사운드
-    playSelect();
+      // 카드 뒤집기 즉시 사운드
+      playSelect();
 
-    const newFlipped = [...flippedIds, id];
-    setCards(prev => prev.map(c => c.id === id ? { ...c, isFlipped: true } : c));
-    setFlippedIds(newFlipped);
+      const newFlipped = [...flippedIds, id];
+      setCards((prev) => prev.map((c) => (c.id === id ? { ...c, isFlipped: true } : c)));
+      setFlippedIds(newFlipped);
 
-    if (newFlipped.length === 2) {
-      lockRef.current = true;
-      setMoves(m => m + 1);
-      const [firstId, secondId] = newFlipped;
-      const firstCard = cards[firstId];
-      const secondCard = cards[secondId];
+      if (newFlipped.length === 2) {
+        lockRef.current = true;
+        setMoves((m) => m + 1);
+        const [firstId, secondId] = newFlipped;
+        const firstCard = cards[firstId];
+        const secondCard = cards[secondId];
 
-      if (firstCard.icon === secondCard.icon) {
-        // Match
-        onAction?.();
+        if (firstCard.icon === secondCard.icon) {
+          // Match
+          onAction?.();
 
-        // 콤보 추적
-        const prevLevel = combo.comboLevel;
-        const newLevel = combo.increment();
-        if (newLevel > 0 && newLevel > prevLevel) {
-          onCombo?.(newLevel);
-        }
+          // 콤보 추적
+          const prevLevel = combo.comboLevel;
+          const newLevel = combo.increment();
+          if (newLevel > 0 && newLevel > prevLevel) {
+            onCombo?.(newLevel);
+          }
 
-        setCards(prev => prev.map(c =>
-          c.id === firstId || c.id === secondId
-            ? { ...c, isMatched: true, isFlipped: true }
-            : c
-        ));
-        const newMatchCount = matchCount + 1;
-        setMatchCount(newMatchCount);
-        setFlippedIds([]);
-        lockRef.current = false;
-        setFlashColor('rgba(52,211,153,0.2)');
-        setFlashActive(true);
-
-        if (newMatchCount >= 8) {
-          setGameStatus('won');
-          const score = Math.max(0, 1000 - (moves + 1) * 10 - time * 2);
-          onScoreChange(score);
-          onGameEnd(score, `이동: ${moves + 1}회, 시간: ${time}초`);
-          setConfettiActive(true);
-        }
-      } else {
-        // No match — flip back
-        combo.reset();
-        setFlashColor('rgba(239,68,68,0.15)');
-        setFlashActive(true);
-        setTimeout(() => {
-          setCards(prev => prev.map(c =>
-            c.id === firstId || c.id === secondId
-              ? { ...c, isFlipped: false }
-              : c
-          ));
+          setCards((prev) =>
+            prev.map((c) =>
+              c.id === firstId || c.id === secondId
+                ? { ...c, isMatched: true, isFlipped: true }
+                : c,
+            ),
+          );
+          const newMatchCount = matchCount + 1;
+          setMatchCount(newMatchCount);
           setFlippedIds([]);
           lockRef.current = false;
-        }, 800);
+          setFlashColor('rgba(52,211,153,0.2)');
+          setFlashActive(true);
+
+          if (newMatchCount >= 8) {
+            setGameStatus('won');
+            const score = Math.max(0, 1000 - (moves + 1) * 10 - time * 2);
+            onScoreChange(score);
+            onGameEnd(score, `이동: ${moves + 1}회, 시간: ${time}초`);
+            setConfettiActive(true);
+          }
+        } else {
+          // No match — flip back
+          combo.reset();
+          setFlashColor('rgba(239,68,68,0.15)');
+          setFlashActive(true);
+          setTimeout(() => {
+            setCards((prev) =>
+              prev.map((c) =>
+                c.id === firstId || c.id === secondId ? { ...c, isFlipped: false } : c,
+              ),
+            );
+            setFlippedIds([]);
+            lockRef.current = false;
+          }, 800);
+        }
       }
-    }
-  }, [cards, flippedIds, gameStatus, matchCount, moves, time, onGameEnd, onScoreChange, onAction, onCombo, playSelect, combo]);
+    },
+    [
+      cards,
+      flippedIds,
+      gameStatus,
+      matchCount,
+      moves,
+      time,
+      onGameEnd,
+      onScoreChange,
+      onAction,
+      onCombo,
+      playSelect,
+      combo,
+    ],
+  );
 
   return (
-    <div className="flex flex-col items-center gap-4 p-4 relative">
+    <div className="relative flex flex-col items-center gap-4 p-4">
       <ConfettiEffect active={confettiActive} duration={2500} />
       <FlashOverlay
         active={flashActive}
@@ -145,20 +168,29 @@ export default function MemoryGame({ onGameEnd, onScoreChange, onAction, onCombo
         onDone={() => setFlashActive(false)}
       />
       {/* Stats */}
-      <div className="flex gap-6 bg-gray-900 border border-gray-700 rounded-xl px-6 py-3">
-        <span className="text-white">이동: <span className="font-mono font-bold">{moves}</span></span>
-        <span className="text-white">쌍: <span className="font-mono font-bold text-emerald-400">{matchCount}/8</span></span>
-        <span className="text-white">시간: <span className="font-mono font-bold">{time}s</span></span>
+      <div className="flex gap-6 rounded-xl border border-gray-700 bg-gray-900 px-6 py-3">
+        <span className="text-white">
+          이동: <span className="font-mono font-bold">{moves}</span>
+        </span>
+        <span className="text-white">
+          쌍: <span className="font-mono font-bold text-emerald-400">{matchCount}/8</span>
+        </span>
+        <span className="text-white">
+          시간: <span className="font-mono font-bold">{time}s</span>
+        </span>
       </div>
 
       {gameStatus === 'won' && (
-        <div className="text-emerald-400 font-bold text-lg">완성! 점수: {Math.max(0, 1000 - moves * 10 - time * 2)}</div>
+        <div className="text-lg font-bold text-emerald-400">
+          완성! 점수: {Math.max(0, 1000 - moves * 10 - time * 2)}
+        </div>
       )}
 
       {/* Card grid */}
       <div className="grid grid-cols-4 gap-2">
-        {cards.map(card => {
-          let cardClass = 'w-16 h-16 sm:w-[72px] sm:h-[72px] flex items-center justify-center text-2xl rounded-lg cursor-pointer border-2 transition-all duration-200 select-none ';
+        {cards.map((card) => {
+          let cardClass =
+            'w-16 h-16 sm:w-[72px] sm:h-[72px] flex items-center justify-center text-2xl rounded-lg cursor-pointer border-2 transition-all duration-200 select-none ';
           if (card.isMatched) {
             cardClass += 'bg-emerald-900 border-emerald-500';
           } else if (card.isFlipped) {
@@ -184,7 +216,7 @@ export default function MemoryGame({ onGameEnd, onScoreChange, onAction, onCombo
       {gameStatus === 'idle' && (
         <button
           onClick={startGame}
-          className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg px-6 py-2 font-bold"
+          className="rounded-lg bg-indigo-600 px-6 py-2 font-bold text-white hover:bg-indigo-500"
         >
           게임 시작
         </button>
@@ -192,13 +224,13 @@ export default function MemoryGame({ onGameEnd, onScoreChange, onAction, onCombo
       {gameStatus === 'won' && (
         <button
           onClick={startGame}
-          className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg px-6 py-2"
+          className="rounded-lg bg-indigo-600 px-6 py-2 text-white hover:bg-indigo-500"
         >
           다시 시작
         </button>
       )}
       {gameStatus === 'playing' && (
-        <p className="text-zinc-500 text-sm">카드를 클릭해 같은 쌍을 찾으세요</p>
+        <p className="text-sm text-zinc-500">카드를 클릭해 같은 쌍을 찾으세요</p>
       )}
     </div>
   );

@@ -12,7 +12,7 @@ interface PageProps {
 export default async function ViewJwtPostPage({ params }: PageProps) {
   const { id } = await params;
   const post = await getPostWithViewCount(id);
-  
+
   if (!post) {
     showNotFound();
   }
@@ -33,22 +33,24 @@ export default async function ViewJwtPostPage({ params }: PageProps) {
             </div>
           </div>
 
-          <div className="prose max-w-none bg-[#0A0A0A] p-6 rounded-lg border border-[#FF3333]/20 prose-headings:text-[#A0AEC0] prose-p:text-[#A0AEC0] prose-strong:text-[#A0AEC0] prose-code:text-[#A0AEC0] prose-ul:text-[#A0AEC0] prose-ol:text-[#A0AEC0] prose-blockquote:text-[#A0AEC0] prose-a:text-[#1E4D2B] [&_*]:!text-[#A0AEC0] [&_a]:!text-blue-300 [&_code]:!text-green-300 [&_h1]:!text-[#A0AEC0] [&_h2]:!text-[#A0AEC0] [&_h3]:!text-[#A0AEC0] [&_h4]:!text-[#A0AEC0] [&_h5]:!text-[#A0AEC0] [&_h6]:!text-[#A0AEC0] [&_strong]:!text-[#A0AEC0] [&_em]:!text-[#A0AEC0] [&_li]:!text-[#A0AEC0] [&_td]:!text-[#A0AEC0] [&_th]:!text-[#A0AEC0] [&_th]:!bg-gray-700">
+          <div className="prose prose-headings:text-[#A0AEC0] prose-p:text-[#A0AEC0] prose-strong:text-[#A0AEC0] prose-code:text-[#A0AEC0] prose-ul:text-[#A0AEC0] prose-ol:text-[#A0AEC0] prose-blockquote:text-[#A0AEC0] prose-a:text-[#1E4D2B] max-w-none rounded-lg border border-[#FF3333]/20 bg-[#0A0A0A] p-6 [&_*]:!text-[#A0AEC0] [&_a]:!text-blue-300 [&_code]:!text-green-300 [&_em]:!text-[#A0AEC0] [&_h1]:!text-[#A0AEC0] [&_h2]:!text-[#A0AEC0] [&_h3]:!text-[#A0AEC0] [&_h4]:!text-[#A0AEC0] [&_h5]:!text-[#A0AEC0] [&_h6]:!text-[#A0AEC0] [&_li]:!text-[#A0AEC0] [&_strong]:!text-[#A0AEC0] [&_td]:!text-[#A0AEC0] [&_th]:!bg-gray-700 [&_th]:!text-[#A0AEC0]">
             <Viewer content={post.content} />
           </div>
 
           <div className="flex items-center gap-2">
-            {post.tags && post.tags.length > 0 && post.tags.map((tag: string) => (
-              <span 
-                key={tag} 
-                className="px-2 py-1 bg-[#0A0A0A] text-[#A0AEC0] rounded-full text-xs border border-[#FF3333]/20"
-              >
-                {tag}
-              </span>
-            ))}
+            {post.tags &&
+              post.tags.length > 0 &&
+              post.tags.map((tag: string) => (
+                <span
+                  key={tag}
+                  className="rounded-full border border-[#FF3333]/20 bg-[#0A0A0A] px-2 py-1 text-xs text-[#A0AEC0]"
+                >
+                  {tag}
+                </span>
+              ))}
           </div>
         </div>
       </JWTLayout>
     </SidebarWrapper>
   );
-} 
+}

@@ -9,10 +9,10 @@ import TypewriterSection from '@/components/features/home/TypewriterSection';
 export default function Home() {
   return (
     <div className="w-full bg-black">
-      <div className="h-[65vh] relative overflow-hidden w-full">
+      <div className="relative h-[65vh] w-full overflow-hidden">
         <BackgroundVideo />
         <div className="absolute inset-0 bg-black/30">
-          <div className="container mx-auto w-full px-4 h-full flex flex-col items-center justify-center space-y-12 text-center">
+          <div className="container mx-auto flex h-full w-full flex-col items-center justify-center space-y-12 px-4 text-center">
             <BlogTitle />
             <TypewriterSection />
           </div>

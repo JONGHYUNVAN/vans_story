@@ -13,11 +13,11 @@ interface TypewriterTextProps {
  */
 export default function TypewriterText({ text, style }: TypewriterTextProps) {
   return (
-    <h1 className="text-6xl font-bold text-white flex items-center justify-center">
+    <h1 className="flex items-center justify-center text-6xl font-bold text-white">
       {/* 고정된 "Hello," 텍스트 */}
       <span>Hello,</span>
       {/* 타이핑 효과가 적용될 텍스트 컨테이너 */}
-      <div className="relative flex items-center ml-3">
+      <div className="relative ml-3 flex items-center">
         {/* 동적으로 변하는 텍스트 */}
         <span style={style} className="mr-1">
           {text}
@@ -27,4 +27,4 @@ export default function TypewriterText({ text, style }: TypewriterTextProps) {
       </div>
     </h1>
   );
-} 
+}

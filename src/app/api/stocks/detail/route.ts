@@ -78,10 +78,10 @@ interface NaverIntegration {
     id: number;
     cd: string;
     nm: string;
-    bnm: string;    // 증권사명
-    tit: string;    // 리포트 제목
+    bnm: string; // 증권사명
+    tit: string; // 리포트 제목
     rcnt: string;
-    wdt: string;    // YYYYMMDD
+    wdt: string; // YYYYMMDD
   }> | null;
   industryCompareInfo?: Array<{
     itemCode: string;
@@ -113,9 +113,7 @@ interface NaverConsensusDetail {
   [key: string]: unknown;
 }
 
-async function fetchNaverIntegration(
-  symbol: string,
-): Promise<NaverIntegration | null> {
+async function fetchNaverIntegration(symbol: string): Promise<NaverIntegration | null> {
   const code = krxCode(symbol);
   const url = `https://m.stock.naver.com/api/stock/${code}/integration`;
   try {
@@ -132,8 +130,8 @@ interface NaverResearchDetail {
     itemCode?: string;
     brokerName?: string;
     writeDate?: string;
-    opinion?: string;     // '매수' | '중립' | '매도' etc.
-    goalPrice?: string;   // 목표주가 (숫자 문자열, e.g. "300000")
+    opinion?: string; // '매수' | '중립' | '매도' etc.
+    goalPrice?: string; // 목표주가 (숫자 문자열, e.g. "300000")
     prevGoalPrice?: string;
   };
 }
@@ -167,9 +165,7 @@ async function fetchNaverResearchGoalPrices(
 }
 
 /** 네이버 상세 컨센서스 (목표가 범위, 애널리스트 수) */
-async function fetchNaverConsensusDetail(
-  symbol: string,
-): Promise<NaverConsensusDetail | null> {
+async function fetchNaverConsensusDetail(symbol: string): Promise<NaverConsensusDetail | null> {
   const code = krxCode(symbol);
   // 네이버 증권 컨센서스 엔드포인트 순서대로 시도
   const urls = [
@@ -205,24 +201,30 @@ async function fetchYahooConsensus(symbol: string): Promise<StockConsensus | nul
       const result = json?.quoteSummary?.result?.[0];
       if (!result) continue;
 
-      const fd  = result.financialData;
-      const rt  = result.recommendationTrend?.trend?.[0]; // 최신 기간
+      const fd = result.financialData;
+      const rt = result.recommendationTrend?.trend?.[0]; // 최신 기간
 
-      const targetMean   = fd?.targetMeanPrice?.raw   ?? null;
-      const targetHigh   = fd?.targetHighPrice?.raw   ?? null;
-      const targetLow    = fd?.targetLowPrice?.raw    ?? null;
-      const recommMean   = fd?.recommendationMean?.raw ?? null;
-      const recommKey    = fd?.recommendationKey       ?? null;
-      const numAnalysts  = fd?.numberOfAnalystOpinions?.raw ?? null;
+      const targetMean = fd?.targetMeanPrice?.raw ?? null;
+      const targetHigh = fd?.targetHighPrice?.raw ?? null;
+      const targetLow = fd?.targetLowPrice?.raw ?? null;
+      const recommMean = fd?.recommendationMean?.raw ?? null;
+      const recommKey = fd?.recommendationKey ?? null;
+      const numAnalysts = fd?.numberOfAnalystOpinions?.raw ?? null;
 
       // recommendationTrend로 보강 (strongBuy+buy+hold+sell+strongSell 합계)
-      const trendTotal =
-        rt
-          ? (rt.strongBuy ?? 0) + (rt.buy ?? 0) + (rt.hold ?? 0) +
-            (rt.sell ?? 0) + (rt.strongSell ?? 0)
-          : null;
+      const trendTotal = rt
+        ? (rt.strongBuy ?? 0) +
+          (rt.buy ?? 0) +
+          (rt.hold ?? 0) +
+          (rt.sell ?? 0) +
+          (rt.strongSell ?? 0)
+        : null;
       const analystCount =
-        numAnalysts !== null ? numAnalysts : trendTotal !== null && trendTotal > 0 ? trendTotal : null;
+        numAnalysts !== null
+          ? numAnalysts
+          : trendTotal !== null && trendTotal > 0
+            ? trendTotal
+            : null;
 
       if (targetMean !== null || recommMean !== null) {
         return {
@@ -242,12 +244,8 @@ async function fetchYahooConsensus(symbol: string): Promise<StockConsensus | nul
   return null;
 }
 
-function parseNaverFundamentals(
-  naver: NaverIntegration,
-): StockFundamentals {
-  const infoMap = new Map<string, string>(
-    (naver.totalInfos ?? []).map((t) => [t.code, t.value]),
-  );
+function parseNaverFundamentals(naver: NaverIntegration): StockFundamentals {
+  const infoMap = new Map<string, string>((naver.totalInfos ?? []).map((t) => [t.code, t.value]));
 
   const get = (code: string) => infoMap.get(code);
 
@@ -304,9 +302,9 @@ function parseNaverConsensus(
   researchPrices?: Array<{ id: number; goalPrice: number | null; opinion: string | null }>,
 ): StockConsensus | null {
   // 기본 값: integration의 consensusInfo
-  const ci  = naver.consensusInfo;
-  const tp  = parseFloat((ci?.priceTargetMean ?? '').replace(/,/g, ''));
-  const rc  = parseFloat(ci?.recommMean ?? '');
+  const ci = naver.consensusInfo;
+  const tp = parseFloat((ci?.priceTargetMean ?? '').replace(/,/g, ''));
+  const rc = parseFloat(ci?.recommMean ?? '');
 
   const targetMean = Number.isFinite(tp) ? tp : null;
   const recommMean = Number.isFinite(rc) ? rc : null;
@@ -315,17 +313,17 @@ function parseNaverConsensus(
 
   // 상세 컨센서스 엔드포인트에서 범위·수 보강
   let targetHigh: number | null = null;
-  let targetLow: number | null  = null;
+  let targetLow: number | null = null;
   let numAnalysts: number | null = null;
 
   if (detail) {
     const pt = detail.priceTarget;
     if (pt) {
-      const h = parseFloat(String(pt.high  ?? '').replace(/,/g, ''));
-      const l = parseFloat(String(pt.low   ?? '').replace(/,/g, ''));
+      const h = parseFloat(String(pt.high ?? '').replace(/,/g, ''));
+      const l = parseFloat(String(pt.low ?? '').replace(/,/g, ''));
       const cnt = parseInt(String(pt.count ?? ''), 10);
       if (Number.isFinite(h) && h > 0) targetHigh = h;
-      if (Number.isFinite(l) && l > 0) targetLow  = l;
+      if (Number.isFinite(l) && l > 0) targetLow = l;
       if (Number.isFinite(cnt) && cnt > 0) numAnalysts = cnt;
     }
     if (numAnalysts === null && detail.recomm) {
@@ -348,37 +346,35 @@ function parseNaverConsensus(
   );
 
   return {
-    targetPrice:       targetMean,
+    targetPrice: targetMean,
     targetHigh,
     targetLow,
-    recommendation:    recommMean,
+    recommendation: recommMean,
     recommendationKey: null,
-    numberOfAnalysts:  numAnalysts,
-    sources:           ['NAVER 증권'],
-    analystReports:    (naver.researches ?? []).slice(0, 6).map((r) => ({
-      broker:      r.bnm,
-      date:        r.wdt.replace(/(\d{4})(\d{2})(\d{2})/, '$1.$2.$3'),
-      title:       r.tit,
+    numberOfAnalysts: numAnalysts,
+    sources: ['NAVER 증권'],
+    analystReports: (naver.researches ?? []).slice(0, 6).map((r) => ({
+      broker: r.bnm,
+      date: r.wdt.replace(/(\d{4})(\d{2})(\d{2})/, '$1.$2.$3'),
+      title: r.tit,
       targetPrice: priceMap.get(r.id)?.goalPrice ?? null,
     })),
   };
 }
 
 function parseNaverPeers(naver: NaverIntegration): StockPeer[] {
-  return (naver.industryCompareInfo ?? [])
-    .slice(0, 5)
-    .map((p) => {
-      const price = parseInt(p.closePrice.replace(/,/g, ''), 10) || 0;
-      const change = parseInt(p.compareToPreviousClosePrice.replace(/,/g, ''), 10) || 0;
-      const pct = parseFloat(p.fluctuationsRatio) || 0;
-      return {
-        symbol: p.itemCode + '.KS',
-        name: p.stockName,
-        price,
-        change,
-        changePercent: pct,
-      };
-    });
+  return (naver.industryCompareInfo ?? []).slice(0, 5).map((p) => {
+    const price = parseInt(p.closePrice.replace(/,/g, ''), 10) || 0;
+    const change = parseInt(p.compareToPreviousClosePrice.replace(/,/g, ''), 10) || 0;
+    const pct = parseFloat(p.fluctuationsRatio) || 0;
+    return {
+      symbol: p.itemCode + '.KS',
+      name: p.stockName,
+      price,
+      change,
+      changePercent: pct,
+    };
+  });
 }
 
 function resolveName(symbol: string, shortName?: string, longName?: string): string {
@@ -394,16 +390,24 @@ function resolveName(symbol: string, shortName?: string, longName?: string): str
 async function fetchV8Detail(
   symbol: string,
 ): Promise<{ quote: StockDetailData['quote']; chart: ChartDataPoint[]; name: string }> {
-  const enc  = encodeURIComponent(symbol);
+  const enc = encodeURIComponent(symbol);
   const path = `/v8/finance/chart/${enc}?interval=1d&range=1mo`;
   const hosts = ['query1.finance.yahoo.com', 'query2.finance.yahoo.com'];
 
   let res: Response | null = null;
   for (const host of hosts) {
     try {
-      const r = await fetch(`https://${host}${path}`, { headers: YAHOO_HEADERS, cache: 'no-store' });
-      if (r.ok) { res = r; break; }
-    } catch { /* 다음 host 시도 */ }
+      const r = await fetch(`https://${host}${path}`, {
+        headers: YAHOO_HEADERS,
+        cache: 'no-store',
+      });
+      if (r.ok) {
+        res = r;
+        break;
+      }
+    } catch {
+      /* 다음 host 시도 */
+    }
   }
   if (!res) throw new Error(`Yahoo Finance v8 요청 실패 (query1·query2 모두 오류)`);
 
@@ -472,7 +476,7 @@ async function fetchV8Detail(
     volume,
     marketCap: null,
     currency: meta.currency ?? 'USD',
-    marketState: ((meta.marketState ?? 'CLOSED') as MarketState),
+    marketState: (meta.marketState ?? 'CLOSED') as MarketState,
     fiftyTwoWeekHigh: meta.fiftyTwoWeekHigh != null ? finiteNum(meta.fiftyTwoWeekHigh) : null,
     fiftyTwoWeekLow: meta.fiftyTwoWeekLow != null ? finiteNum(meta.fiftyTwoWeekLow) : null,
     preMarketPrice,
@@ -519,7 +523,7 @@ export async function GET(
     const [yahooResult, naverResult, naverConsensusResult, yahooConsensusResult] =
       await Promise.allSettled([
         fetchV8Detail(symbol),
-        isKr ? fetchNaverIntegration(symbol)     : Promise.resolve(null),
+        isKr ? fetchNaverIntegration(symbol) : Promise.resolve(null),
         isKr ? fetchNaverConsensusDetail(symbol) : Promise.resolve(null),
         // KR/US 모두 Yahoo consensus 시도 (Korean 종목도 Yahoo 커버리지 있음)
         fetchYahooConsensus(symbol),
@@ -548,13 +552,15 @@ export async function GET(
     }
 
     const { quote, chart, name } = yahooResult.value;
-    const naver          = naverRaw;
-    const naverConsensus = naverConsensusResult.status === 'fulfilled' ? naverConsensusResult.value : null;
-    const yahooConsensus = yahooConsensusResult.status === 'fulfilled' ? yahooConsensusResult.value : null;
+    const naver = naverRaw;
+    const naverConsensus =
+      naverConsensusResult.status === 'fulfilled' ? naverConsensusResult.value : null;
+    const yahooConsensus =
+      yahooConsensusResult.status === 'fulfilled' ? yahooConsensusResult.value : null;
 
     const fundamentals = naver ? parseNaverFundamentals(naver) : null;
-    const investors    = naver ? parseNaverInvestors(naver)    : null;
-    const peers        = naver ? parseNaverPeers(naver)        : null;
+    const investors = naver ? parseNaverInvestors(naver) : null;
+    const peers = naver ? parseNaverPeers(naver) : null;
 
     // ── 소스별 컨센서스 수집 ──
     const consensusBySource: StockConsensus[] = [];
@@ -572,17 +578,15 @@ export async function GET(
         const vals = consensusBySource.map((c) => c[key]).filter((v): v is number => v !== null);
         return vals.length > 0 ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
       };
-      const totalAnalysts = consensusBySource.reduce(
-        (s, c) => s + (c.numberOfAnalysts ?? 0), 0,
-      );
+      const totalAnalysts = consensusBySource.reduce((s, c) => s + (c.numberOfAnalysts ?? 0), 0);
       consensus = {
-        targetPrice:      avgNum('targetPrice'),
-        targetHigh:       avgNum('targetHigh'),
-        targetLow:        avgNum('targetLow'),
-        recommendation:   avgNum('recommendation'),
+        targetPrice: avgNum('targetPrice'),
+        targetHigh: avgNum('targetHigh'),
+        targetLow: avgNum('targetLow'),
+        recommendation: avgNum('recommendation'),
         recommendationKey: null,
         numberOfAnalysts: totalAnalysts > 0 ? totalAnalysts : null,
-        sources:          ['합산평균'],
+        sources: ['합산평균'],
       };
     }
 

@@ -16,34 +16,34 @@ export default function AuthButtons() {
 
   const handleLogout = async () => {
     try {
-        await authService.logout();
-        dispatch(logout());
-        const message = t('auth.logout'); 
-        showLogoutAlert(message); 
+      await authService.logout();
+      dispatch(logout());
+      const message = t('auth.logout');
+      showLogoutAlert(message);
     } catch (error) {
-        console.error('로그아웃 실패:', error);
+      console.error('로그아웃 실패:', error);
     }
-};
+  };
 
   return (
     <>
       {isAuthenticated ? (
         <div className="flex items-center gap-2">
-          <button 
+          <button
             onClick={handleLogout}
-            className="text-gray-600 hover:text-red-600 transition-colors"
+            className="text-gray-600 transition-colors hover:text-red-600"
           >
             {t('common.logout')}
           </button>
         </div>
       ) : (
-        <button 
+        <button
           onClick={() => dispatch(openLoginModal())}
-          className="text-gray-600 hover:text-blue-600 transition-colors"
+          className="text-gray-600 transition-colors hover:text-blue-600"
         >
           {t('common.login')}
         </button>
       )}
     </>
   );
-} 
+}

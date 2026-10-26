@@ -12,17 +12,22 @@ export default function SignupForm() {
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-  
+
   const methods = useForm({
     mode: 'onChange',
     defaultValues: {
       email: '',
       nickname: '',
-      password: ''
-    }
+      password: '',
+    },
   });
 
-  const { register, formState: { errors }, watch, handleSubmit } = methods;
+  const {
+    register,
+    formState: { errors },
+    watch,
+    handleSubmit,
+  } = methods;
   const values = watch();
 
   const showError = (fieldName: string) => {
@@ -37,27 +42,27 @@ export default function SignupForm() {
         required: true,
         pattern: {
           value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-          message: t('signup_validation.emailError')
-        }
+          message: t('signup_validation.emailError'),
+        },
       },
       nickname: {
         required: true,
         minLength: {
           value: 2,
-          message: t('signup_validation.usernameError')
+          message: t('signup_validation.usernameError'),
         },
         maxLength: {
           value: 50,
-          message: t('signup_validation.usernameError')
-        }
+          message: t('signup_validation.usernameError'),
+        },
       },
       password: {
         required: true,
         pattern: {
           value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
-          message: t('signup_validation.passwordError')
-        }
-      }
+          message: t('signup_validation.passwordError'),
+        },
+      },
     };
 
     return {
@@ -65,8 +70,10 @@ export default function SignupForm() {
       onFocus: () => setFocusedField(fieldName),
       onBlur: () => setFocusedField(null),
       className: `w-full px-4 py-2 text-center bg-gray-100/30 hover:bg-gray-100/50 border ${
-        showError(fieldName) ? 'border-2 border-red-500' : 'border-gray-300/30 hover:border-gray-300/50'
-      } rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:border-gray-400 transition-colors duration-300`
+        showError(fieldName)
+          ? 'border-2 border-red-500'
+          : 'border-gray-300/30 hover:border-gray-300/50'
+      } rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:border-gray-400 transition-colors duration-300`,
     };
   };
 
@@ -86,20 +93,16 @@ export default function SignupForm() {
 
   return (
     <FormProvider {...methods}>
-      <div className="w-full max-w-md bg-white/20 hover:bg-white/50 backdrop-blur-md p-8 rounded-2xl shadow-xl relative transition-all duration-300">
-        <div className="absolute inset-2 border-2 border-gray-600/30 hover:border-gray-600/50 rounded-xl transition-colors duration-300" />
-        
-        <h2 className="text-3xl font-bold text-gray-700 mb-6 text-center relative z-10">Sign Up</h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 relative z-10">
+      <div className="relative w-full max-w-md rounded-2xl bg-white/20 p-8 shadow-xl backdrop-blur-md transition-all duration-300 hover:bg-white/50">
+        <div className="absolute inset-2 rounded-xl border-2 border-gray-600/30 transition-colors duration-300 hover:border-gray-600/50" />
+
+        <h2 className="relative z-10 mb-6 text-center text-3xl font-bold text-gray-700">Sign Up</h2>
+        <form onSubmit={handleSubmit(onSubmit)} className="relative z-10 space-y-6">
           <div className="relative pt-2">
-            <input
-              type="email"
-              placeholder="Email"
-              {...getFieldProps('email')}
-            />
+            <input type="email" placeholder="Email" {...getFieldProps('email')} />
             {showError('email') && errors.email?.message && (
               <div className="absolute inset-x-0 flex justify-center">
-                <span className="text-red-500 text-xs px-3 bg-transparent drop-shadow-[0_0px_1.5px_rgba(100,30,30)]">
+                <span className="bg-transparent px-3 text-xs text-red-500 drop-shadow-[0_0px_1.5px_rgba(100,30,30)]">
                   {errors.email.message}
                 </span>
               </div>
@@ -107,14 +110,10 @@ export default function SignupForm() {
           </div>
 
           <div className="relative pt-2">
-            <input
-              type="text"
-              placeholder="nickname"
-              {...getFieldProps('nickname')}
-            />
+            <input type="text" placeholder="nickname" {...getFieldProps('nickname')} />
             {showError('nickname') && errors.nickname?.message && (
               <div className="absolute inset-x-0 flex justify-center">
-                <span className="text-red-500 text-xs px-3 bg-transparent drop-shadow-[0_0px_1.5px_rgba(100,30,30)]">
+                <span className="bg-transparent px-3 text-xs text-red-500 drop-shadow-[0_0px_1.5px_rgba(100,30,30)]">
                   {errors.nickname.message}
                 </span>
               </div>
@@ -122,14 +121,10 @@ export default function SignupForm() {
           </div>
 
           <div className="relative pt-2">
-            <input
-              type="password"
-              placeholder="Password"
-              {...getFieldProps('password')}
-            />
+            <input type="password" placeholder="Password" {...getFieldProps('password')} />
             {showError('password') && errors.password?.message && (
               <div className="absolute inset-x-0 flex justify-center">
-                <span className="text-red-500 text-xs px-3 bg-transparent drop-shadow-[0_0px_1.5px_rgba(100,30,30)]">
+                <span className="bg-transparent px-3 text-xs text-red-500 drop-shadow-[0_0px_1.5px_rgba(100,30,30)]">
                   {errors.password.message}
                 </span>
               </div>
@@ -139,9 +134,9 @@ export default function SignupForm() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className={`w-full py-2 px-4 text-white rounded-lg transition-colors mt-8 ${
-              isSubmitting 
-                ? 'bg-gray-400 cursor-not-allowed' 
+            className={`mt-8 w-full rounded-lg px-4 py-2 text-white transition-colors ${
+              isSubmitting
+                ? 'cursor-not-allowed bg-gray-400'
                 : 'bg-gray-500 hover:bg-gray-600 hover:opacity-70'
             }`}
           >

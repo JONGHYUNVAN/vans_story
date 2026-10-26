@@ -3,7 +3,7 @@
 import { SiMongodb } from 'react-icons/si';
 import PostCard from '@/components/features/post/postcard/mongodb/PostCard';
 import { useTranslation } from '@/lib/i18n';
-import { PostInfo } from "@/types/post";
+import { PostInfo } from '@/types/post';
 import { sortPosts } from '@/components/features/post/sort/sortPosts';
 import Link from 'next/link';
 
@@ -20,7 +20,7 @@ export default function MongodbList({ posts }: MongodbListProps) {
 
   return (
     <div className="grid grid-cols-1 gap-6">
-      {sortedPosts.map(post => (
+      {sortedPosts.map((post) => (
         <Link
           key={post.id}
           href={`/post/view/mongodb/${post.id}`}
@@ -29,8 +29,8 @@ export default function MongodbList({ posts }: MongodbListProps) {
           <PostCard
             post={post}
             renderBadge={() => (
-              <span className="flex items-center justify-center w-10 h-8 rounded-full bg-gray-200 text-gray-700">
-                <SiMongodb className="w-5 h-5" />
+              <span className="flex h-8 w-10 items-center justify-center rounded-full bg-gray-200 text-gray-700">
+                <SiMongodb className="h-5 w-5" />
               </span>
             )}
           />
@@ -38,4 +38,4 @@ export default function MongodbList({ posts }: MongodbListProps) {
       ))}
     </div>
   );
-} 
+}

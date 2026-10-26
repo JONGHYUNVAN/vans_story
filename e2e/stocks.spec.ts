@@ -166,7 +166,7 @@ const mockPrices = {
         name: 'Microsoft',
         price: 415.0,
         change: 4.5,
-        changePercent: 1.10,
+        changePercent: 1.1,
         previousClose: 410.5,
         open: 411.0,
         high: 416.0,
@@ -221,7 +221,7 @@ const mockMacro = {
         displayName: '미국 10년 국채',
         price: 4.23,
         change: 0.05,
-        changePercent: 1.20,
+        changePercent: 1.2,
         category: 'bond',
       },
     ],
@@ -268,7 +268,7 @@ const mockMacro = {
         displayName: '필라델피아 반도체',
         price: 4850.2,
         change: 62.4,
-        changePercent: 1.30,
+        changePercent: 1.3,
         category: 'index',
       },
     ],
@@ -351,7 +351,6 @@ async function setupApiMocks(page: Page) {
 // ============================================================
 
 test.describe('주가 대시보드 (/stocks) E2E 테스트', () => {
-
   // ----------------------------------------------------------
   // 시나리오 1: 메인 페이지에서 /stocks 진입
   // ----------------------------------------------------------
@@ -591,7 +590,9 @@ test.describe('주가 대시보드 (/stocks) E2E 테스트', () => {
       await setupApiMocks(page);
       await page.goto('/stocks');
 
-      await expect(page.locator('text=삼성전자 HBM 공급 확대 계획 발표')).toBeVisible({ timeout: 10_000 });
+      await expect(page.locator('text=삼성전자 HBM 공급 확대 계획 발표')).toBeVisible({
+        timeout: 10_000,
+      });
     });
 
     test('DART 섹션에 한국 종목 탭이 표시된다', async ({ page }) => {
@@ -610,7 +611,7 @@ test.describe('주가 대시보드 (/stocks) E2E 테스트', () => {
 
       // 빈 disclosures 배열에 대한 안내 메시지
       await expect(
-        page.locator('text=/최근 30일 공시가 없거나|DART API 키가 설정되지 않았습니다/').first()
+        page.locator('text=/최근 30일 공시가 없거나|DART API 키가 설정되지 않았습니다/').first(),
       ).toBeVisible({ timeout: 10_000 });
     });
 
@@ -619,7 +620,9 @@ test.describe('주가 대시보드 (/stocks) E2E 테스트', () => {
       await page.goto('/stocks');
 
       // "데이터 기준:" 텍스트와 함께 출처 정보가 표시
-      await expect(page.locator('text=/데이터 기준.*Yahoo Finance/')).toBeVisible({ timeout: 10_000 });
+      await expect(page.locator('text=/데이터 기준.*Yahoo Finance/')).toBeVisible({
+        timeout: 10_000,
+      });
     });
   });
 
@@ -813,8 +816,12 @@ test.describe('주가 대시보드 (/stocks) E2E 테스트', () => {
       await expect(refreshBtn).toBeVisible({ timeout: 10_000 });
 
       // 섹션 헤딩들 확인
-      await expect(page.locator('h2').filter({ hasText: '거시 지표' })).toBeVisible({ timeout: 10_000 });
-      await expect(page.locator('h2').filter({ hasText: '한국 시장' })).toBeVisible({ timeout: 10_000 });
+      await expect(page.locator('h2').filter({ hasText: '거시 지표' })).toBeVisible({
+        timeout: 10_000,
+      });
+      await expect(page.locator('h2').filter({ hasText: '한국 시장' })).toBeVisible({
+        timeout: 10_000,
+      });
     });
 
     test('데스크탑 뷰포트 (1280x800)에서 페이지가 정상 렌더링된다', async ({ page }) => {
@@ -831,10 +838,18 @@ test.describe('주가 대시보드 (/stocks) E2E 테스트', () => {
       await expect(refreshBtn).toBeVisible({ timeout: 10_000 });
 
       // 모든 섹션 헤딩 확인
-      await expect(page.locator('h2').filter({ hasText: '거시 지표' })).toBeVisible({ timeout: 10_000 });
-      await expect(page.locator('h2').filter({ hasText: '한국 시장' })).toBeVisible({ timeout: 10_000 });
-      await expect(page.locator('h2').filter({ hasText: '미국 시장' })).toBeVisible({ timeout: 10_000 });
-      await expect(page.locator('h2').filter({ hasText: '관련 뉴스' })).toBeVisible({ timeout: 10_000 });
+      await expect(page.locator('h2').filter({ hasText: '거시 지표' })).toBeVisible({
+        timeout: 10_000,
+      });
+      await expect(page.locator('h2').filter({ hasText: '한국 시장' })).toBeVisible({
+        timeout: 10_000,
+      });
+      await expect(page.locator('h2').filter({ hasText: '미국 시장' })).toBeVisible({
+        timeout: 10_000,
+      });
+      await expect(page.locator('h2').filter({ hasText: '관련 뉴스' })).toBeVisible({
+        timeout: 10_000,
+      });
     });
 
     test('모바일에서 데이터 로드 후 주가 카드가 표시된다', async ({ page }) => {
@@ -966,7 +981,9 @@ test.describe('주가 대시보드 (/stocks) E2E 테스트', () => {
 
       await page.goto('/stocks');
 
-      await expect(page.locator('button').filter({ hasText: '다시 시도' })).toBeVisible({ timeout: 10_000 });
+      await expect(page.locator('button').filter({ hasText: '다시 시도' })).toBeVisible({
+        timeout: 10_000,
+      });
     });
   });
 });

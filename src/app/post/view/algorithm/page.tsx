@@ -6,9 +6,9 @@ export default async function Page() {
   const posts = await getPostList('algorithm', undefined, 1, 10);
   return (
     <SidebarWrapper>
-    <AlgorithmLayout title="Algorithm">
-      <AlgorithmList posts={posts} />
-    </AlgorithmLayout>
+      <AlgorithmLayout title="Algorithm">
+        <AlgorithmList posts={posts} />
+      </AlgorithmLayout>
     </SidebarWrapper>
   );
-} 
+}

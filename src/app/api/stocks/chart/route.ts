@@ -10,12 +10,12 @@ const YAHOO_HEADERS = {
 type ChartRange = '1D' | '1W' | '1M' | '3M' | '6M' | '1Y';
 
 const RANGE_MAP: Record<ChartRange, { range: string; interval: string }> = {
-  '1D': { range: '1d',  interval: '5m'  },
-  '1W': { range: '5d',  interval: '1h'  },
-  '1M': { range: '1mo', interval: '1d'  },
-  '3M': { range: '3mo', interval: '1d'  },
-  '6M': { range: '6mo', interval: '1d'  },
-  '1Y': { range: '1y',  interval: '1wk' },
+  '1D': { range: '1d', interval: '5m' },
+  '1W': { range: '5d', interval: '1h' },
+  '1M': { range: '1mo', interval: '1d' },
+  '3M': { range: '3mo', interval: '1d' },
+  '6M': { range: '6mo', interval: '1d' },
+  '1Y': { range: '1y', interval: '1wk' },
 };
 
 function finiteNum(value: unknown, fallback = 0): number {
@@ -25,7 +25,9 @@ function finiteNum(value: unknown, fallback = 0): number {
 
 export async function GET(
   request: NextRequest,
-): Promise<NextResponse<StocksApiResponse<{ symbol: string; range: string; data: ChartDataPoint[] }>>> {
+): Promise<
+  NextResponse<StocksApiResponse<{ symbol: string; range: string; data: ChartDataPoint[] }>>
+> {
   try {
     const { searchParams } = new URL(request.url);
     const symbol = searchParams.get('symbol');
@@ -45,9 +47,17 @@ export async function GET(
     let res: Response | null = null;
     for (const host of hosts) {
       try {
-        const r = await fetch(`https://${host}${path}`, { headers: YAHOO_HEADERS, cache: 'no-store' });
-        if (r.ok) { res = r; break; }
-      } catch { /* 다음 host 시도 */ }
+        const r = await fetch(`https://${host}${path}`, {
+          headers: YAHOO_HEADERS,
+          cache: 'no-store',
+        });
+        if (r.ok) {
+          res = r;
+          break;
+        }
+      } catch {
+        /* 다음 host 시도 */
+      }
     }
     if (!res) {
       return NextResponse.json(
@@ -73,10 +83,10 @@ export async function GET(
     const data: ChartDataPoint[] = timestamps
       .map((ts, i) => ({
         timestamp: ts,
-        open:   finiteNum(q?.open?.[i]),
-        high:   finiteNum(q?.high?.[i]),
-        low:    finiteNum(q?.low?.[i]),
-        close:  finiteNum(q?.close?.[i]),
+        open: finiteNum(q?.open?.[i]),
+        high: finiteNum(q?.high?.[i]),
+        low: finiteNum(q?.low?.[i]),
+        close: finiteNum(q?.close?.[i]),
         volume: isIndex ? 0 : finiteNum(q?.volume?.[i]),
       }))
       .filter((d) => d.close > 0);

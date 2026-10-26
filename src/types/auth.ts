@@ -10,14 +10,14 @@ export interface User {
  * @interface AuthState
  */
 export interface AuthState {
-  user: User | null;              // 현재 로그인한 사용자 정보
-  isAuthenticated: boolean;       // 인증 여부
-  isLoading: boolean;            // 로딩 상태
-  error: string | null;          // 에러 메시지
+  user: User | null; // 현재 로그인한 사용자 정보
+  isAuthenticated: boolean; // 인증 여부
+  isLoading: boolean; // 로딩 상태
+  error: string | null; // 에러 메시지
   // OAuth 관련 상태
-  oauthLoading: boolean;         // OAuth 로딩 상태
-  oauthProvider: OAuthProvider | null;  // 현재 OAuth 제공자
-  oauthError: string | null;     // OAuth 에러 메시지
+  oauthLoading: boolean; // OAuth 로딩 상태
+  oauthProvider: OAuthProvider | null; // 현재 OAuth 제공자
+  oauthError: string | null; // OAuth 에러 메시지
 }
 
 // OAuth 관련 타입 정의
@@ -32,8 +32,8 @@ export interface OAuthUserInfo {
 }
 
 export interface OAuthCallbackData {
-  token?: string;           // 기존 방식 (JWT 토큰)
-  code?: string;            // 새로운 방식 (임시 코드)
+  token?: string; // 기존 방식 (JWT 토큰)
+  code?: string; // 새로운 방식 (임시 코드)
   error?: string;
   provider?: OAuthProvider;
   state?: string;
@@ -66,4 +66,4 @@ export interface OAuthAccountResponse {
   success: boolean;
   data?: any;
   message: string;
-} 
+}

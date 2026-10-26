@@ -10,14 +10,16 @@ export default function Sidebar() {
   // /stocks, /games 관련 페이지에선 사이드바 미표시
   if (pathname.startsWith('/stocks') || pathname.startsWith('/games')) return null;
 
-  const currentTheme = Object.keys(THEME_SIDEBARS).find(theme => 
-    pathname.startsWith(`/post/view/${theme}`)
+  const currentTheme = Object.keys(THEME_SIDEBARS).find((theme) =>
+    pathname.startsWith(`/post/view/${theme}`),
   );
 
-  const SidebarComponent = currentTheme ? THEME_SIDEBARS[currentTheme as keyof typeof THEME_SIDEBARS] : MainSidebar;
+  const SidebarComponent = currentTheme
+    ? THEME_SIDEBARS[currentTheme as keyof typeof THEME_SIDEBARS]
+    : MainSidebar;
 
   return (
-    <aside className="fixed left-0 top-0 h-full z-[30] hover:z-[110] overflow-hidden transition-all duration-300">
+    <aside className="fixed left-0 top-0 z-[30] h-full overflow-hidden transition-all duration-300 hover:z-[110]">
       <SidebarComponent />
     </aside>
   );

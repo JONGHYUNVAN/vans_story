@@ -11,10 +11,10 @@ interface PageProps {
 export default async function DatabaseTheoryDetailPage({ params }: PageProps) {
   const { id } = await params;
   const post = await getPostWithViewCount(id);
-  
+
   if (!post) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-white">
         <p className="text-gray-600">게시글을 찾을 수 없습니다.</p>
       </div>
     );
@@ -31,4 +31,4 @@ export default async function DatabaseTheoryDetailPage({ params }: PageProps) {
       </DatabaseTheoryLayout>
     </SidebarWrapper>
   );
-} 
+}

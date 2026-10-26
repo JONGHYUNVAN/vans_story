@@ -2,31 +2,38 @@
  * Windows 11 스타일 작업표시줄 컴포넌트
  */
 
-'use client'
+'use client';
 
-import React, { useState } from 'react'
-import { useWindowManager } from './WindowContext'
-import { WindowConfig } from './types'
+import React, { useState } from 'react';
+import { useWindowManager } from './WindowContext';
+import { WindowConfig } from './types';
 
 interface TaskbarButtonProps {
-  window: WindowConfig
-  onClick: () => void
-  onDragStart: (e: React.DragEvent) => void
-  onDragOver: (e: React.DragEvent) => void
-  onDrop: (e: React.DragEvent) => void
-  isDragging: boolean
+  window: WindowConfig;
+  onClick: () => void;
+  onDragStart: (e: React.DragEvent) => void;
+  onDragOver: (e: React.DragEvent) => void;
+  onDrop: (e: React.DragEvent) => void;
+  isDragging: boolean;
 }
 
-function TaskbarButton({ window: win, onClick, onDragStart, onDragOver, onDrop, isDragging }: TaskbarButtonProps) {
-  const [showPreview, setShowPreview] = useState(false)
+function TaskbarButton({
+  window: win,
+  onClick,
+  onDragStart,
+  onDragOver,
+  onDrop,
+  isDragging,
+}: TaskbarButtonProps) {
+  const [showPreview, setShowPreview] = useState(false);
 
   // 상태 텍스트 결정
   const getStateText = () => {
-    if (!win.isOpen) return '닫힘'
-    if (win.state === 'minimized') return '최소화됨'
-    if (win.state === 'maximized') return '최대화됨'
-    return '일반'
-  }
+    if (!win.isOpen) return '닫힘';
+    if (win.state === 'minimized') return '최소화됨';
+    if (win.state === 'maximized') return '최대화됨';
+    return '일반';
+  };
 
   return (
     <div
@@ -41,171 +48,159 @@ function TaskbarButton({ window: win, onClick, onDragStart, onDragOver, onDrop, 
     >
       <button
         onClick={onClick}
-        className={`
-          h-12 px-4 flex items-center justify-center gap-2
-          rounded-md transition-all duration-100
-          ${win.isOpen && win.isActive 
-            ? 'bg-gray-200/80 border-b-2 border-blue-500' 
-            : 'hover:bg-gray-100/50 border-b-2 border-transparent'
-          }
-          ${!win.isOpen ? 'opacity-40' : win.state === 'minimized' ? 'opacity-60' : ''}
-          ${isDragging ? 'opacity-30 scale-95' : ''}
-        `}
+        className={`flex h-12 items-center justify-center gap-2 rounded-md px-4 transition-all duration-100 ${
+          win.isOpen && win.isActive
+            ? 'border-b-2 border-blue-500 bg-gray-200/80'
+            : 'border-b-2 border-transparent hover:bg-gray-100/50'
+        } ${!win.isOpen ? 'opacity-40' : win.state === 'minimized' ? 'opacity-60' : ''} ${isDragging ? 'scale-95 opacity-30' : ''} `}
         aria-label={`${win.title} - ${getStateText()}`}
         aria-pressed={win.isActive}
       >
         {/* 아이콘 */}
         {win.icon && (
-          <div className="w-5 h-5 flex items-center justify-center text-gray-700">
-            {win.icon}
-          </div>
+          <div className="flex h-5 w-5 items-center justify-center text-gray-700">{win.icon}</div>
         )}
-        
+
         {/* 제목 (필요시) */}
-        <span className="text-xs text-gray-800 hidden xl:inline max-w-[120px] truncate">
+        <span className="hidden max-w-[120px] truncate text-xs text-gray-800 xl:inline">
           {win.title}
         </span>
 
         {/* 닫힌 상태 표시 점 */}
         {!win.isOpen && (
-          <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-gray-400" />
+          <div className="absolute bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-gray-400" />
         )}
       </button>
 
       {/* 호버 프리뷰 */}
       {showPreview && (
-        <div className="
-          absolute bottom-full left-1/2 -translate-x-1/2 mb-2
-          bg-white/95 backdrop-blur-xl
-          border border-gray-300
-          rounded-lg shadow-lg
-          p-2 min-w-[200px]
-          animate-in fade-in zoom-in-95 duration-150
-        ">
-          <div className="text-xs text-gray-800 font-medium mb-1">
-            {win.title}
-          </div>
-          <div className="text-[10px] text-gray-600">
-            {getStateText()}
-          </div>
-          
+        <div className="animate-in fade-in zoom-in-95 absolute bottom-full left-1/2 mb-2 min-w-[200px] -translate-x-1/2 rounded-lg border border-gray-300 bg-white/95 p-2 shadow-lg backdrop-blur-xl duration-150">
+          <div className="mb-1 text-xs font-medium text-gray-800">{win.title}</div>
+          <div className="text-[10px] text-gray-600">{getStateText()}</div>
+
           {/* 화살표 */}
-          <div className="
-            absolute top-full left-1/2 -translate-x-1/2 -mt-px
-            w-2 h-2 rotate-45
-            bg-white/95 border-r border-b border-gray-300
-          " />
+          <div className="absolute left-1/2 top-full -mt-px h-2 w-2 -translate-x-1/2 rotate-45 border-b border-r border-gray-300 bg-white/95" />
         </div>
       )}
     </div>
-  )
+  );
 }
 
 interface TaskbarProps {
-  className?: string
+  className?: string;
 }
 
 export function Taskbar({ className = '' }: TaskbarProps) {
-  const { windows, focusWindow, restoreWindow, openWindow, minimizeWindow, windowOrder, reorderWindows, getDefaultConfig } = useWindowManager()
-  const [draggedId, setDraggedId] = useState<string | null>(null)
+  const {
+    windows,
+    focusWindow,
+    restoreWindow,
+    openWindow,
+    minimizeWindow,
+    windowOrder,
+    reorderWindows,
+    getDefaultConfig,
+  } = useWindowManager();
+  const [draggedId, setDraggedId] = useState<string | null>(null);
 
   // windowOrder에 따라 작업표시줄 아이템 생성
   // 닫힌 윈도우는 window 객체가 없지만 windowOrder와 defaultConfig에는 남아있음
-  const taskbarItems = windowOrder.map(id => ({
+  const taskbarItems = windowOrder.map((id) => ({
     id,
     window: windows.get(id),
     defaultConfig: getDefaultConfig(id),
-    isClosed: !windows.has(id)
-  }))
+    isClosed: !windows.has(id),
+  }));
 
   const handleWindowClick = (id: string, win?: WindowConfig) => {
-    console.log('[Taskbar] Window clicked:', { id, hasWindow: !!win, state: win?.state, isOpen: win?.isOpen })
-    
+    console.log('[Taskbar] Window clicked:', {
+      id,
+      hasWindow: !!win,
+      state: win?.state,
+      isOpen: win?.isOpen,
+    });
+
     if (!win || !win.isOpen) {
       // 닫힌 윈도우 - 다시 열기
-      console.log('[Taskbar] Opening closed window:', id)
-      openWindow(id)
+      console.log('[Taskbar] Opening closed window:', id);
+      openWindow(id);
     } else if (win.state === 'minimized') {
       // 최소화된 윈도우는 복원
-      console.log('[Taskbar] Restoring minimized window:', id)
-      restoreWindow(id)
+      console.log('[Taskbar] Restoring minimized window:', id);
+      restoreWindow(id);
     } else if (win.isActive) {
       // 이미 활성 상태면 최소화
-      console.log('[Taskbar] Minimizing active window:', id)
-      minimizeWindow(id)
+      console.log('[Taskbar] Minimizing active window:', id);
+      minimizeWindow(id);
     } else {
       // 그 외에는 포커스
-      console.log('[Taskbar] Focusing window:', id)
-      focusWindow(id)
+      console.log('[Taskbar] Focusing window:', id);
+      focusWindow(id);
     }
-  }
+  };
 
   const handleDragStart = (id: string) => (e: React.DragEvent) => {
-    setDraggedId(id)
-    e.dataTransfer.effectAllowed = 'move'
-  }
+    setDraggedId(id);
+    e.dataTransfer.effectAllowed = 'move';
+  };
 
   const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault()
-    e.dataTransfer.dropEffect = 'move'
-  }
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
 
   const handleDrop = (targetId: string) => (e: React.DragEvent) => {
-    e.preventDefault()
-    
+    e.preventDefault();
+
     if (!draggedId || draggedId === targetId) {
-      setDraggedId(null)
-      return
+      setDraggedId(null);
+      return;
     }
 
-    const draggedIndex = windowOrder.indexOf(draggedId)
-    const targetIndex = windowOrder.indexOf(targetId)
+    const draggedIndex = windowOrder.indexOf(draggedId);
+    const targetIndex = windowOrder.indexOf(targetId);
 
     if (draggedIndex === -1 || targetIndex === -1) {
-      setDraggedId(null)
-      return
+      setDraggedId(null);
+      return;
     }
 
     // 새로운 순서 계산
-    const newOrder = [...windowOrder]
-    newOrder.splice(draggedIndex, 1)
-    newOrder.splice(targetIndex, 0, draggedId)
+    const newOrder = [...windowOrder];
+    newOrder.splice(draggedIndex, 1);
+    newOrder.splice(targetIndex, 0, draggedId);
 
-    reorderWindows(newOrder)
-    setDraggedId(null)
-  }
+    reorderWindows(newOrder);
+    setDraggedId(null);
+  };
 
   if (taskbarItems.length === 0) {
-    return null
+    return null;
   }
 
   return (
-    <div 
-      className={`
-        fixed bottom-0 left-0 right-0 h-12
-        bg-white/80
-        border-t border-gray-300/50
-        shadow-[0_-4px_16px_rgba(0,0,0,0.08)]
-        flex items-center justify-center
-        z-[9999]
-        ${className}
-      `}
+    <div
+      className={`fixed bottom-0 left-0 right-0 z-[9999] flex h-12 items-center justify-center border-t border-gray-300/50 bg-white/80 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] ${className} `}
       role="navigation"
       aria-label="작업표시줄"
     >
       <div className="flex items-center gap-1" role="list">
         {taskbarItems.map(({ id, window: win, defaultConfig, isClosed }) => {
           // 닫힌 윈도우는 defaultConfig로 표시
-          const displayWindow = win || (defaultConfig ? {
-            ...defaultConfig,
-            zIndex: 0,
-            isActive: false,
-            isOpen: false,
-          } : null)
-          
+          const displayWindow =
+            win ||
+            (defaultConfig
+              ? {
+                  ...defaultConfig,
+                  zIndex: 0,
+                  isActive: false,
+                  isOpen: false,
+                }
+              : null);
+
           // displayWindow가 없으면 건너뛰기 (defaultConfig가 없는 경우)
-          if (!displayWindow) return null
-          
+          if (!displayWindow) return null;
+
           return (
             <TaskbarButton
               key={id}
@@ -216,10 +211,9 @@ export function Taskbar({ className = '' }: TaskbarProps) {
               onDrop={handleDrop(id)}
               isDragging={draggedId === id}
             />
-          )
+          );
         })}
       </div>
     </div>
-  )
+  );
 }
-

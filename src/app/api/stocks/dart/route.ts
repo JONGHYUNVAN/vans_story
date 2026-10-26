@@ -5,8 +5,8 @@ import { KR_STOCKS } from '@/types/stocks';
 // KR_STOCKS 상수에서 dartCorpCode 매핑 추출
 const CORP_CODE_MAP: Record<string, string> = Object.fromEntries(
   KR_STOCKS.filter((s) => 'dartCorpCode' in s).map((s) => [
-    (s as typeof KR_STOCKS[0]).stockCode,
-    (s as typeof KR_STOCKS[0]).dartCorpCode,
+    (s as (typeof KR_STOCKS)[0]).stockCode,
+    (s as (typeof KR_STOCKS)[0]).dartCorpCode,
   ]),
 );
 
@@ -14,7 +14,9 @@ function formatDate(d: Date): string {
   return d.toISOString().slice(0, 10).replace(/-/g, '');
 }
 
-export async function GET(request: NextRequest): Promise<NextResponse<StocksApiResponse<DartData>>> {
+export async function GET(
+  request: NextRequest,
+): Promise<NextResponse<StocksApiResponse<DartData>>> {
   const { searchParams } = new URL(request.url);
   const symbolParam = searchParams.get('symbol') ?? '';
 

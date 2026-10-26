@@ -1,11 +1,13 @@
 # API 문서
 
 ## 개요
+
 이 문서는 블로그 애플리케이션의 API 엔드포인트들을 설명합니다.
 
 ## 인증 API
 
 ### 1. 로그인
+
 - **URL**: `/api/auth/login`
 - **Method**: `POST`
 - **Description**: 사용자 로그인 처리
@@ -16,21 +18,23 @@
     "password": "string"
   }
   ```
-- **Response**: 
+- **Response**:
   - **200**: 성공 시 `Authorization` 헤더에 JWT 토큰 포함
   - **401**: 인증 실패
   - **500**: 서버 오류
 
 ### 2. 로그아웃
+
 - **URL**: `/api/auth/logout`
 - **Method**: `POST`
 - **Description**: 사용자 로그아웃 처리
 - **Headers**: `Authorization: Bearer <token>`
-- **Response**: 
+- **Response**:
   - **200**: 성공
   - **500**: 서버 오류
 
 ### 3. 회원가입
+
 - **URL**: `/api/auth/signup`
 - **Method**: `POST`
 - **Description**: 새 사용자 회원가입
@@ -48,6 +52,7 @@
   - **500**: 서버 오류
 
 ### 4. 토큰 갱신
+
 - **URL**: `/api/auth/refresh`
 - **Method**: `POST`
 - **Description**: JWT 토큰 갱신
@@ -57,6 +62,7 @@
   - **500**: 서버 오류
 
 ### 5. OAuth 콜백
+
 - **URL**: `/api/auth/callback`
 - **Method**: `POST`
 - **Description**: OAuth 임시 코드를 JWT 토큰으로 교환
@@ -81,6 +87,7 @@
 ## 포스트 관리 API
 
 ### 1. 포스트 목록 조회
+
 - **URL**: `/api/posts`
 - **Method**: `GET`
 - **Description**: 게시물 목록 조회
@@ -94,6 +101,7 @@
   - **500**: 서버 오류
 
 ### 2. 포스트 생성
+
 - **URL**: `/api/posts`
 - **Method**: `POST`
 - **Description**: 새 게시물 생성
@@ -114,6 +122,7 @@
   - **500**: 서버 오류
 
 ### 3. 포스트 상세 조회
+
 - **URL**: `/api/posts/{id}`
 - **Method**: `GET`
 - **Description**: 특정 게시물 상세 조회
@@ -124,6 +133,7 @@
   - **500**: 서버 오류
 
 ### 4. 포스트 수정
+
 - **URL**: `/api/posts/{id}`
 - **Method**: `PATCH`
 - **Description**: 게시물 수정
@@ -145,6 +155,7 @@
   - **500**: 서버 오류
 
 ### 5. 포스트 편집용 조회
+
 - **URL**: `/api/posts/{id}/edit`
 - **Method**: `GET`
 - **Description**: 편집용 게시물 조회 (인증 필요)
@@ -158,6 +169,7 @@
 ## 이미지 업로드 API
 
 ### 1. 이미지 업로드
+
 - **URL**: `/api/imageUpload`
 - **Method**: `POST`
 - **Description**: 이미지 파일 업로드
@@ -178,6 +190,7 @@
 ## AI 채팅 API
 
 ### 1. AI 채팅
+
 - **URL**: `/api/ai/chat`
 - **Method**: `POST`
 - **Description**: AI와 채팅 메시지 전송
@@ -186,9 +199,9 @@
   ```json
   {
     "message": "string",
-    "model": "string",           // 선택사항, 기본값: gpt-4o-mini
-    "max_tokens": "number",      // 선택사항, 기본값: 1000
-    "temperature": "number"      // 선택사항, 기본값: 0.7
+    "model": "string", // 선택사항, 기본값: gpt-4o-mini
+    "max_tokens": "number", // 선택사항, 기본값: 1000
+    "temperature": "number" // 선택사항, 기본값: 0.7
   }
   ```
 - **Response**:
@@ -235,4 +248,4 @@ API가 제대로 작동하려면 다음 환경 변수들이 설정되어야 합�
 Authorization: Bearer <your_jwt_token>
 ```
 
-인증이 필요한 API에 토큰 없이 접근하면 `401 Unauthorized` 응답을 받습니다. 
+인증이 필요한 API에 토큰 없이 접근하면 `401 Unauthorized` 응답을 받습니다.

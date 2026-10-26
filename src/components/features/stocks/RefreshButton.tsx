@@ -28,7 +28,9 @@ export default function RefreshButton({ onClick, isLoading }: RefreshButtonProps
       if (diff < 60) {
         setDisplayTime(`${diff}초 전`);
       } else {
-        setDisplayTime(lastUpdated.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }));
+        setDisplayTime(
+          lastUpdated.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }),
+        );
       }
     };
 
@@ -48,7 +50,7 @@ export default function RefreshButton({ onClick, isLoading }: RefreshButtonProps
         aria-label="데이터 새로고침"
       >
         <svg
-          className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`}
+          className={`h-3.5 w-3.5 ${isLoading ? 'animate-spin' : ''}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

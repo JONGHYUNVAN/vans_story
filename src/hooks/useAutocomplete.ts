@@ -1,6 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { ApiFetch } from '@/lib/api/apiFetch';
-import { AutocompleteResponse, AutocompleteSuggestion, AutocompleteApiResponse } from '@/types/api/search';
+import {
+  AutocompleteResponse,
+  AutocompleteSuggestion,
+  AutocompleteApiResponse,
+} from '@/types/api/search';
 
 interface UseAutocompleteOptions {
   /** 디바운스 지연 시간 (ms) */
@@ -49,7 +53,7 @@ export function useAutocomplete({
   minLength = 2,
   enabled = true,
   language = 'all',
-  onSelect
+  onSelect,
 }: UseAutocompleteOptions = {}): UseAutocompleteReturn {
   const [suggestions, setSuggestions] = useState<AutocompleteSuggestion[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -57,156 +61,160 @@ export function useAutocomplete({
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [isOpen, setIsOpen] = useState(false);
   const [currentQuery, setCurrentQuery] = useState('');
-  
+
   const debounceTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const abortControllerRef = useRef<AbortController | undefined>(undefined);
 
   // 백엔드 응답을 프론트엔드 구조로 변환하는 함수
-  const transformApiResponse = useCallback((apiResponse: AutocompleteApiResponse, originalQuery: string): AutocompleteResponse => {
-    // 방어 코드: suggestions가 배열이 아니거나 없는 경우
-    if (!apiResponse || !Array.isArray(apiResponse.suggestions)) {
-      console.error('Invalid API response:', apiResponse);
+  const transformApiResponse = useCallback(
+    (apiResponse: AutocompleteApiResponse, originalQuery: string): AutocompleteResponse => {
+      // 방어 코드: suggestions가 배열이 아니거나 없는 경우
+      if (!apiResponse || !Array.isArray(apiResponse.suggestions)) {
+        console.error('Invalid API response:', apiResponse);
+        return {
+          suggestions: [],
+          query: originalQuery,
+          total: 0,
+        };
+      }
+
+      const suggestions: AutocompleteSuggestion[] = apiResponse.suggestions.map((text, index) => ({
+        text,
+        type: 'query' as const, // 현재는 모든 제안을 'query' 타입으로 처리
+        score: 1 - index * 0.1, // 순서에 따라 점수 부여 (첫 번째가 가장 높음)
+        highlight: text.toLowerCase().includes(originalQuery.toLowerCase())
+          ? text.replace(new RegExp(`(${originalQuery})`, 'gi'), '<mark>$1</mark>')
+          : undefined,
+      }));
+
       return {
-        suggestions: [],
-        query: originalQuery,
-        total: 0
+        suggestions,
+        query: apiResponse.query || originalQuery,
+        total: suggestions.length,
       };
-    }
-
-    const suggestions: AutocompleteSuggestion[] = apiResponse.suggestions.map((text, index) => ({
-      text,
-      type: 'query' as const, // 현재는 모든 제안을 'query' 타입으로 처리
-      score: 1 - (index * 0.1), // 순서에 따라 점수 부여 (첫 번째가 가장 높음)
-      highlight: text.toLowerCase().includes(originalQuery.toLowerCase()) 
-        ? text.replace(
-            new RegExp(`(${originalQuery})`, 'gi'), 
-            '<mark>$1</mark>'
-          )
-        : undefined
-    }));
-
-    return {
-      suggestions,
-      query: apiResponse.query || originalQuery,
-      total: suggestions.length
-    };
-  }, []);
+    },
+    [],
+  );
 
   // 자동완성 API 호출 함수
-  const fetchSuggestions = useCallback(async (query: string) => {
-    if (!enabled || !query || query.length < minLength) {
-      setSuggestions([]);
-      setIsOpen(false);
-      return;
-    }
-
-    // 이전 요청 취소
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-
-    // 새 AbortController 생성
-    abortControllerRef.current = new AbortController();
-    
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await ApiFetch.getAutocompleteSuggestions(
-        query, 
-        limit, 
-        language,
-        { signal: abortControllerRef.current.signal }
-      );
-
-      if (!response.ok) {
-        throw new Error('자동완성 요청이 실패했습니다.');
-      }
-
-      const responseData = await response.json();
-      console.log('🔍 Autocomplete API Response:', responseData);
-      
-      // BFF 프록시에서 { success: true, data: { suggestions, query } } 구조로 반환
-      const apiData: AutocompleteApiResponse = responseData.success && responseData.data 
-        ? responseData.data 
-        : responseData;
-      
-      const transformedData = transformApiResponse(apiData, query);
-      
-      setSuggestions(transformedData.suggestions || []);
-      setIsOpen(transformedData.suggestions.length > 0);
-      setHighlightedIndex(-1);
-    } catch (err: any) {
-      if (err.name !== 'AbortError') {
-        console.error('Autocomplete fetch error:', err);
-        setError(err.message || '자동완성을 불러오는 중 오류가 발생했습니다.');
+  const fetchSuggestions = useCallback(
+    async (query: string) => {
+      if (!enabled || !query || query.length < minLength) {
         setSuggestions([]);
         setIsOpen(false);
+        return;
       }
-    } finally {
-      setIsLoading(false);
-    }
-  }, [enabled, limit, minLength, language, transformApiResponse]);
+
+      // 이전 요청 취소
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+
+      // 새 AbortController 생성
+      abortControllerRef.current = new AbortController();
+
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response = await ApiFetch.getAutocompleteSuggestions(query, limit, language, {
+          signal: abortControllerRef.current.signal,
+        });
+
+        if (!response.ok) {
+          throw new Error('자동완성 요청이 실패했습니다.');
+        }
+
+        const responseData = await response.json();
+        console.log('🔍 Autocomplete API Response:', responseData);
+
+        // BFF 프록시에서 { success: true, data: { suggestions, query } } 구조로 반환
+        const apiData: AutocompleteApiResponse =
+          responseData.success && responseData.data ? responseData.data : responseData;
+
+        const transformedData = transformApiResponse(apiData, query);
+
+        setSuggestions(transformedData.suggestions || []);
+        setIsOpen(transformedData.suggestions.length > 0);
+        setHighlightedIndex(-1);
+      } catch (err: any) {
+        if (err.name !== 'AbortError') {
+          console.error('Autocomplete fetch error:', err);
+          setError(err.message || '자동완성을 불러오는 중 오류가 발생했습니다.');
+          setSuggestions([]);
+          setIsOpen(false);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [enabled, limit, minLength, language, transformApiResponse],
+  );
 
   // 디바운스된 검색어 업데이트
-  const updateQuery = useCallback((query: string) => {
-    setCurrentQuery(query);
-    
-    // 이전 타이머 클리어
-    if (debounceTimeoutRef.current) {
-      clearTimeout(debounceTimeoutRef.current);
-    }
+  const updateQuery = useCallback(
+    (query: string) => {
+      setCurrentQuery(query);
 
-    // 새 타이머 설정
-    debounceTimeoutRef.current = setTimeout(() => {
-      fetchSuggestions(query);
-    }, debounceMs);
-  }, [fetchSuggestions, debounceMs]);
+      // 이전 타이머 클리어
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+
+      // 새 타이머 설정
+      debounceTimeoutRef.current = setTimeout(() => {
+        fetchSuggestions(query);
+      }, debounceMs);
+    },
+    [fetchSuggestions, debounceMs],
+  );
 
   // 제안 선택
-  const selectSuggestion = useCallback((suggestion: AutocompleteSuggestion) => {
-    setIsOpen(false);
-    setSuggestions([]);
-    setHighlightedIndex(-1);
-    // 외부 콜백 호출
-    if (onSelect) {
-      onSelect(suggestion);
-    }
-  }, [onSelect]);
+  const selectSuggestion = useCallback(
+    (suggestion: AutocompleteSuggestion) => {
+      setIsOpen(false);
+      setSuggestions([]);
+      setHighlightedIndex(-1);
+      // 외부 콜백 호출
+      if (onSelect) {
+        onSelect(suggestion);
+      }
+    },
+    [onSelect],
+  );
 
   // 키보드 네비게이션
-  const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
-    if (!isOpen || suggestions.length === 0) return;
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent) => {
+      if (!isOpen || suggestions.length === 0) return;
 
-    switch (event.key) {
-      case 'ArrowDown':
-        event.preventDefault();
-        setHighlightedIndex(prev => 
-          prev < suggestions.length - 1 ? prev + 1 : 0
-        );
-        break;
-      
-      case 'ArrowUp':
-        event.preventDefault();
-        setHighlightedIndex(prev => 
-          prev > 0 ? prev - 1 : suggestions.length - 1
-        );
-        break;
-      
-      case 'Enter':
-        event.preventDefault();
-        if (highlightedIndex >= 0 && highlightedIndex < suggestions.length) {
-          selectSuggestion(suggestions[highlightedIndex]);
-        }
-        break;
-      
-      case 'Escape':
-        event.preventDefault();
-        setIsOpen(false);
-        setHighlightedIndex(-1);
-        break;
-    }
-  }, [isOpen, suggestions, highlightedIndex, selectSuggestion]);
+      switch (event.key) {
+        case 'ArrowDown':
+          event.preventDefault();
+          setHighlightedIndex((prev) => (prev < suggestions.length - 1 ? prev + 1 : 0));
+          break;
+
+        case 'ArrowUp':
+          event.preventDefault();
+          setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : suggestions.length - 1));
+          break;
+
+        case 'Enter':
+          event.preventDefault();
+          if (highlightedIndex >= 0 && highlightedIndex < suggestions.length) {
+            selectSuggestion(suggestions[highlightedIndex]);
+          }
+          break;
+
+        case 'Escape':
+          event.preventDefault();
+          setIsOpen(false);
+          setHighlightedIndex(-1);
+          break;
+      }
+    },
+    [isOpen, suggestions, highlightedIndex, selectSuggestion],
+  );
 
   // 컴포넌트 언마운트 시 정리
   useEffect(() => {
@@ -230,6 +238,6 @@ export function useAutocomplete({
     selectSuggestion,
     handleKeyDown,
     setIsOpen,
-    setHighlightedIndex
+    setHighlightedIndex,
   };
 }

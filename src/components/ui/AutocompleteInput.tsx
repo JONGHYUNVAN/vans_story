@@ -37,33 +37,39 @@ interface AutocompleteInputProps {
  * 자동완성 기능이 있는 입력 컴포넌트
  */
 export const AutocompleteInput = forwardRef<HTMLInputElement, AutocompleteInputProps>(
-  ({
-    value,
-    onChange,
-    onSelect,
-    placeholder,
-    className = '',
-    inputClassName = '',
-    dropdownClassName = '',
-    disabled = false,
-    minLength = 2,
-    limit = 10,
-    debounceMs = 300,
-    language = 'all',
-    inputProps = {},
-    ...rest
-  }, ref) => {
+  (
+    {
+      value,
+      onChange,
+      onSelect,
+      placeholder,
+      className = '',
+      inputClassName = '',
+      dropdownClassName = '',
+      disabled = false,
+      minLength = 2,
+      limit = 10,
+      debounceMs = 300,
+      language = 'all',
+      inputProps = {},
+      ...rest
+    },
+    ref,
+  ) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
-    
+
     // ref 병합
     const mergedInputRef = (ref || inputRef) as React.RefObject<HTMLInputElement>;
 
     // 자동완성 제안 선택 처리 (키보드 네비게이션용)
-    const handleAutocompleteSelect = useCallback((suggestion: AutocompleteSuggestion) => {
-      onChange(suggestion.text);
-      onSelect(suggestion);
-    }, [onChange, onSelect]);
+    const handleAutocompleteSelect = useCallback(
+      (suggestion: AutocompleteSuggestion) => {
+        onChange(suggestion.text);
+        onSelect(suggestion);
+      },
+      [onChange, onSelect],
+    );
 
     const {
       suggestions,
@@ -75,14 +81,14 @@ export const AutocompleteInput = forwardRef<HTMLInputElement, AutocompleteInputP
       selectSuggestion,
       handleKeyDown,
       setIsOpen,
-      setHighlightedIndex
+      setHighlightedIndex,
     } = useAutocomplete({
       debounceMs,
       limit,
       minLength,
       language,
       enabled: !disabled,
-      onSelect: handleAutocompleteSelect
+      onSelect: handleAutocompleteSelect,
     });
 
     // 입력값 변경 처리
@@ -193,8 +199,8 @@ export const AutocompleteInput = forwardRef<HTMLInputElement, AutocompleteInputP
 
           {/* 로딩 인디케이터 */}
           {isLoading && (
-            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 z-10">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
+            <div className="absolute right-3 top-1/2 z-10 -translate-y-1/2 transform">
+              <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-blue-500"></div>
             </div>
           )}
         </div>
@@ -203,22 +209,20 @@ export const AutocompleteInput = forwardRef<HTMLInputElement, AutocompleteInputP
         <div
           className={`overflow-hidden transition-all duration-700 ease-out ${
             isOpen && (suggestions.length > 0 || error)
-              ? 'max-h-80 opacity-100 mt-2'
-              : 'max-h-0 opacity-0 mt-0'
+              ? 'mt-2 max-h-80 opacity-100'
+              : 'mt-0 max-h-0 opacity-0'
           }`}
         >
           <div
             className={`transform transition-all duration-700 ease-out ${
               isOpen && (suggestions.length > 0 || error)
-                ? 'scale-100 translate-y-0 rotate-0'
-                : 'scale-90 -translate-y-4 rotate-1'
+                ? 'translate-y-0 rotate-0 scale-100'
+                : '-translate-y-4 rotate-1 scale-90'
             }`}
             role="listbox"
           >
             {error ? (
-              <div className="px-4 py-3 text-red-400 text-sm">
-                {error}
-              </div>
+              <div className="px-4 py-3 text-sm text-red-400">{error}</div>
             ) : suggestions.length > 0 ? (
               <div className="max-h-60 overflow-y-auto">
                 {suggestions.map((suggestion, index) => (
@@ -227,30 +231,30 @@ export const AutocompleteInput = forwardRef<HTMLInputElement, AutocompleteInputP
                     id={`suggestion-${index}`}
                     role="option"
                     aria-selected={index === highlightedIndex}
-                    className={`px-5 py-4 cursor-pointer flex items-center space-x-3 transition-all duration-300 ease-out rounded-lg mx-2 my-1 ${
+                    className={`mx-2 my-1 flex cursor-pointer items-center space-x-3 rounded-lg px-5 py-4 transition-all duration-300 ease-out ${
                       index === highlightedIndex
-                        ? 'bg-blue-500/20 text-blue-200 scale-[1.02] shadow-lg backdrop-blur-sm'
-                        : 'text-gray-200 hover:bg-white/10 hover:scale-[1.01] hover:shadow-md'
+                        ? 'scale-[1.02] bg-blue-500/20 text-blue-200 shadow-lg backdrop-blur-sm'
+                        : 'text-gray-200 hover:scale-[1.01] hover:bg-white/10 hover:shadow-md'
                     }`}
                     style={{
                       animationDelay: `${index * 50}ms`,
-                      animation: isOpen ? 'slideInUp 0.4s ease-out forwards' : 'none'
+                      animation: isOpen ? 'slideInUp 0.4s ease-out forwards' : 'none',
                     }}
                     onClick={() => handleSuggestionClick(suggestion, index)}
                     onMouseEnter={() => handleSuggestionMouseEnter(index)}
                   >
-                    <span className="text-lg transform transition-transform duration-200 hover:scale-110">
+                    <span className="transform text-lg transition-transform duration-200 hover:scale-110">
                       {getSuggestionIcon(suggestion.type)}
                     </span>
-                    <div className="flex-1 min-w-0">
+                    <div className="min-w-0 flex-1">
                       <div className="flex items-center space-x-2">
-                        <span 
+                        <span
                           className="truncate font-medium"
                           dangerouslySetInnerHTML={{
-                            __html: suggestion.highlight || suggestion.text
+                            __html: suggestion.highlight || suggestion.text,
                           }}
                         />
-                        <span className="text-xs text-gray-400 bg-white/10 px-2 py-1 rounded-full backdrop-blur-sm">
+                        <span className="rounded-full bg-white/10 px-2 py-1 text-xs text-gray-400 backdrop-blur-sm">
                           {getSuggestionTypeLabel(suggestion.type)}
                         </span>
                       </div>
@@ -263,7 +267,7 @@ export const AutocompleteInput = forwardRef<HTMLInputElement, AutocompleteInputP
         </div>
       </div>
     );
-  }
+  },
 );
 
 AutocompleteInput.displayName = 'AutocompleteInput';

@@ -22,7 +22,12 @@ function getRelativeTime(isoString: string): string {
   return `${days}일 전`;
 }
 
-export default function ScorePanel({ currentScore, bestScore, bestDetail, history }: ScorePanelProps) {
+export default function ScorePanel({
+  currentScore,
+  bestScore,
+  bestDetail,
+  history,
+}: ScorePanelProps) {
   const recentHistory = history.slice(0, 5);
   const [displayScore, setDisplayScore] = useState(currentScore);
   const animFrameRef = useRef<number | undefined>(undefined);
@@ -65,15 +70,15 @@ export default function ScorePanel({ currentScore, bestScore, bestDetail, histor
   }, [currentScore]);
 
   return (
-    <div className="bg-[#0f0f12] border border-white/8 rounded-2xl p-5 space-y-6">
+    <div className="border-white/8 space-y-6 rounded-2xl border bg-[#0f0f12] p-5">
       {/* Current score */}
       <div>
-        <p className="text-xs text-zinc-500 uppercase tracking-wider mb-1">현재 점수</p>
-        <p className="text-3xl font-black text-white tabular-nums">
+        <p className="mb-1 text-xs uppercase tracking-wider text-zinc-500">현재 점수</p>
+        <p className="text-3xl font-black tabular-nums text-white">
           {displayScore.toLocaleString()}
         </p>
         {isNewRecord && (
-          <span className="inline-flex items-center gap-1 mt-1 text-xs font-bold text-yellow-400 animate-pulse">
+          <span className="mt-1 inline-flex animate-pulse items-center gap-1 text-xs font-bold text-yellow-400">
             ★ 신기록!
           </span>
         )}
@@ -81,24 +86,24 @@ export default function ScorePanel({ currentScore, bestScore, bestDetail, histor
 
       {/* Best score */}
       <div>
-        <p className="text-xs text-zinc-500 uppercase tracking-wider mb-1">최고 점수</p>
+        <p className="mb-1 text-xs uppercase tracking-wider text-zinc-500">최고 점수</p>
         <p
           className={`text-xl font-bold tabular-nums ${isNewRecord ? 'text-yellow-400' : 'text-indigo-400'}`}
         >
           {bestScore.toLocaleString()}
         </p>
-        {bestDetail && <p className="text-xs text-zinc-500 mt-1">{bestDetail}</p>}
+        {bestDetail && <p className="mt-1 text-xs text-zinc-500">{bestDetail}</p>}
       </div>
 
       {/* Recent history */}
       {recentHistory.length > 0 && (
         <div>
-          <p className="text-xs text-zinc-500 uppercase tracking-wider mb-3">최근 기록</p>
+          <p className="mb-3 text-xs uppercase tracking-wider text-zinc-500">최근 기록</p>
           <div className="space-y-2">
             {recentHistory.map((record, index) => (
               <div
                 key={index}
-                className={`flex items-center justify-between py-2 border-b border-white/5 last:border-0 ${index === 0 ? 'opacity-100' : 'opacity-60'}`}
+                className={`flex items-center justify-between border-b border-white/5 py-2 last:border-0 ${index === 0 ? 'opacity-100' : 'opacity-60'}`}
               >
                 <div>
                   <p
@@ -116,9 +121,9 @@ export default function ScorePanel({ currentScore, bestScore, bestDetail, histor
       )}
 
       {recentHistory.length === 0 && (
-        <div className="text-center py-4">
+        <div className="py-4 text-center">
           <p className="text-xs text-zinc-600">아직 기록이 없습니다</p>
-          <p className="text-xs text-zinc-700 mt-1">게임을 플레이하면 기록이 쌓여요</p>
+          <p className="mt-1 text-xs text-zinc-700">게임을 플레이하면 기록이 쌓여요</p>
         </div>
       )}
     </div>

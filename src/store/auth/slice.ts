@@ -98,7 +98,7 @@ const authSlice = createSlice({
      * @returns {void}
      */
     loginFinish: (state) => {
-      state.isLoading = false; 
+      state.isLoading = false;
     },
 
     /**
@@ -165,20 +165,20 @@ const authSlice = createSlice({
   },
 });
 
-export const { 
-  logout, 
-  setLoading, 
-  setError, 
-  loginStart, 
-  loginSuccess, 
-  loginFailure, 
-  loginFinish, 
+export const {
+  logout,
+  setLoading,
+  setError,
+  loginStart,
+  loginSuccess,
+  loginFailure,
+  loginFinish,
   checkAuth,
   // OAuth 액션들
   oauthStart,
   oauthSuccess,
   oauthFailure,
-  oauthFinish
+  oauthFinish,
 } = authSlice.actions;
 
 export default authSlice.reducer;

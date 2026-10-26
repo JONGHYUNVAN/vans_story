@@ -11,9 +11,9 @@ interface PageProps {
 export default async function Page({ params }: PageProps) {
   const { category } = await params;
   const posts = await getPostList('docker', category);
-  
+
   const categoryTitle = category.charAt(0).toUpperCase() + category.slice(1);
-  
+
   return (
     <SidebarWrapper>
       <DockerLayout title={`Docker - ${categoryTitle}`}>
@@ -21,4 +21,4 @@ export default async function Page({ params }: PageProps) {
       </DockerLayout>
     </SidebarWrapper>
   );
-} 
+}

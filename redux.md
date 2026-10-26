@@ -24,6 +24,7 @@ src/store/
 - JWT 토큰 기반 인증 상태 유지
 
 주요 상태:
+
 ```typescript
 interface AuthState {
   user: { email: string } | null;
@@ -42,6 +43,7 @@ interface AuthState {
 - 언어 전환 기능
 
 상태 구조:
+
 ```typescript
 interface I18nState {
   locale: 'ko' | 'en';
@@ -54,6 +56,7 @@ interface I18nState {
 - 모달 열기/닫기 액션 처리
 
 상태 구조:
+
 ```typescript
 interface ModalState {
   isLoginModalOpen: boolean;
@@ -79,17 +82,17 @@ const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 const Component = () => {
   const dispatch = useAppDispatch();
   const user = useAppSelector(state => state.auth.user);
-  
+
   // 액션 디스패치
   const handleLogin = () => {
     dispatch(loginStart());
   };
-  
+
   // 상태 사용
   if (user) {
     return <div>Welcome, {user.email}!</div>;
   }
-  
+
   return <button onClick={handleLogin}>Login</button>;
 };
 ```
@@ -98,4 +101,4 @@ const Component = () => {
 
 1. 상태 변경은 반드시 리듀서를 통해서만 수행
 2. 비동기 작업은 컴포넌트나 커스텀 훅에서 처리
-3. 민감한 정보(토큰 등)는 localStorage에 저장하고 상태에는 최소한의 정보만 유지 
+3. 민감한 정보(토큰 등)는 localStorage에 저장하고 상태에는 최소한의 정보만 유지

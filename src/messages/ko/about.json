@@ -43,7 +43,7 @@
       "description": "백엔드 개발을 중심으로 익힌 기술들과 경험입니다. 지속적으로 학습하며 성장하고 있습니다.",
       "categories": {
         "languages": "언어",
-        "databases": "데이터베이스", 
+        "databases": "데이터베이스",
         "authSecurity": "인증/보안",
         "devTools": "개발 도구",
         "cloudDeploy": "클라우드 및 배포",
@@ -72,4 +72,4 @@
       "description": "백엔드 개발 역량을 뒷받침하는 자격증과 성과입니다. 지속적인 학습과 성장을 통해 전문성을 키워가고 있습니다."
     }
   }
-} 
+}

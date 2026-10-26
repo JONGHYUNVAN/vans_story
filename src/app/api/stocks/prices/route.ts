@@ -44,40 +44,48 @@ function normalizeFromV8Chart(symbol: string, chartRes: YahooChartResponse): Sto
   // 시장 상태별 현재가/기준가 결정
   const marketState = (meta.marketState ?? 'CLOSED') as MarketState;
   const regularOpen = finiteNum(meta.regularMarketOpen);
-  const prePrice    = finiteNum(meta.preMarketPrice);
-  const postPrice   = finiteNum(meta.postMarketPrice);
+  const prePrice = finiteNum(meta.preMarketPrice);
+  const postPrice = finiteNum(meta.postMarketPrice);
 
   let currentPrice: number;
   let baseline: number;
 
   if (marketState === 'PRE') {
     currentPrice = prePrice > 0 ? prePrice : metaPrice;
-    baseline     = prev;
+    baseline = prev;
   } else if (marketState === 'POST' || marketState === 'POSTPOST') {
     currentPrice = postPrice > 0 ? postPrice : metaPrice;
-    baseline     = regularOpen > 0 ? regularOpen : prev;
+    baseline = regularOpen > 0 ? regularOpen : prev;
   } else {
     // REGULAR / CLOSED
     currentPrice = metaPrice > 0 ? metaPrice : last;
-    baseline     = regularOpen > 0 ? regularOpen : prev;
+    baseline = regularOpen > 0 ? regularOpen : prev;
   }
 
   const high =
     finiteNum(meta.regularMarketDayHigh) > 0
       ? finiteNum(meta.regularMarketDayHigh)
-      : lastIdx >= 0 ? finiteNum(quote?.high?.[lastIdx], last) : last;
+      : lastIdx >= 0
+        ? finiteNum(quote?.high?.[lastIdx], last)
+        : last;
   const low =
     finiteNum(meta.regularMarketDayLow) > 0
       ? finiteNum(meta.regularMarketDayLow)
-      : lastIdx >= 0 ? finiteNum(quote?.low?.[lastIdx], last) : last;
+      : lastIdx >= 0
+        ? finiteNum(quote?.low?.[lastIdx], last)
+        : last;
   const open =
     finiteNum(meta.regularMarketOpen) > 0
       ? finiteNum(meta.regularMarketOpen)
-      : lastIdx >= 0 ? finiteNum(quote?.open?.[lastIdx], last) : last;
+      : lastIdx >= 0
+        ? finiteNum(quote?.open?.[lastIdx], last)
+        : last;
   const volume =
     finiteNum(meta.regularMarketVolume) > 0
       ? finiteNum(meta.regularMarketVolume)
-      : lastIdx >= 0 ? finiteNum(quote?.volume?.[lastIdx]) : 0;
+      : lastIdx >= 0
+        ? finiteNum(quote?.volume?.[lastIdx])
+        : 0;
 
   return {
     symbol,
@@ -114,7 +122,9 @@ async function fetchV8ChartAll(symbols: string[]): Promise<StockPrice[]> {
     .filter((v): v is StockPrice => v !== null);
 }
 
-export async function GET(request: NextRequest): Promise<NextResponse<StocksApiResponse<StockPricesData>>> {
+export async function GET(
+  request: NextRequest,
+): Promise<NextResponse<StocksApiResponse<StockPricesData>>> {
   try {
     const { searchParams } = new URL(request.url);
     const symbolsParam = searchParams.get('symbols');
@@ -122,7 +132,10 @@ export async function GET(request: NextRequest): Promise<NextResponse<StocksApiR
 
     let symbols: string[];
     if (symbolsParam) {
-      symbols = symbolsParam.split(',').map((s) => s.trim()).filter(Boolean);
+      symbols = symbolsParam
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
     } else if (market === 'kr') {
       symbols = KR_STOCKS.map((s) => s.symbol as string);
     } else if (market === 'us') {
@@ -147,7 +160,10 @@ export async function GET(request: NextRequest): Promise<NextResponse<StocksApiR
       return NextResponse.json(
         {
           success: false,
-          error: { message: 'Yahoo Finance 데이터를 불러오는 데 실패했습니다.', code: 'YAHOO_FINANCE_ERROR' },
+          error: {
+            message: 'Yahoo Finance 데이터를 불러오는 데 실패했습니다.',
+            code: 'YAHOO_FINANCE_ERROR',
+          },
         },
         { status: 502 },
       );

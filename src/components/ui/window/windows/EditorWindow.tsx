@@ -2,27 +2,27 @@
  * 에디터 전용 윈도우
  */
 
-'use client'
+'use client';
 
-import React from 'react'
-import { Edit3 } from 'lucide-react'
-import { Editor } from '@/components/features/post/editor/Editor'
+import React from 'react';
+import { Edit3 } from 'lucide-react';
+import { Editor } from '@/components/features/post/editor/Editor';
 
 interface PostContext {
-  title?: string
-  mainCategory?: string
-  subCategory?: string
-  topic?: string
-  tags?: string[]
+  title?: string;
+  mainCategory?: string;
+  subCategory?: string;
+  topic?: string;
+  tags?: string[];
 }
 
 interface EditorWindowContentProps {
-  editorRef?: React.MutableRefObject<unknown>
-  initialContent?: unknown
-  onChange?: (json: object) => void
-  localImages: Map<string, File>
-  setLocalImages: React.Dispatch<React.SetStateAction<Map<string, File>>>
-  postContext?: PostContext
+  editorRef?: React.MutableRefObject<unknown>;
+  initialContent?: unknown;
+  onChange?: (json: object) => void;
+  localImages: Map<string, File>;
+  setLocalImages: React.Dispatch<React.SetStateAction<Map<string, File>>>;
+  postContext?: PostContext;
 }
 
 export function EditorWindowContent({
@@ -31,11 +31,11 @@ export function EditorWindowContent({
   onChange,
   localImages,
   setLocalImages,
-  postContext
+  postContext,
 }: EditorWindowContentProps) {
   return (
-    <div className="h-full bg-white/80 flex flex-col">
-      <div className="flex-1 min-h-0 p-4">
+    <div className="flex h-full flex-col bg-white/80">
+      <div className="min-h-0 flex-1 p-4">
         <Editor
           editorRef={editorRef}
           initialContent={initialContent}
@@ -46,9 +46,8 @@ export function EditorWindowContent({
         />
       </div>
     </div>
-  )
+  );
 }
 
 // 기본 아이콘
-export const EditorWindowIcon = () => <Edit3 size={14} />
-
+export const EditorWindowIcon = () => <Edit3 size={14} />;

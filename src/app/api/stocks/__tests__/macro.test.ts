@@ -94,7 +94,17 @@ describe('GET /api/stocks/macro', () => {
     expect(MACRO_SYMBOLS).toHaveLength(9);
     const symbols = MACRO_SYMBOLS.map((s) => s.symbol);
     expect(symbols).toEqual(
-      expect.arrayContaining(['USDKRW=X', '^TNX', '^KS11', '^KQ11', '^IXIC', '^GSPC', '^SOX', 'CL=F', 'GC=F']),
+      expect.arrayContaining([
+        'USDKRW=X',
+        '^TNX',
+        '^KS11',
+        '^KQ11',
+        '^IXIC',
+        '^GSPC',
+        '^SOX',
+        'CL=F',
+        'GC=F',
+      ]),
     );
 
     const byCategory = (c: string) => MACRO_SYMBOLS.filter((s) => s.category === c).length;
@@ -157,7 +167,13 @@ describe('GET /api/stocks/macro', () => {
 
     const usdkrw = body.data.currency[0];
     const meta = MACRO_SYMBOLS.find((s) => s.symbol === 'USDKRW=X')!;
-    expect(usdkrw).toMatchObject({ symbol: 'USDKRW=X', name: meta.name, displayName: meta.displayName, price: 1300, change: 5 });
+    expect(usdkrw).toMatchObject({
+      symbol: 'USDKRW=X',
+      name: meta.name,
+      displayName: meta.displayName,
+      price: 1300,
+      change: 5,
+    });
     expect(usdkrw.changePercent).toBeCloseTo((5 / 1295) * 100, 5);
   });
 
@@ -165,7 +181,14 @@ describe('GET /api/stocks/macro', () => {
     mockV8ByUrl(
       fetchSpy,
       Object.fromEntries(
-        MACRO_SYMBOLS.map((s) => [s.symbol, makeV8ChartResponse(s.symbol, { price: 1300, previousClose: 0, chartPreviousClose: 1295 })]),
+        MACRO_SYMBOLS.map((s) => [
+          s.symbol,
+          makeV8ChartResponse(s.symbol, {
+            price: 1300,
+            previousClose: 0,
+            chartPreviousClose: 1295,
+          }),
+        ]),
       ),
     );
 
@@ -186,8 +209,14 @@ describe('GET /api/stocks/macro', () => {
 
     expect(fetchSpy).toHaveBeenCalledTimes(MACRO_SYMBOLS.length);
     const called = fetchSpy.mock.calls.map(([input]) => symbolFromUrl(urlOf(input))).sort();
-    expect(called).toEqual(MACRO_SYMBOLS.map((s) => s.symbol).slice().sort());
-    fetchSpy.mock.calls.forEach(([input]) => expect(urlOf(input)).toContain('interval=1d&range=5d'));
+    expect(called).toEqual(
+      MACRO_SYMBOLS.map((s) => s.symbol)
+        .slice()
+        .sort(),
+    );
+    fetchSpy.mock.calls.forEach(([input]) =>
+      expect(urlOf(input)).toContain('interval=1d&range=5d'),
+    );
   });
 
   // ----------------------------------------------------------

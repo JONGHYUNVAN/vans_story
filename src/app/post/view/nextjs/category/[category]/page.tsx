@@ -10,26 +10,24 @@ interface PageProps {
 
 export default async function Page({ params }: PageProps) {
   const { category } = await params;
-  
+
   // 해당 카테고리의 게시글 목록을 조회
   const posts = await getPostList('nextjs', category);
-  
+
   return (
     <SidebarWrapper>
       <NextjsLayout title={`Next.js - ${category}`}>
         {posts.length > 0 ? (
           <NextjsList posts={posts} />
         ) : (
-          <div className="flex items-center justify-center min-h-[400px]">
+          <div className="flex min-h-[400px] items-center justify-center">
             <div className="text-center text-white">
-              <h2 className="text-2xl font-bold mb-4">게시글이 없습니다</h2>
-              <p className="text-gray-400">
-                '{category}' 카테고리에 등록된 게시글이 없습니다.
-              </p>
+              <h2 className="mb-4 text-2xl font-bold">게시글이 없습니다</h2>
+              <p className="text-gray-400">'{category}' 카테고리에 등록된 게시글이 없습니다.</p>
             </div>
           </div>
         )}
       </NextjsLayout>
     </SidebarWrapper>
   );
-} 
+}

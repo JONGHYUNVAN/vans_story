@@ -89,7 +89,7 @@ export function useGameScores(gameId: string): UseGameScoresReturn {
       saveAllScores(allScores);
       setGameData(updated);
     },
-    [gameId]
+    [gameId],
   );
 
   const clearScores = useCallback(() => {

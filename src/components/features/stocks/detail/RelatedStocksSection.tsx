@@ -6,7 +6,10 @@ import type { StockPrice, StocksApiResponse, StockPricesData } from '@/types/sto
 import { STOCK_DISPLAY_NAME, MACRO_SYMBOLS } from '@/types/stocks';
 import { symbolToSlug } from '@/lib/stocks/stockSymbol';
 import { API_URLS } from '@/constants/apiUrl';
-import { formatPriceSimple as formatPrice, formatPercent as formatPct } from '@/lib/stocks/stockFormatting';
+import {
+  formatPriceSimple as formatPrice,
+  formatPercent as formatPct,
+} from '@/lib/stocks/stockFormatting';
 
 interface RelatedStock {
   symbol: string;
@@ -52,41 +55,35 @@ export default function RelatedStocksSection({ title, stocks }: RelatedStocksSec
 
   return (
     <section className="mb-6">
-      <h3 className="text-[11px] font-bold uppercase tracking-wide text-zinc-500 mb-3">{title}</h3>
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+      <h3 className="mb-3 text-[11px] font-bold uppercase tracking-wide text-zinc-500">{title}</h3>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
         {stocks.map(({ symbol, reason }) => {
           const sp = priceMap.get(symbol);
           const isUp = sp ? sp.changePercent > 0 : null;
           const pctColor =
-            isUp === true
-              ? 'text-rose-400'
-              : isUp === false
-                ? 'text-sky-400'
-                : 'text-zinc-500';
+            isUp === true ? 'text-rose-400' : isUp === false ? 'text-sky-400' : 'text-zinc-500';
 
           return (
             <Link
               key={symbol}
               href={`/stocks/${symbolToSlug(symbol)}`}
-              className="block rounded-xl border border-zinc-800/80 bg-zinc-900/40 p-3 hover:bg-zinc-800/60 transition-colors no-underline"
+              className="block rounded-xl border border-zinc-800/80 bg-zinc-900/40 p-3 no-underline transition-colors hover:bg-zinc-800/60"
             >
-              <p className="text-sm font-bold text-white truncate">{getDisplayName(symbol)}</p>
-              <p className="text-[10px] text-zinc-500 font-mono mb-2">{symbol}</p>
+              <p className="truncate text-sm font-bold text-white">{getDisplayName(symbol)}</p>
+              <p className="mb-2 font-mono text-[10px] text-zinc-500">{symbol}</p>
               {isLoading ? (
-                <div className="h-4 bg-zinc-800 rounded animate-pulse" />
+                <div className="h-4 animate-pulse rounded bg-zinc-800" />
               ) : sp ? (
                 <>
-                  <p className="text-sm font-bold font-mono tabular-nums text-zinc-200">
+                  <p className="font-mono text-sm font-bold tabular-nums text-zinc-200">
                     {formatPrice(sp.price, sp.currency)}
                   </p>
-                  <p className={`text-xs font-mono ${pctColor}`}>{formatPct(sp.changePercent)}</p>
+                  <p className={`font-mono text-xs ${pctColor}`}>{formatPct(sp.changePercent)}</p>
                 </>
               ) : (
                 <p className="text-xs text-zinc-600">데이터 없음</p>
               )}
-              {reason && (
-                <p className="text-[10px] text-zinc-600 mt-1 truncate">{reason}</p>
-              )}
+              {reason && <p className="mt-1 truncate text-[10px] text-zinc-600">{reason}</p>}
             </Link>
           );
         })}

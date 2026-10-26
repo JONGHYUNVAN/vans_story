@@ -28,7 +28,15 @@ function normalizeFromV8Chart(
   const prev = m.previousClose > 0 ? m.previousClose : (m.chartPreviousClose ?? 0);
   const change = prev > 0 ? price - prev : 0;
   const changePercent = prev > 0 ? (change / prev) * 100 : 0;
-  return { symbol, name: meta.name, displayName: meta.displayName, price, change, changePercent, category: meta.category };
+  return {
+    symbol,
+    name: meta.name,
+    displayName: meta.displayName,
+    price,
+    change,
+    changePercent,
+    category: meta.category,
+  };
 }
 
 async function fetchMacroV8Single(symbol: string): Promise<YahooChartResponse | null> {
@@ -67,9 +75,9 @@ export async function GET(): Promise<NextResponse<StocksApiResponse<MacroData>>>
     return NextResponse.json({
       success: true,
       data: {
-        currency:  indicators.filter((i) => i.category === 'currency'),
-        bond:      indicators.filter((i) => i.category === 'bond'),
-        index:     indicators.filter((i) => i.category === 'index'),
+        currency: indicators.filter((i) => i.category === 'currency'),
+        bond: indicators.filter((i) => i.category === 'bond'),
+        index: indicators.filter((i) => i.category === 'index'),
         commodity: indicators.filter((i) => i.category === 'commodity'),
         fetchedAt: new Date().toISOString(),
       },

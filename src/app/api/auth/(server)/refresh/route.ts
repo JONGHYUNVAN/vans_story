@@ -22,4 +22,4 @@ export async function POST() {
   } catch (error) {
     return new NextResponse(null, { status: 500 });
   }
-} 
+}

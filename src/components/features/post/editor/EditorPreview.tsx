@@ -1,32 +1,32 @@
-import { PostInfo } from "@/types/post"
-import { Viewer } from '@/components/features/post/viewer/Viewer'
-import AlgorithmPostCard from '@/components/features/post/postcard/algorithm/PostCard'
-import NextjsPostCard from '@/components/features/post/postcard/nextjs/PostCard'
-import NestjsPostCard from '@/components/features/post/postcard/nestjs/PostCard'
-import MariadbPostCard from '@/components/features/post/postcard/mariadb/PostCard'
-import MongodbPostCard from '@/components/features/post/postcard/mongodb/PostCard'
-import SpringPostCard from '@/components/features/post/postcard/spring/PostCard'
-import DatabaseTheoryPostCard from '@/components/features/post/postcard/database-theory/PostCard'
-import AlgorithmLayout from '@/app/post/view/algorithm/_components/AlgorithmLayout'
-import NextjsLayout from '@/app/post/view/nextjs/_components/NextjsLayout'
-import NestjsLayout from '@/app/post/view/nestjs/_components/NestjsLayout'
-import MariadbLayout from '@/app/post/view/mariadb/_components/MariadbLayout'
-import MongodbLayout from '@/app/post/view/mongodb/_components/MongodbLayout'
-import SpringLayout from '@/app/post/view/spring/_components/SpringLayout'
-import DatabaseTheoryLayout from '@/app/post/view/database-theory/_components/DatabaseTheoryLayout'
+import { PostInfo } from '@/types/post';
+import { Viewer } from '@/components/features/post/viewer/Viewer';
+import AlgorithmPostCard from '@/components/features/post/postcard/algorithm/PostCard';
+import NextjsPostCard from '@/components/features/post/postcard/nextjs/PostCard';
+import NestjsPostCard from '@/components/features/post/postcard/nestjs/PostCard';
+import MariadbPostCard from '@/components/features/post/postcard/mariadb/PostCard';
+import MongodbPostCard from '@/components/features/post/postcard/mongodb/PostCard';
+import SpringPostCard from '@/components/features/post/postcard/spring/PostCard';
+import DatabaseTheoryPostCard from '@/components/features/post/postcard/database-theory/PostCard';
+import AlgorithmLayout from '@/app/post/view/algorithm/_components/AlgorithmLayout';
+import NextjsLayout from '@/app/post/view/nextjs/_components/NextjsLayout';
+import NestjsLayout from '@/app/post/view/nestjs/_components/NestjsLayout';
+import MariadbLayout from '@/app/post/view/mariadb/_components/MariadbLayout';
+import MongodbLayout from '@/app/post/view/mongodb/_components/MongodbLayout';
+import SpringLayout from '@/app/post/view/spring/_components/SpringLayout';
+import DatabaseTheoryLayout from '@/app/post/view/database-theory/_components/DatabaseTheoryLayout';
 
 interface PostPreviewProps {
-  id: string
-  title: string
-  content: string
-  theme: string
-  topic: string
-  description: string
-  tags: string[]
-  category: string
-  thumbnail: string
-  language: string
-  isViewerMounted?: boolean
+  id: string;
+  title: string;
+  content: string;
+  theme: string;
+  topic: string;
+  description: string;
+  tags: string[];
+  category: string;
+  thumbnail: string;
+  language: string;
+  isViewerMounted?: boolean;
 }
 
 export function PostPreview({
@@ -40,7 +40,7 @@ export function PostPreview({
   category,
   thumbnail,
   language,
-  isViewerMounted = true
+  isViewerMounted = true,
 }: PostPreviewProps) {
   const postData: PostInfo = {
     id,
@@ -58,8 +58,8 @@ export function PostPreview({
     mainCategory: theme,
     subCategory: category,
     thumbnail,
-    language
-  }
+    language,
+  };
 
   return (
     <div className="mt-4 space-y-8">
@@ -133,12 +133,20 @@ export function PostPreview({
           </SpringLayout>
         </>
       )}
-      {!['algorithm', 'nextjs', 'nestjs', 'mariadb', 'mongodb', 'spring', 'database-theory'].includes(theme) && (
+      {![
+        'algorithm',
+        'nextjs',
+        'nestjs',
+        'mariadb',
+        'mongodb',
+        'spring',
+        'database-theory',
+      ].includes(theme) && (
         <div className="prose max-w-none text-white">
           <h1>{title}</h1>
           {isViewerMounted && <Viewer content={content} />}
         </div>
       )}
     </div>
-  )
-} 
+  );
+}

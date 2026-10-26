@@ -18,14 +18,14 @@ function isValidObjectId(id: string): boolean {
 
 export default async function ViewNextjsPostPage({ params }: PageProps) {
   const { id } = await params;
-  
+
   // MongoDB ObjectId 형식이 아니면 404 처리
   if (!isValidObjectId(id)) {
     notFound();
   }
-  
+
   const post = await getPostWithViewCount(id);
-  
+
   if (!post) {
     return (
       <NextjsLayout>
@@ -52,22 +52,24 @@ export default async function ViewNextjsPostPage({ params }: PageProps) {
             </div>
           </div>
 
-          <div className="prose prose-invert max-w-none [&_*]:!text-white [&_a]:!text-blue-300 [&_code]:!text-green-300 [&_h1]:!text-white [&_h2]:!text-white [&_h3]:!text-white [&_h4]:!text-white [&_h5]:!text-white [&_h6]:!text-white [&_strong]:!text-white [&_em]:!text-white [&_li]:!text-white [&_td]:!text-white [&_th]:!text-white [&_th]:!bg-gray-700">
+          <div className="prose prose-invert max-w-none [&_*]:!text-white [&_a]:!text-blue-300 [&_code]:!text-green-300 [&_em]:!text-white [&_h1]:!text-white [&_h2]:!text-white [&_h3]:!text-white [&_h4]:!text-white [&_h5]:!text-white [&_h6]:!text-white [&_li]:!text-white [&_strong]:!text-white [&_td]:!text-white [&_th]:!bg-gray-700 [&_th]:!text-white">
             <Viewer content={post.content} />
           </div>
 
           <div className="flex items-center gap-2">
-            {post.tags && post.tags.length > 0 && post.tags.map((tag: string) => (
-              <span 
-                key={tag} 
-                className="px-2 py-1 bg-[#1a1a1a] text-gray-300 rounded-full text-xs"
-              >
-                {tag}
-              </span>
-            ))}
+            {post.tags &&
+              post.tags.length > 0 &&
+              post.tags.map((tag: string) => (
+                <span
+                  key={tag}
+                  className="rounded-full bg-[#1a1a1a] px-2 py-1 text-xs text-gray-300"
+                >
+                  {tag}
+                </span>
+              ))}
           </div>
         </div>
       </NextjsLayout>
     </SidebarWrapper>
   );
-} 
+}

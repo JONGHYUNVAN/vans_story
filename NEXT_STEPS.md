@@ -86,13 +86,22 @@ FRONTEND_AUDIT.md의 보안·동작 지적은 코드 정적 분석 결과라서,
 
 결과: `npx @tailwindcss/upgrade@4.3.3`로 `tailwind.config.js` → `globals.css`의 `@theme`(폰트·keyframes·animation·gradient-radial), `@tailwind` 3줄 → `@import "tailwindcss"`, `@layer utilities` → `@utility`, `!` 접두 → 접미(`[&_*]:text-white!`) 및 `rounded`→`rounded-sm` 류 이름 변경 64개 파일, PostCSS를 `@tailwindcss/postcss`로(autoprefixer 삭제). v4의 기본 테두리색 변경(currentColor)은 도구가 넣은 `@layer base` 호환 블록으로 v3와 동일하게 유지. Prettier 플러그인은 `tailwindStylesheet`로 전환. 검증: 포스트 페이지 27개 시각 회귀 26/27 v3 기준선과 일치(나머지 1개는 D단계에서 고친 500 페이지), 홈·주가·게임·about 화면 확인, build 통과.
 
-### G. 성능·i18n — FRONTEND_AUDIT 3장, 2-5 (이후)
+### G. 성능·i18n — FRONTEND_AUDIT 3장, 2-5 (1차 완료 2026-10-26)
 
 - 배경 영상 `preload="none"` + `poster`, `prefers-reduced-motion`에서 비활성. `public/` 38MB 정리
 - 에디터용 Google 폰트 8종을 `post/new`·`post/edit`에만 로드
 - Viewer는 에디터 extension 대신 읽기 전용 경량 세트, highlight.js 언어는 한 곳에서만 등록
 - 게임 12개 `dynamic()` import, 음소거 상태를 전역으로
 - i18n: `next-intl` 같은 라우팅 기반으로 교체하거나 최소한 하드코딩 문자열 정리, `src/messages/ko.json`·`en.json`은 `constants/mainCategories.ts`가 하위 카테고리 목록에 사용 중(미사용 아님). `messages/<lang>/*.json`과 중복이므로 한쪽으로 통합
+
+결과(1차):
+
+- 배경 영상 3곳(홈·회원가입·포스트 레이아웃): `preload="metadata"`, OS '동작 줄이기'면 렌더 안 함(`hooks/useReducedMotion`, Playwright 에뮬레이션으로 확인). poster는 적합한 정지 이미지가 없어 보류
+- `lib/lowlight.ts`: 에디터·뷰어가 각각 등록하던 언어 21개를 한 인스턴스로. Viewer의 읽기 전용 경량 extension 세트는 보류(렌더 동일성 검증 비용 대비 이득 작음)
+- 게임 12개 `dynamic()` import: 사용자 작업 중인 `GamePageClient.tsx`에 적용(그 WIP 커밋에 포함). 음소거 전역화는 `useSound.ts`가 작업 중이라 보류
+- `messages/ko.json`·`en.json` 삭제(부분집합), `public/` 미사용 svg·locales 삭제. 영상 파일(합 14MB)은 재인코딩 과제로 남김
+- about-van 콘텐츠를 `messages/*/about.json`으로 분리(컴포넌트는 순수 렌더러). 나머지 하드코딩 문자열은 파일을 건드릴 때 정리
+- 보류: `next-intl` 전환, 에디터 폰트 목록(실제 Google Fonts 로드는 없음 — 감사 보고서의 "8종 로드"는 폰트 이름 목록이었음)
 
 ### 보류
 

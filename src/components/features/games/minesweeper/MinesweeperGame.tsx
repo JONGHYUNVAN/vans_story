@@ -254,7 +254,7 @@ export default function MinesweeperGame({
 
       {/* Board */}
       <div
-        className="select-none rounded-xl border border-gray-700 bg-gray-900 p-3"
+        className="rounded-xl border border-gray-700 bg-gray-900 p-3 select-none"
         onContextMenu={(e) => e.preventDefault()}
       >
         {board.map((row, r) => (

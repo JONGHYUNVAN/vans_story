@@ -128,11 +128,11 @@ function ConsensusVisual({
   const reportRows = (analystReports ?? []).filter((r) => r.targetPrice && r.targetPrice > 0);
 
   return (
-    <div className="space-y-4 px-4 pb-4 pt-2">
+    <div className="space-y-4 px-4 pt-2 pb-4">
       {/* ── 평균 목표가 요약 카드 ── */}
       <div className={`flex items-center justify-between gap-4 rounded-lg px-4 py-3 ${d.barTrack}`}>
         <div>
-          <p className={`mb-0.5 text-[10px] font-semibold uppercase tracking-widest ${d.rowLabel}`}>
+          <p className={`mb-0.5 text-[10px] font-semibold tracking-widest uppercase ${d.rowLabel}`}>
             평균 목표주가
           </p>
           <p
@@ -142,7 +142,7 @@ function ConsensusVisual({
           </p>
         </div>
         <div className="text-right">
-          <p className={`mb-0.5 text-[10px] font-semibold uppercase tracking-widest ${d.rowLabel}`}>
+          <p className={`mb-0.5 text-[10px] font-semibold tracking-widest uppercase ${d.rowLabel}`}>
             현재가 대비
           </p>
           <p
@@ -193,14 +193,14 @@ function ConsensusVisual({
           {/* 최저 마커 */}
           {targetLow !== null && (
             <div
-              className="absolute top-1/2 h-4 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-sm opacity-50"
+              className="absolute top-1/2 h-4 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-xs opacity-50"
               style={{ left: `${pct(targetLow)}%`, background: '#60a5fa' }}
             />
           )}
           {/* 최고 마커 */}
           {targetHigh !== null && (
             <div
-              className="absolute top-1/2 h-4 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-sm opacity-50"
+              className="absolute top-1/2 h-4 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-xs opacity-50"
               style={{ left: `${pct(targetHigh)}%`, background: '#f87171' }}
             />
           )}
@@ -211,7 +211,7 @@ function ConsensusVisual({
           />
           {/* 현재가 — 흰 원 */}
           <div
-            className={`absolute top-1/2 z-20 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow ${d.barCenterLine}`}
+            className={`absolute top-1/2 z-20 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-sm ${d.barCenterLine}`}
             style={{ left: `${pct(current)}%` }}
           />
         </div>
@@ -224,7 +224,7 @@ function ConsensusVisual({
             style={{ left: `${pct(current)}%` }}
           >
             <div className="h-2 w-px bg-current opacity-40" />
-            <span className="whitespace-nowrap font-semibold">현재가</span>
+            <span className="font-semibold whitespace-nowrap">현재가</span>
             <span className="whitespace-nowrap">{current.toLocaleString('ko-KR')}</span>
           </div>
           {/* 최저 레이블 */}
@@ -244,8 +244,8 @@ function ConsensusVisual({
             style={{ left: `${pct(target)}%` }}
           >
             <div className="h-2 w-px bg-current opacity-50" />
-            <span className="whitespace-nowrap font-bold">평균</span>
-            <span className="whitespace-nowrap font-bold">{target.toLocaleString('ko-KR')}</span>
+            <span className="font-bold whitespace-nowrap">평균</span>
+            <span className="font-bold whitespace-nowrap">{target.toLocaleString('ko-KR')}</span>
           </div>
           {/* 최고 레이블 */}
           {targetHigh !== null && (
@@ -286,7 +286,7 @@ function ConsensusVisual({
       {/* ── 개별 리포트 목표가 테이블 ── */}
       {reportRows.length > 0 && (
         <div>
-          <p className={`mb-2 text-[10px] font-semibold uppercase tracking-widest ${d.rowLabel}`}>
+          <p className={`mb-2 text-[10px] font-semibold tracking-widest uppercase ${d.rowLabel}`}>
             개별 목표주가
           </p>
           <div className="space-y-1">
@@ -296,17 +296,17 @@ function ConsensusVisual({
               return (
                 <div
                   key={i}
-                  className={`flex items-center justify-between gap-2 rounded px-3 py-1.5 text-[11px] ${d.barTrack}`}
+                  className={`flex items-center justify-between gap-2 rounded-sm px-3 py-1.5 text-[11px] ${d.barTrack}`}
                 >
                   <div className="flex min-w-0 items-center gap-2">
                     <span
-                      className="inline-block h-2 w-2 flex-shrink-0 rounded-full"
+                      className="inline-block h-2 w-2 shrink-0 rounded-full"
                       style={{ background: '#64748b' }}
                     />
                     <span className={`truncate font-medium ${d.rowValue}`}>{rpt.broker}</span>
                     <span className={`text-[10px] ${d.cardMeta}`}>{rpt.date}</span>
                   </div>
-                  <div className="flex flex-shrink-0 items-center gap-3 font-mono tabular-nums">
+                  <div className="flex shrink-0 items-center gap-3 font-mono tabular-nums">
                     <span className={`font-semibold ${d.rowValue}`}>
                       {rpt.targetPrice!.toLocaleString('ko-KR')}원
                     </span>
@@ -350,7 +350,7 @@ function ConsensusSourceBlock({
         className={`flex items-center justify-between gap-2 px-4 py-2 ${d.divider} ${isAvg ? 'bg-amber-500/5' : ''}`}
       >
         <span
-          className={`rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${sourceBadgeClass(srcName)}`}
+          className={`rounded-sm border px-1.5 py-0.5 text-[10px] font-semibold tracking-wide uppercase ${sourceBadgeClass(srcName)}`}
         >
           {srcName}
         </span>
@@ -388,7 +388,7 @@ function ConsensusSourceBlock({
       {/* 목표가 없는 리포트만 뱃지로 표시 */}
       {reports.filter((r) => !r.targetPrice).length > 0 && (
         <div className={`px-4 py-2 ${d.divider}`}>
-          <p className={`mb-1.5 text-[10px] font-semibold uppercase tracking-wide ${d.rowLabel}`}>
+          <p className={`mb-1.5 text-[10px] font-semibold tracking-wide uppercase ${d.rowLabel}`}>
             기타 리포트
           </p>
           <div className="flex flex-wrap gap-1.5">
@@ -397,7 +397,7 @@ function ConsensusSourceBlock({
               .map((rpt, i) => (
                 <span
                   key={i}
-                  className={`inline-flex items-center gap-1.5 rounded border px-2 py-0.5 text-[10px] ${d.barTrack} ${d.cardMeta}`}
+                  className={`inline-flex items-center gap-1.5 rounded-sm border px-2 py-0.5 text-[10px] ${d.barTrack} ${d.cardMeta}`}
                 >
                   <span className={d.rowValue}>{rpt.broker}</span>
                   <span>{rpt.date}</span>

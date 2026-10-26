@@ -24,7 +24,7 @@ export default function KeyMetricsGrid({ metrics }: KeyMetricsGridProps) {
       <div className="grid grid-cols-3">
         {metrics.map((m, i) => (
           <div key={i} className={`px-4 py-3 ${d.divider} ${i < 3 ? '' : ''}`}>
-            <p className={`mb-1 text-[10px] uppercase tracking-wide ${d.rowLabel}`}>{m.label}</p>
+            <p className={`mb-1 text-[10px] tracking-wide uppercase ${d.rowLabel}`}>{m.label}</p>
             <p className={`font-mono text-sm font-bold tabular-nums ${m.color ?? d.rowValue}`}>
               {m.value}
             </p>

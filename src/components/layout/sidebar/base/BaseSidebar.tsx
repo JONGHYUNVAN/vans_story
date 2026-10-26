@@ -36,12 +36,12 @@ export default function BaseSidebar({
   frameworkIcon: FrameworkIcon,
   frameworkColor,
   frameworkPath,
-  previewButtonBgClasses = 'bg-black/50 backdrop-blur-sm',
+  previewButtonBgClasses = 'bg-black/50 backdrop-blur-xs',
   sidebarContentBgClasses = 'bg-black',
   textColorClasses = 'text-[#888888]',
   hoverStyles = 'hover:bg-white/5',
   activeLinkStyles = 'text-white bg-white/5',
-  headerBgClasses = 'backdrop-blur-sm bg-black/30',
+  headerBgClasses = 'backdrop-blur-xs bg-black/30',
   borderClasses = 'border-[#333333]',
   logoAnimation = 'transition-transform duration-300 group-hover:scale-105',
   iconRenderer = (Icon, color) => <Icon className="h-4 w-4" style={{ color }} />,
@@ -91,7 +91,7 @@ export default function BaseSidebar({
     >
       {/* 작은 화면에서만 보이는 미니 사이드바 */}
       <div
-        className={`absolute left-0 top-0 flex h-full w-16 items-center justify-center ${previewButtonBgClasses} transform rounded-r-lg border-r transition-all duration-300 ease-in-out ${borderClasses} ${!isSmallScreen || isOpen ? 'pointer-events-none opacity-0' : 'opacity-30'} `}
+        className={`absolute top-0 left-0 flex h-full w-16 items-center justify-center ${previewButtonBgClasses} transform rounded-r-lg border-r transition-all duration-300 ease-in-out ${borderClasses} ${!isSmallScreen || isOpen ? 'pointer-events-none opacity-0' : 'opacity-30'} `}
       >
         <div className="flex flex-col items-center gap-2">
           <div className="mb-2 text-center">
@@ -105,7 +105,7 @@ export default function BaseSidebar({
       </div>
       {/* 사이드바 본체 */}
       <div
-        className={`absolute left-0 top-0 h-full w-64 ${sidebarContentBgClasses} ${textColorClasses} border-r ${borderClasses} transform overflow-hidden rounded-r-lg transition-all duration-300 ease-in-out ${
+        className={`absolute top-0 left-0 h-full w-64 ${sidebarContentBgClasses} ${textColorClasses} border-r ${borderClasses} transform overflow-hidden rounded-r-lg transition-all duration-300 ease-in-out ${
           isOpen
             ? 'pointer-events-auto translate-x-0 opacity-100'
             : 'pointer-events-none -translate-x-64 opacity-0'

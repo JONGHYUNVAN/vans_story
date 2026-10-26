@@ -12,7 +12,7 @@ export default function SearchResultItem({ item }: SearchResultItemProps) {
   // 백엔드에서 오는 하이라이트 HTML을 그대로 사용
   const title = (
     <h2
-      className="bg-gradient-to-r from-white to-purple-200 bg-clip-text text-2xl font-bold text-transparent transition-all duration-300 group-hover:from-purple-300 group-hover:to-blue-300"
+      className="bg-linear-to-r from-white to-purple-200 bg-clip-text text-2xl font-bold text-transparent transition-all duration-300 group-hover:from-purple-300 group-hover:to-blue-300"
       dangerouslySetInnerHTML={{ __html: item.highlight?.title?.[0] || item.title }}
     />
   );
@@ -33,10 +33,10 @@ export default function SearchResultItem({ item }: SearchResultItemProps) {
   return (
     <Link
       href={`/post/view/${item.theme}/${item.post_id}`}
-      className="group relative block transform overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:border-purple-400/50 hover:bg-white/10 hover:shadow-2xl hover:shadow-purple-500/10"
+      className="group relative block transform overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xs transition-all duration-500 hover:-translate-y-1 hover:border-purple-400/50 hover:bg-white/10 hover:shadow-2xl hover:shadow-purple-500/10"
     >
       {/* 호버 시 그라데이션 효과 */}
-      <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-transparent to-blue-500/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+      <div className="absolute inset-0 bg-linear-to-r from-purple-500/5 via-transparent to-blue-500/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
       {/* 메인 컨텐츠 */}
       <div className="relative p-6 sm:p-8">

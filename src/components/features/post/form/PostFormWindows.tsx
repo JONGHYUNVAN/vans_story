@@ -184,12 +184,12 @@ function PostFormWindowsContent({
   }
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <div className="fixed inset-0 bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50">
       {/* 배경 데스크톱 */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="text-center">
           <div className="mb-6">
-            <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-blue-100 to-blue-200 shadow-lg">
+            <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-3xl bg-linear-to-br from-blue-100 to-blue-200 shadow-lg">
               <svg className="h-12 w-12 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" />
               </svg>
@@ -229,7 +229,7 @@ function PostFormWindowsContent({
             <button
               type="submit"
               disabled={isSaving}
-              className="w-full rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-3 font-semibold text-white shadow-md transition-all hover:from-blue-600 hover:to-blue-700 disabled:from-gray-300 disabled:to-gray-400 disabled:shadow-none"
+              className="w-full rounded-lg bg-linear-to-r from-blue-500 to-blue-600 px-4 py-3 font-semibold text-white shadow-md transition-all hover:from-blue-600 hover:to-blue-700 disabled:from-gray-300 disabled:to-gray-400 disabled:shadow-none"
             >
               {isSaving ? (
                 <span className="flex items-center justify-center gap-2">

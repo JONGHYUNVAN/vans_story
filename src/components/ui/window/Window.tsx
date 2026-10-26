@@ -290,7 +290,7 @@ export function Window({ id, children, className = '', icon: iconProp }: WindowP
 
     return (
       <div
-        className="pointer-events-none fixed z-[10000] border-2 border-blue-500 bg-blue-500/20"
+        className="pointer-events-none fixed z-10000 border-2 border-blue-500 bg-blue-500/20"
         style={overlayStyles[snapZone]}
       />
     );
@@ -299,7 +299,7 @@ export function Window({ id, children, className = '', icon: iconProp }: WindowP
   const windowElement = !isMinimized ? (
     <div
       ref={windowRef}
-      className={`fixed flex flex-col overflow-hidden rounded-lg border border-gray-300/50 bg-white/90 shadow-lg ${isActive ? 'ring-1 ring-blue-400/60' : ''} ${isDragging ? 'cursor-grabbing transition-none' : 'transition-shadow'} ${isResizing ? 'select-none transition-none' : ''} ${className} `}
+      className={`fixed flex flex-col overflow-hidden rounded-lg border border-gray-300/50 bg-white/90 shadow-lg ${isActive ? 'ring-1 ring-blue-400/60' : ''} ${isDragging ? 'cursor-grabbing transition-none' : 'transition-shadow'} ${isResizing ? 'transition-none select-none' : ''} ${className} `}
       style={{
         left: `${actualPosition.x}px`,
         top: `${actualPosition.y}px`,

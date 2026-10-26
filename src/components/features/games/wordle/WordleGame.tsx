@@ -246,7 +246,7 @@ export default function WordleGame({
 
   const getKeyClass = (key: string): string => {
     const base =
-      'flex items-center justify-center rounded font-bold text-xs cursor-pointer select-none transition-colors ';
+      'flex items-center justify-center rounded-sm font-bold text-xs cursor-pointer select-none transition-colors ';
     if (key === 'Enter' || key === '⌫') {
       return base + 'bg-zinc-500 hover:bg-zinc-400 text-white px-2 py-3 min-w-[40px]';
     }

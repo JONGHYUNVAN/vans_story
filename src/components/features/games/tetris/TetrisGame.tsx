@@ -620,10 +620,10 @@ export default function TetrisGame({
             className="rounded-xl border border-gray-700 bg-gray-900"
           />
           {/* Lock delay progress bar */}
-          <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-1.5 overflow-hidden rounded-b-xl">
+          <div className="pointer-events-none absolute right-0 bottom-0 left-0 h-1.5 overflow-hidden rounded-b-xl">
             <div
               ref={lockBarRef}
-              className="h-full origin-left bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 transition-opacity duration-100"
+              className="h-full origin-left bg-linear-to-r from-amber-400 via-orange-500 to-red-500 transition-opacity duration-100"
               style={{ opacity: 0, transform: 'scaleX(0)' }}
             />
           </div>
@@ -666,11 +666,11 @@ export default function TetrisGame({
         <div className="flex min-w-[120px] flex-col gap-4">
           <div className="rounded-xl border border-gray-700 bg-gray-900 p-3">
             <p className="mb-1 text-xs text-zinc-400">HOLD</p>
-            <canvas ref={holdCanvasRef} width={96} height={96} className="rounded bg-gray-900" />
+            <canvas ref={holdCanvasRef} width={96} height={96} className="rounded-sm bg-gray-900" />
           </div>
           <div className="rounded-xl border border-gray-700 bg-gray-900 p-3">
             <p className="mb-1 text-xs text-zinc-400">NEXT</p>
-            <canvas ref={nextCanvasRef} width={96} height={96} className="rounded bg-gray-900" />
+            <canvas ref={nextCanvasRef} width={96} height={96} className="rounded-sm bg-gray-900" />
           </div>
           <div className="space-y-2 rounded-xl border border-gray-700 bg-gray-900 p-3">
             <div>

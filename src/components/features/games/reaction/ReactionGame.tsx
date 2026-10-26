@@ -224,7 +224,7 @@ export default function ReactionGame({
       {/* Main click area */}
       <div
         className={[
-          'flex min-h-[300px] w-full max-w-sm cursor-pointer select-none flex-col items-center justify-center rounded-xl border border-gray-700 transition-colors duration-100',
+          'flex min-h-[300px] w-full max-w-sm cursor-pointer flex-col items-center justify-center rounded-xl border border-gray-700 transition-colors duration-100 select-none',
           getBgClass(),
         ].join(' ')}
         onClick={handleClick}

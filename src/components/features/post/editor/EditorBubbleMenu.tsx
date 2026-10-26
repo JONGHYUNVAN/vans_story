@@ -425,7 +425,7 @@ export function EditorBubbleMenu() {
                 .setMark('textStyle', { fontSize: `${e.target.value}px` })
                 .run();
             }}
-            className="h-8 rounded border border-gray-200 px-2 text-sm focus:outline-none"
+            className="h-8 rounded-sm border border-gray-200 px-2 text-sm focus:outline-hidden"
           >
             {FONT_SIZES.map((size) => (
               <option key={size} value={size}>
@@ -442,7 +442,7 @@ export function EditorBubbleMenu() {
             onChange={(e) => {
               editor?.chain().focus().setFontFamily(e.target.value).run();
             }}
-            className="h-8 rounded border border-gray-200 px-2 text-sm focus:outline-none"
+            className="h-8 rounded-sm border border-gray-200 px-2 text-sm focus:outline-hidden"
           >
             <option value="inherit">기본</option>
             <option value="Gamja Flower, cursive">감자꽃</option>
@@ -469,7 +469,7 @@ export function EditorBubbleMenu() {
         <button
           type="button"
           onClick={() => editor.chain().focus().addRowBefore().run()}
-          className="rounded p-1 hover:bg-gray-100"
+          className="rounded-sm p-1 hover:bg-gray-100"
           title="위에 행 추가"
         >
           <img src={ICONS.insert_up} alt="위에 행 추가" width={16} height={16} />
@@ -478,7 +478,7 @@ export function EditorBubbleMenu() {
         <button
           type="button"
           onClick={() => editor.chain().focus().addRowAfter().run()}
-          className="rounded p-1 hover:bg-gray-100"
+          className="rounded-sm p-1 hover:bg-gray-100"
           title="아래에 행 추가"
         >
           <img src={ICONS.insert_down} alt="아래에 행 추가" width={16} height={16} />
@@ -487,7 +487,7 @@ export function EditorBubbleMenu() {
         <button
           type="button"
           onClick={() => editor.chain().focus().addColumnBefore().run()}
-          className="rounded p-1 hover:bg-gray-100"
+          className="rounded-sm p-1 hover:bg-gray-100"
           title="왼쪽에 열 추가"
         >
           <img src={ICONS.insert_left} alt="왼쪽에 열 추가" width={16} height={16} />
@@ -496,7 +496,7 @@ export function EditorBubbleMenu() {
         <button
           type="button"
           onClick={() => editor.chain().focus().addColumnAfter().run()}
-          className="rounded p-1 hover:bg-gray-100"
+          className="rounded-sm p-1 hover:bg-gray-100"
           title="오른쪽에 열 추가"
         >
           <img src={ICONS.insert_right} alt="오른쪽에 열 추가" width={16} height={16} />
@@ -507,7 +507,7 @@ export function EditorBubbleMenu() {
         <button
           type="button"
           onClick={() => editor.chain().focus().deleteRow().run()}
-          className="rounded p-1 hover:bg-gray-100"
+          className="rounded-sm p-1 hover:bg-gray-100"
           title="행 삭제"
         >
           <img
@@ -522,7 +522,7 @@ export function EditorBubbleMenu() {
         <button
           type="button"
           onClick={() => editor.chain().focus().deleteColumn().run()}
-          className="rounded p-1 hover:bg-gray-100"
+          className="rounded-sm p-1 hover:bg-gray-100"
           title="열 삭제"
         >
           <img
@@ -537,7 +537,7 @@ export function EditorBubbleMenu() {
         <button
           type="button"
           onClick={() => editor.chain().focus().deleteTable().run()}
-          className="rounded p-1 hover:bg-gray-100"
+          className="rounded-sm p-1 hover:bg-gray-100"
           title="표 삭제"
         >
           <Trash2 size={16} className="text-red-500" />
@@ -548,7 +548,7 @@ export function EditorBubbleMenu() {
         <button
           type="button"
           onClick={() => editor.chain().focus().mergeCells().run()}
-          className="rounded p-1 hover:bg-gray-100"
+          className="rounded-sm p-1 hover:bg-gray-100"
           title="셀 병합"
         >
           <img src={ICONS.merge} alt="셀 병합" width={16} height={16} />
@@ -557,7 +557,7 @@ export function EditorBubbleMenu() {
         <button
           type="button"
           onClick={() => editor.chain().focus().splitCell().run()}
-          className="rounded p-1 hover:bg-gray-100"
+          className="rounded-sm p-1 hover:bg-gray-100"
           title="셀 분할"
         >
           <img src={ICONS.divide} alt="셀 분할" width={16} height={16} />
@@ -573,7 +573,7 @@ export function EditorBubbleMenu() {
               dom.style.marginRight = 'auto';
             }
           }}
-          className="rounded p-1 hover:bg-gray-100"
+          className="rounded-sm p-1 hover:bg-gray-100"
           title="표 왼쪽 정렬"
         >
           <img src={ICONS.align_left} alt="표 왼쪽 정렬" width={16} height={16} />
@@ -589,7 +589,7 @@ export function EditorBubbleMenu() {
               dom.style.marginRight = 'auto';
             }
           }}
-          className="rounded p-1 hover:bg-gray-100"
+          className="rounded-sm p-1 hover:bg-gray-100"
           title="표 가운데 정렬"
         >
           <img src={ICONS.align_center} alt="표 가운데 정렬" width={16} height={16} />
@@ -605,7 +605,7 @@ export function EditorBubbleMenu() {
               dom.style.marginRight = '0';
             }
           }}
-          className="rounded p-1 hover:bg-gray-100"
+          className="rounded-sm p-1 hover:bg-gray-100"
           title="표 오른쪽 정렬"
         >
           <img src={ICONS.align_right} alt="표 오른쪽 정렬" width={16} height={16} />

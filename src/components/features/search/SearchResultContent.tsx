@@ -58,8 +58,8 @@ export default function SearchResultContent({ query }: SearchResultContentProps)
 
   if (error) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-white/5 py-16 text-center backdrop-blur-sm">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-red-500/20 to-pink-500/20">
+      <div className="rounded-2xl border border-white/10 bg-white/5 py-16 text-center backdrop-blur-xs">
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-r from-red-500/20 to-pink-500/20">
           <svg
             className="h-8 w-8 text-red-400"
             fill="none"
@@ -95,16 +95,16 @@ function SearchResultListSkeleton() {
       {Array.from({ length: 6 }).map((_, i) => (
         <div
           key={i}
-          className="group relative animate-pulse overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm"
+          className="group relative animate-pulse overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-xs"
           style={{ animationDelay: `${i * 100}ms` }}
         >
-          <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+          <div className="absolute inset-0 -translate-x-full animate-shimmer bg-linear-to-r from-transparent via-white/5 to-transparent" />
           <div className="space-y-4">
-            <div className="h-7 w-3/4 rounded-lg bg-gradient-to-r from-purple-400/20 to-blue-400/20" />
+            <div className="h-7 w-3/4 rounded-lg bg-linear-to-r from-purple-400/20 to-blue-400/20" />
             <div className="space-y-2">
-              <div className="h-4 w-full rounded bg-white/10" />
-              <div className="h-4 w-5/6 rounded bg-white/10" />
-              <div className="h-4 w-4/6 rounded bg-white/10" />
+              <div className="h-4 w-full rounded-sm bg-white/10" />
+              <div className="h-4 w-5/6 rounded-sm bg-white/10" />
+              <div className="h-4 w-4/6 rounded-sm bg-white/10" />
             </div>
             <div className="flex gap-2">
               <div className="h-6 w-16 rounded-full bg-white/10" />

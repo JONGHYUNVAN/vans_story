@@ -240,7 +240,7 @@ export function EditorMenuBar({
 
   return (
     <div
-      className={`border-b border-gray-200 bg-white/90 ${isSticky ? 'sticky top-16 z-50 shadow-sm' : ''}`}
+      className={`border-b border-gray-200 bg-white/90 ${isSticky ? 'sticky top-16 z-50 shadow-xs' : ''}`}
     >
       <div className="flex flex-wrap items-center gap-1 p-2">
         {/* 스타일 버튼들 */}
@@ -334,7 +334,7 @@ export function EditorMenuBar({
           <div className="relative">
             <select
               onChange={(e) => handlePresetChange(e.target.value)}
-              className="h-9 rounded border border-gray-300 bg-white px-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 [&>option]:bg-white [&>option]:p-2"
+              className="h-9 rounded-sm border border-gray-300 bg-white px-2 text-gray-800 focus:ring-2 focus:ring-blue-500 focus:outline-hidden [&>option]:bg-white [&>option]:p-2"
               value={preset}
             >
               <option value="h1" style={{ fontSize: '40px', fontWeight: 'bold' }}>
@@ -362,7 +362,7 @@ export function EditorMenuBar({
           <div className="relative">
             <select
               onChange={(e) => setFontSize(e.target.value)}
-              className="h-9 rounded border border-gray-300 bg-white px-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 [&>option]:bg-white"
+              className="h-9 rounded-sm border border-gray-300 bg-white px-2 text-gray-800 focus:ring-2 focus:ring-blue-500 focus:outline-hidden [&>option]:bg-white"
               value={fontSize}
             >
               {FONT_SIZES.map((size) => (
@@ -378,7 +378,7 @@ export function EditorMenuBar({
             <select
               value={selectedFont}
               onChange={(e) => setSelectedFont(e.target.value)}
-              className="h-9 rounded border border-gray-300 bg-white px-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 [&>option]:bg-white"
+              className="h-9 rounded-sm border border-gray-300 bg-white px-2 text-gray-800 focus:ring-2 focus:ring-blue-500 focus:outline-hidden [&>option]:bg-white"
             >
               {editor.isActive('codeBlock')
                 ? FONTS_BY_LANGUAGE['co'].map((font) => (
@@ -494,7 +494,7 @@ export function EditorMenuBar({
                   }
                   editor.chain().focus().setCodeBlock({ language: e.target.value }).run();
                 }}
-                className="h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-800 focus:outline-none"
+                className="h-9 rounded-sm border border-gray-300 bg-white px-2 text-sm text-gray-800 focus:outline-hidden"
                 value={editor.getAttributes('codeBlock').language || 'javascript'}
               >
                 {CODE_LANGUAGE.map(({ value, label }) => (
@@ -547,21 +547,21 @@ export function EditorMenuBar({
             <div className="group relative">
               <button
                 type="button"
-                className="rounded p-2 text-gray-700 hover:bg-gray-100"
+                className="rounded-sm p-2 text-gray-700 hover:bg-gray-100"
                 title="표 삽입"
               >
                 <Table size={18} />
               </button>
 
               {/* 표 크기 선택 그리드 */}
-              <div className="w-30 absolute z-50 hidden rounded-lg border border-gray-300 bg-white p-2 shadow-md group-hover:block">
+              <div className="absolute z-50 hidden w-30 rounded-lg border border-gray-300 bg-white p-2 shadow-md group-hover:block">
                 <div className="flex flex-col gap-0">
                   {[...Array(5)].map((_, row) => (
                     <div key={row} className="flex gap-0">
                       {[...Array(5)].map((_, col) => (
                         <button
                           key={`${row}-${col}`}
-                          className="h-[20px] w-[20px] border-l border-t border-gray-300 first:border-t last:border-r [&:nth-child(n)]:border-b"
+                          className="h-[20px] w-[20px] border-t border-l border-gray-300 first:border-t last:border-r nth-[n]:border-b"
                           onMouseEnter={(e) => {
                             setTableSize(`${row + 1}x${col + 1}`);
                             const buttons =
@@ -614,7 +614,7 @@ export function EditorMenuBar({
             <button
               type="button"
               onClick={handleImageUploadClick}
-              className="rounded p-2 text-gray-700 hover:bg-gray-100"
+              className="rounded-sm p-2 text-gray-700 hover:bg-gray-100"
               title="사진 업로드"
             >
               <Image size={18} />
@@ -624,14 +624,14 @@ export function EditorMenuBar({
               <button
                 type="button"
                 onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                className="rounded p-2 text-gray-700 hover:bg-gray-100"
+                className="rounded-sm p-2 text-gray-700 hover:bg-gray-100"
                 title="이모티콘"
               >
                 <span style={{ fontSize: '18px' }}>😀</span>
               </button>
 
               {showEmojiPicker && (
-                <div className="absolute left-0 top-full z-50">
+                <div className="absolute top-full left-0 z-50">
                   <EmojiPicker
                     emojiStyle={EmojiStyle.NATIVE}
                     onEmojiClick={(emojiData) => {
@@ -656,7 +656,7 @@ export function EditorMenuBar({
                       .run();
                   }
                 }}
-                className="rounded p-2 text-gray-700 hover:bg-gray-100"
+                className="rounded-sm p-2 text-gray-700 hover:bg-gray-100"
                 title="YouTube 영상 삽입"
               >
                 <FaYoutube size={18} className="text-red-600" />
@@ -666,7 +666,7 @@ export function EditorMenuBar({
               <button
                 type="button"
                 onClick={() => setShowAiGenerate(true)}
-                className="rounded p-2 text-gray-700 transition-colors hover:bg-blue-50"
+                className="rounded-sm p-2 text-gray-700 transition-colors hover:bg-blue-50"
                 title="AI 콘텐츠 생성"
               >
                 <Bot size={18} className="text-blue-600" />

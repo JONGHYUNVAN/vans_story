@@ -80,9 +80,11 @@ FRONTEND_AUDIT.md의 보안·동작 지적은 코드 정적 분석 결과라서,
 
 결과: lucide-react 1.61, @types/node 26, jsdom 30, emoji-picker-react 5.1, mermaid 12.2, typescript 6.0.3(브리지). tsc 오류 0(6.x 경고 없음, baseUrl은 이미 제거), 테스트 176개 통과, 에디터 이모지 피커 렌더·프로젝트 문서 모달의 mermaid 다이어그램 4개 렌더 확인.
 
-### F. Tailwind 4 — REVIEW_RECHECK 7단계 (별도 브랜치, 1일)
+### F. Tailwind 4 — REVIEW_RECHECK 7단계 (완료 2026-10-26)
 
 `npx @tailwindcss/upgrade` → `tailwind.config.js`의 keyframes/animation/fontFamily를 `globals.css`의 `@theme`로 → `@tailwindcss/postcss`로 교체, `autoprefixer` 삭제 → `!important` 접두 문법 139곳 결과 확인 → 전 페이지 시각 확인. **D 이후에** 해야 수정 대상 파일이 적다.
+
+결과: `npx @tailwindcss/upgrade@4.3.3`로 `tailwind.config.js` → `globals.css`의 `@theme`(폰트·keyframes·animation·gradient-radial), `@tailwind` 3줄 → `@import "tailwindcss"`, `@layer utilities` → `@utility`, `!` 접두 → 접미(`[&_*]:text-white!`) 및 `rounded`→`rounded-sm` 류 이름 변경 64개 파일, PostCSS를 `@tailwindcss/postcss`로(autoprefixer 삭제). v4의 기본 테두리색 변경(currentColor)은 도구가 넣은 `@layer base` 호환 블록으로 v3와 동일하게 유지. Prettier 플러그인은 `tailwindStylesheet`로 전환. 검증: 포스트 페이지 27개 시각 회귀 26/27 v3 기준선과 일치(나머지 1개는 D단계에서 고친 500 페이지), 홈·주가·게임·about 화면 확인, build 통과.
 
 ### G. 성능·i18n — FRONTEND_AUDIT 3장, 2-5 (이후)
 

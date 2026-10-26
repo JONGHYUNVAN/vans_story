@@ -210,7 +210,7 @@ export default function SlidingPuzzleGame({
             key={idx}
             onClick={() => moveTile(idx)}
             className={[
-              'flex h-[clamp(52px,17vw,72px)] w-[clamp(52px,17vw,72px)] select-none items-center justify-center rounded-lg text-xl font-bold transition-all duration-150',
+              'flex h-[clamp(52px,17vw,72px)] w-[clamp(52px,17vw,72px)] items-center justify-center rounded-lg text-xl font-bold transition-all duration-150 select-none',
               tile === 0
                 ? 'cursor-default bg-zinc-800/30'
                 : won

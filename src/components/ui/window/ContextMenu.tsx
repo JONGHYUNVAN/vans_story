@@ -95,7 +95,7 @@ export function ContextMenu({ items, position, onClose, isOpen }: ContextMenuPro
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: -10 }}
         transition={{ duration: 0.1, ease: 'easeOut' }}
-        className="fixed z-[10000] min-w-[200px] max-w-[300px]"
+        className="fixed z-10000 max-w-[300px] min-w-[200px]"
         style={{
           left: `${adjustedPosition.x}px`,
           top: `${adjustedPosition.y}px`,
@@ -124,7 +124,7 @@ export function ContextMenu({ items, position, onClose, isOpen }: ContextMenuPro
                   } `}
                 >
                   {item.icon && (
-                    <div className="flex h-4 w-4 flex-shrink-0 items-center justify-center">
+                    <div className="flex h-4 w-4 shrink-0 items-center justify-center">
                       {item.icon}
                     </div>
                   )}

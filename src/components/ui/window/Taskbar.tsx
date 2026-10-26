@@ -79,7 +79,7 @@ function TaskbarButton({
           <div className="text-[10px] text-gray-600">{getStateText()}</div>
 
           {/* 화살표 */}
-          <div className="absolute left-1/2 top-full -mt-px h-2 w-2 -translate-x-1/2 rotate-45 border-b border-r border-gray-300 bg-white/95" />
+          <div className="absolute top-full left-1/2 -mt-px h-2 w-2 -translate-x-1/2 rotate-45 border-r border-b border-gray-300 bg-white/95" />
         </div>
       )}
     </div>
@@ -180,7 +180,7 @@ export function Taskbar({ className = '' }: TaskbarProps) {
 
   return (
     <div
-      className={`fixed bottom-0 left-0 right-0 z-[9999] flex h-12 items-center justify-center border-t border-gray-300/50 bg-white/80 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] ${className} `}
+      className={`fixed right-0 bottom-0 left-0 z-9999 flex h-12 items-center justify-center border-t border-gray-300/50 bg-white/80 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] ${className} `}
       role="navigation"
       aria-label="작업표시줄"
     >

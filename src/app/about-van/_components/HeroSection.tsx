@@ -74,10 +74,10 @@ export function HeroSection() {
         <div className="space-y-8">
           {/* Main Title */}
           <div className="space-y-4">
-            <h1 className="text-4xl font-bold leading-tight text-gray-900 md:text-6xl dark:text-white">
+            <h1 className="text-4xl leading-tight font-bold text-gray-900 md:text-6xl dark:text-white">
               {/* Typewriter Effect for greeting */}
-              <div className="relative h-[10rem] w-full overflow-hidden md:h-[8rem]">
-                <div className="absolute left-0 top-0 w-full">
+              <div className="relative h-40 w-full overflow-hidden md:h-32">
+                <div className="absolute top-0 left-0 w-full">
                   <span style={typewriterStyle}>{typewriterText}</span>
                   <span className="animate-[blink_1s_steps(1)_infinite] text-gray-900 dark:text-white">
                     |
@@ -90,7 +90,7 @@ export function HeroSection() {
 
           {/* Description */}
           <div className="max-w-2xl">
-            <p className="whitespace-pre-line leading-relaxed text-gray-600 dark:text-gray-400">
+            <p className="leading-relaxed whitespace-pre-line text-gray-600 dark:text-gray-400">
               {heroData.description}
             </p>
           </div>

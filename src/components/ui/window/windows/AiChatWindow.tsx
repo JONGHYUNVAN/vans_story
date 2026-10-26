@@ -190,7 +190,7 @@ export function AiChatWindowContent({ onInsertText, initialMessage }: AiChatWind
       <div className="border-b border-gray-200 bg-white/60 px-4 py-3">
         <div className="mb-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br from-blue-500 to-blue-600 shadow-sm">
+            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-linear-to-br from-blue-500 to-blue-600 shadow-xs">
               <Bot className="text-white" size={14} />
             </div>
             <div>
@@ -215,7 +215,7 @@ export function AiChatWindowContent({ onInsertText, initialMessage }: AiChatWind
             value={selectedModel}
             onChange={(e) => setSelectedModel(e.target.value)}
             disabled={isLoading}
-            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm transition-all focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-100"
+            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-xs transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-hidden disabled:cursor-not-allowed disabled:bg-gray-100"
           >
             <optgroup label="🔷 GPT-4.1 시리즈">
               {availableModels
@@ -289,7 +289,7 @@ export function AiChatWindowContent({ onInsertText, initialMessage }: AiChatWind
       <div className="flex-1 space-y-3 overflow-y-auto bg-gray-50/80 p-4">
         {messages.length === 0 && !isLoading && (
           <div className="mt-16 text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-100 to-blue-200 shadow-sm">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-blue-100 to-blue-200 shadow-xs">
               <Bot size={32} className="text-blue-600" />
             </div>
             <p className="mb-1 text-base text-gray-700">AI와 채팅하며</p>
@@ -303,19 +303,19 @@ export function AiChatWindowContent({ onInsertText, initialMessage }: AiChatWind
             className={`flex gap-2.5 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             {message.role === 'assistant' && (
-              <div className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-blue-600">
+              <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-linear-to-br from-blue-500 to-blue-600">
                 <Bot size={14} className="text-white" />
               </div>
             )}
 
             <div
-              className={`max-w-[75%] rounded-xl p-3 shadow-sm ${
+              className={`max-w-[75%] rounded-xl p-3 shadow-xs ${
                 message.role === 'user'
-                  ? 'bg-gradient-to-br from-blue-500 to-blue-600 text-white'
+                  ? 'bg-linear-to-br from-blue-500 to-blue-600 text-white'
                   : 'border border-gray-200 bg-white/90 text-gray-800'
               }`}
             >
-              <p className="whitespace-pre-wrap text-sm leading-relaxed">{message.content}</p>
+              <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
               <div
                 className={`mt-2 text-xs ${message.role === 'user' ? 'text-blue-100' : 'text-gray-500'}`}
               >
@@ -326,7 +326,7 @@ export function AiChatWindowContent({ onInsertText, initialMessage }: AiChatWind
               {message.role === 'assistant' && onInsertText && (
                 <button
                   onClick={() => handleInsertToEditor(message.content)}
-                  className="mt-3 rounded-lg bg-blue-600 px-3 py-1.5 text-xs text-white shadow-sm transition-colors hover:bg-blue-700"
+                  className="mt-3 rounded-lg bg-blue-600 px-3 py-1.5 text-xs text-white shadow-xs transition-colors hover:bg-blue-700"
                 >
                   에디터에 삽입
                 </button>
@@ -334,7 +334,7 @@ export function AiChatWindowContent({ onInsertText, initialMessage }: AiChatWind
             </div>
 
             {message.role === 'user' && (
-              <div className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-green-500 to-green-600">
+              <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-linear-to-br from-green-500 to-green-600">
                 <User size={14} className="text-white" />
               </div>
             )}
@@ -343,10 +343,10 @@ export function AiChatWindowContent({ onInsertText, initialMessage }: AiChatWind
 
         {isLoading && (
           <div className="flex gap-2.5">
-            <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 shadow-sm">
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-linear-to-br from-blue-500 to-blue-600 shadow-xs">
               <Bot size={14} className="text-white" />
             </div>
-            <div className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white/90 p-3 shadow-sm">
+            <div className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white/90 p-3 shadow-xs">
               <Loader2 size={14} className="animate-spin text-blue-600" />
               <span className="text-sm text-gray-700">응답 생성중...</span>
             </div>
@@ -374,13 +374,13 @@ export function AiChatWindowContent({ onInsertText, initialMessage }: AiChatWind
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="AI에게 질문하세요..."
-            className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-800 placeholder-gray-400 shadow-sm transition-all focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-800 placeholder-gray-400 shadow-xs transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
             disabled={isLoading}
           />
           <button
             onClick={handleSendMessage}
             disabled={!inputValue.trim() || isLoading}
-            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2.5 text-white shadow-md transition-all hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:from-gray-300 disabled:to-gray-400"
+            className="flex items-center gap-2 rounded-lg bg-linear-to-r from-blue-500 to-blue-600 px-4 py-2.5 text-white shadow-md transition-all hover:from-blue-600 hover:to-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-hidden disabled:cursor-not-allowed disabled:from-gray-300 disabled:to-gray-400"
           >
             {isLoading ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
             <span className="text-sm font-medium">전송</span>

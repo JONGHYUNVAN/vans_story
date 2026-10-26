@@ -9,7 +9,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
     <div className="mb-6 flex items-start justify-between">
       <div>
         <h2 className="mb-2 text-3xl font-bold text-gray-900">{project.title}</h2>
-        <p className="mb-4 whitespace-pre-line text-lg text-gray-600">{project.description}</p>
+        <p className="mb-4 text-lg whitespace-pre-line text-gray-600">{project.description}</p>
         <div className="mb-4 flex items-center gap-4">
           <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800">
             {project.status}

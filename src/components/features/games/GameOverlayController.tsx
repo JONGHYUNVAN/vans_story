@@ -257,7 +257,7 @@ function ActionButtons({
             onPointerLeave={() => {
               if (!disabled) onActionBtnRelease?.(btn);
             }}
-            className={`absolute flex h-14 w-14 touch-none select-none items-center justify-center rounded-full text-sm font-bold text-white transition-[transform,filter] active:scale-90 active:brightness-75 ${ACTION_POS[btn]}`}
+            className={`absolute flex h-14 w-14 touch-none items-center justify-center rounded-full text-sm font-bold text-white transition-[transform,filter] select-none active:scale-90 active:brightness-75 ${ACTION_POS[btn]}`}
             style={BTN_STYLE[btn]}
             aria-label={`버튼 ${btn}`}
           >
@@ -273,7 +273,7 @@ function ActionButtons({
 function GamepadOverlay(props: GameOverlayControllerProps) {
   return (
     <div
-      className="border-white/8 fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between border-t px-6 pb-[env(safe-area-inset-bottom,0px)] md:hidden"
+      className="fixed right-0 bottom-0 left-0 z-50 flex items-center justify-between border-t border-white/8 px-6 pb-[env(safe-area-inset-bottom,0px)] md:hidden"
       style={{
         height: 200,
         background: 'linear-gradient(to top, rgba(0,0,0,0.88), rgba(0,0,0,0.45))',
@@ -297,7 +297,7 @@ const QWERTY_ROW2 = ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'];
 const QWERTY_ROW3 = ['z', 'x', 'c', 'v', 'b', 'n', 'm'];
 
 const KEY_BTN =
-  'w-8 h-10 sm:w-9 bg-zinc-700/80 rounded text-white text-xs flex items-center justify-center select-none touch-none active:bg-zinc-500';
+  'w-8 h-10 sm:w-9 bg-zinc-700/80 rounded-sm text-white text-xs flex items-center justify-center select-none touch-none active:bg-zinc-500';
 
 function KeyboardOverlay({
   onKey,
@@ -313,7 +313,7 @@ function KeyboardOverlay({
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-50 p-2 md:hidden"
+      className="fixed right-0 bottom-0 left-0 z-50 p-2 md:hidden"
       style={{
         background: 'linear-gradient(to top, rgba(0,0,0,0.88), rgba(0,0,0,0.5))',
         backdropFilter: 'blur(16px)',
@@ -334,7 +334,7 @@ function KeyboardOverlay({
         ))}
         <button
           onPointerDown={handleKey('Backspace')}
-          className="flex h-10 w-12 touch-none select-none items-center justify-center rounded bg-zinc-700/80 text-xs text-white active:bg-zinc-500"
+          className="flex h-10 w-12 touch-none items-center justify-center rounded-sm bg-zinc-700/80 text-xs text-white select-none active:bg-zinc-500"
         >
           ⌫
         </button>
@@ -347,7 +347,7 @@ function KeyboardOverlay({
         ))}
         <button
           onPointerDown={handleKey(' ')}
-          className="flex h-10 w-16 touch-none select-none items-center justify-center rounded bg-zinc-700/80 text-xs text-white active:bg-zinc-500"
+          className="flex h-10 w-16 touch-none items-center justify-center rounded-sm bg-zinc-700/80 text-xs text-white select-none active:bg-zinc-500"
           aria-label="스페이스"
         >
           space

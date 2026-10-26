@@ -60,7 +60,7 @@ const statusConfig: Record<string, { label: string; dot: string; text: string }>
 // ---------------------------------------------------------------------------
 function ExternalLinks({ githubUrl, linkUrl }: { githubUrl: string; linkUrl: string }) {
   return (
-    <div className="pointer-events-auto relative z-20 flex flex-shrink-0 gap-2">
+    <div className="pointer-events-auto relative z-20 flex shrink-0 gap-2">
       {githubUrl && (
         <a
           href={githubUrl}
@@ -94,7 +94,7 @@ function FeaturedCard({ p }: { p: ProjectListItem }) {
   const st = statusConfig[p.status] ?? statusConfig.Completed;
   return (
     /* 그라디언트 테두리 래퍼 */
-    <div className="group relative cursor-pointer rounded-2xl bg-gradient-to-br from-indigo-500/60 via-purple-500/30 to-indigo-500/10 p-px transition-all duration-300 hover:from-indigo-400/80 hover:via-purple-400/50 hover:to-indigo-400/20">
+    <div className="group relative cursor-pointer rounded-2xl bg-linear-to-br from-indigo-500/60 via-purple-500/30 to-indigo-500/10 p-px transition-all duration-300 hover:from-indigo-400/80 hover:via-purple-400/50 hover:to-indigo-400/20">
       {/* 전체 클릭 영역 */}
       <Link
         href={`/projects/${p.id}`}
@@ -104,12 +104,12 @@ function FeaturedCard({ p }: { p: ProjectListItem }) {
 
       <div className="pointer-events-none relative space-y-5 overflow-hidden rounded-2xl bg-[#0f0f12] p-7">
         {/* 배경 glow */}
-        <div className="group-hover:bg-indigo-600/18 pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-indigo-600/10 blur-3xl transition-all duration-500" />
+        <div className="pointer-events-none absolute -top-20 -right-20 h-72 w-72 rounded-full bg-indigo-600/10 blur-3xl transition-all duration-500 group-hover:bg-indigo-600/18" />
 
         {/* 상단 메타 */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
-            <span className="rounded-full border border-indigo-500/30 bg-indigo-500/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-indigo-300">
+            <span className="rounded-full border border-indigo-500/30 bg-indigo-500/20 px-2 py-0.5 text-[10px] font-bold tracking-widest text-indigo-300 uppercase">
               Featured
             </span>
             <span className="text-xs text-zinc-500">{p.date}</span>
@@ -124,7 +124,7 @@ function FeaturedCard({ p }: { p: ProjectListItem }) {
 
         {/* 제목 */}
         <div>
-          <h2 className="text-2xl font-bold leading-snug text-white transition-colors group-hover:text-indigo-100">
+          <h2 className="text-2xl leading-snug font-bold text-white transition-colors group-hover:text-indigo-100">
             {p.title}
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-zinc-400">{p.description}</p>
@@ -134,7 +134,7 @@ function FeaturedCard({ p }: { p: ProjectListItem }) {
         <div className="grid gap-1.5 sm:grid-cols-2">
           {p.features.map((f, i) => (
             <div key={i} className="flex items-start gap-2 text-sm text-zinc-400">
-              <span className="mt-1.5 h-1 w-1 flex-shrink-0 rounded-full bg-indigo-400" />
+              <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-indigo-400" />
               <span>{f}</span>
             </div>
           ))}
@@ -158,7 +158,7 @@ function FeaturedCard({ p }: { p: ProjectListItem }) {
         </div>
 
         {/* 하단 */}
-        <div className="border-white/8 flex items-center justify-between border-t pt-1">
+        <div className="flex items-center justify-between border-t border-white/8 pt-1">
           <p className="mr-4 line-clamp-1 text-xs text-zinc-500">
             <span className="font-medium text-zinc-400">성과: </span>
             {p.impact}
@@ -167,8 +167,8 @@ function FeaturedCard({ p }: { p: ProjectListItem }) {
         </div>
 
         {/* hover 시 상세보기 텍스트 */}
-        <div className="absolute bottom-0 left-0 right-0 flex h-0 items-center justify-center overflow-hidden bg-gradient-to-r from-indigo-600/80 to-purple-600/80 transition-all duration-300 group-hover:h-8">
-          <span className="text-xs font-medium uppercase tracking-widest text-white/90">
+        <div className="absolute right-0 bottom-0 left-0 flex h-0 items-center justify-center overflow-hidden bg-linear-to-r from-indigo-600/80 to-purple-600/80 transition-all duration-300 group-hover:h-8">
+          <span className="text-xs font-medium tracking-widest text-white/90 uppercase">
             상세보기 →
           </span>
         </div>
@@ -183,7 +183,7 @@ function FeaturedCard({ p }: { p: ProjectListItem }) {
 function ProjectCard({ p }: { p: ProjectListItem }) {
   const st = statusConfig[p.status] ?? statusConfig.Completed;
   return (
-    <div className="border-white/8 group relative cursor-pointer overflow-hidden rounded-2xl border bg-[#0f0f12] transition-all duration-300 hover:-translate-y-0.5 hover:border-white/20 hover:shadow-lg hover:shadow-black/40">
+    <div className="group relative cursor-pointer overflow-hidden rounded-2xl border border-white/8 bg-[#0f0f12] transition-all duration-300 hover:-translate-y-0.5 hover:border-white/20 hover:shadow-lg hover:shadow-black/40">
       <Link
         href={`/projects/${p.id}`}
         className="absolute inset-0 z-0 rounded-2xl"
@@ -229,24 +229,24 @@ function ProjectCard({ p }: { p: ProjectListItem }) {
         <div className="grid gap-1 sm:grid-cols-2">
           {p.features.map((f, i) => (
             <div key={i} className="flex items-start gap-2 text-xs text-zinc-500">
-              <span className="mt-1.5 h-1 w-1 flex-shrink-0 rounded-full bg-zinc-600" />
+              <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-zinc-600" />
               <span>{f}</span>
             </div>
           ))}
         </div>
 
         {/* 기술 스택 */}
-        <div className="border-white/6 flex flex-wrap gap-1.5 border-t pt-1">
+        <div className="flex flex-wrap gap-1.5 border-t border-white/6 pt-1">
           {p.tech.map((t) => (
             <span
               key={t}
-              className="border-white/8 rounded-md border bg-white/5 px-2 py-0.5 text-xs text-zinc-400"
+              className="rounded-md border border-white/8 bg-white/5 px-2 py-0.5 text-xs text-zinc-400"
             >
               {t}
             </span>
           ))}
           {p.techCount > p.tech.length && (
-            <span className="border-white/6 rounded-md border px-2 py-0.5 text-xs text-zinc-600">
+            <span className="rounded-md border border-white/6 px-2 py-0.5 text-xs text-zinc-600">
               +{p.techCount - p.tech.length}
             </span>
           )}
@@ -255,7 +255,7 @@ function ProjectCard({ p }: { p: ProjectListItem }) {
 
       {/* hover 하단 바 */}
       <div className="flex h-0 items-center justify-center overflow-hidden bg-white/5 transition-all duration-300 group-hover:h-8">
-        <span className="text-[11px] font-medium uppercase tracking-widest text-zinc-400">
+        <span className="text-[11px] font-medium tracking-widest text-zinc-400 uppercase">
           상세보기 →
         </span>
       </div>
@@ -287,7 +287,7 @@ export default function ProjectsPage() {
         <div className="mb-12">
           <div className="mb-6 flex items-end justify-between">
             <div>
-              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-indigo-400">
+              <p className="mb-2 text-xs font-semibold tracking-[0.2em] text-indigo-400 uppercase">
                 Portfolio
               </p>
               <h1 className="text-5xl font-black tracking-tight text-white">Projects</h1>

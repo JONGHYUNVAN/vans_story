@@ -38,7 +38,7 @@ export function TitleBar({
 }: TitleBarProps) {
   return (
     <div
-      className={`flex h-8 items-center justify-between px-2 ${isActive ? 'bg-white/50' : 'bg-white/30'} cursor-default select-none border-b border-gray-300/30 transition-colors duration-150`}
+      className={`flex h-8 items-center justify-between px-2 ${isActive ? 'bg-white/50' : 'bg-white/30'} cursor-default border-b border-gray-300/30 transition-colors duration-150 select-none`}
       onMouseDown={onMouseDown}
       onDoubleClick={onDoubleClick}
       role="banner"
@@ -46,9 +46,7 @@ export function TitleBar({
     >
       {/* 왼쪽: 아이콘 + 제목 */}
       <div className="flex flex-1 items-center gap-2 overflow-hidden">
-        {icon && (
-          <div className="flex h-4 w-4 flex-shrink-0 items-center justify-center">{icon}</div>
-        )}
+        {icon && <div className="flex h-4 w-4 shrink-0 items-center justify-center">{icon}</div>}
         <span
           className={`truncate text-xs font-normal ${isActive ? 'text-gray-800' : 'text-gray-600'} `}
         >
@@ -66,7 +64,7 @@ export function TitleBar({
               onMinimize?.();
             }}
             onMouseDown={(e) => e.stopPropagation()}
-            className="flex h-8 w-11 items-center justify-center text-gray-700 transition-colors duration-100 hover:bg-black/[0.06] active:bg-black/[0.08]"
+            className="flex h-8 w-11 items-center justify-center text-gray-700 transition-colors duration-100 hover:bg-black/6 active:bg-black/8"
             aria-label="최소화"
           >
             <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
@@ -83,7 +81,7 @@ export function TitleBar({
               onMaximize?.();
             }}
             onMouseDown={(e) => e.stopPropagation()}
-            className="flex h-8 w-11 items-center justify-center text-gray-700 transition-colors duration-100 hover:bg-black/[0.06] active:bg-black/[0.08]"
+            className="flex h-8 w-11 items-center justify-center text-gray-700 transition-colors duration-100 hover:bg-black/6 active:bg-black/8"
             aria-label={isMaximized ? '이전 크기로' : '최대화'}
           >
             {isMaximized ? (

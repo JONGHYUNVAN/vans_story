@@ -16,11 +16,11 @@ export default function PostSidebar({ themeKey }: { themeKey: PostThemeKey }) {
   const iconRenderer = (ItemIcon: IconType, color: string) => {
     switch (s.iconVariant) {
       case 'white-circle':
-        return <ItemIcon className="h-4 w-4 rounded-full bg-white p-[1px]" style={{ color }} />;
+        return <ItemIcon className="h-4 w-4 rounded-full bg-white p-px" style={{ color }} />;
       case 'gradient-circle':
         return (
           <ItemIcon
-            className={`h-4 w-4 rounded-full p-[1px] ${s.iconGradientClass}`}
+            className={`h-4 w-4 rounded-full p-px ${s.iconGradientClass}`}
             style={{ color }}
           />
         );

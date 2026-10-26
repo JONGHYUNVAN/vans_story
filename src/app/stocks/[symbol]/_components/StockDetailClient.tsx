@@ -167,7 +167,7 @@ function StockDetailInner({ symbol }: Props) {
                 ← 대시보드
               </Link>
               <span
-                className={`rounded border px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${badgeColor}`}
+                className={`rounded-sm border px-2 py-0.5 text-[9px] font-bold tracking-wider uppercase ${badgeColor}`}
               >
                 {typeBadge}
               </span>
@@ -176,7 +176,7 @@ function StockDetailInner({ symbol }: Props) {
             <p className={t.layout.toolbarSubtitle}>{symbol}</p>
             {(detail || kisRealtime.trade) && (
               <div className="mt-1 flex items-baseline gap-3">
-                <span className="text-3xl font-bold tabular-nums text-white">
+                <span className="text-3xl font-bold text-white tabular-nums">
                   {formatPriceDetailed(displayPrice, displayCurrency, symbol)}
                 </span>
                 <span className={`font-mono text-sm font-semibold ${priceColorClass}`}>

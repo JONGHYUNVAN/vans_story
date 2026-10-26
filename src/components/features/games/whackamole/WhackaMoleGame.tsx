@@ -218,7 +218,7 @@ export default function WhackaMoleGame({
             key={idx}
             onClick={() => handleHoleClick(idx)}
             className={[
-              'flex h-[clamp(60px,22vw,88px)] w-[clamp(60px,22vw,88px)] cursor-pointer select-none items-center justify-center rounded-full border-2 transition-all duration-100',
+              'flex h-[clamp(60px,22vw,88px)] w-[clamp(60px,22vw,88px)] cursor-pointer items-center justify-center rounded-full border-2 transition-all duration-100 select-none',
               hasMole
                 ? 'border-amber-600 bg-amber-900'
                 : 'border-zinc-700 bg-zinc-800 hover:bg-zinc-700',

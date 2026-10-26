@@ -80,7 +80,7 @@ export default function SearchSection() {
             onSubmit={handleFormSubmit}
             className="group relative flex items-center rounded-2xl border border-gray-700/50 bg-gray-800/30 shadow-2xl backdrop-blur-xl transition-all duration-500 focus-within:border-blue-500/50 focus-within:ring-4 focus-within:ring-blue-500/20 hover:bg-gray-800/40 hover:shadow-blue-500/10"
           >
-            <div className="pl-6 pr-2 text-gray-400 transition-colors duration-300 group-focus-within:text-blue-400">
+            <div className="pr-2 pl-6 text-gray-400 transition-colors duration-300 group-focus-within:text-blue-400">
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
@@ -96,7 +96,7 @@ export default function SearchSection() {
               onSelect={handleAutocompleteSelect}
               placeholder="Spring Boot, JWT, Database, algorithm..."
               className="flex-1"
-              inputClassName="w-full bg-transparent text-lg text-white placeholder-gray-500 focus:outline-none px-4 py-6
+              inputClassName="w-full bg-transparent text-lg text-white placeholder-gray-500 focus:outline-hidden px-4 py-6
                            placeholder:text-gray-500 placeholder:text-base border-0 rounded-2xl"
               dropdownClassName=""
               minLength={2}
@@ -105,7 +105,7 @@ export default function SearchSection() {
             />
             <button
               type="submit"
-              className="group/btn m-2 flex transform items-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4 font-medium text-white transition-all duration-300 hover:from-blue-600 hover:to-purple-700 hover:shadow-xl hover:shadow-blue-500/20 focus:outline-none focus:ring-2 focus:ring-blue-400/50 active:scale-95"
+              className="group/btn m-2 flex transform items-center gap-2 rounded-xl bg-linear-to-r from-blue-500 to-purple-600 px-6 py-4 font-medium text-white transition-all duration-300 hover:from-blue-600 hover:to-purple-700 hover:shadow-xl hover:shadow-blue-500/20 focus:ring-2 focus:ring-blue-400/50 focus:outline-hidden active:scale-95"
               aria-label="검색 실행"
             >
               <svg
@@ -133,7 +133,7 @@ export default function SearchSection() {
                 <button
                   key={`${tag}-${index}`}
                   onClick={() => handlePopularSearchClick(tag)}
-                  className="cursor-pointer rounded-full border border-gray-700/50 bg-gray-800/50 px-3 py-1 text-sm text-gray-300 transition-all duration-200 hover:border-gray-600/50 hover:bg-gray-700/50 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 active:scale-95"
+                  className="cursor-pointer rounded-full border border-gray-700/50 bg-gray-800/50 px-3 py-1 text-sm text-gray-300 transition-all duration-200 hover:border-gray-600/50 hover:bg-gray-700/50 hover:text-white focus:ring-2 focus:ring-blue-500/50 focus:outline-hidden active:scale-95"
                 >
                   {tag}
                 </button>

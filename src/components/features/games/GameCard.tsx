@@ -24,7 +24,7 @@ export default function GameCard({
 
   return (
     <div
-      className="border-white/8 group relative cursor-pointer overflow-hidden rounded-2xl border bg-[#0f0f12] transition-all duration-300 hover:-translate-y-1 hover:border-white/20"
+      className="group relative cursor-pointer overflow-hidden rounded-2xl border border-white/8 bg-[#0f0f12] transition-all duration-300 hover:-translate-y-1 hover:border-white/20"
       onMouseEnter={() => {
         setHovered(true);
         onHover?.();
@@ -38,7 +38,7 @@ export default function GameCard({
     >
       {/* Top accent bar */}
       <div
-        className="absolute left-0 right-0 top-0 h-0.5 transition-opacity duration-300"
+        className="absolute top-0 right-0 left-0 h-0.5 transition-opacity duration-300"
         style={{
           background: `linear-gradient(to right, ${game.hexColor}, transparent)`,
           opacity: hovered ? 1 : 0.35,
@@ -103,7 +103,7 @@ export default function GameCard({
       >
         <div className="flex h-10 items-center justify-center gap-2">
           <span
-            className="text-xs font-bold uppercase tracking-widest"
+            className="text-xs font-bold tracking-widest uppercase"
             style={{ color: game.hexColor }}
           >
             Play Now

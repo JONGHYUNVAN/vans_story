@@ -89,7 +89,7 @@ function MainCategoryCollapsible({
             return (
               <div key={groupKey} className="space-y-2">
                 {/* 그룹 제목 */}
-                <div className="text-xs font-medium uppercase tracking-wide text-gray-600">
+                <div className="text-xs font-medium tracking-wide text-gray-600 uppercase">
                   {group.label}
                 </div>
 
@@ -227,7 +227,7 @@ function SubCategoryDropdown({
       {/* 드롭다운 메뉴 */}
       {isOpen && availableSubCategories.length > 0 && (
         <div className="relative">
-          <div className="absolute left-0 right-0 top-0 z-10 mt-1 max-h-80 overflow-y-auto rounded-lg border-2 border-blue-500 bg-white shadow-lg">
+          <div className="absolute top-0 right-0 left-0 z-10 mt-1 max-h-80 overflow-y-auto rounded-lg border-2 border-blue-500 bg-white shadow-lg">
             {availableSubCategories.map((cat) => (
               <button
                 key={cat.value}

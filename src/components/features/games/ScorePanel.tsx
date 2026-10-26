@@ -70,11 +70,11 @@ export default function ScorePanel({
   }, [currentScore]);
 
   return (
-    <div className="border-white/8 space-y-6 rounded-2xl border bg-[#0f0f12] p-5">
+    <div className="space-y-6 rounded-2xl border border-white/8 bg-[#0f0f12] p-5">
       {/* Current score */}
       <div>
-        <p className="mb-1 text-xs uppercase tracking-wider text-zinc-500">현재 점수</p>
-        <p className="text-3xl font-black tabular-nums text-white">
+        <p className="mb-1 text-xs tracking-wider text-zinc-500 uppercase">현재 점수</p>
+        <p className="text-3xl font-black text-white tabular-nums">
           {displayScore.toLocaleString()}
         </p>
         {isNewRecord && (
@@ -86,7 +86,7 @@ export default function ScorePanel({
 
       {/* Best score */}
       <div>
-        <p className="mb-1 text-xs uppercase tracking-wider text-zinc-500">최고 점수</p>
+        <p className="mb-1 text-xs tracking-wider text-zinc-500 uppercase">최고 점수</p>
         <p
           className={`text-xl font-bold tabular-nums ${isNewRecord ? 'text-yellow-400' : 'text-indigo-400'}`}
         >
@@ -98,7 +98,7 @@ export default function ScorePanel({
       {/* Recent history */}
       {recentHistory.length > 0 && (
         <div>
-          <p className="mb-3 text-xs uppercase tracking-wider text-zinc-500">최근 기록</p>
+          <p className="mb-3 text-xs tracking-wider text-zinc-500 uppercase">최근 기록</p>
           <div className="space-y-2">
             {recentHistory.map((record, index) => (
               <div

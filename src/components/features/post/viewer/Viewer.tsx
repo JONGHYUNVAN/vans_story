@@ -67,7 +67,7 @@ export function Viewer({ content }: { content: string | object }) {
   });
 
   return (
-    <div className="prose prose-gray dark:prose-invert max-w-none [&_p]:!mb-1 [&_p]:!whitespace-pre-wrap [&_pre]:!my-4 [&_pre]:!rounded-lg [&_pre]:!bg-[#1E1E1E] [&_pre]:!p-4 [&_pre]:!text-white [&_pre_code]:!font-mono [&_pre_code]:!text-sm [&_table]:!w-full [&_table]:!border-collapse [&_td]:!border [&_td]:!border-gray-300 [&_td]:!p-2 [&_th]:!border [&_th]:!border-gray-300 [&_th]:!bg-gray-100 [&_th]:!p-2 [&_th]:!font-bold">
+    <div className="prose prose-gray dark:prose-invert max-w-none [&_p]:mb-1! [&_p]:whitespace-pre-wrap! [&_pre]:my-4! [&_pre]:rounded-lg! [&_pre]:bg-[#1E1E1E]! [&_pre]:p-4! [&_pre]:text-white! [&_pre_code]:font-mono! [&_pre_code]:text-sm! [&_table]:w-full! [&_table]:border-collapse! [&_td]:border! [&_td]:border-gray-300! [&_td]:p-2! [&_th]:border! [&_th]:border-gray-300! [&_th]:bg-gray-100! [&_th]:p-2! [&_th]:font-bold!">
       <EditorContent editor={editor} />
     </div>
   );

@@ -14,7 +14,7 @@ export default function Sidebar() {
   const themeKey = POST_THEME_KEYS.find((key) => pathname.startsWith(`/post/view/${key}`));
 
   return (
-    <aside className="fixed left-0 top-0 z-[30] h-full overflow-hidden transition-all duration-300 hover:z-[110]">
+    <aside className="fixed top-0 left-0 z-30 h-full overflow-hidden transition-all duration-300 hover:z-110">
       {themeKey ? <PostSidebar themeKey={themeKey} /> : <MainSidebar />}
     </aside>
   );

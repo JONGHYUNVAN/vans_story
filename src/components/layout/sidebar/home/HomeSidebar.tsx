@@ -26,10 +26,10 @@ export default function HomeSidebar() {
     >
       {/* 사이드바 미리보기 영역 - 마우스가 올라가지 않았을 때 보이는 부분 */}
       <div
-        className={`absolute left-0 top-0 flex h-full w-16 transform items-center justify-center rounded-r-lg bg-transparent backdrop-blur-sm transition-all duration-300 ease-in-out ${isOpen ? 'pointer-events-none opacity-0' : 'opacity-100'} `}
+        className={`absolute top-0 left-0 flex h-full w-16 transform items-center justify-center rounded-r-lg bg-transparent backdrop-blur-xs transition-all duration-300 ease-in-out ${isOpen ? 'pointer-events-none opacity-0' : 'opacity-100'} `}
       >
         <div className="flex flex-col items-center gap-2">
-          <span className="writing-vertical ml-2 font-handwriting text-lg font-bold text-gray-300">
+          <span className="ml-2 font-handwriting text-lg font-bold writing-vertical text-gray-300">
             {menuText}
           </span>
         </div>
@@ -37,7 +37,7 @@ export default function HomeSidebar() {
       </div>
       {/* 사이드바 본체 - 마우스가 올라갔을 때 보이는 부분 */}
       <div
-        className={`absolute left-0 top-0 h-full w-64 transform rounded-r-lg bg-white/80 shadow-lg backdrop-blur-md transition-all duration-300 ease-in-out ${
+        className={`absolute top-0 left-0 h-full w-64 transform rounded-r-lg bg-white/80 shadow-lg backdrop-blur-md transition-all duration-300 ease-in-out ${
           isOpen
             ? 'pointer-events-auto translate-x-0 opacity-100'
             : 'pointer-events-none -translate-x-64 opacity-0'
@@ -69,7 +69,7 @@ export default function HomeSidebar() {
                         className={`h-5 w-5 transition-all duration-200 ${
                           pathname.startsWith(item.path)
                             ? 'text-white'
-                            : 'text-gray-400 group-hover:[&>path]:fill-[var(--icon-color)]'
+                            : 'text-gray-400 [&>path]:group-hover:fill-(--icon-color)'
                         } group-hover:scale-110`}
                         style={
                           {

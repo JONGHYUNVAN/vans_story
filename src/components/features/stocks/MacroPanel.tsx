@@ -87,7 +87,7 @@ export default function MacroPanel({ macro, isLoading }: MacroPanelProps) {
                   <div className="flex items-start justify-between gap-1.5">
                     <p className={m.label}>{indicator.displayName}</p>
                     <span
-                      className={`shrink-0 rounded border px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider ${categoryClass(indicator.category)}`}
+                      className={`shrink-0 rounded-sm border px-1.5 py-0.5 text-[8px] font-bold tracking-wider uppercase ${categoryClass(indicator.category)}`}
                     >
                       {getCategoryLabel(indicator.category)}
                     </span>

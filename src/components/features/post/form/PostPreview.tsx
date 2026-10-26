@@ -19,7 +19,7 @@ export function PostPreview({
   // post가 유효한 객체인지 확인
   if (!post || typeof post !== 'object') {
     return (
-      <div className="mt-4 rounded border border-red-400 bg-red-100 p-4">
+      <div className="mt-4 rounded-sm border border-red-400 bg-red-100 p-4">
         <p className="text-red-800">유효하지 않은 포스트 데이터입니다.</p>
       </div>
     );
@@ -28,7 +28,7 @@ export function PostPreview({
   // 필수 데이터 검증
   if (!post.title || !post.content || !post.mainCategory) {
     return (
-      <div className="mt-4 rounded border border-yellow-400 bg-yellow-100 p-4">
+      <div className="mt-4 rounded-sm border border-yellow-400 bg-yellow-100 p-4">
         <p className="text-yellow-800">미리보기를 표시하기 위한 데이터가 부족합니다.</p>
         <ul className="mt-2 text-sm text-yellow-700">
           {!post.title && <li>• 제목이 필요합니다</li>}

@@ -201,7 +201,7 @@ function HeatmapPanel({ label, items }: HeatmapPanelProps) {
   return (
     <div ref={containerRef} className="relative h-full w-full">
       {/* Panel label */}
-      <div className="pointer-events-none absolute left-0 top-0 z-10 flex items-center gap-1.5 p-1 leading-none">
+      <div className="pointer-events-none absolute top-0 left-0 z-10 flex items-center gap-1.5 p-1 leading-none">
         <span className="text-xs font-medium text-zinc-300">{label}</span>
       </div>
 
@@ -224,7 +224,7 @@ function HeatmapPanel({ label, items }: HeatmapPanelProps) {
           return (
             <div
               key={item.symbol}
-              className="absolute cursor-pointer overflow-hidden rounded-sm transition-[filter] hover:brightness-110"
+              className="absolute cursor-pointer overflow-hidden rounded-xs transition-[filter] hover:brightness-110"
               style={{
                 left: `calc(${rect.x}% + 1px)`,
                 top: `calc(${rect.y}% + 1px)`,
@@ -242,7 +242,7 @@ function HeatmapPanel({ label, items }: HeatmapPanelProps) {
                   </span>
                 )}
                 {showPct && (
-                  <span className="text-xs font-bold leading-tight text-white">{pctText}</span>
+                  <span className="text-xs leading-tight font-bold text-white">{pctText}</span>
                 )}
                 {showMarketCap && (
                   <span className="text-[10px] leading-tight text-zinc-100/80">
@@ -265,41 +265,41 @@ function HeatmapSkeleton() {
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-2 p-2">
       {/* KR skeleton (centered square) */}
-      <div className="flex min-h-0 flex-[6] items-center justify-center">
+      <div className="flex min-h-0 flex-6 items-center justify-center">
         <div className="flex aspect-square h-full max-w-full flex-col gap-0.5 rounded-md border border-zinc-700/40 p-1">
           <div className="flex flex-1 gap-0.5">
-            <div className="animate-pulse rounded-sm bg-zinc-800" style={{ flex: 12 }} />
-            <div className="animate-pulse rounded-sm bg-zinc-800" style={{ flex: 9 }} />
-            <div className="animate-pulse rounded-sm bg-zinc-800" style={{ flex: 4 }} />
-            <div className="animate-pulse rounded-sm bg-zinc-800" style={{ flex: 3 }} />
+            <div className="animate-pulse rounded-xs bg-zinc-800" style={{ flex: 12 }} />
+            <div className="animate-pulse rounded-xs bg-zinc-800" style={{ flex: 9 }} />
+            <div className="animate-pulse rounded-xs bg-zinc-800" style={{ flex: 4 }} />
+            <div className="animate-pulse rounded-xs bg-zinc-800" style={{ flex: 3 }} />
           </div>
           <div className="flex flex-1 gap-0.5">
-            <div className="animate-pulse rounded-sm bg-zinc-800" style={{ flex: 4 }} />
-            <div className="animate-pulse rounded-sm bg-zinc-800" style={{ flex: 3 }} />
-            <div className="animate-pulse rounded-sm bg-zinc-800" style={{ flex: 4 }} />
-            <div className="animate-pulse rounded-sm bg-zinc-800" style={{ flex: 2 }} />
+            <div className="animate-pulse rounded-xs bg-zinc-800" style={{ flex: 4 }} />
+            <div className="animate-pulse rounded-xs bg-zinc-800" style={{ flex: 3 }} />
+            <div className="animate-pulse rounded-xs bg-zinc-800" style={{ flex: 4 }} />
+            <div className="animate-pulse rounded-xs bg-zinc-800" style={{ flex: 2 }} />
           </div>
         </div>
       </div>
       {/* US skeleton (wide rectangle) */}
-      <div className="flex min-h-0 flex-[4] flex-col gap-0.5 rounded-md border border-zinc-700/40 p-1">
+      <div className="flex min-h-0 flex-4 flex-col gap-0.5 rounded-md border border-zinc-700/40 p-1">
         <div className="flex flex-1 gap-0.5">
-          <div className="animate-pulse rounded-sm bg-zinc-800" style={{ flex: 14 }} />
-          <div className="animate-pulse rounded-sm bg-zinc-800" style={{ flex: 12 }} />
-          <div className="animate-pulse rounded-sm bg-zinc-800" style={{ flex: 11 }} />
+          <div className="animate-pulse rounded-xs bg-zinc-800" style={{ flex: 14 }} />
+          <div className="animate-pulse rounded-xs bg-zinc-800" style={{ flex: 12 }} />
+          <div className="animate-pulse rounded-xs bg-zinc-800" style={{ flex: 11 }} />
         </div>
         <div className="flex flex-1 gap-0.5">
-          <div className="animate-pulse rounded-sm bg-zinc-800" style={{ flex: 10 }} />
-          <div className="animate-pulse rounded-sm bg-zinc-800" style={{ flex: 9 }} />
-          <div className="animate-pulse rounded-sm bg-zinc-800" style={{ flex: 9 }} />
-          <div className="animate-pulse rounded-sm bg-zinc-800" style={{ flex: 8 }} />
+          <div className="animate-pulse rounded-xs bg-zinc-800" style={{ flex: 10 }} />
+          <div className="animate-pulse rounded-xs bg-zinc-800" style={{ flex: 9 }} />
+          <div className="animate-pulse rounded-xs bg-zinc-800" style={{ flex: 9 }} />
+          <div className="animate-pulse rounded-xs bg-zinc-800" style={{ flex: 8 }} />
         </div>
         <div className="flex flex-1 gap-0.5">
-          <div className="animate-pulse rounded-sm bg-zinc-800" style={{ flex: 7 }} />
-          <div className="animate-pulse rounded-sm bg-zinc-800" style={{ flex: 6 }} />
-          <div className="animate-pulse rounded-sm bg-zinc-800" style={{ flex: 6 }} />
-          <div className="animate-pulse rounded-sm bg-zinc-800" style={{ flex: 5 }} />
-          <div className="animate-pulse rounded-sm bg-zinc-800" style={{ flex: 4 }} />
+          <div className="animate-pulse rounded-xs bg-zinc-800" style={{ flex: 7 }} />
+          <div className="animate-pulse rounded-xs bg-zinc-800" style={{ flex: 6 }} />
+          <div className="animate-pulse rounded-xs bg-zinc-800" style={{ flex: 6 }} />
+          <div className="animate-pulse rounded-xs bg-zinc-800" style={{ flex: 5 }} />
+          <div className="animate-pulse rounded-xs bg-zinc-800" style={{ flex: 4 }} />
         </div>
       </div>
     </div>
@@ -330,12 +330,12 @@ export function SectorHeatmap() {
         <HeatmapSkeleton />
       ) : (
         <div className="flex min-h-0 flex-1 flex-col gap-2 p-2">
-          <div className="flex min-h-0 flex-[6] items-center justify-center">
+          <div className="flex min-h-0 flex-6 items-center justify-center">
             <div className="aspect-square h-full max-w-full overflow-hidden rounded-md border border-zinc-700/40">
               <HeatmapPanel label="KR" items={krStocks} />
             </div>
           </div>
-          <div className="min-h-0 flex-[4] overflow-hidden rounded-md border border-zinc-700/40">
+          <div className="min-h-0 flex-4 overflow-hidden rounded-md border border-zinc-700/40">
             <HeatmapPanel label="US" items={usStocks} />
           </div>
         </div>

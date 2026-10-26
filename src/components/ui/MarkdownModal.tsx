@@ -82,7 +82,7 @@ export default function MarkdownModal({ isOpen, onClose, title, filePath }: Mark
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* 배경 오버레이 */}
-      <div className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm" onClick={onClose} />
+      <div className="bg-opacity-50 absolute inset-0 bg-black backdrop-blur-xs" onClick={onClose} />
       {/* 모달 컨테이너 */}
       <div className="relative mx-4 flex max-h-[90vh] w-full max-w-7xl flex-col rounded-lg bg-white shadow-2xl sm:mx-6 lg:mx-8">
         {/* 헤더 */}
@@ -147,8 +147,8 @@ export default function MarkdownModal({ isOpen, onClose, title, filePath }: Mark
                           <code
                             className={
                               isInline
-                                ? 'rounded bg-gray-200 px-1 py-0.5 text-sm'
-                                : 'block overflow-x-auto rounded bg-gray-100 px-3 py-2'
+                                ? 'rounded-sm bg-gray-200 px-1 py-0.5 text-sm'
+                                : 'block overflow-x-auto rounded-sm bg-gray-100 px-3 py-2'
                             }
                             {...props}
                           >
@@ -228,7 +228,7 @@ export default function MarkdownModal({ isOpen, onClose, title, filePath }: Mark
                         return (
                           <h1
                             id={id}
-                            className="mb-6 mt-12 border-t-4 border-blue-500 pt-4 text-2xl font-bold text-gray-900"
+                            className="mt-12 mb-6 border-t-4 border-blue-500 pt-4 text-2xl font-bold text-gray-900"
                           >
                             {children}
                           </h1>
@@ -242,7 +242,7 @@ export default function MarkdownModal({ isOpen, onClose, title, filePath }: Mark
                         return (
                           <h2
                             id={id}
-                            className="mb-4 mt-8 border-t-2 border-gray-300 pt-3 text-xl font-semibold text-gray-900"
+                            className="mt-8 mb-4 border-t-2 border-gray-300 pt-3 text-xl font-semibold text-gray-900"
                           >
                             {children}
                           </h2>
@@ -256,7 +256,7 @@ export default function MarkdownModal({ isOpen, onClose, title, filePath }: Mark
                         return (
                           <h3
                             id={id}
-                            className="mb-3 mt-6 pt-2 text-lg font-semibold text-gray-900"
+                            className="mt-6 mb-3 pt-2 text-lg font-semibold text-gray-900"
                           >
                             {children}
                           </h3>
@@ -277,7 +277,7 @@ export default function MarkdownModal({ isOpen, onClose, title, filePath }: Mark
                       hr: () => <hr className="my-6 border-gray-300" />,
                       // 인용구 스타일링
                       blockquote: ({ children }) => (
-                        <blockquote className="mb-4 border-l-4 border-gray-300 pl-4 italic text-gray-600">
+                        <blockquote className="mb-4 border-l-4 border-gray-300 pl-4 text-gray-600 italic">
                           {children}
                         </blockquote>
                       ),

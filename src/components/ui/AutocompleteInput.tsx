@@ -197,7 +197,7 @@ export const AutocompleteInput = forwardRef<HTMLInputElement, AutocompleteInputP
 
           {/* 로딩 인디케이터 */}
           {isLoading && (
-            <div className="absolute right-3 top-1/2 z-10 -translate-y-1/2 transform">
+            <div className="absolute top-1/2 right-3 z-10 -translate-y-1/2 transform">
               <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-blue-500" />
             </div>
           )}
@@ -214,8 +214,8 @@ export const AutocompleteInput = forwardRef<HTMLInputElement, AutocompleteInputP
           <div
             className={`transform transition-all duration-700 ease-out ${
               isOpen && (suggestions.length > 0 || error)
-                ? 'translate-y-0 rotate-0 scale-100'
-                : '-translate-y-4 rotate-1 scale-90'
+                ? 'translate-y-0 scale-100 rotate-0'
+                : '-translate-y-4 scale-90 rotate-1'
             }`}
             role="listbox"
           >
@@ -231,7 +231,7 @@ export const AutocompleteInput = forwardRef<HTMLInputElement, AutocompleteInputP
                     aria-selected={index === highlightedIndex}
                     className={`mx-2 my-1 flex cursor-pointer items-center space-x-3 rounded-lg px-5 py-4 transition-all duration-300 ease-out ${
                       index === highlightedIndex
-                        ? 'scale-[1.02] bg-blue-500/20 text-blue-200 shadow-lg backdrop-blur-sm'
+                        ? 'scale-[1.02] bg-blue-500/20 text-blue-200 shadow-lg backdrop-blur-xs'
                         : 'text-gray-200 hover:scale-[1.01] hover:bg-white/10 hover:shadow-md'
                     }`}
                     style={{
@@ -252,7 +252,7 @@ export const AutocompleteInput = forwardRef<HTMLInputElement, AutocompleteInputP
                             __html: suggestion.highlight || suggestion.text,
                           }}
                         />
-                        <span className="rounded-full bg-white/10 px-2 py-1 text-xs text-gray-400 backdrop-blur-sm">
+                        <span className="rounded-full bg-white/10 px-2 py-1 text-xs text-gray-400 backdrop-blur-xs">
                           {getSuggestionTypeLabel(suggestion.type)}
                         </span>
                       </div>

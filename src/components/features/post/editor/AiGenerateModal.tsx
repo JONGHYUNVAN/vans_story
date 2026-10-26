@@ -18,7 +18,7 @@ interface AiGenerateModalProps {
   postContext?: PostContext;
 }
 
-type GenerateMode = 'paragraph' | 'full' | 'outline';
+type GenerateMode = 'paragraph' | 'full' | 'outline-solid';
 
 /**
  * AI 문단/글 전체 생성 모달
@@ -105,7 +105,7 @@ ${additionalInfo ? `추가 정보: ${additionalInfo}` : ''}${contextInfo}
 - **일반 텍스트로만 작성 (마크다운 # 헤딩 대신 굵은 텍스트나 빈 줄로 구분)**`;
           break;
 
-        case 'outline':
+        case 'outline-solid':
           prompt = `다음 주제에 대한 상세한 개요(아웃라인)를 작성해주세요.
 주제: ${topic}
 ${additionalInfo ? `추가 정보: ${additionalInfo}` : ''}${contextInfo}
@@ -154,7 +154,7 @@ ${additionalInfo ? `추가 정보: ${additionalInfo}` : ''}${contextInfo}
       desc: '완전한 글 작성',
     },
     {
-      id: 'outline' as const,
+      id: 'outline-solid' as const,
       icon: Sparkles,
       label: '아웃라인 생성',
       desc: '개요 작성',
@@ -266,7 +266,7 @@ ${additionalInfo ? `추가 정보: ${additionalInfo}` : ''}${contextInfo}
                   '주제에 대한 간결하고 명확한 한 문단을 생성합니다. 핵심 개념을 빠르게 설명할 때 유용합니다.'}
                 {mode === 'full' &&
                   '도입-본문-결론으로 구성된 완전한 글을 생성합니다. 블로그 포스트나 문서 작성에 적합합니다.'}
-                {mode === 'outline' &&
+                {mode === 'outline-solid' &&
                   '주제의 구조화된 개요를 생성합니다. 글을 작성하기 전 구조를 잡을 때 유용합니다.'}
               </p>
             </div>
@@ -280,7 +280,7 @@ ${additionalInfo ? `추가 정보: ${additionalInfo}` : ''}${contextInfo}
               className={`flex-1 rounded-lg py-3 font-semibold transition-all ${
                 isGenerating || !topic.trim()
                   ? 'cursor-not-allowed bg-gray-300 text-gray-500'
-                  : 'active:scale-98 bg-blue-600 text-white hover:bg-blue-700'
+                  : 'bg-blue-600 text-white hover:bg-blue-700 active:scale-98'
               }`}
             >
               {isGenerating ? (

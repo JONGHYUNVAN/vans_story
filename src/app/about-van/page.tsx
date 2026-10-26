@@ -19,10 +19,10 @@ export default function AboutVanPage() {
   return (
     <div className="relative min-h-screen bg-black transition-colors duration-300">
       {/* Left Side Background */}
-      <div className="fixed left-0 top-0 z-0 h-full w-1/6 bg-gradient-to-r from-black via-gray-900 to-transparent opacity-80" />
+      <div className="fixed top-0 left-0 z-0 h-full w-1/6 bg-linear-to-r from-black via-gray-900 to-transparent opacity-80" />
 
       {/* Right Side Background */}
-      <div className="fixed right-0 top-0 z-0 h-full w-1/6 bg-gradient-to-l from-black via-gray-900 to-transparent opacity-80" />
+      <div className="fixed top-0 right-0 z-0 h-full w-1/6 bg-linear-to-l from-black via-gray-900 to-transparent opacity-80" />
 
       {/* Main Content */}
       <div className="relative z-10">

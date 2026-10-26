@@ -73,7 +73,7 @@ export default function SignupForm() {
         showError(fieldName)
           ? 'border-2 border-red-500'
           : 'border-gray-300/30 hover:border-gray-300/50'
-      } rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:border-gray-400 transition-colors duration-300`,
+      } rounded-lg text-gray-800 placeholder-gray-500 focus:outline-hidden focus:border-gray-400 transition-colors duration-300`,
     };
   };
 

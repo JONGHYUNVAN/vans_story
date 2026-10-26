@@ -33,7 +33,7 @@ export default function PostLayout({
     >
       {layout.pattern && (
         <div
-          className={`absolute inset-0 z-[1] ${layout.pattern.opacityClass ?? ''}`}
+          className={`absolute inset-0 z-1 ${layout.pattern.opacityClass ?? ''}`}
           style={{
             backgroundImage: layout.pattern.image,
             backgroundSize: layout.pattern.size,
@@ -43,13 +43,13 @@ export default function PostLayout({
       )}
 
       {layout.spinGradient && (
-        <div className="absolute inset-0 z-[1]">
+        <div className="absolute inset-0 z-1">
           <div
-            className="animate-spin-slow absolute -left-1/2 -top-1/2 h-full w-full bg-gradient-radial from-[var(--spin)] via-transparent to-transparent"
+            className="animate-spin-slow absolute -top-1/2 -left-1/2 h-full w-full bg-gradient-radial from-(--spin) via-transparent to-transparent"
             style={{ animationDuration: '15s', ['--spin' as string]: `${layout.spinGradient}08` }}
           />
           <div
-            className="animate-spin-slow absolute -bottom-1/2 -right-1/2 h-full w-full bg-gradient-radial from-[var(--spin)] via-transparent to-transparent"
+            className="animate-spin-slow absolute -right-1/2 -bottom-1/2 h-full w-full bg-gradient-radial from-(--spin) via-transparent to-transparent"
             style={{
               animationDuration: '20s',
               animationDirection: 'reverse',
@@ -60,19 +60,19 @@ export default function PostLayout({
       )}
 
       {layout.glow && (
-        <div className="absolute inset-0 z-[1]">
+        <div className="absolute inset-0 z-1">
           <div
-            className="absolute left-1/4 top-1/4 h-1/2 w-1/2 animate-pulse blur-[100px]"
+            className="absolute top-1/4 left-1/4 h-1/2 w-1/2 animate-pulse blur-[100px]"
             style={{ animationDuration: '4s', backgroundColor: `${layout.glow}08` }}
           />
           <div
-            className="absolute bottom-1/4 right-1/4 h-1/2 w-1/2 animate-pulse blur-[120px]"
+            className="absolute right-1/4 bottom-1/4 h-1/2 w-1/2 animate-pulse blur-[120px]"
             style={{ animationDuration: '6s', backgroundColor: `${layout.glow}05` }}
           />
         </div>
       )}
 
-      <div className="relative z-[2]">
+      <div className="relative z-2">
         <div
           className={`relative mx-auto max-w-5xl border-x px-6 py-12 ${heightClass} ${layout.borderClass}`}
         >

@@ -34,7 +34,7 @@ export default function MacroRelatedSection({ symbols }: MacroRelatedSectionProp
 
   return (
     <section className="mb-6">
-      <h3 className="mb-3 text-[11px] font-bold uppercase tracking-wide text-zinc-500">
+      <h3 className="mb-3 text-[11px] font-bold tracking-wide text-zinc-500 uppercase">
         영향 거시지표
       </h3>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
@@ -58,7 +58,7 @@ export default function MacroRelatedSection({ symbols }: MacroRelatedSectionProp
                 >
                   <p className="truncate text-sm font-bold text-white">{ind.displayName}</p>
                   <p className="mb-2 font-mono text-[10px] text-zinc-500">{ind.symbol}</p>
-                  <p className="font-mono text-sm font-bold tabular-nums text-zinc-200">
+                  <p className="font-mono text-sm font-bold text-zinc-200 tabular-nums">
                     {formatMacroPrice(ind)}
                   </p>
                   <p className={`font-mono text-xs ${pctColor}`}>{formatPct(ind.changePercent)}</p>

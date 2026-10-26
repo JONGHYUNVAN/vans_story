@@ -197,7 +197,7 @@ export function TechStackSection() {
           <h2 className="text-3xl font-bold text-gray-900 md:text-5xl dark:text-white">
             {t('AboutVan.techStack.title')}
           </h2>
-          <p className="max-w-2xl whitespace-pre-line text-lg text-gray-600 dark:text-gray-400">
+          <p className="max-w-2xl text-lg whitespace-pre-line text-gray-600 dark:text-gray-400">
             {t('AboutVan.techStack.description')}
           </p>
         </div>
@@ -223,7 +223,7 @@ export function TechStackSection() {
                   {categoryTechs.map((tech) => (
                     <div
                       key={tech.name}
-                      className={`group rounded-lg border-2 p-2 pb-1 pt-4 transition-all duration-500 ease-in-out ${tech.color} ${tech.hoverColor}`}
+                      className={`group rounded-lg border-2 p-2 pt-4 pb-1 transition-all duration-500 ease-in-out ${tech.color} ${tech.hoverColor}`}
                       onMouseEnter={() => setHoveredTech(tech.name)}
                       onMouseLeave={() => setHoveredTech(null)}
                     >
@@ -247,7 +247,7 @@ export function TechStackSection() {
                         }`}
                       >
                         <div className="mt-4 space-y-3 pb-3">
-                          <div className="rounded bg-white/50 p-3 dark:bg-gray-800/50">
+                          <div className="rounded-sm bg-white/50 p-3 dark:bg-gray-800/50">
                             <h5 className="mb-1 text-sm font-medium text-gray-900 dark:text-white">
                               {t('AboutVan.techStack.commonAdvantages')}
                             </h5>
@@ -267,7 +267,7 @@ export function TechStackSection() {
                             </p>
                           </div>
 
-                          <div className="rounded bg-blue-50/50 p-3 dark:bg-blue-900/20">
+                          <div className="rounded-sm bg-blue-50/50 p-3 dark:bg-blue-900/20">
                             <h5 className="mb-1 text-sm font-medium text-gray-900 dark:text-white">
                               {t('AboutVan.techStack.myChoice')}
                             </h5>

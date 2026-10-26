@@ -258,7 +258,7 @@ function CmpBadge({
   return (
     <div className="min-w-[52px] text-center">
       <p className="mb-1 text-[12px] text-zinc-500">{label}</p>
-      <p className="font-mono text-[18px] font-bold leading-none" style={{ color }}>
+      <p className="font-mono text-[18px] leading-none font-bold" style={{ color }}>
         {diff > 0 ? '+' : ''}
         {diff.toFixed(0)}
       </p>
@@ -286,7 +286,7 @@ export function FearGreedBar() {
 
   const cardCls = isDark
     ? 'rounded-xl border border-zinc-800/80 bg-zinc-900/40'
-    : 'rounded-xl border border-slate-200 bg-white shadow-sm';
+    : 'rounded-xl border border-slate-200 bg-white shadow-xs';
 
   if (isLoading) {
     return <div className={`${cardCls} h-[280px] animate-pulse`} />;
@@ -584,7 +584,7 @@ export function FearGreedBar() {
 
       {/* ── 출처 ── */}
       <p
-        className={`absolute bottom-2 right-4 hidden text-[10px] lg:block ${isDark ? 'text-zinc-700' : 'text-slate-300'}`}
+        className={`absolute right-4 bottom-2 hidden text-[10px] lg:block ${isDark ? 'text-zinc-700' : 'text-slate-300'}`}
       >
         CNN · Yahoo Finance · alternative.me
       </p>

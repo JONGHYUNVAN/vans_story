@@ -338,7 +338,7 @@ export default function Services({
     return (
       <div
         key={index}
-        className={`rounded-xl border-2 p-6 shadow-sm transition-all duration-300 ease-in-out ${getCardStyle()}`}
+        className={`rounded-xl border-2 p-6 shadow-xs transition-all duration-300 ease-in-out ${getCardStyle()}`}
         onMouseEnter={() => setHoveredService(service.name)}
         onMouseLeave={() => setHoveredService(null)}
         onClick={() => onServiceSelect(selectedService === service.name ? null : service.name)}
@@ -378,13 +378,13 @@ export default function Services({
 
         {/* 확장된 상세 정보 */}
         <div
-          className={`duration-600 grid transition-all ease-out ${
+          className={`grid transition-all duration-600 ease-out ${
             isExpanded ? 'mt-6 grid-rows-[1fr] opacity-100' : 'mt-0 grid-rows-[0fr] opacity-0'
           }`}
         >
           <div className="overflow-hidden">
             <div
-              className={`duration-400 transform border-t border-gray-300 pt-6 transition-all delay-150 ease-out ${
+              className={`transform border-t border-gray-300 pt-6 transition-all delay-150 duration-400 ease-out ${
                 isExpanded ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
               }`}
             >
@@ -411,7 +411,7 @@ export default function Services({
                     {service.features.map((feature, featureIndex) => (
                       <li key={featureIndex} className="flex items-start gap-2">
                         <div
-                          className={`mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full ${colors.accent}`}
+                          className={`mt-2 h-1.5 w-1.5 shrink-0 rounded-full ${colors.accent}`}
                         />
                         <span className="text-sm text-gray-700">{feature}</span>
                       </li>
@@ -454,7 +454,7 @@ export default function Services({
                                 {groupedDocs[category].map((link, linkIndex) => (
                                   <div key={linkIndex} className="flex items-start gap-2">
                                     <div
-                                      className={`mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full ${colors.accent}`}
+                                      className={`mt-2 h-1.5 w-1.5 shrink-0 rounded-full ${colors.accent}`}
                                     />
                                     <div>
                                       <button
@@ -508,7 +508,7 @@ export default function Services({
               <div className="mb-6">
                 <p className="mb-2 text-sm text-gray-500">API Flow 다이어그램</p>
                 <div
-                  className="relative w-full overflow-hidden rounded-lg border border-gray-200 shadow-sm"
+                  className="relative w-full overflow-hidden rounded-lg border border-gray-200 shadow-xs"
                   style={{ paddingBottom: '62.5%' }}
                 >
                   <iframe
@@ -538,7 +538,7 @@ export default function Services({
               <div className="mt-6">
                 <p className="mb-2 text-sm text-gray-500">데이터베이스 다이어그램</p>
                 <div
-                  className="w-full overflow-hidden rounded-lg border border-gray-200 shadow-sm"
+                  className="w-full overflow-hidden rounded-lg border border-gray-200 shadow-xs"
                   style={{ height: '1600px' }}
                 >
                   <iframe

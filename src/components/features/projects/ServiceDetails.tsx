@@ -44,7 +44,7 @@ export default function ServiceDetails({
         <ul className="space-y-1">
           {service.features.map((feature, featureIndex) => (
             <li key={featureIndex} className="flex items-start gap-2">
-              <div className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-blue-500" />
+              <div className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500" />
               <span className="text-sm text-gray-700">{feature}</span>
             </li>
           ))}

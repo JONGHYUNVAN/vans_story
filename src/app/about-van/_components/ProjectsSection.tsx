@@ -370,7 +370,7 @@ export function ProjectsSection() {
                       {project.title}
                     </h3>
                     <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
-                      <span className="rounded bg-gray-100 px-2 py-1 dark:bg-gray-800">
+                      <span className="rounded-sm bg-gray-100 px-2 py-1 dark:bg-gray-800">
                         {project.category}
                       </span>
                       <span>{project.date}</span>
@@ -396,7 +396,7 @@ export function ProjectsSection() {
                         href={project.githubUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="rounded border border-gray-300 px-3 py-1 text-sm text-gray-700 transition-colors hover:border-gray-400 dark:border-gray-600 dark:text-gray-300 dark:hover:border-gray-500"
+                        className="rounded-sm border border-gray-300 px-3 py-1 text-sm text-gray-700 transition-colors hover:border-gray-400 dark:border-gray-600 dark:text-gray-300 dark:hover:border-gray-500"
                       >
                         GitHub
                       </a>
@@ -406,7 +406,7 @@ export function ProjectsSection() {
                         href={project.linkUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="rounded bg-gray-900 px-3 py-1 text-sm text-white transition-colors hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100"
+                        className="rounded-sm bg-gray-900 px-3 py-1 text-sm text-white transition-colors hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100"
                       >
                         Link
                       </a>
@@ -440,7 +440,7 @@ export function ProjectsSection() {
                 )}
 
                 {/* Impact */}
-                <div className="rounded border-l-4 border-gray-300 bg-gray-50 p-3 dark:border-gray-600 dark:bg-gray-800/50">
+                <div className="rounded-sm border-l-4 border-gray-300 bg-gray-50 p-3 dark:border-gray-600 dark:bg-gray-800/50">
                   <p className="text-sm text-gray-700 dark:text-gray-300">
                     <span className="font-medium">{locale === 'ko' ? '성과:' : 'Impact:'}</span>{' '}
                     {project.impact}
@@ -456,7 +456,7 @@ export function ProjectsSection() {
                     {project.tech.map((tech) => (
                       <span
                         key={tech}
-                        className="rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 dark:bg-gray-800 dark:text-gray-300"
+                        className="rounded-sm bg-gray-100 px-2 py-1 text-xs text-gray-700 dark:bg-gray-800 dark:text-gray-300"
                       >
                         {tech}
                       </span>

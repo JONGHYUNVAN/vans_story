@@ -44,12 +44,12 @@ export default function Error({
             style={{ animationDuration: '6s', animationDelay: '2s' }}
           />
         </div>
-        <div className="relative z-10 mx-auto max-w-4xl rounded-lg border border-yellow-800/30 bg-black/30 p-8 shadow-2xl backdrop-blur-sm">
+        <div className="relative z-10 mx-auto max-w-4xl rounded-lg border border-yellow-800/30 bg-black/30 p-8 shadow-2xl backdrop-blur-xs">
           <div className="space-y-6 text-center">
             <div className="flex items-center justify-center">
               <FaTools className="mx-auto h-20 w-20 text-yellow-500/80" />
               <FaHammer
-                className="mx-auto -ml-4 mt-4 h-16 w-16 animate-bounce text-yellow-400/90"
+                className="mx-auto mt-4 -ml-4 h-16 w-16 animate-bounce text-yellow-400/90"
                 style={{ animationDuration: '2s' }}
               />
             </div>
@@ -121,7 +121,7 @@ export default function Error({
           style={{ animationDuration: '6s', animationDelay: '2s' }}
         />
       </div>
-      <div className="relative z-10 mx-auto max-w-4xl rounded-lg border border-gray-800 bg-black/30 p-8 shadow-2xl backdrop-blur-sm">
+      <div className="relative z-10 mx-auto max-w-4xl rounded-lg border border-gray-800 bg-black/30 p-8 shadow-2xl backdrop-blur-xs">
         <div className="space-y-6 text-center">
           <BiError className="mx-auto h-32 w-32 text-red-500/80" />
 
@@ -151,7 +151,7 @@ export default function Error({
           {process.env.NODE_ENV === 'development' && (
             <div className="mt-8 rounded-lg bg-gray-900/50 p-4 text-left">
               <h3 className="mb-2 text-lg font-medium text-red-400">오류 정보 (개발 모드):</h3>
-              <p className="break-all font-mono text-sm text-gray-400">
+              <p className="font-mono text-sm break-all text-gray-400">
                 {error.message || '알 수 없는 오류'}
               </p>
               {error.stack && (
@@ -159,7 +159,7 @@ export default function Error({
                   <summary className="cursor-pointer text-sm text-gray-500">
                     스택 트레이스 보기
                   </summary>
-                  <pre className="mt-2 max-h-40 overflow-auto rounded bg-black/50 p-2 text-xs text-gray-500">
+                  <pre className="mt-2 max-h-40 overflow-auto rounded-sm bg-black/50 p-2 text-xs text-gray-500">
                     {error.stack}
                   </pre>
                 </details>

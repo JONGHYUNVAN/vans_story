@@ -43,7 +43,7 @@ export default function ValidationMessage() {
     return () => {
       document.querySelectorAll('input').forEach((input) => {
         input.removeEventListener('focus', handleFocus);
-        input.removeEventListener('blur', handleBlur);
+        input.removeEventListener('blur-sm', handleBlur);
       });
     };
   }, []);

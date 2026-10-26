@@ -61,7 +61,7 @@ export default function MarketHoursSection({
 
   return (
     <section className="mb-6">
-      <h3 className="mb-3 text-[11px] font-bold uppercase tracking-wide text-zinc-500">
+      <h3 className="mb-3 text-[11px] font-bold tracking-wide text-zinc-500 uppercase">
         {label} 시세
       </h3>
       <div className="flex items-center gap-6 rounded-xl border border-zinc-800/80 bg-zinc-900/40 p-4">

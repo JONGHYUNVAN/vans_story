@@ -50,9 +50,9 @@ export function KospiFuturesCard() {
   if (isLoading) {
     return (
       <div className="animate-pulse rounded-xl border border-zinc-700/50 bg-zinc-900/60 p-4">
-        <div className="mb-2 h-4 w-28 rounded bg-zinc-700" />
-        <div className="mb-1 h-7 w-20 rounded bg-zinc-700" />
-        <div className="h-3 w-16 rounded bg-zinc-700" />
+        <div className="mb-2 h-4 w-28 rounded-sm bg-zinc-700" />
+        <div className="mb-1 h-7 w-20 rounded-sm bg-zinc-700" />
+        <div className="h-3 w-16 rounded-sm bg-zinc-700" />
       </div>
     );
   }
@@ -75,7 +75,7 @@ export function KospiFuturesCard() {
           <p className="text-[11px] text-zinc-500">{data.sublabel}</p>
         </div>
         <div className="text-right">
-          <p className="text-lg font-bold tabular-nums text-zinc-100">
+          <p className="text-lg font-bold text-zinc-100 tabular-nums">
             {data.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}
           </p>
           <p className={`text-xs font-medium tabular-nums ${colorClass}`}>
@@ -97,7 +97,7 @@ export function KospiFuturesCard() {
           <div className="text-right">
             {futures ? (
               <>
-                <p className="text-sm font-semibold tabular-nums text-zinc-100">
+                <p className="text-sm font-semibold text-zinc-100 tabular-nums">
                   {futures.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}
                 </p>
                 <p className={`text-[11px] font-medium tabular-nums ${futuresColorClass}`}>
@@ -108,7 +108,7 @@ export function KospiFuturesCard() {
               </>
             ) : (
               <>
-                <p className="text-sm font-semibold tabular-nums text-zinc-400">—</p>
+                <p className="text-sm font-semibold text-zinc-400 tabular-nums">—</p>
                 <p className="text-[11px] font-medium text-zinc-500">데이터 없음</p>
               </>
             )}

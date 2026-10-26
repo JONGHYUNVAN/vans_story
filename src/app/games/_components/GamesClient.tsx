@@ -83,7 +83,7 @@ export default function GamesClient() {
           <div>
             {/* ARCADE label */}
             <p
-              className="mb-3 text-xs font-bold uppercase tracking-[0.3em]"
+              className="mb-3 text-xs font-bold tracking-[0.3em] uppercase"
               style={{
                 background: 'linear-gradient(to right, #818cf8, #c084fc, #f472b6)',
                 WebkitBackgroundClip: 'text',
@@ -126,7 +126,7 @@ export default function GamesClient() {
 
         {/* Game count badge */}
         <div className="mb-8 flex items-center gap-3">
-          <div className="border-white/8 flex items-center gap-2 rounded-full border bg-white/5 px-3 py-1.5">
+          <div className="flex items-center gap-2 rounded-full border border-white/8 bg-white/5 px-3 py-1.5">
             <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-indigo-400" />
             <span className="text-xs font-medium text-zinc-400">
               {GAMES.length} Games Available

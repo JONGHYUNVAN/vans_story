@@ -54,7 +54,7 @@ function BarRow({
             width: `${pct / 2}%`,
           }}
         />
-        <div className={`absolute left-1/2 top-0 h-full w-px -translate-x-px ${barCenterLine}`} />
+        <div className={`absolute top-0 left-1/2 h-full w-px -translate-x-px ${barCenterLine}`} />
       </div>
       <span className={`w-20 shrink-0 text-right ${isPos ? 'text-rose-500' : 'text-sky-500'}`}>
         {sign}

@@ -161,15 +161,15 @@ export const stocksThemeTokens: Record<StocksTheme, StocksThemeTokens> = {
         'flex flex-col gap-6 sm:gap-8 rounded-2xl border border-zinc-800/60 bg-zinc-950/15 p-3 sm:p-4 shadow-[0_0_0_1px_rgba(0,0,0,0.35)]',
       sectionBlock: 'min-w-0',
       krMarketShell:
-        'min-w-0 rounded-xl border border-sky-800/45 bg-gradient-to-br from-sky-950/40 via-zinc-950/20 to-zinc-950/35 p-4 sm:p-5 ring-1 ring-sky-900/30 shadow-[inset_0_1px_0_0_rgba(125,211,252,0.06)]',
+        'min-w-0 rounded-xl border border-sky-800/45 bg-linear-to-br from-sky-950/40 via-zinc-950/20 to-zinc-950/35 p-4 sm:p-5 ring-1 ring-sky-900/30 shadow-[inset_0_1px_0_0_rgba(125,211,252,0.06)]',
       usMarketShell:
-        'min-w-0 rounded-xl border border-violet-900/40 bg-gradient-to-br from-violet-950/40 via-zinc-950/20 to-zinc-950/35 p-4 sm:p-5 ring-1 ring-violet-900/25 shadow-[inset_0_1px_0_0_rgba(196,181,253,0.06)]',
+        'min-w-0 rounded-xl border border-violet-900/40 bg-linear-to-br from-violet-950/40 via-zinc-950/20 to-zinc-950/35 p-4 sm:p-5 ring-1 ring-violet-900/25 shadow-[inset_0_1px_0_0_rgba(196,181,253,0.06)]',
       sectionHeadRow:
         'mb-4 flex items-center justify-between gap-3 border-b border-zinc-800/90 pb-3',
       sectionAccentKr:
-        'flex h-8 w-1 shrink-0 rounded-full bg-gradient-to-b from-sky-400 to-sky-600 shadow-[0_0_12px_rgba(56,189,248,0.35)]',
+        'flex h-8 w-1 shrink-0 rounded-full bg-linear-to-b from-sky-400 to-sky-600 shadow-[0_0_12px_rgba(56,189,248,0.35)]',
       sectionAccentUs:
-        'flex h-8 w-1 shrink-0 rounded-full bg-gradient-to-b from-violet-400 to-violet-600 shadow-[0_0_12px_rgba(167,139,250,0.3)]',
+        'flex h-8 w-1 shrink-0 rounded-full bg-linear-to-b from-violet-400 to-violet-600 shadow-[0_0_12px_rgba(167,139,250,0.3)]',
       sectionTitle: 'text-xs font-bold uppercase tracking-[0.22em] text-zinc-300',
       sectionMeta: 'text-[10px] text-zinc-500 font-mono tabular-nums',
       errorBanner:
@@ -212,15 +212,15 @@ export const stocksThemeTokens: Record<StocksTheme, StocksThemeTokens> = {
       recommPin: 'bg-amber-400/80',
     },
     stockCard: {
-      wrap: 'group relative flex flex-col overflow-hidden rounded-xl border border-zinc-800/80 bg-zinc-900/40 shadow-sm transition-[transform,border-width,border-color] duration-200 ease-out hover:z-10 hover:scale-[1.03] motion-reduce:hover:scale-100',
+      wrap: 'group relative flex flex-col overflow-hidden rounded-xl border border-zinc-800/80 bg-zinc-900/40 shadow-xs transition-[transform,border-width,border-color] duration-200 ease-out hover:z-10 hover:scale-[1.03] motion-reduce:hover:scale-100',
       headerRow:
         'flex items-start justify-between gap-2 border-b border-zinc-800/70 bg-zinc-950/40 px-3.5 py-2.5',
       title: 'text-[15px] font-bold leading-tight tracking-tight text-white truncate',
       symbol: 'text-[11px] text-zinc-500 font-mono tabular-nums mt-1',
       badgeKr:
-        'shrink-0 rounded border border-sky-500/30 bg-sky-500/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-sky-300',
+        'shrink-0 rounded-sm border border-sky-500/30 bg-sky-500/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-sky-300',
       badgeUs:
-        'shrink-0 rounded border border-violet-500/30 bg-violet-500/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-violet-200',
+        'shrink-0 rounded-sm border border-violet-500/30 bg-violet-500/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-violet-200',
       quoteShell: 'bg-black/35 px-3.5 py-3 border-b border-zinc-800/60',
       price: 'text-2xl font-bold tabular-nums tracking-tight text-white leading-none',
       changeLine: 'text-sm font-semibold tabular-nums mt-2 font-mono',
@@ -238,11 +238,11 @@ export const stocksThemeTokens: Record<StocksTheme, StocksThemeTokens> = {
         'rounded-xl border border-zinc-800 bg-zinc-950/40 p-4 flex items-center justify-center min-h-[140px]',
       errorText: 'text-zinc-500 text-xs',
       skeleton: 'rounded-xl border border-zinc-800/80 bg-zinc-900/40 p-3.5 animate-pulse h-[220px]',
-      skeletonBar: 'bg-zinc-800/80 rounded',
+      skeletonBar: 'bg-zinc-800/80 rounded-sm',
     },
     macro: {
       shell:
-        'min-w-0 rounded-xl border border-amber-900/45 bg-gradient-to-br from-amber-950/35 via-zinc-950/25 to-emerald-950/20 p-4 sm:p-5 ring-1 ring-amber-900/25 shadow-[inset_0_1px_0_0_rgba(251,191,36,0.07)]',
+        'min-w-0 rounded-xl border border-amber-900/45 bg-linear-to-br from-amber-950/35 via-zinc-950/25 to-emerald-950/20 p-4 sm:p-5 ring-1 ring-amber-900/25 shadow-[inset_0_1px_0_0_rgba(251,191,36,0.07)]',
       sectionHeadRow:
         'mb-4 flex items-center justify-between gap-3 border-b border-zinc-800/90 pb-3',
       sectionTitle: 'text-xs font-bold uppercase tracking-[0.22em] text-zinc-300',
@@ -253,7 +253,7 @@ export const stocksThemeTokens: Record<StocksTheme, StocksThemeTokens> = {
       price: 'text-zinc-50 text-base font-bold tabular-nums tracking-tight mt-1',
       changeLine: 'text-[11px] mt-1.5 tabular-nums font-mono font-semibold',
       skeleton: 'bg-zinc-900 p-4 animate-pulse min-h-[88px]',
-      skeletonBar: 'bg-zinc-800 rounded',
+      skeletonBar: 'bg-zinc-800 rounded-sm',
       categoryCurrency: 'border-amber-500/35 bg-amber-500/10 text-amber-400',
       categoryBond: 'border-emerald-500/35 bg-emerald-500/10 text-emerald-400',
       categoryIndex: 'border-cyan-500/35 bg-cyan-500/10 text-cyan-400',
@@ -292,7 +292,7 @@ export const stocksThemeTokens: Record<StocksTheme, StocksThemeTokens> = {
       itemSource: 'text-zinc-400',
       divide: 'divide-y divide-zinc-800/80',
       skeletonRow: 'animate-pulse border-b border-zinc-800/80 pb-3',
-      skeletonBar: 'bg-zinc-800 rounded',
+      skeletonBar: 'bg-zinc-800 rounded-sm',
     },
     dart: {
       panel:
@@ -318,7 +318,7 @@ export const stocksThemeTokens: Record<StocksTheme, StocksThemeTokens> = {
       linkHover: 'group-hover:text-cyan-300',
       divide: 'divide-y divide-zinc-800/80',
       skeletonRow: 'animate-pulse border-b border-zinc-800/80 py-3',
-      skeletonBar: 'bg-zinc-800 rounded',
+      skeletonBar: 'bg-zinc-800 rounded-sm',
     },
     quote: {
       up: 'text-rose-400',
@@ -345,9 +345,9 @@ export const stocksThemeTokens: Record<StocksTheme, StocksThemeTokens> = {
       sectionHeadRow:
         'mb-4 flex items-center justify-between gap-3 border-b border-slate-300/80 pb-3',
       sectionAccentKr:
-        'flex h-8 w-1.5 shrink-0 rounded-full bg-gradient-to-b from-sky-500 to-sky-700 shadow-[0_0_8px_rgba(14,165,233,0.5)]',
+        'flex h-8 w-1.5 shrink-0 rounded-full bg-linear-to-b from-sky-500 to-sky-700 shadow-[0_0_8px_rgba(14,165,233,0.5)]',
       sectionAccentUs:
-        'flex h-8 w-1.5 shrink-0 rounded-full bg-gradient-to-b from-violet-500 to-violet-700 shadow-[0_0_8px_rgba(139,92,246,0.45)]',
+        'flex h-8 w-1.5 shrink-0 rounded-full bg-linear-to-b from-violet-500 to-violet-700 shadow-[0_0_8px_rgba(139,92,246,0.45)]',
       sectionTitle: 'text-xs font-bold uppercase tracking-[0.22em] text-slate-700',
       sectionMeta: 'text-[10px] text-slate-500 font-mono tabular-nums',
       errorBanner:
@@ -355,13 +355,13 @@ export const stocksThemeTokens: Record<StocksTheme, StocksThemeTokens> = {
       errorTitle: 'text-red-900 text-sm font-semibold',
       errorDetail: 'text-red-800/90 text-xs mt-1 font-mono',
       errorRetry:
-        'shrink-0 rounded-lg border border-red-300 bg-white px-4 py-2 text-xs font-semibold text-red-900 shadow-sm hover:bg-red-50 transition-colors',
+        'shrink-0 rounded-lg border border-red-300 bg-white px-4 py-2 text-xs font-semibold text-red-900 shadow-xs hover:bg-red-50 transition-colors',
       footer: 'mt-12 text-center text-[10px] text-slate-400 font-mono tracking-wide',
     },
     toggle:
       'inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-500 hover:bg-white hover:text-slate-900 transition-colors',
     detail: {
-      card: 'rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden',
+      card: 'rounded-xl border border-slate-200 bg-white shadow-xs overflow-hidden',
       cardHead:
         'flex items-center justify-between gap-3 border-b border-slate-200 px-4 py-3 bg-slate-50/80',
       cardTitle: 'text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500',
@@ -378,7 +378,7 @@ export const stocksThemeTokens: Record<StocksTheme, StocksThemeTokens> = {
       tooltipMuted: 'text-slate-500',
       controlWrap: 'flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-100 p-0.5',
       controlActive:
-        'rounded-md px-2.5 py-1 text-[11px] font-semibold bg-white text-slate-900 shadow-sm',
+        'rounded-md px-2.5 py-1 text-[11px] font-semibold bg-white text-slate-900 shadow-xs',
       controlInactive:
         'rounded-md px-2.5 py-1 text-[11px] text-slate-500 hover:text-slate-900 transition-colors',
       indicatorWrap: 'flex flex-wrap items-center gap-1.5',
@@ -397,9 +397,9 @@ export const stocksThemeTokens: Record<StocksTheme, StocksThemeTokens> = {
       title: 'text-[15px] font-bold leading-tight text-slate-900 truncate',
       symbol: 'text-[11px] text-slate-500 font-mono tabular-nums mt-1',
       badgeKr:
-        'shrink-0 rounded border border-sky-200 bg-sky-50 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-sky-900',
+        'shrink-0 rounded-sm border border-sky-200 bg-sky-50 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-sky-900',
       badgeUs:
-        'shrink-0 rounded border border-violet-200 bg-violet-50 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-violet-900',
+        'shrink-0 rounded-sm border border-violet-200 bg-violet-50 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-violet-900',
       quoteShell: 'bg-slate-100/90 px-3.5 py-3 border-b border-slate-200/80',
       price: 'text-2xl font-bold tabular-nums tracking-tight text-slate-900 leading-none',
       changeLine: 'text-sm font-semibold tabular-nums mt-2 font-mono',
@@ -416,8 +416,8 @@ export const stocksThemeTokens: Record<StocksTheme, StocksThemeTokens> = {
         'rounded-xl border border-slate-200 bg-slate-50 p-4 flex items-center justify-center min-h-[140px]',
       errorText: 'text-slate-500 text-xs',
       skeleton:
-        'rounded-xl border border-slate-200 bg-white p-3.5 animate-pulse shadow-sm h-[220px]',
-      skeletonBar: 'bg-slate-200 rounded',
+        'rounded-xl border border-slate-200 bg-white p-3.5 animate-pulse shadow-xs h-[220px]',
+      skeletonBar: 'bg-slate-200 rounded-sm',
     },
     macro: {
       shell:
@@ -431,7 +431,7 @@ export const stocksThemeTokens: Record<StocksTheme, StocksThemeTokens> = {
       price: 'text-slate-900 text-base font-bold tabular-nums tracking-tight mt-1',
       changeLine: 'text-[11px] mt-1.5 tabular-nums font-mono font-semibold',
       skeleton: 'bg-white p-4 animate-pulse min-h-[88px]',
-      skeletonBar: 'bg-slate-200 rounded',
+      skeletonBar: 'bg-slate-200 rounded-sm',
       categoryCurrency: 'border-amber-200 bg-amber-50 text-amber-900',
       categoryBond: 'border-emerald-200 bg-emerald-50 text-emerald-900',
       categoryIndex: 'border-cyan-200 bg-cyan-50 text-cyan-900',
@@ -462,14 +462,14 @@ export const stocksThemeTokens: Record<StocksTheme, StocksThemeTokens> = {
         'border border-transparent bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200/80',
       empty: 'text-slate-500 text-xs text-center py-8',
       retry:
-        'rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-800 shadow-sm hover:bg-slate-50 transition-colors',
+        'rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-800 shadow-xs hover:bg-slate-50 transition-colors',
       itemTitle: 'text-slate-800 text-sm leading-snug transition-colors line-clamp-2 mb-1.5',
       itemTitleHover: 'group-hover:text-slate-950',
       itemMeta: 'flex items-center gap-2 text-[11px] text-slate-500 font-mono',
       itemSource: 'text-slate-500',
       divide: 'divide-y divide-slate-100',
       skeletonRow: 'animate-pulse border-b border-slate-100 pb-3',
-      skeletonBar: 'bg-slate-200 rounded',
+      skeletonBar: 'bg-slate-200 rounded-sm',
     },
     dart: {
       panel:
@@ -485,7 +485,7 @@ export const stocksThemeTokens: Record<StocksTheme, StocksThemeTokens> = {
         'border border-transparent bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200/80',
       empty: 'text-slate-500 text-xs text-center px-2',
       retry:
-        'rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-800 shadow-sm hover:bg-slate-50 transition-colors',
+        'rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-800 shadow-xs hover:bg-slate-50 transition-colors',
       itemTitle: 'text-slate-800 text-sm leading-snug transition-colors mb-1',
       itemTitleHover: 'group-hover:text-slate-950',
       itemMeta: 'flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-slate-500 font-mono',
@@ -495,7 +495,7 @@ export const stocksThemeTokens: Record<StocksTheme, StocksThemeTokens> = {
       linkHover: 'group-hover:text-cyan-900',
       divide: 'divide-y divide-slate-100',
       skeletonRow: 'animate-pulse border-b border-slate-100 py-3',
-      skeletonBar: 'bg-slate-200 rounded',
+      skeletonBar: 'bg-slate-200 rounded-sm',
     },
     quote: {
       up: 'text-rose-600',

@@ -52,7 +52,7 @@ export default function RelatedStocksSection({ title, stocks }: RelatedStocksSec
 
   return (
     <section className="mb-6">
-      <h3 className="mb-3 text-[11px] font-bold uppercase tracking-wide text-zinc-500">{title}</h3>
+      <h3 className="mb-3 text-[11px] font-bold tracking-wide text-zinc-500 uppercase">{title}</h3>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
         {stocks.map(({ symbol, reason }) => {
           const sp = priceMap.get(symbol);
@@ -69,10 +69,10 @@ export default function RelatedStocksSection({ title, stocks }: RelatedStocksSec
               <p className="truncate text-sm font-bold text-white">{getDisplayName(symbol)}</p>
               <p className="mb-2 font-mono text-[10px] text-zinc-500">{symbol}</p>
               {isLoading ? (
-                <div className="h-4 animate-pulse rounded bg-zinc-800" />
+                <div className="h-4 animate-pulse rounded-sm bg-zinc-800" />
               ) : sp ? (
                 <>
-                  <p className="font-mono text-sm font-bold tabular-nums text-zinc-200">
+                  <p className="font-mono text-sm font-bold text-zinc-200 tabular-nums">
                     {formatPrice(sp.price, sp.currency)}
                   </p>
                   <p className={`font-mono text-xs ${pctColor}`}>{formatPct(sp.changePercent)}</p>

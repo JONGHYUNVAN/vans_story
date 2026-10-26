@@ -99,7 +99,7 @@ export default function PostCard({ themeKey, post, renderBadge }: PostCardProps)
             {line || ' '}
             {index === lines.length - 1 && (
               <span
-                className={`ml-[1px] inline-block h-4 border-r-2 ${card.cursorClass}`}
+                className={`ml-px inline-block h-4 border-r-2 ${card.cursorClass}`}
                 style={{ animation: 'typingCursor 0.75s step-end infinite' }}
               />
             )}
@@ -110,21 +110,21 @@ export default function PostCard({ themeKey, post, renderBadge }: PostCardProps)
   };
 
   const badge = card.fixedBadge ? (
-    <span className="flex h-8 w-10 items-center justify-center rounded-full bg-black/50 backdrop-blur-sm">
+    <span className="flex h-8 w-10 items-center justify-center rounded-full bg-black/50 backdrop-blur-xs">
       <MdSecurity className="h-7 w-7" />
     </span>
   ) : renderBadge ? (
     renderBadge(post)
   ) : card.defaultBadge === 'docker' ? (
-    <span className="flex items-center rounded bg-[#2496ed] px-2 py-1 text-xs text-white">
+    <span className="flex items-center rounded-sm bg-[#2496ed] px-2 py-1 text-xs text-white">
       <SiDocker className="mr-1" /> Docker
     </span>
   ) : null;
 
   const divider = (visible: boolean, fast: boolean) => (
-    <div className="relative my-2 h-[1px] overflow-hidden">
+    <div className="relative my-2 h-px overflow-hidden">
       <div
-        className={`absolute inset-0 mx-auto bg-gradient-to-r from-transparent to-transparent ${card.dividerClass}`}
+        className={`absolute inset-0 mx-auto bg-linear-to-r from-transparent to-transparent ${card.dividerClass}`}
         style={{
           transform: visible ? 'scaleX(1)' : 'scaleX(0)',
           transformOrigin: 'center',
@@ -170,7 +170,7 @@ export default function PostCard({ themeKey, post, renderBadge }: PostCardProps)
         {divider(dividerVisible, false)}
 
         <div
-          className="relative mb-2 mt-2 overflow-hidden"
+          className="relative mt-2 mb-2 overflow-hidden"
           style={{
             height: isHovered ? `${contentHeight}px` : '0px',
             opacity: isHovered ? 1 : 0,
@@ -191,7 +191,7 @@ export default function PostCard({ themeKey, post, renderBadge }: PostCardProps)
               <div className={`mb-4 w-full text-sm ${card.descriptionClass}`}>
                 <div className="flex items-start gap-4">
                   <div
-                    className={`relative flex-shrink-0 overflow-hidden rounded-md ${card.thumbnailClass}`}
+                    className={`relative shrink-0 overflow-hidden rounded-md ${card.thumbnailClass}`}
                   >
                     {/* 외부 S3 URL이라 next/image 도메인 설정 전까지 img 유지 */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}

@@ -144,7 +144,7 @@ function LoginModal() {
         <div className="relative rounded-xl bg-[#191919] opacity-80 transition-opacity duration-200 hover:opacity-95">
           {/* 모달 닫기 버튼 */}
           <span
-            className="absolute right-2 top-2 z-10 cursor-pointer text-3xl text-white"
+            className="absolute top-2 right-2 z-10 cursor-pointer text-3xl text-white"
             onClick={() => handleCloseModal()}
           >
             &times;
@@ -161,7 +161,7 @@ function LoginModal() {
             />
             <div className="w-[400px] p-10 text-center">
               {/* 환영 메시지 */}
-              <h1 className="neon-text mt-5 text-3xl font-bold uppercase text-white" translate="no">
+              <h1 className="neon-text mt-5 text-3xl font-bold text-white uppercase" translate="no">
                 Welcome !
               </h1>
               {/* 로그인 폼 */}
@@ -173,7 +173,7 @@ function LoginModal() {
                   onChange={(e) => setEmailInput(e.target.value)}
                   inputMode="email"
                   placeholder="User Email"
-                  className="mx-auto mb-5 mt-5 block w-3/5 rounded-full border-2 border-[#3498db] bg-transparent p-3 text-center text-white outline-none transition-all duration-200 focus:w-[300px] focus:border-[#2ecc71]"
+                  className="mx-auto mt-5 mb-5 block w-3/5 rounded-full border-2 border-[#3498db] bg-transparent p-3 text-center text-white outline-hidden transition-all duration-200 focus:w-[300px] focus:border-[#2ecc71]"
                   autoComplete="username"
                   spellCheck="false"
                   autoCapitalize="off"
@@ -182,7 +182,7 @@ function LoginModal() {
                   type="password"
                   name="password"
                   placeholder="Password"
-                  className="mx-auto mb-5 mt-5 block w-3/5 rounded-full border-2 border-[#3498db] bg-transparent p-3 text-center text-white outline-none transition-all duration-200 focus:w-[300px] focus:border-[#2ecc71]"
+                  className="mx-auto mt-5 mb-5 block w-3/5 rounded-full border-2 border-[#3498db] bg-transparent p-3 text-center text-white outline-hidden transition-all duration-200 focus:w-[300px] focus:border-[#2ecc71]"
                   autoComplete="current-password"
                 />
 
@@ -198,12 +198,12 @@ function LoginModal() {
                     />
                     <div
                       onClick={() => setSaveEmailInput(!saveEmail)}
-                      className="h-5 w-5 cursor-pointer rounded-md border-2 border-[#3498db] transition-all duration-200 after:absolute after:left-1/2 after:top-1/2 after:block after:h-3 after:w-2 after:-translate-x-1/2 after:-translate-y-[70%] after:rotate-45 after:border-b-2 after:border-r-2 after:border-white after:opacity-0 after:transition-opacity after:content-[''] peer-checked:border-[#2ecc71] peer-checked:bg-[#2ecc71]/20 peer-checked:shadow-[0_0_10px_#2ecc71] peer-checked:after:opacity-100 peer-focus:ring-2 peer-focus:ring-[#2ecc71]/50"
+                      className="h-5 w-5 cursor-pointer rounded-md border-2 border-[#3498db] transition-all duration-200 peer-checked:border-[#2ecc71] peer-checked:bg-[#2ecc71]/20 peer-checked:shadow-[0_0_10px_#2ecc71] peer-focus:ring-2 peer-focus:ring-[#2ecc71]/50 after:absolute after:top-1/2 after:left-1/2 after:block after:h-3 after:w-2 after:-translate-x-1/2 after:translate-y-[-70%] after:rotate-45 after:border-r-2 after:border-b-2 after:border-white after:opacity-0 after:transition-opacity after:content-[''] peer-checked:after:opacity-100"
                     />
                   </div>
                   <label
                     htmlFor="saveEmail"
-                    className="group-hover:text-shadow-[0_0_10px_#3498db] ml-2 cursor-pointer select-none text-sm text-gray-400 transition-colors group-hover:text-gray-300"
+                    className="ml-2 cursor-pointer text-sm text-gray-400 transition-colors select-none group-hover:text-gray-300 group-hover:text-shadow-[0_0_10px_#3498db]"
                   >
                     Remember Email
                   </label>
@@ -234,7 +234,7 @@ function LoginModal() {
 
                 {/* 로그인 및 회원가입 안내 */}
                 <div className="my-5 mt-10 flex items-center justify-center">
-                  <div className="flex-grow border-t border-gray-600" />
+                  <div className="grow border-t border-gray-600" />
                   {isLoading ? (
                     <p className="px-4 text-gray-300">Logging in... wait a second</p>
                   ) : (
@@ -242,14 +242,14 @@ function LoginModal() {
                       Need new account?
                     </a>
                   )}
-                  <div className="flex-grow border-t border-gray-600" />
+                  <div className="grow border-t border-gray-600" />
                 </div>
 
                 {/* 로그인 버튼 */}
                 <input
                   type="submit"
                   value="Login"
-                  className="mx-auto mb-3 mt-5 w-3/5 cursor-pointer rounded-full border-2 border-[#2ecc71] bg-transparent p-3 text-white transition duration-300 hover:bg-[#2ecc71]"
+                  className="mx-auto mt-5 mb-3 w-3/5 cursor-pointer rounded-full border-2 border-[#2ecc71] bg-transparent p-3 text-white transition duration-300 hover:bg-[#2ecc71]"
                 />
               </form>
               {/* 소셜 로그인 버튼들 */}

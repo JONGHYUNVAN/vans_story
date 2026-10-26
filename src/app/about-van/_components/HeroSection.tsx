@@ -2,70 +2,14 @@
 
 import { useTranslation } from '@/lib/i18n';
 import { useTypewriter } from '@/hooks/useTypewriter';
+import type { SocialLink } from '@/app/about-van/_types/portfolio';
 
-const socialLinksKo = [
-  { name: 'GitHub', url: 'https://github.com/JONGHYUNVAN', icon: '🐱' },
-  { name: 'Email', url: 'whdgus808@naver.com', icon: '📧' },
-  { name: 'Blog', url: 'https://vansdevblog.online', icon: '📝' },
-];
+export default function HeroSection() {
+  const { t } = useTranslation('about');
 
-const socialLinksEn = [
-  { name: 'GitHub', url: 'https://github.com/JONGHYUNVAN', icon: '🐱' },
-  { name: 'Email', url: 'whdgus808@naver.com', icon: '📧' },
-  { name: 'Blog', url: 'https://vansdevblog.online', icon: '📝' },
-];
-
-const heroDataKo = {
-  description: `여러 프로젝트를 직접 기획하고 개발하면서, 
-  자연스럽게 실무에 필요한 백엔드 기술들을 익혀왔습니다.
-  웹 서비스의 여러 기능들을 직접 설계하고 구현해보며, 
-  백엔드 시스템이 어떻게 사용자 경험과 연결되는지를 고민합니다.
-  코드 가독성과 유지보수성에 관심이 많고, 
-  Swagger, readme, JavaDoc, JSDoc 등 여러 문서화 도구를 사용합니다.
-  함께 만드는 프로젝트의 가치에 대해 고민하고 성장할 곳을 찾고 있습니다.`,
-};
-
-const heroDataEn = {
-  description: `Through planning and developing various projects, 
-I have naturally learned backend technologies needed in practice.
-By directly designing and implementing various web service features, 
-I think about how backend systems connect to user experience.
-I'm interested in code readability and maintainability, 
-and use various documentation tools like Swagger, readme, JavaDoc, JSDoc.
-I'm looking for a place to grow while thinking about the value of projects we build together.`,
-};
-
-export function HeroSection() {
-  const { t, locale } = useTranslation('about');
-
-  const backendTermsKo = [
-    '월요일보다 배포일이 더 무서운',
-    '코드보다 주석이 더 긴',
-    '신(新)기술이 신(神)기술인줄 아는',
-    '테스트 코드만 열심히 짜는',
-    'AI한테 화내는',
-    '카페인으로 동작하는',
-    '내 컴퓨터에선 잘 돌아가는',
-    '작명이 제일 어려운',
-  ];
-
-  const backendTermsEn = [
-    'more afraid of deployment than Monday',
-    'writing more comments than code',
-    'thinking new tech is godly tech',
-    'writing test code diligently',
-    'getting mad at AI',
-    'powered by caffeine',
-    'it works on my machine',
-    'struggling most with naming',
-  ];
-
-  const backendTerms = locale === 'ko' ? backendTermsKo : backendTermsEn;
-  const { text: typewriterText, style: typewriterStyle } = useTypewriter(backendTerms);
-
-  // 언어에 따라 데이터 선택
-  const socialLinks = locale === 'ko' ? socialLinksKo : socialLinksEn;
-  const heroData = locale === 'ko' ? heroDataKo : heroDataEn;
+  const typewriterTerms: string[] = t('AboutVan.hero.typewriterTerms');
+  const socialLinks: SocialLink[] = t('AboutVan.hero.socialLinkItems');
+  const { text: typewriterText, style: typewriterStyle } = useTypewriter(typewriterTerms);
 
   return (
     <section className="border-b border-gray-200 py-20 dark:border-gray-800">
@@ -91,7 +35,7 @@ export function HeroSection() {
           {/* Description */}
           <div className="max-w-2xl">
             <p className="leading-relaxed whitespace-pre-line text-gray-600 dark:text-gray-400">
-              {heroData.description}
+              {t('AboutVan.hero.description')}
             </p>
           </div>
         </div>
@@ -114,7 +58,7 @@ export function HeroSection() {
                 <div className="flex items-center gap-3">
                   <span className="text-gray-600 dark:text-gray-400">📧</span>
                   <p className="text-gray-700 transition-colors hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
-                    whdgus808@naver.com
+                    {t('AboutVan.hero.email')}
                   </p>
                 </div>
                 <div className="flex items-center gap-3">

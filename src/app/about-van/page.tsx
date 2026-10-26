@@ -1,10 +1,10 @@
 import { Suspense } from 'react';
-import { HeroSection } from '@/app/about-van/_components/HeroSection';
-import { TechStackSection } from '@/app/about-van/_components/TechStackSection';
-import { ExperienceSection } from '@/app/about-van/_components/ExperienceSection';
-import { ProjectsSection } from '@/app/about-van/_components/ProjectsSection';
-import { SkillsSection } from '@/app/about-van/_components/SkillsSection';
-import { CertificationsSection } from '@/app/about-van/_components/CertificationSection';
+import HeroSection from '@/app/about-van/_components/HeroSection';
+import TechStackSection from '@/app/about-van/_components/TechStackSection';
+import ExperienceSection from '@/app/about-van/_components/ExperienceSection';
+import ProjectsSection from '@/app/about-van/_components/ProjectsSection';
+import SkillsSection from '@/app/about-van/_components/SkillsSection';
+import CertificationsSection from '@/app/about-van/_components/CertificationsSection';
 
 // 메타데이터를 동적으로 생성하는 함수
 export async function generateMetadata() {

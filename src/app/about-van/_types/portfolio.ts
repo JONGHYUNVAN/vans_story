@@ -1,72 +1,62 @@
-export interface TechStack {
+// messages/<lang>/about.json 의 AboutVan.* 콘텐츠 항목 타입.
+// 두 언어의 키 구조가 같아야 하며, 색상 같은 표현 정보는 토큰(tone)으로만 둔다.
+
+export type Tone = 'blue' | 'red' | 'green' | 'purple';
+
+export interface SocialLink {
   name: string;
-  level: number;
+  url: string;
   icon: string;
 }
 
-export interface TechCategory {
-  title: string;
+export type TechCategoryKey = 'frontend' | 'backend' | 'database';
+
+export interface TechStackItem {
+  name: string;
+  category: TechCategoryKey;
   icon: string;
-  color: string;
-  techs: TechStack[];
+  tone: Tone;
+  commonReason: string;
+  myReason: string;
 }
 
-export interface Experience {
-  id: number;
+export interface SkillGroup {
+  category: string;
+  skills: string[];
+}
+
+export interface ExperienceItem {
   company: string;
   position: string;
   period: string;
   location: string;
-  type: string;
   description: string;
   achievements: string[];
   tech: string[];
-  color: string;
 }
 
-export interface Project {
-  id: number;
+export type ProjectCategoryKey = 'personal' | 'team';
+export type ProjectStatusKey = 'completed' | 'deployed' | 'inProgress';
+
+export interface ProjectItem {
   title: string;
-  category: string;
   description: string;
-  longDescription: string;
-  image: string;
   tech: string[];
+  githubUrl?: string;
+  linkUrl?: string;
+  category: ProjectCategoryKey;
+  status: ProjectStatusKey;
+  date: string;
+  impact: string;
   features: string[];
-  github: string;
-  demo: string;
-  year: string;
 }
 
-export interface Skill {
+export interface CertificationItem {
   name: string;
-  level: number;
+  fullName: string;
+  issuer: string;
+  date: string;
   description: string;
-}
-
-export interface SkillCategory {
-  title: string;
   icon: string;
-  skills: Skill[];
-}
-
-export interface SocialLink {
-  name: string;
-  icon: string;
-  url: string;
-  description: string;
-  color: string;
-}
-
-export interface ContactInfo {
-  label: string;
-  value: string;
-  icon: string;
-}
-
-export interface ContactForm {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
+  tone: Tone;
 }

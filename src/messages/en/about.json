@@ -10,7 +10,54 @@
       "subtitle": "Creating innovative solutions with cutting-edge backend technologies of 2025",
       "description": "These are the technologies I've mainly learned through projects.\nI'm continuously learning and gaining experience.",
       "commonAdvantages": "🌍 Well-known Advantages",
-      "myChoice": "⭐ Why I Chose It"
+      "myChoice": "⭐ Why I Chose It",
+      "categories": {
+        "frontend": "Frontend",
+        "backend": "Backend",
+        "database": "Database"
+      },
+      "items": [
+        {
+          "name": "Next.js",
+          "category": "frontend",
+          "icon": "/nextjs.webp",
+          "tone": "blue",
+          "commonReason": "A React-based full-stack framework widely used for SEO optimization and performance improvement through SSR/SSG.",
+          "myReason": "I chose it because I can separate image and AI routing functions based on API Routes to operate in a microservice form without additional paid server configuration, and it has built-in static resource optimization features like WebP automatic conversion and Webpack configuration automation."
+        },
+        {
+          "name": "NestJS",
+          "category": "backend",
+          "icon": "/nestjs.webp",
+          "tone": "red",
+          "commonReason": "A TypeScript-based Node.js framework used for building scalable server-side applications through decorators and dependency injection.",
+          "myReason": "I chose it because it can share types with Next.js used in the frontend based on the same TypeScript, and the backend structure is similar to Spring, allowing stable server development with familiar architecture patterns."
+        },
+        {
+          "name": "Spring",
+          "category": "backend",
+          "icon": "/spring.webp",
+          "tone": "green",
+          "commonReason": "A Java-based framework that provides enterprise features such as DI, AOP, and transaction management, ensuring strong structural stability and productivity for handling complex business logic.",
+          "myReason": "I chose it as the most widely used backend framework with stability and proven architecture. When used with Kotlin, it can share similar structures and development patterns with NestJS."
+        },
+        {
+          "name": "MariaDB",
+          "category": "database",
+          "icon": "/mariadb.webp",
+          "tone": "blue",
+          "commonReason": "A MySQL-compatible open-source relational database widely used in web applications for high performance and stability.",
+          "myReason": "I chose it because it's very similar to MySQL and allows me to use features that are not available in the free version of MySQL."
+        },
+        {
+          "name": "MongoDB",
+          "category": "database",
+          "icon": "/mongodb.webp",
+          "tone": "green",
+          "commonReason": "A NoSQL document database used for rapid development and scalability with flexible schema and JSON-like structure.",
+          "myReason": "I chose MongoDB because in the process of storing structured data through Tiptap → Next.js → NestJS, the schema flexibility and JSON-based document storage structure fit well."
+        }
+      ]
     },
     "education": {
       "title": "Education"
@@ -20,7 +67,65 @@
       "subtitle": "Backend development experience and growth story from various environments",
       "description": "Introducing development experience and learning process through bootcamp and internships.",
       "achievements": "Key Achievements",
-      "techUsed": "Technologies Used"
+      "techUsed": "Technologies Used",
+      "items": [
+        {
+          "company": "Software Engineering Bootcamp",
+          "position": "Backend Development Course Completion",
+          "period": "2022.10 - 2023.04",
+          "location": "Seoul, South Korea",
+          "description": "Through 6 months of intensive education, I practiced the entire process of Java/Spring-based web application development and learned practical-level skills from backend design, database modeling to deployment.",
+          "achievements": [
+            "Spring Boot-based RESTful API design and implementation",
+            "ORM mapping using JPA and relational DB modeling practice",
+            "Development and deployment environment configuration using AWS and Docker",
+            "Acquired practical-oriented backend design skills including TDD, exception handling, and logging"
+          ],
+          "tech": ["Java", "Spring Boot", "JPA", "MySQL", "Git", "AWS", "Docker", "TDD"]
+        },
+        {
+          "company": "Konkuk University",
+          "position": "Youth Work Experience Program SW Development Course",
+          "period": "2024.05 - 2024.09",
+          "location": "Seoul, South Korea",
+          "description": "Participated in the SW development course of the Future Tomorrow Work Experience Program hosted by the Ministry of Employment and Labor and the Korea Chamber of Commerce and Industry, strengthening practical development capabilities through team projects and industry mentoring.",
+          "achievements": [
+            "Project execution through 2 months of job training and 3 months of field practice",
+            "Team project development and deliverable production",
+            "Experience in Spring-based REST API design and cloud infrastructure configuration",
+            "Enhanced technical capabilities and collaboration skills through industry developer mentoring"
+          ],
+          "tech": ["Java", "Spring Boot", "JavaScript", "MySQL", "Git", "AWS", "Docker"]
+        },
+        {
+          "company": "AKIAKA",
+          "position": "Team A Leader, Meta2day Project Backend Implementation",
+          "period": "2024.06 - 2024.09",
+          "location": "Seoul, South Korea",
+          "description": "At AKIAKA, which develops public and private archiving solutions, I served as Team A leader overseeing the backend implementation of the Meta2day project, leading the team and performing practical full-stack development.",
+          "achievements": [
+            "Project schedule coordination and team member role assignment as Team A leader",
+            "Spring Boot-based backend architecture design and API implementation",
+            "Database modeling and query optimization using MySQL",
+            "Full-stack system development completion through Next.js and NestJS integration"
+          ],
+          "tech": ["Java", "Spring Boot", "MySQL", "Git", "AWS"]
+        },
+        {
+          "company": "DAEA Information System",
+          "position": "EMR System Maintenance and Form Management",
+          "period": "2024.11 - Present",
+          "location": "Suwon, South Korea",
+          "description": "At DAEA Information System, a medical information system specialist company within Ajou University Hospital, I am responsible for maintaining C#-based EMR systems and creating and revising medical forms.",
+          "achievements": [
+            "C#-based Electronic Medical Record (EMR) system maintenance and functional improvement",
+            "New form creation and revision according to medical field requirements for treatment, nursing, surgery, etc.",
+            "Requirements analysis through collaboration with hospital information management team and users",
+            "Stable system operation support including error correction, UI improvement, and version deployment"
+          ],
+          "tech": ["C#", ".NET Framework", "WinForms", "Oracle"]
+        }
+      ]
     },
     "projects": {
       "title": "Featured Projects",
@@ -35,7 +140,139 @@
         "completed": "Completed",
         "deployed": "Deployed",
         "inProgress": "In Progress"
-      }
+      },
+      "features": "Key Features",
+      "impact": "Impact:",
+      "techUsed": "Technologies Used",
+      "githubLink": "GitHub",
+      "demoLink": "Link",
+      "items": [
+        {
+          "title": "Van's DevBlog",
+          "description": "A personal tech blog currently deployed. Full-stack development using Next.js and NestJS, implementing JWT authentication, image upload, and AI chat features. It also includes markdown writing functionality using the Tiptap editor.",
+          "tech": [
+            "Spring Boot",
+            "Kotlin",
+            "Next.js",
+            "Nest.js",
+            "TypeScript",
+            "MariaDB",
+            "MongoDB",
+            "Tailwind CSS"
+          ],
+          "githubUrl": "https://github.com/JONGHYUNVAN/vans_story",
+          "linkUrl": "https://vans-story.vercel.app/",
+          "category": "personal",
+          "status": "deployed",
+          "date": "2024.12",
+          "impact": "Applied GitHub Actions CI/CD, Storybook documentation",
+          "features": [
+            "JWT-based user authentication system",
+            "Post creation using Tiptap editor",
+            "AI chat modal functionality",
+            "Image upload and optimization",
+            "Multi-language support (Korean/English)",
+            "Component documentation using Storybook"
+          ]
+        },
+        {
+          "title": "Meta2day",
+          "description": "A backend development project I participated in as Team A leader at AKIAKA. I designed and implemented a Spring Boot-based backend architecture and produced high-quality results through collaboration with team members.",
+          "tech": ["Next.js", "Nest.js", "TypeScript", "MySQL", "AWS"],
+          "githubUrl": "https://github.com/JONGHYUNVAN/Meta2day",
+          "linkUrl": "https://meta2day.com/",
+          "category": "team",
+          "status": "deployed",
+          "date": "2024.09",
+          "impact": "Project leadership as Team A leader, backend architecture design",
+          "features": [
+            "Spring Boot-based REST API development",
+            "MySQL database design and optimization",
+            "AWS cloud infrastructure configuration",
+            "Team project management and scheduling"
+          ]
+        },
+        {
+          "title": "Library Project",
+          "description": "A library website designed to generate user interest in the site and books, and collect activity data from logged-in users. It implements home, login, my page, ranking, and search features with responsive mobile support.",
+          "tech": ["Spring Boot", "Java", "TypeScript", "CSS", "JavaScript", "MySQL"],
+          "githubUrl": "https://github.com/JONGHYUNVAN/library-project",
+          "category": "personal",
+          "status": "completed",
+          "date": "2024.08",
+          "impact": "First full-stack development experience",
+          "features": [
+            "User authentication and login system",
+            "Book search and ranking functionality",
+            "Personalized my page",
+            "Responsive mobile UI",
+            "User activity data collection"
+          ]
+        },
+        {
+          "title": "MovieMovit",
+          "description": "A website that provides movie information and event information using external APIs. Full-stack development using Next.js and NestJS, implementing a platform where users can check various movie-related information and latest events.",
+          "tech": ["Next.js", "NestJS", "TypeScript", "External APIs"],
+          "githubUrl": "https://github.com/JONGHYUNVAN/moviemovit",
+          "category": "personal",
+          "status": "completed",
+          "date": "2024.06",
+          "impact": "Next.js + NestJS full-stack development, external API integration and utilization experience",
+          "features": [
+            "Movie information provision using external APIs",
+            "Movie-related event information inquiry",
+            "Next.js-based responsive frontend",
+            "NestJS-based backend API server",
+            "Type safety using TypeScript"
+          ]
+        },
+        {
+          "title": "I Pill U",
+          "description": "A personalized supplement service developed as the main project of Code States bootcamp. A personalized healthcare platform that recommends supplements based on users' health conditions and needs, and manages dosing schedules. I participated as backend sub-leader.",
+          "tech": ["Java", "Spring Boot", "Spring Security", "JWT", "MySQL", "React"],
+          "githubUrl": "https://github.com/codestates-seb/seb42_main_013",
+          "category": "team",
+          "status": "completed",
+          "date": "2023.04",
+          "impact": "Bootcamp main project, team leadership experience as backend sub-leader",
+          "features": [
+            "Spring Security + JWT-based user authentication",
+            "Personalized supplement recommendation system",
+            "Supplement dosing schedule management (calendar/timeline)",
+            "Supplement information search using Naver Open API",
+            "Automatic supplement registration through barcode recognition",
+            "Mobile-optimized responsive UI"
+          ]
+        },
+        {
+          "title": "Live Market Pulse",
+          "description": "A real-time KR/US tech stock dashboard combining KIS OpenAPI live trade data with Yahoo Finance. Streams KIS WebSocket data to the browser via a Django SSE pipeline and visualizes sector performance with a Squarified Treemap heatmap.",
+          "tech": [
+            "Next.js",
+            "TypeScript",
+            "Django",
+            "Python",
+            "KIS OpenAPI",
+            "Yahoo Finance API",
+            "SSE",
+            "Tailwind CSS"
+          ],
+          "githubUrl": "https://github.com/JONGHYUNVAN/vans_story",
+          "linkUrl": "https://vansdevblog.online/stocks",
+          "category": "personal",
+          "status": "deployed",
+          "date": "2025.03",
+          "impact": "Built a KIS WebSocket → Django SSE → Vercel Edge BFF → EventSource real-time pipeline for live stock data in the browser",
+          "features": [
+            "KR/US watchlist with live prices (KIS WebSocket + Yahoo Finance)",
+            "Tech·Semiconductor sector heatmap (Squarified Treemap algorithm)",
+            "KOSPI night futures card and macro panel (FX, bonds, indices, commodities)",
+            "KIS live trade price and 10-level order book (KR stocks, market hours)",
+            "US pre/after-market price display (30 s polling)",
+            "AES-256-CBC decryption of encrypted KIS WebSocket messages"
+          ]
+        }
+      ]
     },
     "skills": {
       "title": "Skills & Expertise",
@@ -48,16 +285,47 @@
         "devTools": "Dev Tools",
         "cloudDeploy": "Cloud & Deploy",
         "testDocs": "Test & Docs"
-      }
+      },
+      "groups": [
+        { "category": "languages", "skills": ["Java", "Kotlin", "TypeScript"] },
+        { "category": "databases", "skills": ["MySQL/MariaDB", "Oracle", "MongoDB"] },
+        { "category": "authSecurity", "skills": ["JWT", "Spring Security"] },
+        {
+          "category": "devTools",
+          "skills": ["Git/GitHub", "GitHub Actions", "Postman", "Swagger", "Docker"]
+        },
+        { "category": "cloudDeploy", "skills": ["EC2", "RDS", "Route53", "S3", "CloudFront"] },
+        {
+          "category": "testDocs",
+          "skills": ["JUnit", "MockMvc", "Jest", "JavaDoc/JSDoc", "Storybook", "Markdown Docs"]
+        }
+      ]
     },
     "hero": {
       "greeting": "Building Scalable Systems",
       "name": "Backend Engineer Van",
       "role": "System Architecture • API Design • Database Optimization",
+      "description": "Through planning and developing various projects,\nI have naturally learned backend technologies needed in practice.\nBy directly designing and implementing various web service features,\nI think about how backend systems connect to user experience.\nI'm interested in code readability and maintainability,\nand use various documentation tools like Swagger, readme, JavaDoc, JSDoc.\nI'm looking for a place to grow while thinking about the value of projects we build together.",
+      "typewriterTerms": [
+        "more afraid of deployment than Monday",
+        "writing more comments than code",
+        "thinking new tech is godly tech",
+        "writing test code diligently",
+        "getting mad at AI",
+        "powered by caffeine",
+        "it works on my machine",
+        "struggling most with naming"
+      ],
       "contactInfo": "Contact Information",
       "location": "Suwon, South Korea",
+      "email": "whdgus808@naver.com",
       "currentWork": "EMR System Architecture Design & Optimization",
-      "socialLinks": "Social Links"
+      "socialLinks": "Social Links",
+      "socialLinkItems": [
+        { "name": "GitHub", "url": "https://github.com/JONGHYUNVAN", "icon": "🐱" },
+        { "name": "Email", "url": "whdgus808@naver.com", "icon": "📧" },
+        { "name": "Blog", "url": "https://vansdevblog.online", "icon": "📝" }
+      ]
     },
     "interests": {
       "title": "Interests & Activities"
@@ -69,7 +337,36 @@
     "footer": "Let's become better developers together! 🚀",
     "certifications": {
       "title": "Certifications",
-      "description": "Certifications and achievements that support backend development capabilities. I'm continuously building expertise through learning and growth."
+      "description": "Certifications and achievements that support backend development capabilities. I'm continuously building expertise through learning and growth.",
+      "items": [
+        {
+          "name": "PCCP Level 1",
+          "fullName": "Programmers Certified Coding Professional",
+          "issuer": "Programmers",
+          "date": "2023",
+          "description": "Certification that validates programming skills and algorithm problem-solving abilities",
+          "icon": "💻",
+          "tone": "blue"
+        },
+        {
+          "name": "SQLD",
+          "fullName": "SQL Developer",
+          "issuer": "Korea Data Industry Promotion Institute",
+          "date": "2025",
+          "description": "SQL Developer certification that validates database design and SQL writing abilities",
+          "icon": "🗄️",
+          "tone": "green"
+        },
+        {
+          "name": "TOEIC 890",
+          "fullName": "Test of English for International Communication",
+          "issuer": "ETS",
+          "date": "2024",
+          "description": "Test that measures international English communication abilities",
+          "icon": "🌍",
+          "tone": "purple"
+        }
+      ]
     }
   }
 }

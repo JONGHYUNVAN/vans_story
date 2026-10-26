@@ -21,7 +21,7 @@ FRONTEND_AUDIT.md의 보안·동작 지적은 코드 정적 분석 결과라서,
 
 ## 2. 단계별 계획
 
-### A. 인증 플로우 검증·복구 — FRONTEND_AUDIT 1-1, 1-2, 1-7 (약 1일)
+### A. 인증 플로우 검증·복구 — FRONTEND_AUDIT 1-1, 1-2, 1-7 (완료 2026-10-26)
 
 | 구분      | 내용                                                                                                                                                                                                                                                                                                                                                               |
 | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -121,14 +121,17 @@ FRONTEND_AUDIT.md의 보안·동작 지적은 코드 정적 분석 결과라서,
 
 부수 관찰: dev(StrictMode)에서 `/oauth/callback` effect가 두 번 실행돼 `/oauth/exchange`가 같은 code로 2회 호출된다. 운영(일회용 코드)에서는 1회지만 effect에 가드가 없다.
 
-### 4-2. 수정 계획 (재현된 것만)
+### 4-2. 수정 결과 (2026-10-26 완료, mock Spring + 브라우저로 재검증)
 
-- [ ] `login`·`callback` 라우트: 백엔드 `Set-Cookie`를 `getSetCookie()`로 전부 전달하되 `Path`를 `/api/auth/refresh`로 바꿔서 전달 (`Secure`는 localhost 예외로 dev에서도 동작)
-- [ ] `refresh`·`logout` 라우트: 들어온 `Cookie` 헤더를 백엔드로 전달, 백엔드 `Set-Cookie`(갱신·만료)도 같은 규칙으로 전달
-- [ ] `authService.logout()`: `basicPost`(401 → refresh 경로 없음) + `finally`에서 `tokenStorage.removeToken()`; `AuthButtons`는 실패해도 `dispatch(logout())`
-- [ ] `exchangeCodeForToken`·`oauth/callback/page.tsx`: JWT 디코딩 실패 = 로그인 실패(토큰 저장 안 함). 중복 구현 두 벌을 하나로
-- [ ] OAuth `state`: 프론트가 생성해 `sessionStorage`에 두고 중간 서버로 넘김 → 중간 서버가 `/oauth/callback?code=&state=&provider=`로 되돌려줌 → 프론트가 검증. **`vans_devblog_oauth` 변경 필요**(별도 커밋)
-- [ ] 네 라우트 + `authService.logout` vitest (mock fetch로 쿠키 전달·재귀 없음 검증)
+- [x] `login`·`callback` 라우트: 백엔드 `Set-Cookie`를 `getSetCookie()`로 전부 전달하되 `Path`를 `/api/auth/refresh`로 바꿔서 전달 (`Secure`는 localhost 예외로 dev에서도 동작)
+- [x] `refresh`·`logout` 라우트: 들어온 `Cookie` 헤더를 백엔드로 전달, 백엔드 `Set-Cookie`(갱신·만료)도 같은 규칙으로 전달
+- [x] `authService.logout()`: `basicPost`(401 → refresh 경로 없음) + `finally`에서 `tokenStorage.removeToken()`; `AuthButtons`는 실패해도 `dispatch(logout())`
+- [x] `exchangeCodeForToken`·`oauth/callback/page.tsx`: JWT 디코딩 실패 = 로그인 실패(토큰 저장 안 함). 중복 구현 두 벌을 하나로
+- [x] OAuth `state`: 프론트가 생성해 `sessionStorage`에 두고 중간 서버로 넘김 → 중간 서버가 `/oauth/callback?code=&state=&provider=`로 되돌려줌 → 프론트가 검증. **`vans_devblog_oauth` 변경 필요**(별도 커밋)
+- [x] 네 라우트 + `authService.logout` vitest (mock fetch로 쿠키 전달·재귀 없음 검증)
+
+검증: BFF 경유 로그인·OAuth 교환 응답에 `Path=/api/auth`로 바뀐 refreshToken 쿠키가 실림 → 브라우저가 `/api/auth/refresh`에 쿠키를 보내고 백엔드가 받음(200, 새 토큰). state 없는 `/oauth/callback?code=`는 거부, 일치하는 state는 로그인 성공(provider 표시도 정확). 서버 로그아웃 401에서도 logout 요청 1회로 끝나고 클라이언트는 로그아웃 상태. 헬퍼 `lib/auth/refreshCookie.ts`, 테스트 4파일 31개 추가.
+**배포 순서**: `vans_devblog_oauth`(state 통과) 먼저, 그다음 `vans_story`. 프론트가 먼저 나가면 중간 서버가 state를 안 돌려줘 모든 OAuth 로그인이 거부된다.
 
 ## 5. TypeScript 7 조사 결과 (2026-10-26)
 

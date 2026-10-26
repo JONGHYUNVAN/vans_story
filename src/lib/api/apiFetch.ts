@@ -16,12 +16,13 @@ export class ApiFetch {
    * @returns Promise<Response>
    */
   private static async basicFetch(url: string, options: RequestInit = {}): Promise<Response> {
+    // headers는 options 스프레드 뒤에 둬야 options.headers가 기본 헤더를 통째로 덮어쓰지 않는다.
     return fetch(url, {
+      ...options,
       headers: {
         ...API_CONFIG.HEADERS.JSON,
         ...options.headers,
       },
-      ...options,
     });
   }
 
@@ -41,13 +42,13 @@ export class ApiFetch {
 
     return fetch(url, {
       method: 'POST',
+      body: formData,
+      ...options,
       headers: {
         // Content-Type 설정하지 않음 (브라우저가 multipart/form-data로 자동 설정)
         ...(token && { Authorization: `Bearer ${token}` }),
         ...options.headers,
       },
-      body: formData,
-      ...options,
     });
   }
 
@@ -91,7 +92,8 @@ export class ApiFetch {
           error,
           '세션이 만료되었습니다. 다시 로그인해주세요.',
         );
-        await authService.logout();
+        // logout은 토큰 없는 요청이라 다시 401 → refresh로 돌아오지 않는다. 서버 로그아웃 실패는 무시한다.
+        await authService.logout().catch(() => undefined);
         throw new Error(errorMessage);
       }
     }

@@ -1,44 +1,67 @@
 import type { OAuthProvider, OAuthCallbackData } from '@/types/auth';
 
+/** 로그인 시작 시 만든 state를 콜백까지 들고 있는 sessionStorage 키 */
+const STATE_STORAGE_KEY = 'oauth_state';
+const STATE_MAX_AGE_MS = 60 * 60 * 1000; // 1시간
+
+function randomToken(): string {
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+}
+
 /**
  * OAuth 관련 유틸리티 함수들
  */
 export const oauthUtils = {
   /**
-   * OAuth 상태 파라미터 생성
-   * @param {OAuthProvider} provider - OAuth 제공자
-   * @returns {string} Base64 인코딩된 상태 문자열
+   * OAuth 상태 파라미터 생성 (provider + 생성 시각 + 난수, base64)
    */
   generateState(provider: OAuthProvider): string {
-    const state = {
-      provider,
-      timestamp: Date.now(),
-      random: Math.random().toString(36).substring(2, 15),
-    };
+    const state = { provider, timestamp: Date.now(), random: randomToken() };
     return btoa(JSON.stringify(state));
   },
 
   /**
-   * OAuth 상태 파라미터 검증
-   * @param {string} state - 검증할 상태 문자열
-   * @param {OAuthProvider} expectedProvider - 예상 제공자
-   * @returns {boolean} 검증 결과
+   * state를 디코딩한다. 형식이 맞지 않으면 null.
    */
-  validateState(state: string, expectedProvider: OAuthProvider): boolean {
+  parseState(state: string): { provider: OAuthProvider; timestamp: number } | null {
     try {
       const decoded = JSON.parse(atob(state));
-      const now = Date.now();
-      const maxAge = 60 * 60 * 1000; // 1시간
-
-      return (
-        decoded.provider === expectedProvider &&
-        decoded.timestamp &&
-        now - decoded.timestamp < maxAge
-      );
-    } catch (error) {
-      console.error('State validation error:', error);
-      return false;
+      if (
+        (decoded.provider === 'kakao' || decoded.provider === 'google') &&
+        typeof decoded.timestamp === 'number'
+      ) {
+        return { provider: decoded.provider, timestamp: decoded.timestamp };
+      }
+      return null;
+    } catch {
+      return null;
     }
+  },
+
+  /**
+   * state가 기대한 provider의 것이고 아직 만료되지 않았는지 검증
+   */
+  validateState(state: string, expectedProvider: OAuthProvider): boolean {
+    const parsed = this.parseState(state);
+    return (
+      parsed !== null &&
+      parsed.provider === expectedProvider &&
+      Date.now() - parsed.timestamp < STATE_MAX_AGE_MS
+    );
+  },
+
+  /** 로그인 시작 시 state를 이 브라우저 탭 세션에 보관 */
+  saveState(state: string): void {
+    sessionStorage.setItem(STATE_STORAGE_KEY, state);
+  },
+
+  /** 보관된 state를 꺼내고 지운다(일회용). 없으면 null */
+  takeState(): string | null {
+    const state = sessionStorage.getItem(STATE_STORAGE_KEY);
+    sessionStorage.removeItem(STATE_STORAGE_KEY);
+    return state;
   },
 
   /**
@@ -181,10 +204,11 @@ export const oauthUtils = {
    * @param {string} frontendUrl - 프론트엔드 URL
    * @returns {string} OAuth 중간 서버 URL
    */
-  buildOAuthUrl(provider: OAuthProvider, frontendUrl: string): string {
+  buildOAuthUrl(provider: OAuthProvider, frontendUrl: string, state: string): string {
     const oauthServerUrl = process.env.NEXT_PUBLIC_OAUTH_SERVER_URL;
     const endpoint = provider === 'kakao' ? '/api/auth/kakao/login' : '/api/auth/google/login';
+    const params = new URLSearchParams({ frontend_url: frontendUrl, state });
 
-    return `${oauthServerUrl}${endpoint}?frontend_url=${encodeURIComponent(frontendUrl)}`;
+    return `${oauthServerUrl}${endpoint}?${params.toString()}`;
   },
 };

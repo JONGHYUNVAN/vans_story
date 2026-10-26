@@ -1,4 +1,5 @@
 import { tokenStorage } from '@/lib/auth/token';
+import { decodeToken } from '@/lib/auth/decodeToken';
 import { ApiFetch } from '@/lib/api/apiFetch';
 import { API_URLS } from '@/constants/apiUrl';
 import { oauthUtils } from '@/lib/auth/oauth';
@@ -66,20 +67,25 @@ export const authService = {
 
   /**
    * 로그아웃
-   * @returns {Promise<void>} 로그아웃 처리
-   * @throws {Error} 로그아웃 실패 시 에러 발생
+   * 토큰 없는 basicPost로 보낸다. postWithAuth(authFetch)를 쓰면 서버가 401을 돌려줄 때
+   * refresh → logout → authFetch → … 무한 재귀가 생긴다. 서버 결과와 무관하게 로컬 토큰은 항상 지운다.
+   * @throws {Error} 서버 로그아웃이 실패하면 (토큰을 지운 뒤) 던진다
    */
   async logout() {
-    const res = await ApiFetch.postWithAuth(
-      '/api/auth/logout',
-      {},
-      {
-        credentials: 'include',
-      },
-    );
-
-    if (!res.ok) throw new Error('Logout failed');
-    tokenStorage.removeToken();
+    const token = tokenStorage.getToken();
+    try {
+      const res = await ApiFetch.basicPost(
+        '/api/auth/logout',
+        {},
+        {
+          credentials: 'include',
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        },
+      );
+      if (!res.ok) throw new Error(`Logout failed: ${res.status}`);
+    } finally {
+      tokenStorage.removeToken();
+    }
   },
 
   /**
@@ -104,90 +110,54 @@ export const authService = {
   },
 
   /**
-   * Kakao OAuth 로그인 시작
-   * @description OAuth 중간 서버로 리다이렉트하여 Kakao 로그인 프로세스 시작
+   * OAuth 로그인 시작. CSRF 방어용 state를 만들어 sessionStorage에 두고 중간 서버로 넘긴다.
+   * 중간 서버는 같은 state를 `/oauth/callback?state=`로 되돌려주고, 콜백 페이지가 둘을 대조한다.
    */
+  startOAuthLogin(provider: OAuthProvider) {
+    const state = oauthUtils.generateState(provider);
+    oauthUtils.saveState(state);
+    window.location.href = oauthUtils.buildOAuthUrl(provider, window.location.origin, state);
+  },
+
   kakaoLogin() {
-    const frontendUrl = window.location.origin;
-    const oauthUrl = oauthUtils.buildOAuthUrl('kakao', frontendUrl);
-
-    // OAuth 중간 서버로 리다이렉트
-    window.location.href = oauthUrl;
+    this.startOAuthLogin('kakao');
   },
 
-  /**
-   * Google OAuth 로그인 시작
-   * @description OAuth 중간 서버로 리다이렉트하여 Google 로그인 프로세스 시작
-   */
   googleLogin() {
-    const frontendUrl = window.location.origin;
-    const oauthUrl = oauthUtils.buildOAuthUrl('google', frontendUrl);
-
-    // OAuth 중간 서버로 리다이렉트
-    window.location.href = oauthUrl;
+    this.startOAuthLogin('google');
   },
 
   /**
-   * 임시 코드를 JWT 토큰으로 교환
-   * @param {string} code - OAuth 중간 서버에서 받은 임시 코드
-   * @returns {Promise<Object>} 로그인 응답 데이터
-   * @throws {Error} 토큰 교환 실패 시 에러 발생
-   * @description 임시 코드를 프론트엔드 API를 통해 백엔드로 전송하여 실제 JWT 토큰으로 교환
+   * 임시 코드를 JWT 토큰으로 교환하고 저장한다.
+   * 디코딩되지 않는 토큰은 로그인 실패로 처리한다(저장하지 않음). 예전에는 `user@example.com`으로 로그인시켰다.
+   * @throws {Error} 교환 실패 또는 토큰이 JWT가 아닐 때
    */
-  async exchangeCodeForToken(code: string) {
-    try {
-      // 프론트엔드 콜백 API 호출 (내부적으로 백엔드로 요청 전달)
-      const response = await ApiFetch.basicPost(
-        API_URLS.AUTH.CALLBACK,
-        {
-          code: code,
-        },
-        {
-          credentials: 'include', // 쿠키 포함 (Refresh Token)
-        },
-      );
+  async exchangeCodeForToken(
+    code: string,
+  ): Promise<{ accessToken: string; email: string; name: string }> {
+    const response = await ApiFetch.basicPost(
+      API_URLS.AUTH.CALLBACK,
+      { code },
+      { credentials: 'include' }, // Refresh 쿠키를 받기 위해
+    );
 
-      if (!response.ok) {
-        throw new Error(`Token exchange failed: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      if (!data.success || !data.token) {
-        throw new Error(data.error || 'No JWT token received');
-      }
-
-      const jwtToken = data.token;
-
-      // JWT 토큰 저장
-      tokenStorage.setToken(jwtToken);
-
-      // 토큰에서 사용자 정보 추출 (간단한 디코딩)
-      try {
-        const payload = JSON.parse(atob(jwtToken.split('.')[1]));
-        return {
-          accessToken: jwtToken,
-          email: payload.email || payload.sub,
-          user: {
-            email: payload.email || payload.sub,
-            name: payload.name || payload.email?.split('@')[0],
-          },
-        };
-      } catch (_decodeError) {
-        // 토큰 디코딩 실패 시 기본 정보만 반환
-        return {
-          accessToken: jwtToken,
-          email: 'user@example.com',
-          user: {
-            email: 'user@example.com',
-            name: 'User',
-          },
-        };
-      }
-    } catch (error) {
-      console.error('Token exchange error:', error);
-      throw error instanceof Error ? error : new Error('Token exchange failed');
+    if (!response.ok) {
+      throw new Error(`Token exchange failed: ${response.status}`);
     }
+
+    const data = await response.json();
+    const jwtToken: unknown = data?.token;
+    if (!data?.success || typeof jwtToken !== 'string') {
+      throw new Error(data?.error || 'No JWT token received');
+    }
+
+    const decoded = decodeToken(jwtToken);
+    if (!decoded?.email) {
+      throw new Error('유효하지 않은 토큰을 받았습니다.');
+    }
+
+    tokenStorage.setToken(jwtToken);
+    return { accessToken: jwtToken, email: decoded.email, name: decoded.email.split('@')[0] };
   },
 
   /**

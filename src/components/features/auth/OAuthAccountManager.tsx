@@ -54,7 +54,9 @@ function OAuthAccountManager() {
 
       // OAuth 중간 서버로 리다이렉트하여 계정 연결 시작
       const frontendUrl = `${window.location.origin}/oauth/callback?mode=link`;
-      const oauthUrl = oauthUtils.buildOAuthUrl(provider, frontendUrl);
+      const state = oauthUtils.generateState(provider);
+      oauthUtils.saveState(state);
+      const oauthUrl = oauthUtils.buildOAuthUrl(provider, frontendUrl, state);
 
       window.location.href = oauthUrl;
     } catch (error) {

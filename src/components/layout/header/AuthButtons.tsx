@@ -17,11 +17,12 @@ export default function AuthButtons() {
   const handleLogout = async () => {
     try {
       await authService.logout();
-      dispatch(logout());
-      const message = t('auth.logout');
-      showLogoutAlert(message);
     } catch (error) {
-      console.error('로그아웃 실패:', error);
+      // 서버 로그아웃이 실패해도 클라이언트 세션은 끝낸다(토큰은 authService가 이미 지웠다).
+      console.warn('서버 로그아웃 실패:', error);
+    } finally {
+      dispatch(logout());
+      showLogoutAlert(t('auth.logout'));
     }
   };
 

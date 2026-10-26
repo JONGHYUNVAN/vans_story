@@ -1,0 +1,16 @@
+# 빌드 산출물
+.next/
+out/
+coverage/
+playwright-report/
+test-results/
+node_modules/
+
+# 자동 생성
+next-env.d.ts
+tsconfig.tsbuildinfo
+package-lock.json
+
+# 정적 자산
+public/
+src/app/fonts/

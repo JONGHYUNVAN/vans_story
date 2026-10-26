@@ -16,6 +16,7 @@
 ## 🛠 기술 스택
 
 ### Frontend
+
 - **Framework**: Next.js (React)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
@@ -23,6 +24,7 @@
 - **Authentication**: JWT + OAuth 2.0
 
 ### Backend Services
+
 - **User Service**: Spring Boot (Kotlin)
 - **Post Service**: NestJS (TypeScript)
 - **OAuth Service**: Next.js (API Routes)
@@ -30,39 +32,58 @@
 - **AI Chat Service**: Next.js (API Routes)
 
 ### Database & Storage
+
 - **User Service**: H2 Database
 - **Post Service**: MongoDB
 - **File Storage**: AWS S3
 
 ### DevOps
+
 - **Deploy**: Vercel (Frontend), Individual service deployments
 - **Monitoring**: Built-in logging and error tracking
+
+## 📏 개발 규칙
+
+코드 규칙·디렉터리 구조·커밋 규칙은 [CONVENTIONS.md](./CONVENTIONS.md)에 있다. 서식은 Prettier, 코드 규칙은 ESLint가 강제한다.
+
+| 명령                                      | 역할                            |
+| ----------------------------------------- | ------------------------------- |
+| `npm run lint` / `npm run lint:fix`       | ESLint 검사 / 자동 수정         |
+| `npm run format` / `npm run format:check` | Prettier 적용 / 검사            |
+| `npm run typecheck`                       | `tsc --noEmit`                  |
+| `npm test` / `npm run test:e2e`           | vitest / Playwright             |
+| `npm run check`                           | 위 네 가지를 순서대로 (커밋 전) |
 
 ## 🏃‍♂️ 빠른 시작
 
 1. **저장소 클론**
+
 ```bash
 git clone https://github.com/JONGHYUNVAN/vans_story.git
 cd vans_story
 ```
 
 2. **의존성 설치**
+
 ```bash
 npm install
 ```
 
 3. **환경 변수 설정**
+
 ```bash
 cp .env.example .env.local
 # 필요한 환경 변수들을 설정하세요
 ```
 
 4. **개발 서버 실행**
+
 ```bash
 npm run dev
 ```
 
 5. **브라우저에서 확인**
+
 ```
 http://localhost:3000
 ```
@@ -102,5 +123,6 @@ MIT License - 자세한 내용은 [LICENSE.md](LICENSE.md) 파일을 참조하�
 ## 👨‍💻 제작자
 
 **John Van** ([@JONGHYUNVAN](https://github.com/JONGHYUNVAN))
+
 - Email: whdgus808@naver.com
 - Blog: https://vansdevblog.online/

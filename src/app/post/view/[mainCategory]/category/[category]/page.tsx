@@ -9,6 +9,9 @@ interface PageProps {
   params: Promise<{ mainCategory: string; category: string }>;
 }
 
+// 목록 페이지와 같은 이유로 요청 시 렌더링 (빌드 시점 API 호출 생략 → 빈 목록 고정 방지)
+export const dynamic = 'force-dynamic';
+
 /** 하위 카테고리별 글 목록 (/post/view/nextjs/category/introduction 등). */
 export default async function PostCategoryPage({ params }: PageProps) {
   const { mainCategory, category } = await params;

@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { POST_THEME_KEYS, getPostTheme } from '@/constants/postThemes';
+import { getPostTheme } from '@/constants/postThemes';
 import { getPostList } from '@/lib/posts/clientActions';
 import { SidebarWrapper } from '@/app/post/view/_components/SidebarWrapper';
 import PostLayout from '@/components/features/post/view/PostLayout';
@@ -9,9 +9,11 @@ interface PageProps {
   params: Promise<{ mainCategory: string }>;
 }
 
-export function generateStaticParams() {
-  return POST_THEME_KEYS.map((mainCategory) => ({ mainCategory }));
-}
+/**
+ * 빌드 시점에는 getPostList가 API를 부르지 않아(isBuildPhase) 정적 생성하면 빈 목록이 영구히 굳는다.
+ * 요청 시 렌더링하고, 백엔드 호출은 fetch의 revalidate 60초 데이터 캐시로 완충한다.
+ */
+export const dynamic = 'force-dynamic';
 
 /** 카테고리 글 목록 (/post/view/nextjs 등). 모르는 카테고리는 404. */
 export default async function PostListPage({ params }: PageProps) {

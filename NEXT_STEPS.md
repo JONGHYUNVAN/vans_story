@@ -85,7 +85,7 @@ FRONTEND_AUDIT.md의 보안·동작 지적은 코드 정적 분석 결과라서,
 
 ### 보류
 
-- **TypeScript 7**: Next 공식 지원 확인 후
+- **TypeScript 7**: 아래 5장 조사 결과 참조. C(ESLint)·D(통합) 이후 별도 브랜치에서 진행
 - **Storybook 재도입**: D가 끝나 공유 UI가 정리된 뒤 필요하면 Storybook 10 + `@storybook/nextjs-vite`로 새로 구성
 
 ## 3. 진행 순서 요약
@@ -110,3 +110,19 @@ FRONTEND_AUDIT.md의 보안·동작 지적은 코드 정적 분석 결과라서,
 - [ ] 서버 로그아웃을 401로 강제(토큰 삭제)한 뒤 로그아웃 버튼 → 네트워크 탭에서 재귀 여부 확인
 - [ ] `/oauth/callback?code=xxx`를 `state` 없이 호출 → 통과 여부 확인
 - [ ] 재현된 항목만 수정 → 라우트 vitest 추가 → 커밋
+
+## 5. TypeScript 7 조사 결과 (2026-10-26)
+
+| 확인 항목 | 결과 |
+|---|---|
+| TS 7 패키지 구성 | Go로 다시 쓴 네이티브 컴파일러. `typescript@7.0.2`는 플랫폼별 바이너리 20개 + `bin/tsc` 로더만 포함. JS 컴파일러 API(`lib/typescript.js`)와 tsserver JS가 없음 |
+| Next 16.4.3 빌드 타입체크 | `node_modules/next/dist/lib/typescript/runTypeCheck.js`가 `typescript.createProgram` / `getPreEmitDiagnostics`(JS API)를 호출. TS 7 설치 시 `TypeScript 7.0.2 does not provide the compiler API required by Next.js. Set experimental.useTypeScriptCli back to true…` 에러. 우회: `next.config.ts`에 `experimental.useTypeScriptCli: true`(tsc 프로세스로 검사). Next의 자동 설치 권장 범위는 아직 `typescript@^6.0.0` |
+| 이 프로젝트 tsconfig | `npx -p typescript@7.0.2 tsc --noEmit` → `TS5102: Option 'baseUrl' has been removed` 즉시 실패. `npx -p typescript@6.0.3 tsc --noEmit` → `TS5101: 'baseUrl' is deprecated and will stop functioning in 7.0`. `paths`가 이미 `./src/*` 상대 경로라 `baseUrl` 한 줄만 지우면 됨 |
+| 미확인 | `plugins: [{ name: "next" }]` 언어 서비스 플러그인이 네이티브 tsserver에서 동작하는지. C단계에서 넣을 typescript-eslint(JS API 의존)의 TS 7 호환 여부 |
+| 속도 | 같은 프로젝트 `tsc --noEmit`: TS 5.9.3 약 32초, TS 7.0.2 약 17초(npx 다운로드 포함) |
+
+진행 순서:
+
+1. (언제든) `tsconfig.json`에서 `baseUrl` 제거 — 5.9에서도 무해, 6·7 전환의 선행 조건
+2. (E단계에 포함) `typescript@6.0.3`으로 브리지 전환 — 기존 JS 엔진 그대로, 7에서 사라질 옵션만 경고
+3. (C·D 이후, 별도 브랜치) `typescript@7` + `experimental.useTypeScriptCli: true` → `next build`, `next dev`(에디터 플러그인), `npm run lint`를 한 번에 검증

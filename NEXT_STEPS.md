@@ -67,7 +67,7 @@ FRONTEND_AUDIT.md의 보안·동작 지적은 코드 정적 분석 결과라서,
 
 결과: 64개 파일 → 11개(`constants/postThemes.ts` + `components/features/post/view/{PostLayout,PostList,PostCard,PostDetail}` + `layout/sidebar/post/PostSidebar` + `app/post/view/[mainCategory]/{page,[id]/page,category/[category]/page}` + `_components/{SidebarWrapper,ViewCountHandler}`). 카테고리별 차이(배경·패턴·영상·색·카드·사이드바·본문 스타일)는 `POST_THEMES` 한 객체에, 새 카테고리는 항목 하나 추가. 모르는 카테고리·ObjectId 형식 불량·조회 실패는 전부 404. 정렬 select는 9개 카테고리 공통(예전엔 6개만). `jest/cypress/git/junit5`는 메뉴·에디터에서 제거. 동작 변화: algorithm 하위 카테고리 페이지는 예전에 항상 500이었고(상대 경로 fetch) 지금은 정상, database-theory 카드는 다른 카테고리와 같은 호버 카드로 통일. 시각 회귀: `e2e/post-view-visual.spec.ts` 27페이지 중 26개 기준선과 2% 이내 일치(mock Post BE 기준). 테마 키 집합 = 에디터 카테고리 집합 테스트 추가.
 
-### E. 의존성 major — REVIEW_RECHECK 6단계, Storybook 제외 (반나절)
+### E. 의존성 major — REVIEW_RECHECK 6단계, Storybook 제외 (완료 2026-10-26)
 
 | 패키지                                        | 메모                                                                  |
 | --------------------------------------------- | --------------------------------------------------------------------- |
@@ -77,6 +77,8 @@ FRONTEND_AUDIT.md의 보안·동작 지적은 코드 정적 분석 결과라서,
 | `emoji-picker-react` 4 → 5, `mermaid` 10 → 12 | 릴리스 노트 확인 후. 이모지 삽입·projects 페이지 다이어그램 수동 확인 |
 
 각각 `tsc` + `npm test` + 해당 화면 확인.
+
+결과: lucide-react 1.61, @types/node 26, jsdom 30, emoji-picker-react 5.1, mermaid 12.2, typescript 6.0.3(브리지). tsc 오류 0(6.x 경고 없음, baseUrl은 이미 제거), 테스트 176개 통과, 에디터 이모지 피커 렌더·프로젝트 문서 모달의 mermaid 다이어그램 4개 렌더 확인.
 
 ### F. Tailwind 4 — REVIEW_RECHECK 7단계 (별도 브랜치, 1일)
 

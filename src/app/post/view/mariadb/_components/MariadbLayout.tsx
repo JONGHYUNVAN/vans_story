@@ -1,7 +1,7 @@
 'use client';
 
 import { SiMariadb } from 'react-icons/si';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface MariadbLayoutProps {
   children: ReactNode;
@@ -13,7 +13,7 @@ export default function MariadbLayout({ children, title }: MariadbLayoutProps) {
   return (
     <div className="relative left-auto min-h-screen overflow-hidden bg-[#2c1d12]">
       {/* 배경 레이어 */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-b from-[#1A2024] to-[#212A2E]"></div>
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-[#1A2024] to-[#212A2E]" />
 
       {/* MariaDB ER 다이어그램 패턴 */}
       <div

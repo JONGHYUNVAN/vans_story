@@ -1,4 +1,4 @@
-import { SearchResult } from '@/types/api/search';
+import type { SearchResult } from '@/types/api/search';
 import SearchResultItem from './SearchResultItem';
 
 interface SearchResultListProps {
@@ -32,19 +32,21 @@ function SearchResultList({ results, total }: SearchResultListProps) {
 /**
  * 검색 결과 목록 로딩 스켈레톤 UI
  */
-SearchResultList.Skeleton = function Skeleton() {
+function SearchResultListSkeleton() {
   return (
     <div className="animate-pulse space-y-6">
-      <div className="h-4 w-1/4 rounded bg-gray-700"></div>
+      <div className="h-4 w-1/4 rounded bg-gray-700" />
       {[...Array(5)].map((_, i) => (
         <div key={i} className="rounded-lg border border-gray-700 bg-gray-800 p-6">
-          <div className="mb-4 h-6 w-3/4 rounded bg-gray-700"></div>
-          <div className="mb-2 h-4 w-full rounded bg-gray-700"></div>
-          <div className="h-4 w-5/6 rounded bg-gray-700"></div>
+          <div className="mb-4 h-6 w-3/4 rounded bg-gray-700" />
+          <div className="mb-2 h-4 w-full rounded bg-gray-700" />
+          <div className="h-4 w-5/6 rounded bg-gray-700" />
         </div>
       ))}
     </div>
   );
-};
+}
+
+SearchResultList.Skeleton = SearchResultListSkeleton;
 
 export default SearchResultList;

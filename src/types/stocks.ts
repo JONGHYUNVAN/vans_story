@@ -137,7 +137,7 @@ export interface YahooQuoteResponse {
 
 export interface YahooChartResponse {
   chart: {
-    result: Array<{
+    result: {
       meta: {
         currency: string;
         symbol: string;
@@ -167,16 +167,16 @@ export interface YahooChartResponse {
       };
       timestamp: number[];
       indicators: {
-        quote: Array<{
+        quote: {
           open: number[];
           high: number[];
           low: number[];
           close: number[];
           volume: number[];
-        }>;
-        adjclose?: Array<{ adjclose: number[] }>;
+        }[];
+        adjclose?: { adjclose: number[] }[];
       };
-    }>;
+    }[];
     error: string | null;
   };
 }
@@ -188,7 +188,7 @@ export interface DartApiResponse {
   page_count: number;
   total_count: number;
   total_page: number;
-  list: Array<{
+  list: {
     corp_code: string;
     corp_name: string;
     stock_code: string;
@@ -198,7 +198,7 @@ export interface DartApiResponse {
     flr_nm: string;
     rcept_dt: string;
     rm: string;
-  }>;
+  }[];
 }
 
 // ============================================================
@@ -357,12 +357,7 @@ export interface StockConsensus {
   numberOfAnalysts: number | null; // 참여 애널리스트 수
   sources: string[]; // 데이터 출처 목록
   /** 최근 애널리스트 리포트 목록 (증권사명 + 날짜 + 개별 목표주가) */
-  analystReports?: Array<{
-    broker: string;
-    date: string;
-    title: string;
-    targetPrice?: number | null;
-  }>;
+  analystReports?: { broker: string; date: string; title: string; targetPrice?: number | null }[];
 }
 
 export interface StockPeer {
@@ -446,7 +441,7 @@ export const SECTOR_HEATMAP_STOCKS = [
 ] as const;
 
 export type SectorHeatmapStock = (typeof SECTOR_HEATMAP_STOCKS)[number];
-export type SectorHeatmapItem = {
+export interface SectorHeatmapItem {
   symbol: string;
   name: string;
   market: 'kr' | 'us';
@@ -455,4 +450,4 @@ export type SectorHeatmapItem = {
   price: number | null;
   changePercent: number | null;
   marketState?: string;
-};
+}

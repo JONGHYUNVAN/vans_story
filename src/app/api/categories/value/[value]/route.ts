@@ -1,13 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 
 /**
  * 카테고리 값별 조회 API 라우트 핸들러 (BFF 프록시)
  * vans_story_be_post의 카테고리 값별 조회 API를 프록시합니다.
  */
 
-type RouteContext = {
+interface RouteContext {
   params: Promise<{ value: string }>;
-};
+}
 
 // GET /api/categories/value/[value] - 값으로 카테고리 조회
 export async function GET(request: NextRequest, context: RouteContext) {

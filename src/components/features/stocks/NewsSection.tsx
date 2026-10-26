@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import type { NewsItem, StocksApiResponse, StockNewsData } from '@/types/stocks';
 import { KR_STOCKS, US_STOCKS } from '@/types/stocks';
 import { API_URLS } from '@/constants/apiUrl';
@@ -29,44 +29,53 @@ interface NewsSectionProps {
   fixedSymbol?: string;
 }
 
+interface LoadedNews {
+  symbol: string;
+  news: NewsItem[];
+  isError: boolean;
+}
+
+async function loadNews(symbol: string): Promise<{ news: NewsItem[]; isError: boolean }> {
+  try {
+    const res = await fetch(`${API_URLS.STOCKS.NEWS}?symbol=${encodeURIComponent(symbol)}&limit=5`);
+    const json: StocksApiResponse<StockNewsData> = await res.json();
+    if (json.success) {
+      return { news: json.data.news, isError: false };
+    }
+    throw new Error(json.error.message);
+  } catch {
+    return { news: [], isError: true };
+  }
+}
+
 export default function NewsSection({ fixedSymbol }: NewsSectionProps = {}) {
   const { tokens: t } = useStocksTheme();
   const n = t.news;
   const [selectedSymbol, setSelectedSymbol] = useState(fixedSymbol ?? ALL_STOCKS[0].symbol);
+  // fixedSymbol이 있으면 항상 우선 (렌더 중 파생)
+  const effectiveSymbol = fixedSymbol ?? selectedSymbol;
+  // 마지막으로 로드된 심볼의 뉴스 — 현재 심볼과 다르면 로딩 중으로 간주
+  const [loaded, setLoaded] = useState<LoadedNews | null>(null);
 
   useEffect(() => {
-    if (fixedSymbol) setSelectedSymbol(fixedSymbol);
-  }, [fixedSymbol]);
-  const [news, setNews] = useState<NewsItem[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
+    const run = async () => {
+      const result = await loadNews(effectiveSymbol);
+      setLoaded({ symbol: effectiveSymbol, ...result });
+    };
+    run();
+  }, [effectiveSymbol]);
 
-  const fetchNews = useCallback(async (symbol: string) => {
-    setIsLoading(true);
-    setIsError(false);
-    try {
-      const res = await fetch(
-        `${API_URLS.STOCKS.NEWS}?symbol=${encodeURIComponent(symbol)}&limit=5`,
-      );
-      const json: StocksApiResponse<StockNewsData> = await res.json();
-      if (json.success) {
-        setNews(json.data.news);
-      } else {
-        throw new Error(json.error.message);
-      }
-    } catch {
-      setIsError(true);
-      setNews([]);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const retry = () => {
+    setLoaded(null);
+    loadNews(effectiveSymbol).then((result) => setLoaded({ symbol: effectiveSymbol, ...result }));
+  };
 
-  useEffect(() => {
-    fetchNews(selectedSymbol);
-  }, [selectedSymbol, fetchNews]);
+  const current = loaded !== null && loaded.symbol === effectiveSymbol ? loaded : null;
+  const isLoading = current === null;
+  const news = current?.news ?? [];
+  const isError = current?.isError ?? false;
 
-  const selectedStock = ALL_STOCKS.find((s) => s.symbol === selectedSymbol);
+  const selectedStock = ALL_STOCKS.find((s) => s.symbol === effectiveSymbol);
 
   return (
     <div className={n.panel}>
@@ -105,7 +114,7 @@ export default function NewsSection({ fixedSymbol }: NewsSectionProps = {}) {
       ) : isError ? (
         <div className="flex flex-col items-center justify-center gap-3 py-8">
           <p className={n.empty}>뉴스를 불러오지 못했습니다.</p>
-          <button type="button" onClick={() => fetchNews(selectedSymbol)} className={n.retry}>
+          <button type="button" onClick={retry} className={n.retry}>
             다시 시도
           </button>
         </div>

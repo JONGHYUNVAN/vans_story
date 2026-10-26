@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { RiCodeBoxLine } from 'react-icons/ri';
 
 interface AlgorithmLayoutProps {
@@ -23,7 +23,7 @@ export default function AlgorithmLayout({
       className={`relative overflow-hidden ${isPreview ? 'h-auto' : 'min-h-screen'} ${className}`}
     >
       {/* 배경 레이어 */}
-      <div className="absolute inset-0 z-0 bg-white"></div>
+      <div className="absolute inset-0 z-0 bg-white" />
 
       {/* 알고리즘 패턴 배경 */}
       <div className="absolute inset-0 z-[1] opacity-[0.05]">

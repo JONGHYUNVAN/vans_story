@@ -1,5 +1,4 @@
 import { Viewer } from '@/components/features/post/viewer/Viewer';
-import { Post } from '@/types/post';
 import MongodbLayout from '@/app/post/view/mongodb/_components/MongodbLayout';
 import { SidebarWrapper } from '@/app/post/view/_components/SidebarWrapper';
 import { getPostWithViewCount } from '@/lib/posts/clientActions';

@@ -34,12 +34,13 @@ export function useUsRealtime(symbol: string | null): UsUsRealtimeData {
   const [postMarketPrice, setPostMarketPrice] = useState<number | null>(null);
   const [postMarketChange, setPostMarketChange] = useState<number | null>(null);
   const [postMarketChangePercent, setPostMarketChangePercent] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  // 첫 데이터를 받은 심볼 — 현재 symbol과 다르면 로딩 중으로 간주 (렌더 중 파생)
+  const [loadedSymbol, setLoadedSymbol] = useState<string | null>(null);
   const [lastUpdatedAt, setLastUpdatedAt] = useState<number | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  // 에러는 발생한 심볼과 함께 저장해 심볼 변경 시 자동으로 무시
+  const [errorState, setErrorState] = useState<{ symbol: string; message: string } | null>(null);
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const hasFirstDataRef = useRef(false);
   const marketStateRef = useRef<MarketState | null>(null);
 
   const clearPolling = useCallback(() => {
@@ -49,14 +50,18 @@ export function useUsRealtime(symbol: string | null): UsUsRealtimeData {
     }
   }, []);
 
-  const fetchQuote = useCallback(
-    async (sym: string) => {
+  useEffect(() => {
+    if (!symbol) return;
+
+    clearPolling();
+
+    const fetchQuote = async () => {
       try {
-        const res = await fetch(`${API_URLS.STOCKS.QUOTE}?symbol=${encodeURIComponent(sym)}`);
+        const res = await fetch(`${API_URLS.STOCKS.QUOTE}?symbol=${encodeURIComponent(symbol)}`);
         const json = await res.json();
 
         if (!json.success) {
-          setError(json.error ?? '시세 조회 실패');
+          setErrorState({ symbol, message: json.error ?? '시세 조회 실패' });
           return;
         }
 
@@ -73,12 +78,8 @@ export function useUsRealtime(symbol: string | null): UsUsRealtimeData {
         setPostMarketChange(d.postMarketChange);
         setPostMarketChangePercent(d.postMarketChangePercent);
         setLastUpdatedAt(Date.now());
-        setError(null);
-
-        if (!hasFirstDataRef.current) {
-          hasFirstDataRef.current = true;
-          setIsLoading(false);
-        }
+        setErrorState(null);
+        setLoadedSymbol(symbol);
 
         // 장이 CLOSED 상태이면 폴링 중단
         if (d.marketState === 'CLOSED') {
@@ -86,26 +87,15 @@ export function useUsRealtime(symbol: string | null): UsUsRealtimeData {
         }
       } catch (err) {
         // 에러 발생 시 기존 데이터 유지, 에러만 기록
-        setError(err instanceof Error ? err.message : '시세 조회 중 오류 발생');
+        setErrorState({
+          symbol,
+          message: err instanceof Error ? err.message : '시세 조회 중 오류 발생',
+        });
       }
-    },
-    [clearPolling],
-  );
-
-  useEffect(() => {
-    if (!symbol) {
-      setIsLoading(false);
-      return;
-    }
-
-    // 상태 초기화
-    hasFirstDataRef.current = false;
-    setIsLoading(true);
-    setError(null);
-    clearPolling();
+    };
 
     // 즉시 첫 번째 조회
-    fetchQuote(symbol);
+    fetchQuote();
 
     // 30초마다 폴링 (단, CLOSED가 되면 fetchQuote 내부에서 중단)
     intervalRef.current = setInterval(() => {
@@ -114,13 +104,16 @@ export function useUsRealtime(symbol: string | null): UsUsRealtimeData {
         clearPolling();
         return;
       }
-      fetchQuote(symbol);
+      fetchQuote();
     }, POLL_INTERVAL_MS);
 
     return () => {
       clearPolling();
     };
-  }, [symbol, fetchQuote, clearPolling]);
+  }, [symbol, clearPolling]);
+
+  const isLoading = Boolean(symbol) && loadedSymbol !== symbol;
+  const error = errorState !== null && errorState.symbol === symbol ? errorState.message : null;
 
   return {
     price,

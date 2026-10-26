@@ -6,12 +6,11 @@ import { MdKeyboardArrowDown } from 'react-icons/md';
 import dynamic from 'next/dynamic';
 
 const LanguageSelector = dynamic(() => import('./LanguageSelector'), { ssr: false });
-import AuthButtons from './AuthButtons';
+import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from '@/lib/i18n';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/store/store';
-import { useDispatch } from 'react-redux';
+import type { RootState } from '@/store/store';
 import { checkAuth } from '@/store/auth/slice';
+import AuthButtons from './AuthButtons';
 
 interface HeaderProps {
   isStorybook?: boolean;
@@ -51,7 +50,7 @@ export default function Header({ isStorybook = false }: HeaderProps) {
             className="flex items-center gap-2 text-xl font-bold text-gray-800 transition-colors hover:text-blue-600"
           >
             {!isStorybook && <img src="/favicon.ico" alt="logo" className="h-6 w-6" />}
-            <span>Van's Dev Blog</span>
+            <span>Van&apos;s Dev Blog</span>
           </Link>
           {/* 인사 문구 추가 */}
           <div className="flex-grow text-center">

@@ -1,14 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { createErrorResponse, createSuccessResponse } from '@/lib/api/errorHandler';
 
-export type ChatRequest = {
+export interface ChatRequest {
   message: string;
   model?: string; // 선택사항, 기본값: gpt-4.1-nano
   max_tokens?: number; // 선택사항, 기본값: 1000
   temperature?: number; // 선택사항, 기본값: 0.7 (0=일관적, 2=창의적)
   reasoning_effort?: 'low' | 'medium' | 'high'; // 선택사항, 추론 깊이
-};
+}
 
 // POST /api/ai/chat - 채팅 메시지 전송
 export async function POST(request: NextRequest) {

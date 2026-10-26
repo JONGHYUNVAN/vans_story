@@ -10,13 +10,13 @@ export default function BackgroundVideo() {
   return (
     <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#FFD700]/70 via-[#DAA520]/60 to-[#B8860B]/60">
       {/* 좌우 장식적 요소 */}
-      <div className="absolute left-0 top-0 h-full w-32 bg-gradient-to-r from-[#FFD700]/30 to-transparent"></div>
-      <div className="absolute right-0 top-0 h-full w-32 bg-gradient-to-l from-[#FFD700]/30 to-transparent"></div>
+      <div className="absolute left-0 top-0 h-full w-32 bg-gradient-to-r from-[#FFD700]/30 to-transparent" />
+      <div className="absolute right-0 top-0 h-full w-32 bg-gradient-to-l from-[#FFD700]/30 to-transparent" />
 
       {/* 진짜 금색 글로우 효과 */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,215,0,0.4)_0%,transparent_70%)] opacity-25"></div>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(218,165,32,0.3)_0%,transparent_50%)] opacity-20"></div>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_70%,rgba(255,223,0,0.3)_0%,transparent_50%)] opacity-20"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,215,0,0.4)_0%,transparent_70%)] opacity-25" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(218,165,32,0.3)_0%,transparent_50%)] opacity-20" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_70%,rgba(255,223,0,0.3)_0%,transparent_50%)] opacity-20" />
 
       <video
         autoPlay // 자동 재생

@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { AuthState, OAuthProvider } from '@/types/auth';
+import type { AuthState } from '@/types/auth';
 import { decodeToken } from '@/lib/auth/decodeToken';
 
 /**

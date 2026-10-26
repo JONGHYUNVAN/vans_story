@@ -1,17 +1,15 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { GameComponentProps } from '@/app/games/[gameId]/_components/GamePageClient';
+import type { GameComponentProps } from '@/app/games/[gameId]/_components/GamePageClient';
 import { useCombo } from '@/hooks/useCombo';
 import { useScreenShake } from '@/hooks/useScreenShake';
 import { useGameSize } from '@/hooks/useGameSize';
 import { useGameLoop } from '@/hooks/useGameLoop';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
-import GameOverlayController, {
-  Direction,
-  ActionBtn,
-} from '@/components/features/games/GameOverlayController';
+import type { Direction, ActionBtn } from '@/components/features/games/GameOverlayController';
+import GameOverlayController from '@/components/features/games/GameOverlayController';
 
 const BOARD_COLS = 10;
 const BOARD_ROWS = 20;
@@ -187,11 +185,15 @@ export default function TetrisGame({
   const [flashColor, setFlashColor] = useState('rgba(99,102,241,0.3)');
   const [confettiActive, setConfettiActive] = useState(false);
   const triggerShakeRef = useRef(triggerShake);
-  triggerShakeRef.current = triggerShake;
   const onActionRef = useRef(onAction);
-  onActionRef.current = onAction;
   const onComboRef = useRef(onCombo);
-  onComboRef.current = onCombo;
+
+  // 최신 콜백들을 ref에 유지 (렌더 중 ref 쓰기 방지)
+  useEffect(() => {
+    triggerShakeRef.current = triggerShake;
+    onActionRef.current = onAction;
+    onComboRef.current = onCombo;
+  }, [triggerShake, onAction, onCombo]);
 
   const combo = useCombo();
 

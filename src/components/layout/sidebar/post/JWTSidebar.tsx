@@ -1,8 +1,8 @@
 'use client';
 
 import { MdSecurity } from 'react-icons/md';
+import type { IconType } from 'react-icons';
 import BaseSidebar from '@/components/layout/sidebar/base/BaseSidebar';
-import { IconType } from 'react-icons';
 
 /**
  * JWT 전용 사이드바 컴포넌트
@@ -39,7 +39,7 @@ export default function JWTSidebar() {
       logoAnimation="transition-transform duration-300 group-hover:scale-110" // 로고 애니메이션
 
       // 커스텀 아이콘 렌더러 (JWT 전용 스타일)
-      iconRenderer={(Icon: IconType, color: string) => <Icon className="h-4 w-4 text-[#1E4D2B]" />}
+      iconRenderer={(Icon: IconType, _color: string) => <Icon className="h-4 w-4 text-[#1E4D2B]" />}
     />
   );
 }

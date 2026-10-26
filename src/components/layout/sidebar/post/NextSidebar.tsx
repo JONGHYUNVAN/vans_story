@@ -1,8 +1,8 @@
 'use client';
 
 import { SiNextdotjs } from 'react-icons/si';
+import type { IconType } from 'react-icons';
 import BaseSidebar from '@/components/layout/sidebar/base/BaseSidebar';
-import { IconType } from 'react-icons';
 
 /**
  * Next.js 전용 사이드바 컴포넌트

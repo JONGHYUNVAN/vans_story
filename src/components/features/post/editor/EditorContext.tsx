@@ -1,5 +1,5 @@
 'use client';
-import { Editor } from '@tiptap/react';
+import type { Editor } from '@tiptap/react';
 import { createContext, useContext } from 'react';
 
 const EditorContext = createContext<Editor | null>(null);

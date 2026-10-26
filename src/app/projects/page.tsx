@@ -8,7 +8,7 @@ import type { Project } from '@/types/project';
 // ---------------------------------------------------------------------------
 // 목록 아이템 타입
 // ---------------------------------------------------------------------------
-type ProjectListItem = {
+interface ProjectListItem {
   id: string;
   title: string;
   description: string;
@@ -22,7 +22,7 @@ type ProjectListItem = {
   date: string;
   impact: string;
   features: string[];
-};
+}
 
 function toListItem(p: Project): ProjectListItem {
   const features = p.services.flatMap((s) => s.features.slice(0, 2)).slice(0, 6);

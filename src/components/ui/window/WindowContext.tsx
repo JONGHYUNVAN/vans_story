@@ -4,8 +4,20 @@
 
 'use client';
 
-import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import { WindowConfig, WindowManagerState, Position, Size, WindowState } from './types';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+  useSyncExternalStore,
+} from 'react';
+import type { WindowConfig, WindowManagerState, Position, Size, WindowState } from './types';
+
+// 클라이언트 마운트 여부 (SSR/하이드레이션 중에는 false, 클라이언트에서는 true)
+const noopSubscribe = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
 
 interface WindowManagerContextValue extends WindowManagerState {
   createWindow: (
@@ -65,13 +77,11 @@ export function WindowManagerProvider({
   >(new Map());
   const [activeWindowId, setActiveWindowId] = useState<string | null>(null);
   const [highestZIndex, setHighestZIndex] = useState(1000);
-  const [isHydrated, setIsHydrated] = useState(false);
+  const isHydrated = useSyncExternalStore(noopSubscribe, getClientSnapshot, getServerSnapshot);
   const [windowData, setWindowData] = useState<Map<string, any>>(new Map());
 
   // 클라이언트에서 마운트된 후 localStorage에서 복원
   useEffect(() => {
-    setIsHydrated(true);
-
     try {
       const saved = localStorage.getItem(fullPersistKey);
       if (saved) {
@@ -95,6 +105,7 @@ export function WindowManagerProvider({
               restoredWindows.set(id, rest as WindowConfig);
             }
           });
+          // eslint-disable-next-line react-hooks/set-state-in-effect -- SSR/CSR 초기 상태 일치를 위해 마운트 후 localStorage에서 복원해야 하므로 lazy init으로 대체 불가
           setWindows(restoredWindows);
         }
 

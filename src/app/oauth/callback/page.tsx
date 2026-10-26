@@ -3,13 +3,11 @@
 import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAppDispatch } from '@/store/hooks';
-import { authService } from '@/components/features/auth/authService';
 import { oauthSuccess, oauthFailure, oauthFinish } from '@/store/auth/slice';
 import { closeLoginModal } from '@/store/modal/slice';
 import { showWelcomeAlert } from '@/lib/alerts';
 import { oauthUtils } from '@/lib/auth/oauth';
 import { tokenStorage } from '@/lib/auth/token';
-import type { OAuthProvider } from '@/types/auth';
 
 /**
  * OAuth 콜백 처리 컴포넌트 (내부)
@@ -131,7 +129,7 @@ function OAuthCallbackContent() {
           <div className="rounded-xl bg-[#191919] p-6 opacity-90">
             <h1 className="neon-text mb-4 text-2xl text-white">OAuth 로그인 처리 중...</h1>
             <div className="flex justify-center">
-              <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-[#2ecc71]"></div>
+              <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-[#2ecc71]" />
             </div>
             <p className="mt-4 text-gray-300">잠시만 기다려주세요...</p>
           </div>
@@ -155,7 +153,7 @@ export default function OAuthCallbackPage() {
               <div className="rounded-xl bg-[#191919] p-6 opacity-90">
                 <h1 className="neon-text mb-4 text-2xl text-white">OAuth 로그인 처리 중...</h1>
                 <div className="flex justify-center">
-                  <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-[#2ecc71]"></div>
+                  <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-[#2ecc71]" />
                 </div>
                 <p className="mt-4 text-gray-300">잠시만 기다려주세요...</p>
               </div>

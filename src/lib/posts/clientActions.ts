@@ -1,7 +1,6 @@
-import type { PostEditData } from '@/types/post';
-import { Post } from '@/types/post';
-import { ApiFetch } from '@/lib/api/apiFetch';
 import { PHASE_PRODUCTION_BUILD } from 'next/constants';
+import type { PostEditData, Post } from '@/types/post';
+import { ApiFetch } from '@/lib/api/apiFetch';
 
 const isBuildPhase = process.env.NEXT_PHASE === PHASE_PRODUCTION_BUILD;
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 
 interface KospiData {
   symbol: string;
@@ -24,23 +24,24 @@ export function KospiFuturesCard() {
   const [data, setData] = useState<KospiData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchData = useCallback(async () => {
-    try {
-      const res = await fetch('/api/stocks/kospi-futures', { cache: 'no-store' });
-      const json = await res.json();
-      if (json.success) setData(json.data);
-    } catch {
-      // silently fail
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
   useEffect(() => {
+    // 이펙트 안에서만 쓰이는 로더이므로 이펙트 내부에 선언
+    const fetchData = async () => {
+      try {
+        const res = await fetch('/api/stocks/kospi-futures', { cache: 'no-store' });
+        const json = await res.json();
+        if (json.success) setData(json.data);
+      } catch {
+        // silently fail
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     fetchData();
     const interval = setInterval(fetchData, 60_000);
     return () => clearInterval(interval);
-  }, [fetchData]);
+  }, []);
 
   if (isLoading) {
     return (

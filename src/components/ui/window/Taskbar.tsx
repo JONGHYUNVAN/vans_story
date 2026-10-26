@@ -6,7 +6,7 @@
 
 import React, { useState } from 'react';
 import { useWindowManager } from './WindowContext';
-import { WindowConfig } from './types';
+import type { WindowConfig } from './types';
 
 interface TaskbarButtonProps {
   window: WindowConfig;
@@ -185,7 +185,7 @@ export function Taskbar({ className = '' }: TaskbarProps) {
       aria-label="작업표시줄"
     >
       <div className="flex items-center gap-1" role="list">
-        {taskbarItems.map(({ id, window: win, defaultConfig, isClosed }) => {
+        {taskbarItems.map(({ id, window: win, defaultConfig }) => {
           // 닫힌 윈도우는 defaultConfig로 표시
           const displayWindow =
             win ||

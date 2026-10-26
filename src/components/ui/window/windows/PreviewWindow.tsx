@@ -4,10 +4,10 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useSyncExternalStore } from 'react';
 import { Eye } from 'lucide-react';
 import { PostPreview } from '@/components/features/post/form/PostPreview';
-import { BasePost } from '@/types/post';
+import type { BasePost } from '@/types/post';
 
 interface PreviewWindowContentProps {
   post: Partial<BasePost>;
@@ -15,16 +15,17 @@ interface PreviewWindowContentProps {
   showLayout?: boolean;
 }
 
+// 뷰어는 클라이언트에서만 렌더 (SSR/하이드레이션 중에는 false)
+const noopSubscribe = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
+
 export function PreviewWindowContent({
   post,
   showCard = true,
   showLayout = true,
 }: PreviewWindowContentProps) {
-  const [isViewerMounted, setIsViewerMounted] = useState(false);
-
-  useEffect(() => {
-    setIsViewerMounted(true);
-  }, []);
+  const isViewerMounted = useSyncExternalStore(noopSubscribe, getClientSnapshot, getServerSnapshot);
 
   // useMemo 제거: 실시간 반영이 더 중요
   // post가 변경될 때마다 즉시 업데이트
@@ -58,4 +59,6 @@ export function PreviewWindowContent({
 }
 
 // 기본 아이콘
-export const PreviewWindowIcon = () => <Eye size={14} />;
+export function PreviewWindowIcon() {
+  return <Eye size={14} />;
+}

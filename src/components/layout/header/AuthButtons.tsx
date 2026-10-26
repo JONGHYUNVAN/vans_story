@@ -1,8 +1,8 @@
 'use client';
 
-import { useAppDispatch } from '@/store/hooks';
 import { useSelector } from 'react-redux';
-import { RootState } from '@/store/store';
+import { useAppDispatch } from '@/store/hooks';
+import type { RootState } from '@/store/store';
 import { openLoginModal } from '@/store/modal/slice';
 import { logout } from '@/store/auth/slice';
 import { authService } from '@/components/features/auth/authService';

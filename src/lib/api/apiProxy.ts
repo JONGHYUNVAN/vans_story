@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { API_CONFIG } from '@/constants/apiConfig';
 import { handleExternalApiError, handleException, createSuccessResponse } from './errorHandler';
@@ -7,7 +7,7 @@ import { buildApiUrl } from './urlBuilder';
 /**
  * 프록시 설정 타입
  */
-export type ProxyConfig = {
+export interface ProxyConfig {
   /** 백엔드 API 기본 URL */
   baseUrl: string;
   /** API 경로 (예: '/categories') */
@@ -22,7 +22,7 @@ export type ProxyConfig = {
   successLog?: string;
   /** 에러 발생 시 기본 메시지 */
   errorMessage?: string;
-};
+}
 
 /**
  * 쿼리 파라미터를 포함한 전체 URL 생성

@@ -104,9 +104,7 @@ export default function KisOrderbook({
           >
             {/* 매도 잔량 막대 — 오른쪽 정렬 */}
             <div className="flex flex-row-reverse items-center gap-1 px-1 py-1">
-              <span
-                className={`min-w-[48px] text-right font-mono text-[11px] tabular-nums text-sky-300/80`}
-              >
+              <span className="min-w-[48px] text-right font-mono text-[11px] tabular-nums text-sky-300/80">
                 {volume.toLocaleString('ko-KR')}
               </span>
               <div className="flex flex-1 justify-end overflow-hidden">
@@ -147,9 +145,7 @@ export default function KisOrderbook({
               <div className="flex-1 overflow-hidden">
                 <div className="h-3 rounded-sm bg-rose-500/30" style={{ width: `${barWidth}%` }} />
               </div>
-              <span
-                className={`min-w-[48px] text-left font-mono text-[11px] tabular-nums text-rose-300/80`}
-              >
+              <span className="min-w-[48px] text-left font-mono text-[11px] tabular-nums text-rose-300/80">
                 {volume.toLocaleString('ko-KR')}
               </span>
             </div>

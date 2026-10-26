@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import RefreshButton from '@/components/features/stocks/RefreshButton';
 
@@ -11,12 +11,12 @@ describe('RefreshButton', () => {
   });
 
   it('isLoading=true일 때 버튼이 disabled 상태이다', () => {
-    const html = renderToStaticMarkup(<RefreshButton onClick={() => {}} isLoading={true} />);
+    const html = renderToStaticMarkup(<RefreshButton onClick={() => {}} isLoading />);
     expect(html).toContain('disabled');
   });
 
   it('isLoading=true일 때 animate-spin 클래스가 존재한다', () => {
-    const html = renderToStaticMarkup(<RefreshButton onClick={() => {}} isLoading={true} />);
+    const html = renderToStaticMarkup(<RefreshButton onClick={() => {}} isLoading />);
     expect(html).toContain('animate-spin');
   });
 

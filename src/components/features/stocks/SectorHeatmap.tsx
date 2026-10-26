@@ -4,7 +4,7 @@ import { useRef, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSectorHeatmap } from '@/hooks/useSectorHeatmap';
 import { symbolToSlug } from '@/lib/stocks/stockSymbol';
-import { SectorHeatmapItem } from '@/types/stocks';
+import type { SectorHeatmapItem } from '@/types/stocks';
 
 // ---------------------------------------------------------------------------
 // Color helper
@@ -35,62 +35,6 @@ function formatMarketCap(
 }
 
 // ---------------------------------------------------------------------------
-// Market state helpers
-// ---------------------------------------------------------------------------
-
-/** items 중 가장 많이 등장하는 marketState 반환 */
-function detectMarketState(items: SectorHeatmapItem[]): string {
-  const states = items.map((i) => i.marketState).filter(Boolean) as string[];
-  if (states.length === 0) return 'CLOSED';
-  const counts = new Map<string, number>();
-  for (const s of states) counts.set(s, (counts.get(s) ?? 0) + 1);
-  let max = 0;
-  let dominant = 'CLOSED';
-  for (const [s, c] of counts) {
-    if (c > max) {
-      max = c;
-      dominant = s;
-    }
-  }
-  return dominant;
-}
-
-interface BadgeInfo {
-  label: string;
-  cls: string;
-}
-
-function getMarketBadge(state: string, market: 'kr' | 'us'): BadgeInfo {
-  if (market === 'kr') {
-    switch (state) {
-      case 'PRE':
-      case 'PREPRE':
-        return { label: '장전', cls: 'text-amber-400 bg-amber-400/10 border-amber-400/30' };
-      case 'REGULAR':
-        return { label: '장중', cls: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/30' };
-      case 'POST':
-      case 'POSTPOST':
-        return { label: '장후', cls: 'text-sky-400 bg-sky-400/10 border-sky-400/30' };
-      default:
-        return { label: '장마감', cls: 'text-zinc-500 bg-zinc-800 border-zinc-700' };
-    }
-  } else {
-    switch (state) {
-      case 'PRE':
-      case 'PREPRE':
-        return { label: '프리마켓', cls: 'text-amber-400 bg-amber-400/10 border-amber-400/30' };
-      case 'REGULAR':
-        return { label: '장중', cls: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/30' };
-      case 'POST':
-      case 'POSTPOST':
-        return { label: '애프터', cls: 'text-violet-400 bg-violet-400/10 border-violet-400/30' };
-      default:
-        return { label: '장마감', cls: 'text-zinc-500 bg-zinc-800 border-zinc-700' };
-    }
-  }
-}
-
-// ---------------------------------------------------------------------------
 // Squarified treemap
 // ---------------------------------------------------------------------------
 
@@ -102,7 +46,7 @@ interface TreemapRect {
   height: number; // percentage
 }
 
-function worstAspectRatio(row: Array<{ weight: number }>, shortSide: number): number {
+function worstAspectRatio(row: { weight: number }[], shortSide: number): number {
   if (row.length === 0 || shortSide <= 0) return Number.POSITIVE_INFINITY;
 
   const sum = row.reduce((acc, item) => acc + item.weight, 0);
@@ -117,7 +61,7 @@ function worstAspectRatio(row: Array<{ weight: number }>, shortSide: number): nu
 }
 
 function computeTreemap(
-  items: Array<{ symbol: string; weight: number }>,
+  items: { symbol: string; weight: number }[],
   containerWidth: number,
   containerHeight: number,
 ): TreemapRect[] {
@@ -141,7 +85,7 @@ function computeTreemap(
   let h = containerHeight;
   let idx = 0;
 
-  const placeRow = (row: Array<{ symbol: string; weight: number }>) => {
+  const placeRow = (row: { symbol: string; weight: number }[]) => {
     if (row.length === 0 || w <= 0 || h <= 0) return;
     const rowSum = row.reduce((acc, it) => acc + it.weight, 0);
 
@@ -184,7 +128,7 @@ function computeTreemap(
   };
 
   while (idx < normalized.length && w > 0 && h > 0) {
-    const row: Array<{ symbol: string; weight: number }> = [];
+    const row: { symbol: string; weight: number }[] = [];
     let shortSide = Math.min(w, h);
 
     while (idx < normalized.length) {

@@ -13,10 +13,21 @@ interface MarkdownModalProps {
   filePath: string;
 }
 
+interface LoadedMarkdown {
+  filePath: string;
+  content: string;
+  error: string | null;
+}
+
 export default function MarkdownModal({ isOpen, onClose, title, filePath }: MarkdownModalProps) {
-  const [content, setContent] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // 마지막으로 로드된 파일 내용 — 현재 filePath와 다르면 로딩 중으로 간주
+  const [loaded, setLoaded] = useState<LoadedMarkdown | null>(null);
+  // 모달이 다시 열릴 때는 재로딩 표시 (렌더 중 상태 조정 패턴)
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  if (isOpen !== prevIsOpen) {
+    setPrevIsOpen(isOpen);
+    if (isOpen) setLoaded(null);
+  }
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   // 헤딩 텍스트에서 앵커 링크 id 생성
@@ -33,35 +44,38 @@ export default function MarkdownModal({ isOpen, onClose, title, filePath }: Mark
       .toLowerCase();
   };
 
-  useEffect(() => {
-    if (isOpen && filePath) {
-      // HTML 파일이 아닌 경우에만 fetch
-      if (!filePath.endsWith('.html')) {
-        fetchMarkdownContent();
-      }
-    }
-  }, [isOpen, filePath]);
-
-  const fetchMarkdownContent = async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch(filePath);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const text = await response.text();
-      setContent(text);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : '파일을 불러오는 중 오류가 발생했습니다.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // HTML 파일인지 확인
   const isHtmlFile = filePath.endsWith('.html');
+
+  useEffect(() => {
+    // HTML 파일이 아닌 경우에만 fetch
+    if (!isOpen || !filePath || filePath.endsWith('.html')) return;
+
+    const fetchMarkdownContent = async () => {
+      try {
+        const response = await fetch(filePath);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const text = await response.text();
+        setLoaded({ filePath, content: text, error: null });
+      } catch (err) {
+        setLoaded({
+          filePath,
+          content: '',
+          error: err instanceof Error ? err.message : '파일을 불러오는 중 오류가 발생했습니다.',
+        });
+      }
+    };
+
+    fetchMarkdownContent();
+  }, [isOpen, filePath]);
+
+  // 로딩/에러/내용은 로드 상태에서 파생
+  const current = loaded !== null && loaded.filePath === filePath ? loaded : null;
+  const loading = isOpen && Boolean(filePath) && !isHtmlFile && current === null;
+  const content = current?.content ?? '';
+  const error = current?.error ?? null;
 
   if (!isOpen) return null;
 
@@ -86,7 +100,7 @@ export default function MarkdownModal({ isOpen, onClose, title, filePath }: Mark
         <div className="flex-1 overflow-auto p-6" ref={scrollContainerRef}>
           {loading && (
             <div className="flex h-32 items-center justify-center">
-              <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
+              <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600" />
             </div>
           )}
 

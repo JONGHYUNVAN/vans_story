@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { GameComponentProps } from '@/app/games/[gameId]/_components/GamePageClient';
+import type { GameComponentProps } from '@/app/games/[gameId]/_components/GamePageClient';
 import { useCombo } from '@/hooks/useCombo';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';

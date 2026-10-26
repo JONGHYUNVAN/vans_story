@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { SiSpring } from 'react-icons/si';
 
 interface SpringLayoutProps {
@@ -23,7 +23,7 @@ export default function SpringLayout({
       className={`relative overflow-hidden ${isPreview ? 'h-auto' : 'min-h-screen'} ${className}`}
     >
       {/* 배경 레이어 */}
-      <div className="absolute inset-0 z-0 bg-[#0c1511]"></div>
+      <div className="absolute inset-0 z-0 bg-[#0c1511]" />
 
       {/* Spring 로고 패턴 배경 */}
       <div

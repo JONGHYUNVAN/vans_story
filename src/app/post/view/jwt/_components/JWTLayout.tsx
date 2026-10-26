@@ -1,8 +1,7 @@
 'use client';
 
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { MdSecurity } from 'react-icons/md';
-import { useSidebarMargin } from '@/hooks/useSidebarMargin';
 
 interface JwtLayoutProps {
   children: ReactNode;
@@ -10,13 +9,9 @@ interface JwtLayoutProps {
   isPreview?: boolean;
 }
 
-export default function JWTLayout({ children, title, isPreview = false }: JwtLayoutProps) {
-  const { shouldApplyMargin = false } = isPreview
-    ? { shouldApplyMargin: false }
-    : useSidebarMargin();
-
+export default function JWTLayout({ children, title }: JwtLayoutProps) {
   return (
-    <div className={`transition-all duration-300`}>
+    <div className="transition-all duration-300">
       <div className="relative left-auto min-h-screen overflow-hidden bg-black">
         {/* JWT 패턴 배경 - 실제 JWT 토큰 형태로 디자인 */}
         <div

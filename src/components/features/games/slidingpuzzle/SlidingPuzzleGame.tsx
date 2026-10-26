@@ -1,14 +1,13 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { GameComponentProps } from '@/app/games/[gameId]/_components/GamePageClient';
+import type { GameComponentProps } from '@/app/games/[gameId]/_components/GamePageClient';
 import { useCombo } from '@/hooks/useCombo';
 import { useScreenShake } from '@/hooks/useScreenShake';
 import { useGameTimer } from '@/hooks/useGameTimer';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
-import GameOverlayController, {
-  Direction as OverlayDirection,
-} from '@/components/features/games/GameOverlayController';
+import type { Direction as OverlayDirection } from '@/components/features/games/GameOverlayController';
+import GameOverlayController from '@/components/features/games/GameOverlayController';
 
 const SIZE = 4;
 const GOAL = [...Array.from({ length: SIZE * SIZE - 1 }, (_, i) => i + 1), 0];

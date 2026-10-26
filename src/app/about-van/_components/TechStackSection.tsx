@@ -132,22 +132,23 @@ export function TechStackSection() {
   // 언어에 따라 데이터 선택
   const techStack = locale === 'ko' ? techStackKo : techStackEn;
 
+  // 호버 대상(또는 언어)이 바뀌면 렌더 중에 타이핑 상태를 초기화 (effect 내 동기 setState 방지)
+  const typingKey = hoveredTech ? `${locale}:${hoveredTech}` : null;
+  const [prevTypingKey, setPrevTypingKey] = useState<string | null>(null);
+  if (prevTypingKey !== typingKey) {
+    setPrevTypingKey(typingKey);
+    setTypewriterCommonText('');
+    setTypewriterMyText('');
+    setIsTypingCommon(hoveredTech !== null);
+    setIsTypingMy(false);
+  }
+
   // Typewriter effect for tech descriptions
   useEffect(() => {
-    if (!hoveredTech) {
-      setTypewriterCommonText('');
-      setTypewriterMyText('');
-      setIsTypingCommon(false);
-      setIsTypingMy(false);
-      return;
-    }
+    if (!hoveredTech) return;
 
     const currentTech = techStack.find((tech) => tech.name === hoveredTech);
     if (!currentTech) return;
-
-    // Start typing common reason first
-    setIsTypingCommon(true);
-    setTypewriterCommonText('');
 
     let commonIndex = 0;
     const commonText = currentTech.commonReason;
@@ -214,7 +215,7 @@ export function TechStackSection() {
                   <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
                     {category}
                   </h3>
-                  <div className="h-px flex-1 bg-gray-200 dark:bg-gray-700"></div>
+                  <div className="h-px flex-1 bg-gray-200 dark:bg-gray-700" />
                 </div>
 
                 {/* Tech List for Category */}

@@ -1,4 +1,4 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import GamesClient from '@/app/games/_components/GamesClient';
 
 export const metadata: Metadata = {

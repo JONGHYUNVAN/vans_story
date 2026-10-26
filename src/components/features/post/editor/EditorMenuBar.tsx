@@ -1,5 +1,4 @@
 'use client';
-import { useEditorContext } from './EditorContext';
 import {
   Bold,
   Italic,
@@ -16,18 +15,16 @@ import {
   Table,
   Quote,
   Image,
-  Smile,
-  Video,
   Bot,
 } from 'lucide-react';
 import { useEffect, useState, useCallback } from 'react';
-import { AiGenerateModal } from './AiGenerateModal';
 import EmojiPicker, { EmojiStyle } from 'emoji-picker-react';
+import { FaYoutube } from 'react-icons/fa';
 import { koreanFonts } from '@/app/fonts/editor/kr';
 import { englishFonts } from '@/app/fonts/editor/en';
 import { codeFonts } from '@/app/fonts/editor/co';
-import { FaYoutube } from 'react-icons/fa';
-import { Editor } from '@tiptap/core';
+import { AiGenerateModal } from './AiGenerateModal';
+import { useEditorContext } from './EditorContext';
 const FONT_SIZES = ['12', '14', '16', '18', '20', '24', '28', '32', '36', '40'];
 
 const CODE_LANGUAGE = [

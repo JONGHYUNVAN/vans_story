@@ -1,10 +1,10 @@
 'use client';
 import { useEditor, EditorContent } from '@tiptap/react';
+import { useEffect } from 'react';
 import { EditorMenuBar } from './EditorMenuBar';
 import { EditorBubbleMenu } from './EditorBubbleMenu';
 import { EditorProvider } from './EditorContext';
 import { EditorExtensions } from './EditorExtensions';
-import { useEffect } from 'react';
 
 interface PostContext {
   title?: string;
@@ -52,9 +52,11 @@ export function Editor({
   });
 
   // editorRef에 editor 인스턴스 할당
-  if (editorRef) {
-    editorRef.current = editor;
-  }
+  useEffect(() => {
+    if (editorRef) {
+      editorRef.current = editor;
+    }
+  }, [editor, editorRef]);
 
   // content가 변경될 때 에디터 내용 업데이트
   useEffect(() => {

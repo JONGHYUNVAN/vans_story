@@ -1,5 +1,5 @@
-import { ProjectArchitecture } from '@/types/project';
 import Image from 'next/image';
+import type { ProjectArchitecture } from '@/types/project';
 
 interface ArchitectureProps {
   architecture: ProjectArchitecture;
@@ -45,7 +45,7 @@ export default function Architecture({ architecture }: ArchitectureProps) {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {architecture.benefits.map((benefit, index) => (
           <div key={index} className="flex items-start gap-2">
-            <div className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-blue-500"></div>
+            <div className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-blue-500" />
             <span className="text-gray-700">{benefit}</span>
           </div>
         ))}

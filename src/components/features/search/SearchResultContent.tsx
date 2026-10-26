@@ -19,11 +19,8 @@ export default function SearchResultContent({ query }: SearchResultContentProps)
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!query) {
-      setResults([]);
-      setTotal(0);
-      return;
-    }
+    // 검색어가 없으면 요청하지 않음 (빈 결과는 렌더 시 파생)
+    if (!query) return;
 
     const fetchSearchResults = async () => {
       setLoading(true);
@@ -83,6 +80,11 @@ export default function SearchResultContent({ query }: SearchResultContentProps)
     );
   }
 
+  // 검색어가 비어 있으면 이전 결과 대신 빈 결과를 보여준다
+  if (!query) {
+    return <SearchResultList results={[]} total={0} />;
+  }
+
   return <SearchResultList results={results} total={total} />;
 }
 
@@ -96,18 +98,18 @@ function SearchResultListSkeleton() {
           className="group relative animate-pulse overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm"
           style={{ animationDelay: `${i * 100}ms` }}
         >
-          <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
+          <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/5 to-transparent" />
           <div className="space-y-4">
-            <div className="h-7 w-3/4 rounded-lg bg-gradient-to-r from-purple-400/20 to-blue-400/20"></div>
+            <div className="h-7 w-3/4 rounded-lg bg-gradient-to-r from-purple-400/20 to-blue-400/20" />
             <div className="space-y-2">
-              <div className="h-4 w-full rounded bg-white/10"></div>
-              <div className="h-4 w-5/6 rounded bg-white/10"></div>
-              <div className="h-4 w-4/6 rounded bg-white/10"></div>
+              <div className="h-4 w-full rounded bg-white/10" />
+              <div className="h-4 w-5/6 rounded bg-white/10" />
+              <div className="h-4 w-4/6 rounded bg-white/10" />
             </div>
             <div className="flex gap-2">
-              <div className="h-6 w-16 rounded-full bg-white/10"></div>
-              <div className="h-6 w-20 rounded-full bg-white/10"></div>
-              <div className="h-6 w-14 rounded-full bg-white/10"></div>
+              <div className="h-6 w-16 rounded-full bg-white/10" />
+              <div className="h-6 w-20 rounded-full bg-white/10" />
+              <div className="h-6 w-14 rounded-full bg-white/10" />
             </div>
           </div>
         </div>

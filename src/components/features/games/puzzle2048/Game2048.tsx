@@ -1,16 +1,15 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { GameComponentProps } from '@/app/games/[gameId]/_components/GamePageClient';
+import type { GameComponentProps } from '@/app/games/[gameId]/_components/GamePageClient';
 import { useScreenShake } from '@/hooks/useScreenShake';
 import { useSound } from '@/hooks/useSound';
 import { useCombo } from '@/hooks/useCombo';
 import { useGameSize } from '@/hooks/useGameSize';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
-import GameOverlayController, {
-  Direction,
-} from '@/components/features/games/GameOverlayController';
+import type { Direction } from '@/components/features/games/GameOverlayController';
+import GameOverlayController from '@/components/features/games/GameOverlayController';
 
 type GameStatus = 'idle' | 'playing' | 'won' | 'gameover';
 
@@ -262,7 +261,7 @@ export default function Game2048({
           }
         }
 
-        let newBoard = addRandomTile(result.board);
+        const newBoard = addRandomTile(result.board);
         const newScore = prev.score + result.gained;
         const newBestTile = getBestTile(newBoard);
 
@@ -306,6 +305,7 @@ export default function Game2048({
   useEffect(() => {
     if (state.gameStatus === 'won') {
       triggerShake(8, 500);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- 게임 상태 전이(승리/최고점/종료) 감지 후 이펙트 트리거, 핸들러로 옮기려면 applyMove 리디자인 필요
       setConfettiDuration(3000);
       setConfettiActive(true);
     }

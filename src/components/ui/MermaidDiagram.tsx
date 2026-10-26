@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface MermaidDiagramProps {
   chart: string;
   className?: string;
 }
 
-const MermaidDiagram: React.FC<MermaidDiagramProps> = ({ chart, className = '' }) => {
+function MermaidDiagram({ chart, className = '' }: MermaidDiagramProps) {
   const elementRef = useRef<HTMLDivElement>(null);
   const [svg, setSvg] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
@@ -67,7 +67,7 @@ const MermaidDiagram: React.FC<MermaidDiagramProps> = ({ chart, className = '' }
   if (isLoading) {
     return (
       <div className={`flex items-center justify-center p-8 ${className}`}>
-        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-500"></div>
+        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-500" />
         <span className="ml-2 text-gray-600">다이어그램 로딩 중...</span>
       </div>
     );
@@ -94,6 +94,6 @@ const MermaidDiagram: React.FC<MermaidDiagramProps> = ({ chart, className = '' }
       dangerouslySetInnerHTML={{ __html: svg }}
     />
   );
-};
+}
 
 export default MermaidDiagram;

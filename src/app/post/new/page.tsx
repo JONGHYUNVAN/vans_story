@@ -1,11 +1,8 @@
 'use client';
 
 import { PostFormWindows } from '@/components/features/post/form/PostFormWindows';
-import { useRouter } from 'next/navigation';
 
 export default function NewPostPage() {
-  const router = useRouter();
-
   return (
     <PostFormWindows
       mode="create"

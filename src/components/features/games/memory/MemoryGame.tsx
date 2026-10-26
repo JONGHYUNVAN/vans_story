@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef } from 'react';
-import { GameComponentProps } from '@/app/games/[gameId]/_components/GamePageClient';
+import type { GameComponentProps } from '@/app/games/[gameId]/_components/GamePageClient';
 import { useSound } from '@/hooks/useSound';
 import { useCombo } from '@/hooks/useCombo';
 import { useGameTimer } from '@/hooks/useGameTimer';

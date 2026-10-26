@@ -1,8 +1,8 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n';
-import { BasePost } from '@/components/features/post/postcard/BasePost';
-import { PostCardProps } from '@/components/features/post/postcard/PostCardProps';
+import type { BasePost } from '@/components/features/post/postcard/BasePost';
+import type { PostCardProps } from '@/components/features/post/postcard/PostCardProps';
 
 export default function PostCard<T extends BasePost>({ post, renderBadge }: PostCardProps<T>) {
   const { t } = useTranslation('');
@@ -87,17 +87,20 @@ export default function PostCard<T extends BasePost>({ post, renderBadge }: Post
       }, slideAnimationDuration); // 슬라이드 애니메이션 지속 시간
 
       timersRef.current.push(slideTimer);
-    } else {
-      // 호버 해제 시 초기화
-      setDividerVisible(false);
-      setShowDescription(false);
-      setCurrentText('');
-      setBottomDividerVisible(false);
     }
 
     // 컴포넌트 언마운트 시 모든 타이머 정리
     return clearAllTimers;
   }, [isHovered, description]);
+
+  // 호버 해제 시 초기화 (effect 대신 이벤트 핸들러에서 처리)
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    setDividerVisible(false);
+    setShowDescription(false);
+    setCurrentText('');
+    setBottomDividerVisible(false);
+  };
 
   // 텍스트를 줄바꿈 포함하여 렌더링하되 줄 간격을 일정하게 유지
   const renderTextWithLineBreaks = () => {
@@ -119,7 +122,7 @@ export default function PostCard<T extends BasePost>({ post, renderBadge }: Post
                   display: 'inline-block', // 항상 표시
                   animation: 'typingCursor 0.75s step-end infinite',
                 }}
-              ></span>
+              />
             )}
           </div>
         ))}
@@ -131,7 +134,7 @@ export default function PostCard<T extends BasePost>({ post, renderBadge }: Post
     <article
       className="group relative rounded-lg bg-black p-6 text-white hover:shadow-lg hover:shadow-blue-400/20"
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseLeave={handleMouseLeave}
     >
       <div className="mb-1 flex items-center justify-between">
         <h2 className="text-lg font-medium text-white transition-colors group-hover:text-white">

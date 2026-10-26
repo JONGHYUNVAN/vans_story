@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 interface UseComboReturn {
   comboCount: number;
@@ -22,7 +22,8 @@ export function useCombo(): UseComboReturn {
   const comboCountRef = useRef(0);
   const comboLevelRef = useRef(0);
 
-  const proxy = useRef<UseComboReturn>({
+  // 렌더 중 ref.current 읽기를 피하기 위해 마운트 시 1회 생성한 객체를 state로 보관
+  const [proxy] = useState<UseComboReturn>(() => ({
     get comboCount() {
       return comboCountRef.current;
     },
@@ -39,7 +40,7 @@ export function useCombo(): UseComboReturn {
       comboCountRef.current = 0;
       comboLevelRef.current = 0;
     },
-  });
+  }));
 
-  return proxy.current;
+  return proxy;
 }

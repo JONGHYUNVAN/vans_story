@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ApiFetch } from '@/lib/api/apiFetch';
-import { Category } from '@/types/category';
+import type { Category } from '@/types/category';
 
 /**
  * useCategory 훅의 반환 타입
@@ -23,10 +23,8 @@ export function useCategory(categoryValue: string): UseCategoryReturn {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!categoryValue) {
-      setIsLoading(false);
-      return;
-    }
+    // 카테고리 값이 없으면 조회하지 않음 (로딩 상태는 반환 시 파생)
+    if (!categoryValue) return;
 
     const fetchCategory = async () => {
       try {
@@ -55,7 +53,8 @@ export function useCategory(categoryValue: string): UseCategoryReturn {
 
   return {
     category,
-    isLoading,
+    // 조회할 값이 없으면 로딩 중이 아님
+    isLoading: categoryValue ? isLoading : false,
     error,
   };
 }

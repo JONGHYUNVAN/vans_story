@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
@@ -17,7 +17,7 @@ export async function POST(request: Request) {
 
     // 성공 시 빈 객체 반환 (JSON 파싱 에러 방지)
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch (_error) {
     return new NextResponse(null, { status: 500 });
   }
 }

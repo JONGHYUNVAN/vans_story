@@ -3,7 +3,7 @@ import JWTLayout from '@/app/post/view/jwt/_components/JWTLayout';
 import JWTList from '@/app/post/view/jwt/_components/JWTList';
 import { handleEmptyData } from '@/lib/errors/errorHandling';
 import { getPostList } from '@/lib/posts/clientActions';
-import { PostInfo } from '@/types/post';
+import type { PostInfo } from '@/types/post';
 
 interface PageProps {
   params: Promise<{ category: string }>;

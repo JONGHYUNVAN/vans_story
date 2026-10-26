@@ -1,11 +1,11 @@
-import { useState, useEffect, ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { MdKeyboardArrowRight } from 'react-icons/md';
+import type { IconType } from 'react-icons';
 import { useTranslation } from '@/lib/i18n';
-import { IconType } from 'react-icons';
 import { useFrameworkCategories } from '@/hooks/useFrameworkCategories';
-import { getIconComponent } from '@/lib/iconMapping';
 
 interface BaseSidebarProps {
   frameworkName: string; // 'Next', 'Nest', 'Spring'
@@ -36,7 +36,6 @@ export default function BaseSidebar({
   frameworkIcon: FrameworkIcon,
   frameworkColor,
   frameworkPath,
-  backgroundClasses = 'bg-black',
   previewButtonBgClasses = 'bg-black/50 backdrop-blur-sm',
   sidebarContentBgClasses = 'bg-black',
   textColorClasses = 'text-[#888888]',
@@ -75,7 +74,7 @@ export default function BaseSidebar({
   }, []);
 
   // 아이콘 가져오기 함수 (실제로는 각 사이드바에서 전달된 값만 사용)
-  const getIcon = (iconName: string): IconType => {
+  const getIcon = (_iconName: string): IconType => {
     // 이 함수는 호환성을 위해 유지하지만 실제로는 항상 기본값 반환
     return FrameworkIcon;
   };
@@ -96,7 +95,7 @@ export default function BaseSidebar({
       >
         <div className="flex flex-col items-center gap-2">
           <div className="mb-2 text-center">
-            <FrameworkIcon className={`mx-auto mb-1 h-8 w-8`} style={{ color: frameworkColor }} />
+            <FrameworkIcon className="mx-auto mb-1 h-8 w-8" style={{ color: frameworkColor }} />
           </div>
           <span className="text-center font-handwriting text-base font-bold text-gray-800">
             {frameworkName}

@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { SiNestjs } from 'react-icons/si';
+import Link from 'next/link';
 import PostCard from '@/components/features/post/postcard/nestjs/PostCard';
 import { useTranslation } from '@/lib/i18n';
-import { PostInfo } from '@/types/post';
+import type { PostInfo } from '@/types/post';
 import { sortPosts } from '@/components/features/post/sort/sortPosts';
-import Link from 'next/link';
 
 interface NestjsListProps {
   posts: PostInfo[];
@@ -16,7 +16,7 @@ export default function NestjsList({ posts: initialPosts }: NestjsListProps) {
   const { t } = useTranslation('post');
   const [posts] = useState<PostInfo[]>(initialPosts);
   const [sortOption, setSortOption] = useState('latest');
-  const [visiblePosts, setVisiblePosts] = useState(10);
+  const [visiblePosts] = useState(10);
 
   // 정렬 유틸리티 함수를 사용하여 정렬
   const sortedPosts = sortPosts(posts, sortOption);
@@ -37,7 +37,7 @@ export default function NestjsList({ posts: initialPosts }: NestjsListProps) {
         </select>
       </div>
       <div className="grid grid-cols-1 gap-6">
-        {postsToShow.map((post, index) => (
+        {postsToShow.map((post) => (
           <Link
             key={post.id}
             href={`/post/view/nestjs/${post.id}`}

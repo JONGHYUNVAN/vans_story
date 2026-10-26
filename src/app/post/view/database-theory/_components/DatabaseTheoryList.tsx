@@ -2,11 +2,10 @@
 
 import { FaDatabase } from 'react-icons/fa';
 import { TbSql } from 'react-icons/tb';
-import PostCard from '@/components/features/post/postcard/database-theory/PostCard';
-import { useTranslation } from '@/lib/i18n';
-import { PostInfo } from '@/types/post';
-import { sortPosts } from '@/components/features/post/sort/sortPosts';
 import Link from 'next/link';
+import PostCard from '@/components/features/post/postcard/database-theory/PostCard';
+import type { PostInfo } from '@/types/post';
+import { sortPosts } from '@/components/features/post/sort/sortPosts';
 
 interface Post extends PostInfo {
   _id: string;
@@ -17,7 +16,6 @@ interface Props {
 }
 
 export default function DatabaseTheoryList({ posts }: Props) {
-  const { t } = useTranslation('post');
   const sortedPosts = sortPosts(posts, 'latest');
 
   return (

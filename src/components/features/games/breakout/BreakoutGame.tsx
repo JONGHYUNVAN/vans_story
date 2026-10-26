@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useEffect, useCallback, useState } from 'react';
-import { GameComponentProps } from '@/app/games/[gameId]/_components/GamePageClient';
+import type { GameComponentProps } from '@/app/games/[gameId]/_components/GamePageClient';
 import { useSound } from '@/hooks/useSound';
 import { useCombo } from '@/hooks/useCombo';
 import { useScreenShake } from '@/hooks/useScreenShake';
@@ -10,9 +10,8 @@ import { useGameLoop } from '@/hooks/useGameLoop';
 import ParticleEffect from '@/components/features/games/effects/ParticleEffect';
 import ConfettiEffect from '@/components/features/games/effects/ConfettiEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
-import GameOverlayController, {
-  Direction,
-} from '@/components/features/games/GameOverlayController';
+import type { Direction } from '@/components/features/games/GameOverlayController';
+import GameOverlayController from '@/components/features/games/GameOverlayController';
 
 const CANVAS_W = 480;
 const CANVAS_H = 360;
@@ -67,21 +66,23 @@ export default function BreakoutGame({
   const [gameStatus, setGameStatus] = useState<GameStatus>('idle');
   const [displayScore, setDisplayScore] = useState(0);
   const [displayLevel, setDisplayLevel] = useState(1);
-  const [displayLives, setDisplayLives] = useState(3);
   const { shakeStyle, triggerShake } = useScreenShake();
   const [flashActive, setFlashActive] = useState(false);
   const [confettiActive, setConfettiActive] = useState(false);
-  const [particles, setParticles] = useState<
-    Array<{ id: number; x: number; y: number; color: string }>
-  >([]);
+  const [particles, setParticles] = useState<{ id: number; x: number; y: number; color: string }[]>(
+    [],
+  );
   const particleIdRef = useRef(0);
   const triggerShakeRef = useRef(triggerShake);
-  triggerShakeRef.current = triggerShake;
-
   const onActionRef = useRef(onAction);
-  onActionRef.current = onAction;
   const onComboRef = useRef(onCombo);
-  onComboRef.current = onCombo;
+
+  // 최신 콜백을 ref에 동기화 (렌더 중 ref 쓰기 방지 — 커밋 후 갱신)
+  useEffect(() => {
+    triggerShakeRef.current = triggerShake;
+    onActionRef.current = onAction;
+    onComboRef.current = onCombo;
+  });
 
   const { playHit } = useSound();
   const combo = useCombo();
@@ -157,7 +158,6 @@ export default function BreakoutGame({
 
       if (ball.y + BALL_R > CANVAS_H) {
         livesRef.current--;
-        setDisplayLives(livesRef.current);
         triggerShakeRef.current(8, 400);
         setFlashActive(true);
         combo.reset();
@@ -268,7 +268,6 @@ export default function BreakoutGame({
     combo.reset();
     setDisplayScore(0);
     setDisplayLevel(1);
-    setDisplayLives(3);
     resetBall();
     gameStatusRef.current = 'playing';
     setGameStatus('playing');

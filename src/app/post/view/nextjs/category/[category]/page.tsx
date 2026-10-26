@@ -1,4 +1,3 @@
-import { API_URLS } from '@/constants/apiUrl';
 import NextjsLayout from '@/app/post/view/nextjs/_components/NextjsLayout';
 import { SidebarWrapper } from '@/app/post/view/_components/SidebarWrapper';
 import NextjsList from '@/app/post/view/nextjs/_components/NextjsList';
@@ -23,7 +22,9 @@ export default async function Page({ params }: PageProps) {
           <div className="flex min-h-[400px] items-center justify-center">
             <div className="text-center text-white">
               <h2 className="mb-4 text-2xl font-bold">게시글이 없습니다</h2>
-              <p className="text-gray-400">'{category}' 카테고리에 등록된 게시글이 없습니다.</p>
+              <p className="text-gray-400">
+                &apos;{category}&apos; 카테고리에 등록된 게시글이 없습니다.
+              </p>
             </div>
           </div>
         )}

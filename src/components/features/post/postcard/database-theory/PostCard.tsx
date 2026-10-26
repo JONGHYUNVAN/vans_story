@@ -1,7 +1,7 @@
 'use client';
 
-import { PostInfo } from '@/types/post';
 import { TbDatabase } from 'react-icons/tb';
+import type { PostInfo } from '@/types/post';
 import { useTranslation } from '@/lib/i18n';
 
 interface PostCardProps {

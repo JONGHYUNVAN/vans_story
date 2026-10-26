@@ -2,19 +2,17 @@
 
 import { useEffect, useState } from 'react';
 import { SiJsonwebtokens } from 'react-icons/si';
-import { API_URLS } from '@/constants/apiUrl';
-import { PostInfo } from '@/types/post';
-import PostCard from '@/components/features/post/postcard/jwt/PostCard';
-import { useTranslation } from '@/lib/i18n';
-import { sortPosts } from '@/components/features/post/sort/sortPosts';
 import Link from 'next/link';
+import { API_URLS } from '@/constants/apiUrl';
+import type { PostInfo } from '@/types/post';
+import PostCard from '@/components/features/post/postcard/jwt/PostCard';
+import { sortPosts } from '@/components/features/post/sort/sortPosts';
 
 interface JWTListProps {
   posts: PostInfo[];
 }
 
 export default function JWTList({ posts }: JWTListProps) {
-  const { t } = useTranslation('post');
   const [jwtPosts, setJwtPosts] = useState<PostInfo[]>(sortPosts(posts, 'latest'));
 
   useEffect(() => {

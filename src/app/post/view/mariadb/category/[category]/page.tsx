@@ -1,4 +1,3 @@
-import { API_URLS } from '@/constants/apiUrl';
 import MariadbLayout from '@/app/post/view/mariadb/_components/MariadbLayout';
 import { SidebarWrapper } from '@/app/post/view/_components/SidebarWrapper';
 import MariadbList from '@/app/post/view/mariadb/_components/MariadbList';

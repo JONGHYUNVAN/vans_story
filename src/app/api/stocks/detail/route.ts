@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import type {
   StockDetailData,
   ChartDataPoint,
@@ -63,8 +64,8 @@ function krxCode(symbol: string): string {
 }
 
 interface NaverIntegration {
-  totalInfos?: Array<{ code: string; key: string; value: string }>;
-  dealTrendInfos?: Array<{
+  totalInfos?: { code: string; key: string; value: string }[];
+  dealTrendInfos?: {
     bizdate: string;
     foreignerPureBuyQuant: string;
     foreignerHoldRatio: string;
@@ -72,24 +73,28 @@ interface NaverIntegration {
     individualPureBuyQuant: string;
     accumulatedTradingVolume: string;
     closePrice: string;
-  }>;
+  }[];
   consensusInfo?: { priceTargetMean?: string; recommMean?: string } | null;
-  researches?: Array<{
-    id: number;
-    cd: string;
-    nm: string;
-    bnm: string; // 증권사명
-    tit: string; // 리포트 제목
-    rcnt: string;
-    wdt: string; // YYYYMMDD
-  }> | null;
-  industryCompareInfo?: Array<{
-    itemCode: string;
-    stockName: string;
-    closePrice: string;
-    compareToPreviousClosePrice: string;
-    fluctuationsRatio: string;
-  }> | null;
+  researches?:
+    | {
+        id: number;
+        cd: string;
+        nm: string;
+        bnm: string; // 증권사명
+        tit: string; // 리포트 제목
+        rcnt: string;
+        wdt: string; // YYYYMMDD
+      }[]
+    | null;
+  industryCompareInfo?:
+    | {
+        itemCode: string;
+        stockName: string;
+        closePrice: string;
+        compareToPreviousClosePrice: string;
+        fluctuationsRatio: string;
+      }[]
+    | null;
 }
 
 /** 네이버 컨센서스 상세 (별도 엔드포인트) */
@@ -138,8 +143,8 @@ interface NaverResearchDetail {
 
 /** 개별 리포트 목표주가 병렬 조회 */
 async function fetchNaverResearchGoalPrices(
-  researches: Array<{ id: number; bnm: string; tit: string; wdt: string }>,
-): Promise<Array<{ id: number; goalPrice: number | null; opinion: string | null }>> {
+  researches: { id: number; bnm: string; tit: string; wdt: string }[],
+): Promise<{ id: number; goalPrice: number | null; opinion: string | null }[]> {
   const results = await Promise.allSettled(
     researches.map(async (r) => {
       const url = `https://m.stock.naver.com/api/research/company/${r.id}`;
@@ -299,7 +304,7 @@ function parseNaverInvestors(naver: NaverIntegration): InvestorTrend[] {
 function parseNaverConsensus(
   naver: NaverIntegration,
   detail: NaverConsensusDetail | null,
-  researchPrices?: Array<{ id: number; goalPrice: number | null; opinion: string | null }>,
+  researchPrices?: { id: number; goalPrice: number | null; opinion: string | null }[],
 ): StockConsensus | null {
   // 기본 값: integration의 consensusInfo
   const ci = naver.consensusInfo;

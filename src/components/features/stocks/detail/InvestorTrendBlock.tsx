@@ -70,13 +70,6 @@ export default function InvestorTrendBlock({ investors }: Props) {
 
   if (!investors || investors.length === 0) return null;
 
-  const allAbs = investors.flatMap((row) => [
-    Math.abs(row.foreign),
-    Math.abs(row.institution),
-    Math.abs(row.individual),
-  ]);
-  const maxAbs = Math.max(...allAbs, 1);
-
   return (
     <section className={d.card}>
       <div className={d.cardHead}>

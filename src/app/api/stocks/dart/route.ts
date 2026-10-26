@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import type { DartDisclosure, DartData, DartApiResponse, StocksApiResponse } from '@/types/stocks';
 import { KR_STOCKS } from '@/types/stocks';
 

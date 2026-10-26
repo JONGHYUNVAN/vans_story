@@ -17,9 +17,13 @@ export default function FlashOverlay({
 }: FlashOverlayProps) {
   const [opacity, setOpacity] = useState(0);
   const onDoneRef = useRef(onDone);
-  onDoneRef.current = onDone;
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prevActive = useRef(false);
+
+  // 최신 onDone 콜백을 ref에 유지 (렌더 중 ref 쓰기 방지)
+  useEffect(() => {
+    onDoneRef.current = onDone;
+  }, [onDone]);
 
   useEffect(() => {
     if (active && !prevActive.current) {

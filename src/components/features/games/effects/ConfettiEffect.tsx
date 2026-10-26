@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface ConfettiPiece {
   id: number;
@@ -10,7 +10,7 @@ interface ConfettiPiece {
   delay: number;
   duration: number;
   isCircle: boolean;
-  rotateDir: number;
+  rotateEnd: number;
 }
 
 interface ConfettiEffectProps {
@@ -22,16 +22,19 @@ interface ConfettiEffectProps {
 const COLORS = ['#34d399', '#6366f1', '#facc15', '#f472b6', '#fb923c'];
 
 function createPieces(count: number): ConfettiPiece[] {
-  return Array.from({ length: count }, (_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    size: 6 + Math.floor(Math.random() * 8),
-    color: COLORS[Math.floor(Math.random() * COLORS.length)],
-    delay: Math.random() * 1200,
-    duration: 1800 + Math.random() * 1200,
-    isCircle: Math.random() > 0.5,
-    rotateDir: Math.random() > 0.5 ? 1 : -1,
-  }));
+  return Array.from({ length: count }, (_, i) => {
+    const rotateDir = Math.random() > 0.5 ? 1 : -1;
+    return {
+      id: i,
+      x: Math.random() * 100,
+      size: 6 + Math.floor(Math.random() * 8),
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      delay: Math.random() * 1200,
+      duration: 1800 + Math.random() * 1200,
+      isCircle: Math.random() > 0.5,
+      rotateEnd: rotateDir * (360 + Math.random() * 360),
+    };
+  });
 }
 
 export default function ConfettiEffect({
@@ -39,25 +42,24 @@ export default function ConfettiEffect({
   duration = 3000,
   count = 80,
 }: ConfettiEffectProps) {
-  const [visible, setVisible] = useState(false);
   const [pieces] = useState<ConfettiPiece[]>(() => createPieces(count));
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // active/duration 변경 시 다시 표시되도록 이전 값을 추적 (렌더 중 상태 조정 패턴)
+  const [prevTrigger, setPrevTrigger] = useState({ active, duration });
+  const [expired, setExpired] = useState(false);
+  if (prevTrigger.active !== active || prevTrigger.duration !== duration) {
+    setPrevTrigger({ active, duration });
+    setExpired(false);
+  }
 
   useEffect(() => {
-    if (active) {
-      setVisible(true);
-      if (timerRef.current) clearTimeout(timerRef.current);
-      timerRef.current = setTimeout(() => {
-        setVisible(false);
-      }, duration);
-    } else {
-      setVisible(false);
-    }
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
+    if (!active) return undefined;
+    const timer = setTimeout(() => {
+      setExpired(true);
+    }, duration);
+    return () => clearTimeout(timer);
   }, [active, duration]);
 
+  const visible = active && !expired;
   if (!visible) return null;
 
   return (
@@ -89,7 +91,7 @@ export default function ConfettiEffect({
             borderRadius: p.isCircle ? '50%' : '2px',
             backgroundColor: p.color,
             // @ts-expect-error CSS custom properties
-            '--rotate-end': `${p.rotateDir * (360 + Math.random() * 360)}deg`,
+            '--rotate-end': `${p.rotateEnd}deg`,
             animation: `confetti-fall ${p.duration}ms ease-in ${p.delay}ms forwards`,
           }}
         />

@@ -1,9 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useFormContext } from 'react-hook-form';
-import { useTranslation } from '@/lib/i18n';
 import TypewriterComponent from 'typewriter-effect';
+import { useTranslation } from '@/lib/i18n';
 
 /**
  * 유효성 검사 메시지 컴포넌트
@@ -23,10 +22,8 @@ import TypewriterComponent from 'typewriter-effect';
  * @returns {JSX.Element} 타이핑 효과가 적용된 유효성 검사 메시지를 렌더링합니다.
  */
 export default function ValidationMessage() {
-  const { watch } = useFormContext();
   const { t } = useTranslation('');
   const [focusedField, setFocusedField] = useState<string | null>(null);
-  const [message, setMessage] = useState('');
 
   useEffect(() => {
     const handleFocus = (e: FocusEvent) => {
@@ -51,21 +48,19 @@ export default function ValidationMessage() {
     };
   }, []);
 
-  useEffect(() => {
+  // 포커스된 필드에 따라 안내 메시지를 렌더 중에 계산 (별도 state 불필요)
+  const message = (() => {
     switch (focusedField) {
       case 'email':
-        setMessage(t('signup_validation.emailGuide'));
-        break;
+        return t('signup_validation.emailGuide');
       case 'username':
-        setMessage(t('signup_validation.usernameGuide'));
-        break;
+        return t('signup_validation.usernameGuide');
       case 'password':
-        setMessage(t('signup_validation.passwordGuide'));
-        break;
+        return t('signup_validation.passwordGuide');
       default:
-        setMessage(t('signup_validation.welcome'));
+        return t('signup_validation.welcome');
     }
-  }, [focusedField, t]);
+  })();
 
   return (
     <div className="flex h-full items-center justify-center text-center font-handwriting text-2xl text-gray-700">

@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import type {
   StockPrice,
   StockPricesData,
@@ -154,8 +155,7 @@ export async function GET(
       );
     }
 
-    let stocks: StockPrice[];
-    stocks = await fetchV8ChartAll(symbols);
+    const stocks: StockPrice[] = await fetchV8ChartAll(symbols);
     if (stocks.length === 0) {
       return NextResponse.json(
         {

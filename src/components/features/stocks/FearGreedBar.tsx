@@ -1,13 +1,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useStocksTheme } from './StocksThemeContext';
 import { API_URLS } from '@/constants/apiUrl';
 import TermTooltip from '@/components/features/stocks/detail/TermTooltip';
 import type { FearGreedData } from '@/app/api/stocks/fear-greed/route';
+import { useStocksTheme } from './StocksThemeContext';
 
 // ── 등급 설정 ──────────────────────────────────────────────
-type RatingCfg = { label: string; color: string; bg: string; border: string };
+interface RatingCfg {
+  label: string;
+  color: string;
+  bg: string;
+  border: string;
+}
 
 function getRatingCfg(rating: string | null, score: number | null): RatingCfg {
   const r = rating?.toLowerCase() ?? '';
@@ -264,7 +269,7 @@ function CmpBadge({
 
 // ── 메인 컴포넌트 ─────────────────────────────────────────
 export function FearGreedBar() {
-  const { tokens, theme } = useStocksTheme();
+  const { theme } = useStocksTheme();
   const isDark = theme === 'dark';
   const [data, setData] = useState<FearGreedData | null>(null);
   const [isLoading, setIsLoading] = useState(true);

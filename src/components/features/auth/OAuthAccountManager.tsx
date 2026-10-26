@@ -2,38 +2,46 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { authService } from './authService';
 import { oauthUtils } from '@/lib/auth/oauth';
 import type { LinkedOAuthAccount, OAuthProvider } from '@/types/auth';
+import { authService } from './authService';
 
 /**
  * OAuth 계정 관리 컴포넌트
  * @description 연결된 OAuth 계정 목록 표시 및 연결/해제 기능 제공
  */
-const OAuthAccountManager = () => {
+function OAuthAccountManager() {
   const [linkedAccounts, setLinkedAccounts] = useState<LinkedOAuthAccount[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   /**
-   * 연결된 OAuth 계정 목록 조회
+   * 연결된 OAuth 계정 목록 조회 (응답 도착 후에만 상태 갱신)
+   */
+  const loadLinkedAccounts = () =>
+    authService
+      .getLinkedOAuthAccounts()
+      .then((response) => {
+        if (response.success && response.data?.linkedAccounts) {
+          setLinkedAccounts(response.data.linkedAccounts);
+        }
+      })
+      .catch((error) => {
+        console.error('Failed to fetch linked accounts:', error);
+        setError('연결된 계정을 불러오는데 실패했습니다.');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+
+  /**
+   * 연결된 OAuth 계정 목록 새로고침 (로딩/에러 상태 초기화 후 재조회)
    */
   const fetchLinkedAccounts = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await authService.getLinkedOAuthAccounts();
-
-      if (response.success && response.data?.linkedAccounts) {
-        setLinkedAccounts(response.data.linkedAccounts);
-      }
-    } catch (error) {
-      console.error('Failed to fetch linked accounts:', error);
-      setError('연결된 계정을 불러오는데 실패했습니다.');
-    } finally {
-      setLoading(false);
-    }
+    setLoading(true);
+    setError(null);
+    await loadLinkedAccounts();
   };
 
   /**
@@ -102,8 +110,9 @@ const OAuthAccountManager = () => {
     (provider) => !linkedAccounts.some((account) => account.provider === provider),
   ) as OAuthProvider[];
 
+  // 초기 상태가 이미 loading=true, error=null 이므로 마운트 시에는 조회만 수행
   useEffect(() => {
-    fetchLinkedAccounts();
+    loadLinkedAccounts();
   }, []);
 
   return (
@@ -120,7 +129,7 @@ const OAuthAccountManager = () => {
       {/* 로딩 상태 */}
       {loading ? (
         <div className="py-8 text-center">
-          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-b-2 border-[#2ecc71]"></div>
+          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-b-2 border-[#2ecc71]" />
           <p className="mt-2 text-gray-400">로딩 중...</p>
         </div>
       ) : (
@@ -205,6 +214,6 @@ const OAuthAccountManager = () => {
       )}
     </div>
   );
-};
+}
 
 export default OAuthAccountManager;

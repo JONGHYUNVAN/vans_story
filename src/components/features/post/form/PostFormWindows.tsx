@@ -6,8 +6,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useTranslation } from '@/lib/i18n';
-import { PostFormProps } from '@/types/post';
+import type { PostFormProps } from '@/types/post';
 import { usePost } from '@/hooks/usePost';
 import { WindowManagerProvider, useWindowManager, Window } from '@/components/ui/window';
 import { Taskbar } from '@/components/ui/window/Taskbar';
@@ -28,7 +27,6 @@ function PostFormWindowsContent({
   onError,
   redirectPath,
 }: PostFormProps) {
-  const { t } = useTranslation('');
   const { createWindow, windows } = useWindowManager();
 
   // 통합 Post 훅 사용
@@ -166,7 +164,7 @@ function PostFormWindowsContent({
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-900">
         <div className="flex flex-col items-center gap-4">
-          <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-blue-500"></div>
+          <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-blue-500" />
           <span className="text-white">포스트를 불러오는 중...</span>
         </div>
       </div>
@@ -235,7 +233,7 @@ function PostFormWindowsContent({
             >
               {isSaving ? (
                 <span className="flex items-center justify-center gap-2">
-                  <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
+                  <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-white" />
                   <span className="text-sm">{mode === 'create' ? '작성 중...' : '수정 중...'}</span>
                 </span>
               ) : (
@@ -255,7 +253,7 @@ function PostFormWindowsContent({
             {/* 상태 표시 */}
             {hasUnsavedChanges && (
               <div className="flex items-center justify-center gap-1.5 rounded-lg border border-yellow-200 bg-yellow-50 py-2 text-xs text-yellow-700">
-                <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-yellow-500"></div>
+                <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-yellow-500" />
                 <span>저장되지 않은 변경사항이 있습니다</span>
               </div>
             )}
@@ -289,7 +287,7 @@ function PostFormWindowsContent({
 
       {/* 미리보기 윈도우 */}
       <Window id="preview-window" icon={<PreviewWindowIcon />}>
-        <PreviewWindowContent post={formData} showCard={true} showLayout={true} />
+        <PreviewWindowContent post={formData} showCard showLayout />
       </Window>
 
       {/* AI 채팅 윈도우 */}

@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { X, Sparkles, FileText, BookOpen } from 'lucide-react';
 import { sendChatMessage } from '@/lib/ai/clientActions';
 
@@ -36,12 +36,15 @@ export function AiGenerateModal({
   const [additionalInfo, setAdditionalInfo] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
 
-  // 모달이 열릴 때마다 postContext에서 topic 업데이트
-  useEffect(() => {
-    if (isOpen && postContext?.topic) {
-      setTopic(postContext.topic);
+  // 모달이 열릴 때마다 postContext에서 topic 업데이트 (렌더 중 이전 값과 비교해 동기화)
+  const contextTopic = postContext?.topic;
+  const [prevSync, setPrevSync] = useState({ isOpen, contextTopic });
+  if (prevSync.isOpen !== isOpen || prevSync.contextTopic !== contextTopic) {
+    setPrevSync({ isOpen, contextTopic });
+    if (isOpen && contextTopic) {
+      setTopic(contextTopic);
     }
-  }, [isOpen, postContext?.topic]);
+  }
 
   if (!isOpen) return null;
 

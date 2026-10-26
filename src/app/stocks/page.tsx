@@ -1,4 +1,4 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import StocksClient from '@/app/stocks/_components/StocksClient';
 
 export const metadata: Metadata = {

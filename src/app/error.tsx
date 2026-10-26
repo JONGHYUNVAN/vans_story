@@ -2,9 +2,8 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { FaHome } from 'react-icons/fa';
+import { FaHome, FaTools, FaHammer } from 'react-icons/fa';
 import { BiError } from 'react-icons/bi';
-import { FaTools, FaHammer } from 'react-icons/fa';
 
 export default function Error({
   error,
@@ -61,15 +60,15 @@ export default function Error({
               <div
                 className="h-3 w-3 animate-pulse rounded-full bg-yellow-500"
                 style={{ animationDuration: '1s' }}
-              ></div>
+              />
               <div
                 className="h-3 w-3 animate-pulse rounded-full bg-yellow-500"
                 style={{ animationDuration: '1s', animationDelay: '0.2s' }}
-              ></div>
+              />
               <div
                 className="h-3 w-3 animate-pulse rounded-full bg-yellow-500"
                 style={{ animationDuration: '1s', animationDelay: '0.4s' }}
-              ></div>
+              />
             </div>
 
             <h2 className="text-2xl font-semibold text-yellow-300/90">열심히 개발 중입니다</h2>

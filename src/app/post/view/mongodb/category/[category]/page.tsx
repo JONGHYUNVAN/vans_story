@@ -1,4 +1,3 @@
-import { API_URLS } from '@/constants/apiUrl';
 import MongodbLayout from '@/app/post/view/mongodb/_components/MongodbLayout';
 import { SidebarWrapper } from '@/app/post/view/_components/SidebarWrapper';
 import MongodbList from '@/app/post/view/mongodb/_components/MongodbList';

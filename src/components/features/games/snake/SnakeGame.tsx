@@ -1,16 +1,15 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { GameComponentProps } from '@/app/games/[gameId]/_components/GamePageClient';
+import type { GameComponentProps } from '@/app/games/[gameId]/_components/GamePageClient';
 import { useScreenShake } from '@/hooks/useScreenShake';
 import { useSound } from '@/hooks/useSound';
 import { useCombo } from '@/hooks/useCombo';
 import { useGameSize } from '@/hooks/useGameSize';
 import ParticleEffect from '@/components/features/games/effects/ParticleEffect';
 import FlashOverlay from '@/components/features/games/effects/FlashOverlay';
-import GameOverlayController, {
-  Direction as OverlayDirection,
-} from '@/components/features/games/GameOverlayController';
+import type { Direction as OverlayDirection } from '@/components/features/games/GameOverlayController';
+import GameOverlayController from '@/components/features/games/GameOverlayController';
 
 const GRID_SIZE = 20;
 const INITIAL_SPEED = 150;
@@ -99,7 +98,6 @@ export default function SnakeGame({
   const { playMoveTick, playCombo, playScore } = useSound();
   const combo = useCombo();
   const [particles, setParticles] = useState<ParticleItem[]>([]);
-  const [flashActive, setFlashActive] = useState(false);
   const particleIdRef = useRef(0);
   const prevScoreRef = useRef(0);
   const prevFoodRef = useRef<Point | null>(null);
@@ -119,7 +117,6 @@ export default function SnakeGame({
   useEffect(() => {
     if (state.gameStatus === 'gameover') {
       triggerShake(10, 500);
-      setFlashActive(true);
     }
     if (state.score > prevScoreRef.current && state.gameStatus === 'playing') {
       const prevFood = prevFoodRef.current;
@@ -478,11 +475,11 @@ export default function SnakeGame({
             }}
             className="mx-auto rounded-lg border border-gray-700"
           />
+          {/* 게임오버 상태에서 파생 (FlashOverlay가 상승 에지에서 한 번만 번쩍임) */}
           <FlashOverlay
-            active={flashActive}
+            active={state.gameStatus === 'gameover'}
             color="rgba(239,68,68,0.35)"
             duration={400}
-            onDone={() => setFlashActive(false)}
           />
           {particles.map((p) => (
             <ParticleEffect

@@ -82,7 +82,7 @@ export async function GET() {
         updatedAt: new Date().toISOString(),
       },
     });
-  } catch (err) {
+  } catch (_err) {
     return NextResponse.json(
       {
         success: false,

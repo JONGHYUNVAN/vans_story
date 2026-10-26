@@ -2,15 +2,15 @@
 
 import { ApiFetch } from '@/lib/api/apiFetch';
 
-export type ChatRequest = {
+export interface ChatRequest {
   message: string;
   model?: string; // 선택사항, 기본값: gpt-4.1-nano
   max_tokens?: number; // 선택사항, 기본값: 1000
   temperature?: number; // 선택사항, 기본값: 0.7 (0=일관적, 2=창의적)
   reasoning_effort?: 'low' | 'medium' | 'high'; // 선택사항, 추론 깊이
-};
+}
 
-export type ChatResponse = {
+export interface ChatResponse {
   id: string;
   message: string;
   model: string;
@@ -21,7 +21,7 @@ export type ChatResponse = {
     completion_tokens: number;
     total_tokens: number;
   };
-};
+}
 
 /**
  * AI 채팅 메시지 전송 (인증 토큰 포함)

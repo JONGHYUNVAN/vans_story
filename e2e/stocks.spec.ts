@@ -600,7 +600,6 @@ test.describe('주가 대시보드 (/stocks) E2E 테스트', () => {
       await page.goto('/stocks');
 
       // DART 탭 영역에서 삼성전자 버튼 확인
-      const dartSection = page.locator('h2').filter({ hasText: 'DART 공시' }).locator('../..');
       const samsungDartTab = page.locator('button').filter({ hasText: '삼성전자' }).nth(1);
       await expect(samsungDartTab).toBeVisible({ timeout: 10_000 });
     });
@@ -867,15 +866,12 @@ test.describe('주가 대시보드 (/stocks) E2E 테스트', () => {
   test.describe('시나리오 7: 뉴스 탭 전환', () => {
     test('뉴스 섹션에서 다른 종목 탭 클릭 시 API가 재호출된다', async ({ page }) => {
       let newsCallCount = 0;
-      let lastNewsSymbol = '';
 
       await setupApiMocks(page);
 
       // 뉴스 API를 별도로 오버라이드
       await page.route('**/api/stocks/news**', (route: Route) => {
         newsCallCount++;
-        const url = new URL(route.request().url());
-        lastNewsSymbol = url.searchParams.get('symbol') || '';
         route.fulfill({
           status: 200,
           contentType: 'application/json',

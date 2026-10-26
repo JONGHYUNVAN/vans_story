@@ -1,5 +1,4 @@
 import { Viewer } from '@/components/features/post/viewer/Viewer';
-import { Post } from '@/types/post';
 import DockerLayout from '@/app/post/view/docker/_components/DockerLayout';
 import { SidebarWrapper } from '@/app/post/view/_components/SidebarWrapper';
 import { getPostWithViewCount } from '@/lib/posts/clientActions';

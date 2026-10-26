@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     }
 
     return response;
-  } catch (error) {
+  } catch (_error) {
     return new NextResponse(null, { status: 500 });
   }
 }

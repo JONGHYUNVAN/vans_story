@@ -94,7 +94,7 @@ export function CertificationsSection() {
 
         {/* Certifications Grid */}
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {certifications.map((cert, index) => (
+          {certifications.map((cert) => (
             <div
               key={cert.name}
               className={`rounded-lg border-2 p-6 transition-all duration-300 hover:shadow-lg ${cert.color} hover:scale-105`}

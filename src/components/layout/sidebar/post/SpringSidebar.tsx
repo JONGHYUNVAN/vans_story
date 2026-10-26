@@ -39,8 +39,8 @@ export default function SpringSidebar() {
       // 커스텀 배경 레이어 렌더러 (Spring 전용 그라데이션 배경)
       backgroundLayerRenderer={() => (
         <>
-          <div className="absolute inset-0 z-0 bg-gradient-to-b from-[#2f3b22] to-[#0a100d]"></div>
-          <div className="absolute inset-0 z-0 bg-[url('/spring-pattern.png')] bg-repeat opacity-5"></div>
+          <div className="absolute inset-0 z-0 bg-gradient-to-b from-[#2f3b22] to-[#0a100d]" />
+          <div className="absolute inset-0 z-0 bg-[url('/spring-pattern.png')] bg-repeat opacity-5" />
         </>
       )}
     />

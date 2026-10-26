@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect, forwardRef, useCallback } from 'react';
 import { useAutocomplete } from '@/hooks/useAutocomplete';
-import { AutocompleteSuggestion } from '@/types/api/search';
+import type { AutocompleteSuggestion } from '@/types/api/search';
 
 interface AutocompleteInputProps {
   /** 입력 필드의 값 */
@@ -45,14 +45,12 @@ export const AutocompleteInput = forwardRef<HTMLInputElement, AutocompleteInputP
       placeholder,
       className = '',
       inputClassName = '',
-      dropdownClassName = '',
       disabled = false,
       minLength = 2,
       limit = 10,
       debounceMs = 300,
       language = 'all',
       inputProps = {},
-      ...rest
     },
     ref,
   ) => {
@@ -107,7 +105,7 @@ export const AutocompleteInput = forwardRef<HTMLInputElement, AutocompleteInputP
     };
 
     // 마우스로 제안 선택
-    const handleSuggestionClick = (suggestion: AutocompleteSuggestion, index: number) => {
+    const handleSuggestionClick = (suggestion: AutocompleteSuggestion) => {
       handleSuggestionSelect(suggestion);
     };
 
@@ -162,7 +160,7 @@ export const AutocompleteInput = forwardRef<HTMLInputElement, AutocompleteInputP
 
     return (
       <div ref={containerRef} className={`relative ${className}`}>
-        <style jsx>{`
+        <style>{`
           @keyframes slideInUp {
             from {
               opacity: 0;
@@ -200,7 +198,7 @@ export const AutocompleteInput = forwardRef<HTMLInputElement, AutocompleteInputP
           {/* 로딩 인디케이터 */}
           {isLoading && (
             <div className="absolute right-3 top-1/2 z-10 -translate-y-1/2 transform">
-              <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-blue-500"></div>
+              <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-blue-500" />
             </div>
           )}
         </div>
@@ -240,7 +238,7 @@ export const AutocompleteInput = forwardRef<HTMLInputElement, AutocompleteInputP
                       animationDelay: `${index * 50}ms`,
                       animation: isOpen ? 'slideInUp 0.4s ease-out forwards' : 'none',
                     }}
-                    onClick={() => handleSuggestionClick(suggestion, index)}
+                    onClick={() => handleSuggestionClick(suggestion)}
                     onMouseEnter={() => handleSuggestionMouseEnter(index)}
                   >
                     <span className="transform text-lg transition-transform duration-200 hover:scale-110">

@@ -17,7 +17,7 @@ import {
 } from 'react-icons/si';
 import { TbBinaryTree2, TbDatabase } from 'react-icons/tb';
 import { RiShieldKeyholeLine } from 'react-icons/ri';
-import { IconType } from 'react-icons';
+import type { IconType } from 'react-icons';
 
 /**
  * 아이콘 이름과 실제 아이콘 컴포넌트 매핑

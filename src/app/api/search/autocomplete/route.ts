@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
 import { API_CONFIG } from '@/constants/apiConfig';
 import { proxyGet } from '@/lib/api/apiProxy';
 import { createSuccessResponse } from '@/lib/api/errorHandler';

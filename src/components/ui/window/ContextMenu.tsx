@@ -102,7 +102,7 @@ export function ContextMenu({ items, position, onClose, isOpen }: ContextMenuPro
         }}
       >
         <div className="overflow-hidden rounded-lg border border-gray-700/50 bg-[#2b2b2b]/95 py-1 shadow-2xl backdrop-blur-xl">
-          {items.map((item, index) => (
+          {items.map((item) => (
             <React.Fragment key={item.id}>
               {item.separator ? (
                 <div className="my-1 h-px bg-gray-700/50" />

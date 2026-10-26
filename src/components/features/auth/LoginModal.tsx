@@ -1,26 +1,30 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { useSelector } from 'react-redux';
-import { RootState } from '@/store/store';
+import type { RootState } from '@/store/store';
 import { useAppDispatch } from '@/store/hooks';
 import { closeLoginModal } from '@/store/modal/slice';
-import { authService } from './authService';
 import {
   loginFailure,
   loginStart,
   loginSuccess,
   loginFinish,
   oauthStart,
-  oauthSuccess,
   oauthFailure,
   oauthFinish,
 } from '@/store/auth/slice';
 import { useTranslation } from '@/lib/i18n';
 import { showWelcomeAlert } from '@/lib/alerts';
+import { authService } from './authService';
 
-const LoginModal = () => {
+// localStorage에 저장된 이메일 읽기 (useSyncExternalStore용, 서버에서는 빈 문자열)
+const subscribeNoop = () => () => {};
+const getSavedEmail = () => localStorage.getItem('savedEmail') ?? '';
+const getServerSavedEmail = () => '';
+
+function LoginModal() {
   const dispatch = useAppDispatch();
   const isOpen = useSelector((state: RootState) => state.modal.isLoginModalOpen);
   const [passwordError, setPasswordError] = useState('');
@@ -29,17 +33,12 @@ const LoginModal = () => {
   const oauthLoading = useSelector((state: RootState) => state.auth.oauthLoading);
   const oauthProvider = useSelector((state: RootState) => state.auth.oauthProvider);
   const oauthError = useSelector((state: RootState) => state.auth.oauthError);
-  const [saveEmail, setSaveEmail] = useState(false);
-  const [email, setEmail] = useState('');
-
-  // 저장된 이메일 불러오기
-  useEffect(() => {
-    const savedEmail = localStorage.getItem('savedEmail');
-    if (savedEmail) {
-      setEmail(savedEmail);
-      setSaveEmail(true);
-    }
-  }, []);
+  // 저장된 이메일 불러오기 (사용자가 입력하기 전까지는 저장된 값을 기본값으로 사용)
+  const savedEmail = useSyncExternalStore(subscribeNoop, getSavedEmail, getServerSavedEmail);
+  const [emailInput, setEmailInput] = useState<string | null>(null);
+  const [saveEmailInput, setSaveEmailInput] = useState<boolean | null>(null);
+  const email = emailInput ?? savedEmail;
+  const saveEmail = saveEmailInput ?? savedEmail !== '';
 
   /**
    * 로그인 폼 제출 핸들러
@@ -153,8 +152,8 @@ const LoginModal = () => {
           <div className="flex h-auto items-center justify-center">
             {/* 로그인 이미지 */}
             <Image
-              src={`/login.webp`}
-              alt={`login`}
+              src="/login.webp"
+              alt="login"
               width={400}
               height={900}
               className="rounded-l-xl"
@@ -171,7 +170,7 @@ const LoginModal = () => {
                   type="email"
                   name="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => setEmailInput(e.target.value)}
                   inputMode="email"
                   placeholder="User Email"
                   className="mx-auto mb-5 mt-5 block w-3/5 rounded-full border-2 border-[#3498db] bg-transparent p-3 text-center text-white outline-none transition-all duration-200 focus:w-[300px] focus:border-[#2ecc71]"
@@ -194,13 +193,13 @@ const LoginModal = () => {
                       type="checkbox"
                       id="saveEmail"
                       checked={saveEmail}
-                      onChange={(e) => setSaveEmail(e.target.checked)}
+                      onChange={(e) => setSaveEmailInput(e.target.checked)}
                       className="peer sr-only" // 원래 체크박스는 숨김
                     />
                     <div
-                      onClick={() => setSaveEmail(!saveEmail)}
+                      onClick={() => setSaveEmailInput(!saveEmail)}
                       className="h-5 w-5 cursor-pointer rounded-md border-2 border-[#3498db] transition-all duration-200 after:absolute after:left-1/2 after:top-1/2 after:block after:h-3 after:w-2 after:-translate-x-1/2 after:-translate-y-[70%] after:rotate-45 after:border-b-2 after:border-r-2 after:border-white after:opacity-0 after:transition-opacity after:content-[''] peer-checked:border-[#2ecc71] peer-checked:bg-[#2ecc71]/20 peer-checked:shadow-[0_0_10px_#2ecc71] peer-checked:after:opacity-100 peer-focus:ring-2 peer-focus:ring-[#2ecc71]/50"
-                    ></div>
+                    />
                   </div>
                   <label
                     htmlFor="saveEmail"
@@ -235,7 +234,7 @@ const LoginModal = () => {
 
                 {/* 로그인 및 회원가입 안내 */}
                 <div className="my-5 mt-10 flex items-center justify-center">
-                  <div className="flex-grow border-t border-gray-600"></div>
+                  <div className="flex-grow border-t border-gray-600" />
                   {isLoading ? (
                     <p className="px-4 text-gray-300">Logging in... wait a second</p>
                   ) : (
@@ -243,7 +242,7 @@ const LoginModal = () => {
                       Need new account?
                     </a>
                   )}
-                  <div className="flex-grow border-t border-gray-600"></div>
+                  <div className="flex-grow border-t border-gray-600" />
                 </div>
 
                 {/* 로그인 버튼 */}
@@ -302,6 +301,6 @@ const LoginModal = () => {
       </div>
     </div>
   );
-};
+}
 
 export default LoginModal;

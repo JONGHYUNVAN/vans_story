@@ -1,4 +1,4 @@
-import { Post } from '@/types/post';
+import type { Post } from '@/types/post';
 import { Viewer } from '@/components/features/post/viewer/Viewer';
 
 export function ViewPostContent({ post }: { post: Post }) {

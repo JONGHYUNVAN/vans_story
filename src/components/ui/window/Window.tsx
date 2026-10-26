@@ -9,7 +9,7 @@ import { createPortal } from 'react-dom';
 import { TitleBar } from './TitleBar';
 import { ResizeHandles } from './ResizeHandle';
 import { useWindowManager } from './WindowContext';
-import { Position, Size, ResizeDirection } from './types';
+import type { ResizeDirection } from './types';
 
 // Throttle 함수 - 성능 최적화
 function throttle<T extends (...args: any[]) => void>(func: T, limit: number): T {
@@ -144,7 +144,7 @@ export function Window({ id, children, className = '', icon: iconProp }: WindowP
       updateWindowPosition(id, { x: newX, y: newY });
     }, 16);
 
-    const handleMouseUp = (e: MouseEvent) => {
+    const handleMouseUp = () => {
       setIsDragging(false);
 
       // 스냅 처리

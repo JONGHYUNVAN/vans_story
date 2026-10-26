@@ -31,8 +31,7 @@ import yaml from 'highlight.js/lib/languages/yaml';
 import bash from 'highlight.js/lib/languages/bash';
 import markdown from 'highlight.js/lib/languages/markdown';
 import Youtube from '@tiptap/extension-youtube';
-import { Extension, Editor } from '@tiptap/core';
-import { RawCommands } from '@tiptap/core';
+
 import { ResizableDraggableImage } from './ResizableDraggableImage';
 import { AiDiffBlock } from './AiDiffBlockExtension';
 

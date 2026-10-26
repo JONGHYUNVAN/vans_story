@@ -1,8 +1,7 @@
 'use client';
 
 import { SiNextdotjs } from 'react-icons/si';
-import { ReactNode } from 'react';
-import { useSidebarMargin } from '@/hooks/useSidebarMargin';
+import type { ReactNode } from 'react';
 
 interface NextjsLayoutProps {
   children: ReactNode;
@@ -10,13 +9,9 @@ interface NextjsLayoutProps {
   isPreview?: boolean;
 }
 
-export default function NextjsLayout({ children, title, isPreview = false }: NextjsLayoutProps) {
-  const { shouldApplyMargin = false } = isPreview
-    ? { shouldApplyMargin: false }
-    : useSidebarMargin();
-
+export default function NextjsLayout({ children, title }: NextjsLayoutProps) {
   return (
-    <div className={`transition-all duration-300`}>
+    <div className="transition-all duration-300">
       <div className="relative left-auto min-h-screen overflow-hidden bg-black">
         {/* 그리드 배경 */}
         <div

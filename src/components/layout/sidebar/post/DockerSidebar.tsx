@@ -39,7 +39,7 @@ export default function DockerSidebar() {
       // 커스텀 배경 레이어 렌더러 (Docker 전용 그라데이션 배경)
       backgroundLayerRenderer={() => (
         <>
-          <div className="absolute inset-0 z-0 bg-gradient-to-b from-[#121920] to-[#0a1017]"></div>
+          <div className="absolute inset-0 z-0 bg-gradient-to-b from-[#121920] to-[#0a1017]" />
           {/* GitHub 아이콘 대신 단순 그라데이션 배경 사용 */}
         </>
       )}

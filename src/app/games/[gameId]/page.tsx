@@ -1,7 +1,7 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import { getGameById, GAMES } from '@/constants/games';
 import GamePageClient from '@/app/games/[gameId]/_components/GamePageClient';
-import { notFound } from 'next/navigation';
 
 export function generateStaticParams() {
   return GAMES.map((g) => ({ gameId: g.id }));

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface Particle {
   id: number;
@@ -26,7 +26,11 @@ export default function ParticleEffect({
   onDone,
 }: ParticleEffectProps) {
   const onDoneRef = useRef(onDone);
-  onDoneRef.current = onDone;
+
+  // 최신 onDone 콜백을 ref에 유지 (렌더 중 ref 쓰기 방지)
+  useEffect(() => {
+    onDoneRef.current = onDone;
+  }, [onDone]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -35,13 +39,16 @@ export default function ParticleEffect({
     return () => clearTimeout(timer);
   }, []);
 
-  const particles: Particle[] = Array.from({ length: count }, (_, i) => ({
-    id: i,
-    angle: (360 / count) * i,
-    distance: 20 + Math.random() * 20,
-    size: 4 + Math.floor(Math.random() * 5),
-    opacity: 0.8 + Math.random() * 0.2,
-  }));
+  // 파티클 랜덤 값은 마운트 시 한 번만 생성 (렌더 중 Math.random 호출 방지)
+  const [particles] = useState<Particle[]>(() =>
+    Array.from({ length: count }, (_, i) => ({
+      id: i,
+      angle: (360 / count) * i,
+      distance: 20 + Math.random() * 20,
+      size: 4 + Math.floor(Math.random() * 5),
+      opacity: 0.8 + Math.random() * 0.2,
+    })),
+  );
 
   return (
     <div

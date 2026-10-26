@@ -4,11 +4,11 @@ import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import type { ChartDataPoint } from '@/types/stocks';
 import { useStocksTheme } from '@/components/features/stocks/StocksThemeContext';
 import { API_URLS } from '@/constants/apiUrl';
-import TermTooltip from './TermTooltip';
 import {
   formatPriceDetailed as fmtPrice,
   formatVolumeCompact as fmtVol,
 } from '@/lib/stocks/stockFormatting';
+import TermTooltip from './TermTooltip';
 
 // ───────────────────────────── types ─────────────────────────────
 type ChartRange = '1D' | '1W' | '1M' | '3M' | '6M' | '1Y';
@@ -161,9 +161,20 @@ export default function PriceChart({
   );
   const [showPrevClose, setShowPrevClose] = useState(false);
   const [chartData, setChartData] = useState<ChartDataPoint[]>(initialData);
-  const [isFetching, setIsFetching] = useState(false);
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
+
+  // range/symbol이 바뀌면 렌더 중에 로딩 상태·호버를 초기화 (effect 내 동기 setState 방지)
+  const fetchKey = symbol ? `${symbol}|${range}` : null;
+  const [isFetching, setIsFetching] = useState(fetchKey !== null);
+  const [prevFetchKey, setPrevFetchKey] = useState(fetchKey);
+  if (prevFetchKey !== fetchKey) {
+    setPrevFetchKey(fetchKey);
+    if (fetchKey !== null) {
+      setIsFetching(true);
+      setHoverIdx(null);
+    }
+  }
 
   // 부모가 인라인 콜백을 넘겨 매 렌더 참조가 바뀌므로, ref로 최신값을 잡아
   // effect가 range/symbol 변화에만 반응하도록 한다
@@ -174,8 +185,6 @@ export default function PriceChart({
 
   useEffect(() => {
     if (!symbol) return;
-    setIsFetching(true);
-    setHoverIdx(null);
     fetch(`${API_URLS.STOCKS.CHART}?symbol=${encodeURIComponent(symbol)}&range=${range}`)
       .then((r) => r.json())
       .then((j) => {
@@ -311,8 +320,6 @@ export default function PriceChart({
     [chartData],
   );
 
-  const xScale = (i: number) =>
-    PAD.left + (chartData.length <= 1 ? 0 : (i / (chartData.length - 1)) * CHART_W);
   const yMain = (p: number) => mainY1 + (1 - (p - minP) / pRange) * MAIN_H;
   const yVol = (v: number) => volY2 - (v / maxVol) * VOL_H;
   const yRsi = (r: number) => rsiY1 + (1 - r / 100) * RSI_H;

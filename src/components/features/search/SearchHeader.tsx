@@ -2,10 +2,9 @@
 
 import { useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
-import { handleSearch } from '@/app/search/actions';
-import { AutocompleteInput } from '@/components/ui/AutocompleteInput';
-import { AutocompleteSuggestion } from '@/types/api/search';
 import { useRouter } from 'next/navigation';
+import { AutocompleteInput } from '@/components/ui/AutocompleteInput';
+import type { AutocompleteSuggestion } from '@/types/api/search';
 
 interface SearchHeaderProps {
   query: string;
@@ -49,7 +48,7 @@ export default function SearchHeader({ query }: SearchHeaderProps) {
             limit={8}
             debounceMs={300}
           />
-          <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/10 to-blue-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+          <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/10 to-blue-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
         </div>
         <button
           type="submit"
@@ -67,9 +66,9 @@ export default function SearchHeader({ query }: SearchHeaderProps) {
             검색 결과
           </h1>
           <p className="text-xl text-white/80">
-            <span className="text-white/60">"</span>
+            <span className="text-white/60">&quot;</span>
             <span className="font-semibold text-purple-300">{query}</span>
-            <span className="text-white/60">"</span>
+            <span className="text-white/60">&quot;</span>
             <span className="text-white/70"> 에 대한 결과입니다</span>
           </p>
         </div>

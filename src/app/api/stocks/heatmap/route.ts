@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { SECTOR_HEATMAP_STOCKS, SectorHeatmapItem } from '@/types/stocks';
+import type { SectorHeatmapItem } from '@/types/stocks';
+import { SECTOR_HEATMAP_STOCKS } from '@/types/stocks';
 
 const YAHOO_HEADERS = {
   'User-Agent':
@@ -137,7 +138,7 @@ export async function GET() {
     });
 
     return NextResponse.json({ success: true, data });
-  } catch (err) {
+  } catch {
     return NextResponse.json(
       {
         success: false,

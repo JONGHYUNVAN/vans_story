@@ -3,8 +3,6 @@
  * 기존 themes.ts를 대체하며 명확한 네이밍 사용
  */
 
-import { MainCategoryOption, SubCategoryOption } from '@/types/post';
-import { main_categories } from './categoryThemes';
 import {
   SiNestjs,
   SiSpring,
@@ -19,6 +17,15 @@ import {
 } from 'react-icons/si';
 import { TbBinaryTree2, TbDatabase } from 'react-icons/tb';
 import { RiShieldKeyholeLine } from 'react-icons/ri';
+import type { MainCategoryOption, SubCategoryOption } from '@/types/post';
+import koMessages from '@/messages/ko.json';
+import enMessages from '@/messages/en.json';
+
+// 언어별 번역 데이터 (동적 require 대신 정적 import 후 언어 키로 선택)
+const MESSAGES_BY_LANGUAGE: Record<string, any> = {
+  ko: koMessages,
+  en: enMessages,
+};
 
 // 카테고리 그룹 타입
 export type CategoryGroup = 'frontend' | 'backend' | 'database' | 'devops' | 'testing' | 'cs';
@@ -102,8 +109,8 @@ export const getSubCategoriesByMainCategory = (
   language: string = 'ko',
 ): SubCategoryOption[] => {
   try {
-    // 동적으로 번역 데이터 가져오기
-    const messages = require(`@/messages/${language}.json`);
+    // 언어에 맞는 번역 데이터 가져오기
+    const messages = MESSAGES_BY_LANGUAGE[language];
     const categoryName =
       MAIN_CATEGORY_NAME_MAPPING[mainCategory] ||
       mainCategory.charAt(0).toUpperCase() + mainCategory.slice(1);
@@ -116,7 +123,7 @@ export const getSubCategoriesByMainCategory = (
 
     // 모든 카테고리의 items를 하나의 배열로 변환
     const subCategories: SubCategoryOption[] = [];
-    Object.entries(categoryData.categories).forEach(([categoryKey, category]: [string, any]) => {
+    Object.values(categoryData.categories).forEach((category: any) => {
       if (category.items) {
         Object.entries(category.items).forEach(([itemKey, item]: [string, any]) => {
           subCategories.push({

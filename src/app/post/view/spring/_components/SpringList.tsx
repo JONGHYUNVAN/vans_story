@@ -1,18 +1,16 @@
 'use client';
 
 import { SiSpring } from 'react-icons/si';
-import PostCard from '@/components/features/post/postcard/spring/PostCard';
-import { useTranslation } from '@/lib/i18n';
-import { PostInfo } from '@/types/post';
-import { sortPosts } from '@/components/features/post/sort/sortPosts';
 import Link from 'next/link';
+import PostCard from '@/components/features/post/postcard/spring/PostCard';
+import type { PostInfo } from '@/types/post';
+import { sortPosts } from '@/components/features/post/sort/sortPosts';
 
 interface SpringListProps {
   posts: PostInfo[];
 }
 
 export default function SpringList({ posts }: SpringListProps) {
-  const { t } = useTranslation('post');
   const sortedPosts = sortPosts(posts, 'latest');
 
   return (

@@ -30,12 +30,12 @@ export default function NotFound() {
       </div>
 
       <div className="relative z-10 w-full max-w-xl overflow-hidden rounded-xl border border-gray-700/50 bg-gray-900/60 shadow-2xl backdrop-blur-lg">
-        <div className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500"></div>
+        <div className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500" />
 
         <div className="p-8">
           <div className="mb-6 flex items-center justify-center">
             <div className="relative">
-              <div className="absolute inset-0 animate-pulse rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 opacity-30 blur-lg"></div>
+              <div className="absolute inset-0 animate-pulse rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 opacity-30 blur-lg" />
               <div className="relative rounded-full border border-gray-700 bg-gradient-to-br from-gray-800 to-gray-900 p-4">
                 <MdConstruction className="h-12 w-12 text-yellow-400" />
               </div>

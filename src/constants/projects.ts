@@ -1,4 +1,4 @@
-import { Project } from '@/types/project';
+import type { Project } from '@/types/project';
 
 /**
  * 주가 대시보드 프로젝트 데이터

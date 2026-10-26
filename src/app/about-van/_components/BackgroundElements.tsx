@@ -2,8 +2,26 @@
 
 import { useEffect, useState } from 'react';
 
+interface Particle {
+  left: string;
+  top: string;
+  animationDelay: string;
+  animationDuration: string;
+}
+
+// 파티클 위치는 마운트 시 1회만 생성 (렌더 중 Math.random 호출 방지)
+function createParticles(count: number): Particle[] {
+  return Array.from({ length: count }, () => ({
+    left: `${Math.random() * 100}%`,
+    top: `${Math.random() * 100}%`,
+    animationDelay: `${Math.random() * 3}s`,
+    animationDuration: `${2 + Math.random() * 3}s`,
+  }));
+}
+
 export function BackgroundElements() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [particles] = useState(() => createParticles(20));
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -32,16 +50,11 @@ export function BackgroundElements() {
 
       {/* Floating particles */}
       <div className="absolute inset-0">
-        {[...Array(20)].map((_, i) => (
+        {particles.map((particle, i) => (
           <div
             key={i}
             className="absolute h-1 w-1 animate-pulse rounded-full bg-blue-400"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${2 + Math.random() * 3}s`,
-            }}
+            style={particle}
           />
         ))}
       </div>

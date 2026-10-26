@@ -17,44 +17,56 @@ interface DartSectionProps {
   fixedSymbol?: string;
 }
 
+interface DartResult {
+  /** 어떤 요청(symbol:재시도 횟수)에 대한 결과인지 */
+  requestKey: string;
+  disclosures: DartDisclosure[];
+  isError: boolean;
+}
+
 export default function DartSection({ fixedSymbol }: DartSectionProps = {}) {
   const { tokens: t } = useStocksTheme();
   const d = t.dart;
   const [selectedSymbol, setSelectedSymbol] = useState<string>(fixedSymbol ?? KR_STOCKS[0].symbol);
 
-  useEffect(() => {
+  // fixedSymbol prop이 바뀌면 렌더 중에 선택 종목 동기화
+  const [prevFixedSymbol, setPrevFixedSymbol] = useState(fixedSymbol);
+  if (prevFixedSymbol !== fixedSymbol) {
+    setPrevFixedSymbol(fixedSymbol);
     if (fixedSymbol) setSelectedSymbol(fixedSymbol);
-  }, [fixedSymbol]);
-  const [disclosures, setDisclosures] = useState<DartDisclosure[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [isDartKeyMissing, setIsDartKeyMissing] = useState(false);
+  }
 
-  const fetchDart = useCallback(async (symbol: string) => {
-    setIsLoading(true);
-    setIsError(false);
-    setIsDartKeyMissing(false);
+  // 요청 키와 결과 키를 비교해 로딩 여부를 파생 (effect 내 동기 setState 없이 처리)
+  const [retryCount, setRetryCount] = useState(0);
+  const requestKey = `${selectedSymbol}:${retryCount}`;
+  const [result, setResult] = useState<DartResult | null>(null);
+  const isLoading = result?.requestKey !== requestKey;
+  const disclosures = result?.disclosures ?? [];
+  const isError = result?.isError ?? false;
+  const isDartKeyMissing = false;
 
-    try {
-      const res = await fetch(`${API_URLS.STOCKS.DART}?symbol=${encodeURIComponent(symbol)}`);
-      const json: StocksApiResponse<DartData> = await res.json();
-
-      if (json.success) {
-        setDisclosures(json.data.disclosures);
-      } else {
-        throw new Error(json.error.message);
-      }
-    } catch {
-      setIsError(true);
-      setDisclosures([]);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const retry = useCallback(() => setRetryCount((c) => c + 1), []);
 
   useEffect(() => {
-    fetchDart(selectedSymbol);
-  }, [selectedSymbol, fetchDart]);
+    let cancelled = false;
+
+    fetch(`${API_URLS.STOCKS.DART}?symbol=${encodeURIComponent(selectedSymbol)}`)
+      .then((res) => res.json())
+      .then((json: StocksApiResponse<DartData>) => {
+        if (!json.success) throw new Error(json.error.message);
+        if (!cancelled) {
+          setResult({ requestKey, disclosures: json.data.disclosures, isError: false });
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setResult({ requestKey, disclosures: [], isError: true });
+      });
+
+    // 종목 변경·재시도 시 이전 요청의 응답은 무시
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedSymbol, requestKey]);
 
   const selectedStock = KR_STOCKS.find((s) => s.symbol === selectedSymbol);
 
@@ -97,7 +109,7 @@ export default function DartSection({ fixedSymbol }: DartSectionProps = {}) {
       ) : isError ? (
         <div className="flex flex-col items-center justify-center gap-3 py-8">
           <p className={d.empty}>공시를 불러오지 못했습니다.</p>
-          <button type="button" onClick={() => fetchDart(selectedSymbol)} className={d.retry}>
+          <button type="button" onClick={retry} className={d.retry}>
             다시 시도
           </button>
         </div>

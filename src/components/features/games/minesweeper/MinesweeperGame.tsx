@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef } from 'react';
-import { GameComponentProps } from '@/app/games/[gameId]/_components/GamePageClient';
+import type { GameComponentProps } from '@/app/games/[gameId]/_components/GamePageClient';
 import { useSound } from '@/hooks/useSound';
 import { useCombo } from '@/hooks/useCombo';
 import { useScreenShake } from '@/hooks/useScreenShake';
@@ -102,7 +102,6 @@ export default function MinesweeperGame({
   const [board, setBoard] = useState<Cell[][]>(createEmptyBoard());
   const [gameStatus, setGameStatus] = useState<GameStatus>('idle');
   const [flagCount, setFlagCount] = useState(0);
-  const [revealedCount, setRevealedCount] = useState(0);
   const [time, setTime] = useState(0);
   const [firstClick, setFirstClick] = useState(true);
   const { shakeStyle, triggerShake } = useScreenShake();
@@ -121,7 +120,6 @@ export default function MinesweeperGame({
     setBoard(createEmptyBoard());
     setGameStatus('idle');
     setFlagCount(0);
-    setRevealedCount(0);
     setTime(0);
     setFirstClick(true);
     onScoreChange(0);
@@ -169,7 +167,6 @@ export default function MinesweeperGame({
         }
       }
       setBoard(nextBoard);
-      setRevealedCount(newRevealedCount);
 
       // 콤보 추적
       const prevLevel = combo.comboLevel;

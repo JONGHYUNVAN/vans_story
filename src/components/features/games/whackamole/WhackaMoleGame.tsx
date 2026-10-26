@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { GameComponentProps } from '@/app/games/[gameId]/_components/GamePageClient';
+import type { GameComponentProps } from '@/app/games/[gameId]/_components/GamePageClient';
 import { useCombo } from '@/hooks/useCombo';
 import { useScreenShake } from '@/hooks/useScreenShake';
 import { useGameTimer } from '@/hooks/useGameTimer';
@@ -33,7 +33,7 @@ export default function WhackaMoleGame({
   const moleTimeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const { shakeStyle, triggerShake } = useScreenShake();
   const [flashActive, setFlashActive] = useState(false);
-  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number }>>([]);
+  const [particles, setParticles] = useState<{ id: number; x: number; y: number }[]>([]);
   const particleIdRef = useRef(0);
 
   const soundCombo = useCombo();

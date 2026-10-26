@@ -19,7 +19,7 @@ export async function POST() {
     }
 
     return response;
-  } catch (error) {
+  } catch (_error) {
     return new NextResponse(null, { status: 500 });
   }
 }

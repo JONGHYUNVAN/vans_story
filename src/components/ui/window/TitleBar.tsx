@@ -5,7 +5,7 @@
 'use client';
 
 import React from 'react';
-import { Minus, Square, X, Maximize2 } from 'lucide-react';
+import { Square, X } from 'lucide-react';
 
 interface TitleBarProps {
   title: string;

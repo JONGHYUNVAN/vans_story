@@ -1,11 +1,10 @@
 'use client';
 
 import { SiMongodb } from 'react-icons/si';
-import PostCard from '@/components/features/post/postcard/mongodb/PostCard';
-import { useTranslation } from '@/lib/i18n';
-import { PostInfo } from '@/types/post';
-import { sortPosts } from '@/components/features/post/sort/sortPosts';
 import Link from 'next/link';
+import PostCard from '@/components/features/post/postcard/mongodb/PostCard';
+import type { PostInfo } from '@/types/post';
+import { sortPosts } from '@/components/features/post/sort/sortPosts';
 
 interface Post extends PostInfo {
   _id: string;
@@ -15,7 +14,6 @@ interface MongodbListProps {
 }
 
 export default function MongodbList({ posts }: MongodbListProps) {
-  const { t } = useTranslation('post');
   const sortedPosts = sortPosts(posts, 'latest');
 
   return (

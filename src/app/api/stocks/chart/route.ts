@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import type { ChartDataPoint, StocksApiResponse, YahooChartResponse } from '@/types/stocks';
 
 const YAHOO_HEADERS = {

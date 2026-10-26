@@ -1,7 +1,7 @@
 'use client';
 
 import { SiMongodb } from 'react-icons/si';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface MongodbLayoutProps {
   children: ReactNode;
@@ -13,7 +13,7 @@ export default function MongodbLayout({ children, title, isPreview = false }: Mo
   return (
     <div className="relative left-auto min-h-screen overflow-hidden bg-[#2c1d12]">
       {/* 배경 레이어 */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-b from-[#ba8448] to-[#8b5e2f]"></div>
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-[#ba8448] to-[#8b5e2f]" />
 
       {/* MongoDB 로고 패턴 */}
       <div

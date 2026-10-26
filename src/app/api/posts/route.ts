@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 
 // GET /api/posts - 게시물 목록 조회

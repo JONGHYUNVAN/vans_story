@@ -33,10 +33,7 @@ export default function RelatedStocksSection({ title, stocks }: RelatedStocksSec
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (stocks.length === 0) {
-      setIsLoading(false);
-      return;
-    }
+    if (stocks.length === 0) return;
     const symbols = stocks.map((s) => s.symbol).join(',');
     fetch(`${API_URLS.STOCKS.PRICES}?symbols=${encodeURIComponent(symbols)}`)
       .then((r) => r.json())

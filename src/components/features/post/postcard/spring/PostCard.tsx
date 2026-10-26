@@ -1,12 +1,10 @@
 'use client';
 
-import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
-import { SiSpring } from 'react-icons/si';
 import { AiOutlineEye, AiOutlineLike } from 'react-icons/ai';
 import { useTranslation } from '@/lib/i18n';
-import { BasePost } from '@/components/features/post/postcard/BasePost';
-import { PostCardProps } from '@/components/features/post/postcard/PostCardProps';
+import type { BasePost } from '@/components/features/post/postcard/BasePost';
+import type { PostCardProps } from '@/components/features/post/postcard/PostCardProps';
 
 export default function PostCard<T extends BasePost>({ post, renderBadge }: PostCardProps<T>) {
   const { t } = useTranslation('');
@@ -81,14 +79,16 @@ export default function PostCard<T extends BasePost>({ post, renderBadge }: Post
       }, slideAnimationDuration);
 
       timersRef.current.push(slideTimer);
-    } else {
+    }
+
+    // 호버 해제·언마운트 시 타이머 정리 및 초기화
+    return () => {
+      clearAllTimers();
       setDividerVisible(false);
       setShowDescription(false);
       setCurrentText('');
       setBottomDividerVisible(false);
-    }
-
-    return clearAllTimers;
+    };
   }, [isHovered, description]);
 
   const renderTextWithLineBreaks = () => {
@@ -109,7 +109,7 @@ export default function PostCard<T extends BasePost>({ post, renderBadge }: Post
                   display: 'inline-block',
                   animation: 'typingCursor 0.75s step-end infinite',
                 }}
-              ></span>
+              />
             )}
           </div>
         ))}
@@ -124,7 +124,7 @@ export default function PostCard<T extends BasePost>({ post, renderBadge }: Post
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* 배경 레이어 */}
-      <div className="absolute inset-0 z-0 rounded-lg bg-gradient-to-b from-[#101b13] to-[#0a100d]"></div>
+      <div className="absolute inset-0 z-0 rounded-lg bg-gradient-to-b from-[#101b13] to-[#0a100d]" />
 
       {/* 배경 효과 */}
       <div className="absolute inset-0 z-0 rounded-lg bg-[url('/spring-pattern.png')] bg-repeat opacity-5" />

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useStocksTheme } from './StocksThemeContext';
 
 interface RefreshButtonProps {
@@ -11,19 +11,25 @@ interface RefreshButtonProps {
 export default function RefreshButton({ onClick, isLoading }: RefreshButtonProps) {
   const { tokens } = useStocksTheme();
   const r = tokens.refresh;
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  const [displayTime, setDisplayTime] = useState('');
+  // 마지막 갱신 시각은 렌더에 직접 쓰이지 않으므로 ref로 보관
+  const lastUpdatedRef = useRef<Date | null>(null);
+  const [displayTime, setDisplayTime] = useState(() => (isLoading ? '' : '0초 전'));
+
+  // 로딩이 끝나는 시점에 표시 문구를 렌더 중에 초기화 (effect 내 동기 setState 방지)
+  const [prevLoading, setPrevLoading] = useState(isLoading);
+  if (prevLoading !== isLoading) {
+    setPrevLoading(isLoading);
+    if (!isLoading) setDisplayTime('0초 전');
+  }
 
   useEffect(() => {
     if (!isLoading) {
-      setLastUpdated(new Date());
+      lastUpdatedRef.current = new Date();
     }
-  }, [isLoading]);
-
-  useEffect(() => {
-    if (!lastUpdated) return;
 
     const update = () => {
+      const lastUpdated = lastUpdatedRef.current;
+      if (!lastUpdated) return;
       const diff = Math.floor((Date.now() - lastUpdated.getTime()) / 1000);
       if (diff < 60) {
         setDisplayTime(`${diff}초 전`);
@@ -34,14 +40,13 @@ export default function RefreshButton({ onClick, isLoading }: RefreshButtonProps
       }
     };
 
-    update();
     const id = setInterval(update, 5000);
     return () => clearInterval(id);
-  }, [lastUpdated]);
+  }, [isLoading]);
 
   return (
     <div className="flex items-center gap-3">
-      {lastUpdated && <span className={r.meta}>갱신 {displayTime}</span>}
+      {displayTime && <span className={r.meta}>갱신 {displayTime}</span>}
       <button
         type="button"
         onClick={onClick}

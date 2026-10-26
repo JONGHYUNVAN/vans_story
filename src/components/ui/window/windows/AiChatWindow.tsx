@@ -6,7 +6,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Bot, Send, User, AlertCircle, Loader2, Trash2, Zap } from 'lucide-react';
-import { sendChatMessageDirect, type ChatRequest, type ChatResponse } from '@/lib/ai/clientActions';
+import { sendChatMessageDirect, type ChatRequest } from '@/lib/ai/clientActions';
 import { useWindowManager } from '@/components/ui/window/WindowContext';
 
 interface ChatMessage {
@@ -29,8 +29,16 @@ interface AiChatWindowContentProps {
 
 export function AiChatWindowContent({ onInsertText, initialMessage }: AiChatWindowContentProps) {
   const { getWindowData, clearWindowData } = useWindowManager();
+  // windowData에서 전달된 선택 텍스트 (없으면 initialMessage 사용)
+  const selectedText: string | undefined = getWindowData('ai-chat-window')?.selectedText;
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [inputValue, setInputValue] = useState(initialMessage || '');
+  const [inputValue, setInputValue] = useState(() => selectedText || initialMessage || '');
+  // 선택 텍스트가 새로 전달되면 입력값으로 반영 (렌더 중 상태 조정 패턴)
+  const [prevSelectedText, setPrevSelectedText] = useState(selectedText);
+  if (selectedText !== prevSelectedText) {
+    setPrevSelectedText(selectedText);
+    if (selectedText) setInputValue(selectedText);
+  }
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedModel, setSelectedModel] = useState<string>('gpt-4.1-nano');
@@ -98,17 +106,11 @@ export function AiChatWindowContent({ onInsertText, initialMessage }: AiChatWind
       inputRef.current.focus();
     }
 
-    // windowData에서 선택된 텍스트 가져오기
-    const windowData = getWindowData('ai-chat-window');
-    if (windowData?.selectedText) {
-      setInputValue(windowData.selectedText);
-      // 데이터 사용 후 클리어
+    // 선택 텍스트 사용 후 windowData 클리어
+    if (selectedText) {
       clearWindowData('ai-chat-window');
-    } else if (initialMessage) {
-      // windowData가 없으면 initialMessage 사용
-      setInputValue(initialMessage);
     }
-  }, [initialMessage, getWindowData, clearWindowData]);
+  }, [selectedText, clearWindowData]);
 
   const handleSendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
@@ -391,4 +393,6 @@ export function AiChatWindowContent({ onInsertText, initialMessage }: AiChatWind
 }
 
 // 기본 아이콘
-export const AiChatWindowIcon = () => <Bot size={14} />;
+export function AiChatWindowIcon() {
+  return <Bot size={14} />;
+}

@@ -27,12 +27,25 @@ export function useKisRealtime(symbol: string | null): UseKisRealtimeReturn {
   const eventSourceRef = useRef<EventSource | null>(null);
   const retryCountRef = useRef(0);
   const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // 재연결 타이머에서 최신 connect를 호출하기 위한 ref (선언 전 자기 참조 방지)
+  const connectRef = useRef<() => void>(() => {});
   const maxRetries = 5;
 
   // 6자리 종목코드 추출 (005930.KS → 005930)
   const stockCode = symbol?.replace(/\.(KS|KQ)$/i, '') ?? null;
 
-  const connect = useCallback(() => {
+  // 종목이 바뀌면 렌더 중에 로딩/에러 상태 초기화 (effect 내 동기 setState 방지)
+  const [prevStockCode, setPrevStockCode] = useState(stockCode);
+  if (prevStockCode !== stockCode) {
+    setPrevStockCode(stockCode);
+    if (stockCode && stockCode.length === 6) {
+      setIsLoading(true);
+      setError(null);
+    }
+  }
+
+  // SSE 스트림 열기 (상태 갱신은 이벤트 콜백 안에서만 발생)
+  const openStream = useCallback(() => {
     if (!stockCode || stockCode.length !== 6) return;
 
     // 기존 연결 정리
@@ -40,9 +53,6 @@ export function useKisRealtime(symbol: string | null): UseKisRealtimeReturn {
       eventSourceRef.current.close();
       eventSourceRef.current = null;
     }
-
-    setIsLoading(true);
-    setError(null);
 
     const url = `${API_URLS.STOCKS.KIS_STREAM}/${stockCode}`;
     const es = new EventSource(url);
@@ -97,14 +107,26 @@ export function useKisRealtime(symbol: string | null): UseKisRealtimeReturn {
         if (retryTimerRef.current) clearTimeout(retryTimerRef.current);
         retryTimerRef.current = setTimeout(() => {
           retryTimerRef.current = null;
-          connect();
+          connectRef.current();
         }, delay);
       } else {
         setError('실시간 연결이 끊어졌습니다. 새로고침해주세요.');
         setIsLoading(false);
       }
     };
-  }, [stockCode]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [stockCode]);
+
+  // 재연결: 로딩/에러 상태를 초기화한 뒤 스트림을 다시 연다
+  const connect = useCallback(() => {
+    if (!stockCode || stockCode.length !== 6) return;
+    setIsLoading(true);
+    setError(null);
+    openStream();
+  }, [stockCode, openStream]);
+
+  useEffect(() => {
+    connectRef.current = connect;
+  }, [connect]);
 
   // SSE 연결이 안 될 경우를 대비한 초기 스냅샷 fetch
   useEffect(() => {
@@ -124,9 +146,9 @@ export function useKisRealtime(symbol: string | null): UseKisRealtimeReturn {
       });
   }, [stockCode]);
 
-  // SSE 연결
+  // SSE 연결 (초기 상태가 이미 loading=true, error=null 이므로 스트림만 연다)
   useEffect(() => {
-    connect();
+    openStream();
     return () => {
       if (eventSourceRef.current) {
         eventSourceRef.current.close();
@@ -137,7 +159,7 @@ export function useKisRealtime(symbol: string | null): UseKisRealtimeReturn {
         retryTimerRef.current = null;
       }
     };
-  }, [connect]);
+  }, [openStream]);
 
   const reconnect = useCallback(() => {
     retryCountRef.current = 0;

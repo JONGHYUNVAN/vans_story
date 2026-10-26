@@ -35,7 +35,6 @@ function StocksDashboard() {
     errorMessage,
     refetch,
     refetchPrices,
-    marketOpen,
     krMarketState,
     usMarketState,
   } = useStocksData();

@@ -17,7 +17,7 @@ export const decodeToken = (token: string) => {
       email: payload.sub,
       role: payload.auth,
     };
-  } catch (error) {
+  } catch {
     return null;
   }
 };

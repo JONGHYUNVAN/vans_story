@@ -32,13 +32,10 @@ interface Pattern {
 }
 
 // 음표 주파수 (Hz)
-const C2 = 65.41,
-  D2 = 73.42,
-  E2 = 82.41,
+const D2 = 73.42,
   F2 = 87.31,
   G2 = 98.0,
-  A2 = 110.0,
-  B2 = 123.47;
+  A2 = 110.0;
 const C3 = 130.81,
   D3 = 146.83,
   E3 = 164.81,
@@ -48,11 +45,9 @@ const C3 = 130.81,
   B3 = 246.94;
 const C4 = 261.63,
   D4 = 293.66,
-  Eb4 = 311.13,
   E4 = 329.63,
   F4 = 349.23,
   G4 = 392.0,
-  Ab4 = 415.3,
   A4 = 440.0,
   Bb4 = 466.16,
   B4 = 493.88;
@@ -62,222 +57,14 @@ const C5 = 523.25,
   E5 = 659.25,
   F5 = 698.46,
   G5 = 783.99,
-  Ab5 = 830.61,
   A5 = 880.0,
-  Bb5 = 932.33,
   B5 = 987.77;
 const C6 = 1046.5,
   D6 = 1174.66,
   E6 = 1318.51,
   F6 = 1396.91,
   G6 = 1567.98,
-  A6 = 1760.0,
-  B6 = 1975.53;
-
-// ─── Tetris / Korobeiniki 섹션 배열 (NES 3채널: Pulse1 + Pulse2 + Triangle) ─
-// A 파트 — Pulse 1 메인 멜로디 (16 beats)
-const T_A: Note[] = [
-  [E5, 1],
-  [B4, 0.5],
-  [C5, 0.5],
-  [D5, 1],
-  [C5, 0.5],
-  [B4, 0.5],
-  [A4, 1],
-  [A4, 0.5],
-  [C5, 0.5],
-  [E5, 1],
-  [D5, 0.5],
-  [C5, 0.5],
-  [B4, 1.5],
-  [C5, 0.5],
-  [D5, 1],
-  [E5, 1],
-  [C5, 1],
-  [A4, 1],
-  [A4, 2],
-];
-// A 파트 — Pulse 2 카운터 멜로디 (독립 선율, Am 코드톤, 16 beats)
-const T_A2: Note[] = [
-  [A4, 2],
-  [G4, 1],
-  [F4, 1],
-  [E4, 2],
-  [A4, 2],
-  [D5, 2],
-  [B4, 2],
-  [C5, 2],
-  [A4, 2],
-];
-// B 파트 — Pulse 1 메인 (16 beats)
-const T_B: Note[] = [
-  [D5, 1.5],
-  [F5, 0.5],
-  [A5, 1],
-  [G5, 0.5],
-  [F5, 0.5],
-  [E5, 1.5],
-  [C5, 0.5],
-  [E5, 1],
-  [D5, 0.5],
-  [C5, 0.5],
-  [B4, 1],
-  [B4, 0.5],
-  [C5, 0.5],
-  [D5, 1],
-  [E5, 1],
-  [C5, 1],
-  [A4, 1],
-  [A4, 2],
-];
-// B 파트 — Pulse 2 카운터 멜로디 (Dm→C→G→Am, 16 beats)
-const T_B2: Note[] = [
-  [D5, 2],
-  [F5, 2],
-  [E5, 2],
-  [C5, 2],
-  [G4, 2],
-  [G4, 2],
-  [E5, 2],
-  [A4, 2],
-];
-// C 파트 — Pulse 1 (Bridge 상승, 16 beats)
-const T_C: Note[] = [
-  [A5, 1],
-  [G5, 0.5],
-  [F5, 0.5],
-  [E5, 1],
-  [F5, 0.5],
-  [G5, 0.5],
-  [A5, 1],
-  [E5, 1],
-  [E5, 2],
-  [G5, 1],
-  [F5, 0.5],
-  [E5, 0.5],
-  [D5, 1],
-  [E5, 0.5],
-  [F5, 0.5],
-  [E5, 1],
-  [C5, 1],
-  [C5, 2],
-];
-// C 파트 — Pulse 2 카운터 멜로디 (Am→E→G→C, 16 beats)
-const T_C2: Note[] = [
-  [A4, 2],
-  [C5, 2],
-  [E5, 2],
-  [E5, 2],
-  [G4, 2],
-  [F5, 2],
-  [E5, 2],
-  [C5, 2],
-];
-// D 파트 — Pulse 1 (Bridge 하강, 16 beats)
-const T_D: Note[] = [
-  [F5, 1],
-  [E5, 0.5],
-  [D5, 0.5],
-  [C5, 1],
-  [D5, 0.5],
-  [E5, 0.5],
-  [F5, 1],
-  [D5, 1],
-  [D5, 2],
-  [E5, 1],
-  [D5, 0.5],
-  [C5, 0.5],
-  [B4, 1],
-  [C5, 0.5],
-  [D5, 0.5],
-  [E5, 1],
-  [A4, 1],
-  [A4, 2],
-];
-// D 파트 — Pulse 2 카운터 멜로디 (F→Dm→C→Am, 16 beats)
-const T_D2: Note[] = [
-  [F4, 2],
-  [D5, 2],
-  [D5, 2],
-  [B4, 2],
-  [C5, 2],
-  [B4, 2],
-  [E5, 2],
-  [A4, 2],
-];
-// 베이스 섹션 — Triangle (각 16 beats)
-const T_Ab: Note[] = [
-  [A2, 1],
-  [E3, 1],
-  [A2, 1],
-  [E3, 1],
-  [E2, 1],
-  [B2, 1],
-  [E2, 1],
-  [B2, 1],
-  [A2, 1],
-  [E3, 1],
-  [A2, 1],
-  [E3, 1],
-  [E2, 1],
-  [B2, 1],
-  [E2, 1],
-  [B2, 1],
-];
-const T_Bb: Note[] = [
-  [D3, 1],
-  [A2, 1],
-  [D3, 1],
-  [A2, 1],
-  [C3, 1],
-  [G2, 1],
-  [C3, 1],
-  [G2, 1],
-  [E2, 1],
-  [B2, 1],
-  [E2, 1],
-  [B2, 1],
-  [A2, 1],
-  [E3, 1],
-  [A2, 1],
-  [E3, 1],
-];
-const T_Cb: Note[] = [
-  [A2, 1],
-  [E3, 1],
-  [A2, 1],
-  [E3, 1],
-  [E2, 1],
-  [E3, 1],
-  [E2, 1],
-  [E3, 1],
-  [G2, 1],
-  [D3, 1],
-  [G2, 1],
-  [D3, 1],
-  [C3, 1],
-  [G2, 1],
-  [C3, 1],
-  [G2, 1],
-];
-const T_Db: Note[] = [
-  [F2, 1],
-  [C3, 1],
-  [F2, 1],
-  [C3, 1],
-  [D3, 1],
-  [A2, 1],
-  [D3, 1],
-  [A2, 1],
-  [C3, 1],
-  [G2, 1],
-  [C3, 1],
-  [G2, 1],
-  [A2, 1],
-  [E3, 1],
-  [A2, 1],
-  [E3, 1],
-];
+  A6 = 1760.0;
 
 // 게임별 멀티트랙 BGM
 const BGM: Record<string, Pattern> = {
@@ -926,10 +713,12 @@ const BGM: Record<string, Pattern> = {
 export function useBGM(gameId: string, isMuted: boolean) {
   const schedulerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const isPlayingRef = useRef(false);
-  const trackStatesRef = useRef<Array<{ noteIdx: number; nextTime: number }>>([]);
+  const trackStatesRef = useRef<{ noteIdx: number; nextTime: number }[]>([]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const isMutedRef = useRef(isMuted);
-  isMutedRef.current = isMuted;
+  useEffect(() => {
+    isMutedRef.current = isMuted;
+  }, [isMuted]);
 
   const stop = useCallback(() => {
     isPlayingRef.current = false;

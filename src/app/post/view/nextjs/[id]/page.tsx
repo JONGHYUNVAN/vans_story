@@ -1,11 +1,9 @@
-import { API_URLS } from '@/constants/apiUrl';
+import { notFound } from 'next/navigation';
 import { Viewer } from '@/components/features/post/viewer/Viewer';
-import { Post } from '@/types/post';
 import NextjsLayout from '@/app/post/view/nextjs/_components/NextjsLayout';
 import { SidebarWrapper } from '@/app/post/view/_components/SidebarWrapper';
 import { getPostWithViewCount } from '@/lib/posts/clientActions';
 import { ViewCountHandler } from '@/app/post/view/_components/ViewCountHandler';
-import { notFound } from 'next/navigation';
 
 interface PageProps {
   params: Promise<{ id: string }>;

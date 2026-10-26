@@ -4,8 +4,8 @@
  */
 
 import React from 'react';
-import { PostInfo } from '@/types/post';
-import { PostPreviewProps, toPostInfo } from '@/types/post';
+import type { PostInfo, PostPreviewProps } from '@/types/post';
+
 import { Viewer } from '@/components/features/post/viewer/Viewer';
 
 // PostCard 컴포넌트들 import

@@ -5,19 +5,19 @@ import { extractResponseError, extractErrorStack } from '@/lib/errors/errorExtra
 /**
  * 표준 에러 응답 형식
  */
-export type ErrorResponse = {
+export interface ErrorResponse {
   success: false;
   error: {
     message: string;
     code?: string;
     details?: any;
   };
-};
+}
 
 /**
  * 표준 성공 응답 형식
  */
-export type SuccessResponse<T = any> = {
+export interface SuccessResponse<T = any> {
   success: true;
   data: T;
   meta?: {
@@ -25,7 +25,7 @@ export type SuccessResponse<T = any> = {
     total?: number;
     limit?: number;
   };
-};
+}
 
 /**
  * HTTP 상태 코드에 따른 기본 에러 메시지 반환

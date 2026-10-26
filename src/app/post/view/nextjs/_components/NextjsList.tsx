@@ -1,13 +1,12 @@
 'use client';
 
-import { SiNextdotjs } from 'react-icons/si';
 import { TbBrandNextjs } from 'react-icons/tb';
-import PostCard from '@/components/features/post/postcard/nextjs/PostCard';
-import { useTranslation } from '@/lib/i18n';
-import { PostInfo } from '@/types/post';
-import { sortPosts } from '@/components/features/post/sort/sortPosts';
 import { useState } from 'react';
 import Link from 'next/link';
+import PostCard from '@/components/features/post/postcard/nextjs/PostCard';
+import { useTranslation } from '@/lib/i18n';
+import type { PostInfo } from '@/types/post';
+import { sortPosts } from '@/components/features/post/sort/sortPosts';
 
 interface Post extends PostInfo {
   _id: string;
@@ -20,7 +19,7 @@ interface Props {
 export default function NextjsList({ posts }: Props) {
   const { t } = useTranslation('post');
   const [sortOption, setSortOption] = useState('latest');
-  const [visiblePosts, setVisiblePosts] = useState(10);
+  const [visiblePosts] = useState(10);
 
   // 정렬 유틸리티 함수를 사용하여 정렬
   const sortedPosts = sortPosts(posts, sortOption);

@@ -5,7 +5,7 @@
 'use client';
 
 import React from 'react';
-import { ResizeDirection, ResizeHandleProps } from './types';
+import type { ResizeDirection, ResizeHandleProps } from './types';
 
 const CURSOR_MAP: Record<ResizeDirection, string> = {
   n: 'ns-resize',

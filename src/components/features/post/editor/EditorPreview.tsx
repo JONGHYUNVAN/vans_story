@@ -1,4 +1,4 @@
-import { PostInfo } from '@/types/post';
+import type { PostInfo } from '@/types/post';
 import { Viewer } from '@/components/features/post/viewer/Viewer';
 import AlgorithmPostCard from '@/components/features/post/postcard/algorithm/PostCard';
 import NextjsPostCard from '@/components/features/post/postcard/nextjs/PostCard';

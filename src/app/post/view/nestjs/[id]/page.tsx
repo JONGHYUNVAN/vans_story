@@ -1,5 +1,4 @@
 import { Viewer } from '@/components/features/post/viewer/Viewer';
-import { Post } from '@/types/post';
 import NestjsLayout from '@/app/post/view/nestjs/_components/NestjsLayout';
 import { SidebarWrapper } from '@/app/post/view/_components/SidebarWrapper';
 import { getPostWithViewCount } from '@/lib/posts/clientActions';

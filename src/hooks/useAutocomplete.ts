@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { ApiFetch } from '@/lib/api/apiFetch';
-import {
+import type {
   AutocompleteResponse,
   AutocompleteSuggestion,
   AutocompleteApiResponse,
@@ -60,7 +60,6 @@ export function useAutocomplete({
   const [error, setError] = useState<string | null>(null);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [isOpen, setIsOpen] = useState(false);
-  const [currentQuery, setCurrentQuery] = useState('');
 
   const debounceTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const abortControllerRef = useRef<AbortController | undefined>(undefined);
@@ -154,8 +153,6 @@ export function useAutocomplete({
   // 디바운스된 검색어 업데이트
   const updateQuery = useCallback(
     (query: string) => {
-      setCurrentQuery(query);
-
       // 이전 타이머 클리어
       if (debounceTimeoutRef.current) {
         clearTimeout(debounceTimeoutRef.current);

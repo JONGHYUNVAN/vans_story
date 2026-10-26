@@ -4,10 +4,15 @@
  */
 
 import { useState, useRef, useEffect } from 'react';
-import { useTranslation } from '@/lib/i18n';
-import { PostFormInputsProps, SubCategoryOption, BasePost, MainCategoryOption } from '@/types/post';
-import { MAIN_CATEGORIES, CATEGORY_GROUPS, CategoryGroup } from '@/constants/mainCategories';
 import { ChevronDown } from 'lucide-react';
+import type {
+  PostFormInputsProps,
+  SubCategoryOption,
+  BasePost,
+  MainCategoryOption,
+} from '@/types/post';
+import type { CategoryGroup } from '@/constants/mainCategories';
+import { MAIN_CATEGORIES, CATEGORY_GROUPS } from '@/constants/mainCategories';
 
 // 언어 옵션 배열
 const LANGUAGES = [
@@ -21,7 +26,6 @@ interface MainCategoryCollapsibleProps {
   onChange: (field: keyof BasePost, value: any) => void;
   disabled: boolean;
   error: string;
-  t: any;
 }
 
 function MainCategoryCollapsible({
@@ -29,7 +33,6 @@ function MainCategoryCollapsible({
   onChange,
   disabled,
   error,
-  t,
 }: MainCategoryCollapsibleProps) {
   // 선택되지 않았으면 펼쳐진 상태로, 선택되었으면 접힌 상태로 시작
   const [isExpanded, setIsExpanded] = useState(!selectedValue);
@@ -146,7 +149,6 @@ interface SubCategoryDropdownProps {
   onChange: (field: keyof BasePost, value: any) => void;
   disabled: boolean;
   error: string;
-  t: any;
 }
 
 function SubCategoryDropdown({
@@ -156,7 +158,6 @@ function SubCategoryDropdown({
   onChange,
   disabled,
   error,
-  t,
 }: SubCategoryDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -258,8 +259,6 @@ export function PostFormInputs({
   errors = {},
   disabled = false,
 }: PostFormInputsProps) {
-  const { t } = useTranslation('');
-
   // 에러 표시 헬퍼
   const getFieldError = (field: string) => {
     return errors[field] || '';
@@ -351,7 +350,6 @@ export function PostFormInputs({
           onChange={onChange}
           disabled={disabled}
           error={getFieldError('mainCategory')}
-          t={t}
         />
 
         {/* 하위 카테고리 */}
@@ -362,7 +360,6 @@ export function PostFormInputs({
           onChange={onChange}
           disabled={disabled}
           error={getFieldError('subCategory')}
-          t={t}
         />
       </div>
 

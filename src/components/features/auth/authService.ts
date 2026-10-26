@@ -2,7 +2,7 @@ import { tokenStorage } from '@/lib/auth/token';
 import { ApiFetch } from '@/lib/api/apiFetch';
 import { API_URLS } from '@/constants/apiUrl';
 import { oauthUtils } from '@/lib/auth/oauth';
-import type { OAuthProvider, OAuthUserInfo } from '@/types/auth';
+import type { OAuthProvider } from '@/types/auth';
 
 /**
  * 인증 관련 API 함수들
@@ -173,7 +173,7 @@ export const authService = {
             name: payload.name || payload.email?.split('@')[0],
           },
         };
-      } catch (decodeError) {
+      } catch (_decodeError) {
         // 토큰 디코딩 실패 시 기본 정보만 반환
         return {
           accessToken: jwtToken,

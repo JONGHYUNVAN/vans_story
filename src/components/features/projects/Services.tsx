@@ -1,6 +1,6 @@
-import { ProjectService } from '@/types/project';
 import { useState } from 'react';
 import { MdKeyboardArrowDown } from 'react-icons/md';
+import type { ProjectService } from '@/types/project';
 import MarkdownModal from '@/components/ui/MarkdownModal';
 
 interface ServicesProps {
@@ -52,7 +52,7 @@ export default function Services({
     },
   ];
 
-  const getColorClasses = (colorTheme: string, isExpanded: boolean, isHovered: boolean) => {
+  const getColorClasses = (colorTheme: string) => {
     const themes = {
       blue: {
         expanded:
@@ -100,13 +100,13 @@ export default function Services({
 
   // 서비스별 문서 링크 매핑
   const getDocumentLinks = (serviceName: string) => {
-    const links: Array<{
+    const links: {
       title: string;
       filePath: string;
       description: string;
       isHtml?: boolean;
       category: string;
-    }> = [];
+    }[] = [];
 
     if (serviceName.includes('프론트엔드')) {
       links.push({
@@ -315,7 +315,7 @@ export default function Services({
     }
   };
 
-  const ServiceCard = ({
+  function ServiceCard({
     service,
     index,
     colorTheme,
@@ -323,10 +323,10 @@ export default function Services({
     service: ProjectService;
     index: number;
     colorTheme: string;
-  }) => {
+  }) {
     const isExpanded = selectedService === service.name;
     const isHovered = hoveredService === service.name;
-    const colors = getColorClasses(colorTheme, isExpanded, isHovered);
+    const colors = getColorClasses(colorTheme);
     const documentLinks = getDocumentLinks(service.name);
 
     const getCardStyle = () => {
@@ -412,7 +412,7 @@ export default function Services({
                       <li key={featureIndex} className="flex items-start gap-2">
                         <div
                           className={`mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full ${colors.accent}`}
-                        ></div>
+                        />
                         <span className="text-sm text-gray-700">{feature}</span>
                       </li>
                     ))}
@@ -455,7 +455,7 @@ export default function Services({
                                   <div key={linkIndex} className="flex items-start gap-2">
                                     <div
                                       className={`mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full ${colors.accent}`}
-                                    ></div>
+                                    />
                                     <div>
                                       <button
                                         onClick={(e) => {
@@ -494,7 +494,7 @@ export default function Services({
         </div>
       </div>
     );
-  };
+  }
 
   return (
     <>

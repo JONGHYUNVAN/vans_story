@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { GameMeta } from '@/constants/games';
+import type { GameMeta } from '@/constants/games';
 
 interface GameCardProps {
   game: GameMeta;

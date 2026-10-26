@@ -100,12 +100,7 @@ function ConsensusVisual({
   target: number;
   targetHigh: number | null;
   targetLow: number | null;
-  analystReports?: Array<{
-    broker: string;
-    date: string;
-    title: string;
-    targetPrice?: number | null;
-  }>;
+  analystReports?: { broker: string; date: string; title: string; targetPrice?: number | null }[];
   d: DetailType;
 }) {
   const diff = ((target - current) / current) * 100;
@@ -490,7 +485,7 @@ export default function FundamentalsBlock({
           ))}
 
           {showAvg && consensus && (
-            <ConsensusSourceBlock c={consensus} currentPrice={currentPrice} isAvg={true} d={d} />
+            <ConsensusSourceBlock c={consensus} currentPrice={currentPrice} isAvg d={d} />
           )}
         </section>
       )}

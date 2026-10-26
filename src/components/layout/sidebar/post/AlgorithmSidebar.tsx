@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import BaseSidebar from '@/components/layout/sidebar/base/BaseSidebar';
 import { RiCodeBoxLine } from 'react-icons/ri';
-import { IconType } from 'react-icons';
+import type { IconType } from 'react-icons';
+import BaseSidebar from '@/components/layout/sidebar/base/BaseSidebar';
 
 /**
  * 알고리즘 전용 사이드바 컴포넌트
@@ -39,7 +39,7 @@ export default function AlgorithmSidebar() {
       borderClasses="border-black" // 테두리 색상 (검정)
 
       // 커스텀 아이콘 렌더러 (알고리즘 전용 스타일)
-      iconRenderer={(Icon: IconType, color: string) => (
+      iconRenderer={(Icon: IconType) => (
         <div className="relative flex h-6 w-6 items-center justify-center text-gray-600 transition-colors duration-200 ease-in-out">
           <Icon className="h-5 w-5" />
         </div>

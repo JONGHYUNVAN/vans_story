@@ -1,11 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { handleSearch } from '@/app/search/actions';
-import { ApiFetch } from '@/lib/api/apiFetch';
 import { useRouter } from 'next/navigation';
+import { ApiFetch } from '@/lib/api/apiFetch';
 import { AutocompleteInput } from '@/components/ui/AutocompleteInput';
-import { AutocompleteSuggestion } from '@/types/api/search';
+import type { AutocompleteSuggestion } from '@/types/api/search';
 
 /**
  * 홈페이지 검색 섹션 컴포넌트 (서버 액션 + 클라이언트 상태 관리)

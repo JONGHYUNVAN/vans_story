@@ -3,7 +3,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { StockPricesData, MacroData, StocksApiResponse } from '@/types/stocks';
 import { API_URLS } from '@/constants/apiUrl';
-import { getKrMarketState, getUsMarketState, MarketState } from '@/lib/stocks/marketHours';
+import type { MarketState } from '@/lib/stocks/marketHours';
+import { getKrMarketState, getUsMarketState } from '@/lib/stocks/marketHours';
 
 const POLL_INTERVAL_MS = 30_000; // 30초
 
@@ -58,6 +59,25 @@ async function readApiJson<T>(res: Response): Promise<StocksApiResponse<T>> {
   }
 }
 
+/** 주가 + 거시지표 요청 (상태 변경 없음, 실패 시 throw) */
+async function requestAll(): Promise<{ prices: StockPricesData; macro: MacroData }> {
+  const [pricesRes, macroRes] = await Promise.all([
+    fetch(API_URLS.STOCKS.PRICES),
+    fetch(API_URLS.STOCKS.MACRO),
+  ]);
+  const [pricesJson, macroJson] = await Promise.all([
+    readApiJson<StockPricesData>(pricesRes),
+    readApiJson<MacroData>(macroRes),
+  ]);
+  if (!pricesJson.success) throw new Error(pricesJson.error.message);
+  if (!macroJson.success) throw new Error(macroJson.error.message);
+  return { prices: pricesJson.data, macro: macroJson.data };
+}
+
+function toErrorMessage(err: unknown): string {
+  return err instanceof Error ? err.message : '데이터를 불러오는 중 오류가 발생했습니다.';
+}
+
 interface UseStocksDataReturn {
   prices: StockPricesData | null;
   macro: MacroData | null;
@@ -83,29 +103,18 @@ export function useStocksData(): UseStocksDataReturn {
   const [krMarketState, setKrMarketState] = useState<MarketState>(() => getKrMarketState());
   const [usMarketState, setUsMarketState] = useState<MarketState>(() => getUsMarketState());
 
-  /** 초기 로드 또는 에러 재시도: 주가 + 거시지표 모두 가져옴 */
+  /** 에러 재시도: 로딩/에러 플래그를 초기화한 뒤 주가 + 거시지표 모두 가져옴 */
   const fetchAll = useCallback(async () => {
     setIsLoading(true);
     setIsError(false);
     setErrorMessage('');
     try {
-      const [pricesRes, macroRes] = await Promise.all([
-        fetch(API_URLS.STOCKS.PRICES),
-        fetch(API_URLS.STOCKS.MACRO),
-      ]);
-      const [pricesJson, macroJson] = await Promise.all([
-        readApiJson<StockPricesData>(pricesRes),
-        readApiJson<MacroData>(macroRes),
-      ]);
-      if (!pricesJson.success) throw new Error(pricesJson.error.message);
-      if (!macroJson.success) throw new Error(macroJson.error.message);
-      setPrices(pricesJson.data);
-      setMacro(macroJson.data);
+      const { prices, macro } = await requestAll();
+      setPrices(prices);
+      setMacro(macro);
     } catch (err) {
       setIsError(true);
-      setErrorMessage(
-        err instanceof Error ? err.message : '데이터를 불러오는 중 오류가 발생했습니다.',
-      );
+      setErrorMessage(toErrorMessage(err));
     } finally {
       setIsLoading(false);
     }
@@ -140,10 +149,22 @@ export function useStocksData(): UseStocksDataReturn {
     return () => clearInterval(id);
   }, []);
 
-  // 초기 전체 fetch
+  // 초기 전체 fetch (초기 상태가 이미 로딩 중이므로 플래그 초기화 없이 요청만 수행)
   useEffect(() => {
-    fetchAll();
-  }, [fetchAll]);
+    const loadInitial = async () => {
+      try {
+        const { prices, macro } = await requestAll();
+        setPrices(prices);
+        setMacro(macro);
+      } catch (err) {
+        setIsError(true);
+        setErrorMessage(toErrorMessage(err));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadInitial();
+  }, []);
 
   // 장 중일 때 주가만 폴링 (거시지표는 재로드하지 않음)
   useEffect(() => {

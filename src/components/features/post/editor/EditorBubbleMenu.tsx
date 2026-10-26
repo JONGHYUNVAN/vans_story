@@ -1,12 +1,10 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BubbleMenuPlugin, type BubbleMenuPluginProps } from '@tiptap/extension-bubble-menu';
 import type { Editor } from '@tiptap/core';
-import { Bold, Italic, Underline, Palette, Type, Sparkles } from 'lucide-react';
-import { useEditorContext } from './EditorContext';
-import { Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { Bold, Italic, Underline, Palette, Sparkles, Trash2 } from 'lucide-react';
 import { sendChatMessage } from '@/lib/ai/clientActions';
+import { useEditorContext } from './EditorContext';
 
 // ─── Tiptap 3.20 BubbleMenu React 래퍼 ─────────────────────────────────────
 interface TiptapBubbleMenuProps {
@@ -79,12 +77,7 @@ export function EditorBubbleMenu() {
   const editor = useEditorContext();
   const [isFixing, setIsFixing] = useState(false);
   const [showDiffModal, setShowDiffModal] = useState(false);
-  const [originalText, setOriginalText] = useState('');
-  const [suggestedText, setSuggestedText] = useState('');
-  const [selectionRange, setSelectionRange] = useState<{ from: number; to: number } | null>(null);
   const [isAiOperating, setIsAiOperating] = useState(false); // AI 작업 플래그
-
-  if (!editor) return null;
 
   // 에디터 로드 시 기존 블록의 버튼에 이벤트 등록
   useEffect(() => {
@@ -137,11 +130,8 @@ export function EditorBubbleMenu() {
         const parentDiv = keepBtn.closest('[data-ai-diff-type]');
         if (!parentDiv) return;
 
-        const originalDiv = document.querySelector('[data-ai-diff-type="original"]');
         const suggestedDiv = document.querySelector('[data-ai-diff-type="suggested"]');
 
-        const capturedOriginalText =
-          originalDiv?.textContent?.replace(/UndoKeep/g, '').trim() || '';
         const capturedSuggestedText =
           suggestedDiv?.textContent?.replace(/UndoKeep/g, '').trim() || '';
 
@@ -187,9 +177,6 @@ export function EditorBubbleMenu() {
       // 일반 사용자 입력이면 diff 모드 취소
       console.log('⚠️ 사용자 입력 감지 - diff 모드 취소');
       setShowDiffModal(false);
-      setOriginalText('');
-      setSuggestedText('');
-      setSelectionRange(null);
     };
 
     editor.on('update', handleUpdate);
@@ -197,6 +184,9 @@ export function EditorBubbleMenu() {
       editor.off('update', handleUpdate);
     };
   }, [showDiffModal, editor, isAiOperating]);
+
+  // 훅 호출이 모두 끝난 뒤에 조기 반환 (훅 호출 순서 보장)
+  if (!editor) return null;
 
   // AI 문법 수정
   const handleGrammarFix = async () => {
@@ -216,11 +206,6 @@ export function EditorBubbleMenu() {
       if (response.message) {
         // AI 작업 시작
         setIsAiOperating(true);
-
-        // 원본 저장
-        setOriginalText(selectedText);
-        setSuggestedText(response.message);
-        setSelectionRange({ from, to });
 
         console.log('🎨 원본:', selectedText);
         console.log('🎨 제안:', response.message);
@@ -290,9 +275,6 @@ export function EditorBubbleMenu() {
               editor.commands.setContent(newHtml);
               console.log('❌ Undo 완료!');
 
-              setOriginalText('');
-              setSuggestedText('');
-              setSelectionRange(null);
               setIsAiOperating(false);
             };
 
@@ -318,9 +300,6 @@ export function EditorBubbleMenu() {
               editor.commands.setContent(newHtml);
               console.log('✅ Keep 완료!');
 
-              setOriginalText('');
-              setSuggestedText('');
-              setSelectionRange(null);
               setIsAiOperating(false);
             };
 
@@ -349,70 +328,6 @@ export function EditorBubbleMenu() {
     } finally {
       setIsFixing(false);
     }
-  };
-
-  // 제안 적용 (Keep)
-  const handleAccept = () => {
-    console.log('✅ Keep 함수 실행됨');
-    console.log('suggestedText:', suggestedText);
-    console.log('originalText:', originalText);
-    setIsAiOperating(true);
-
-    if (suggestedText) {
-      const html = editor.getHTML();
-      console.log('현재 HTML:', html);
-
-      // 두 블록을 모두 제거하고 제안 텍스트만 남김
-      let newHtml = html.replace(/<div[^>]*data-ai-diff-type="original"[^>]*>[\s\S]*?<\/div>/, '');
-      console.log('빨간 블록 제거 후:', newHtml);
-      newHtml = newHtml.replace(
-        /<div[^>]*data-ai-diff-type="suggested"[^>]*>[\s\S]*?<\/div>/,
-        `<p>${suggestedText}</p>`,
-      );
-      console.log('초록 블록 교체 후:', newHtml);
-
-      editor.commands.setContent(newHtml);
-      console.log('✅ Keep 적용 완료!');
-    } else {
-      console.log('❌ suggestedText가 비어있음!');
-    }
-
-    setOriginalText('');
-    setSuggestedText('');
-    setSelectionRange(null);
-    setIsAiOperating(false);
-  };
-
-  // 제안 거절 (Undo)
-  const handleReject = () => {
-    console.log('❌ Undo 함수 실행됨');
-    console.log('originalText:', originalText);
-    console.log('suggestedText:', suggestedText);
-    setIsAiOperating(true);
-
-    if (originalText) {
-      const html = editor.getHTML();
-      console.log('현재 HTML:', html);
-
-      // 두 블록을 모두 제거하고 원본 텍스트만 남김
-      let newHtml = html.replace(
-        /<div[^>]*data-ai-diff-type="original"[^>]*>[\s\S]*?<\/div>/,
-        `<p>${originalText}</p>`,
-      );
-      console.log('빨간 블록 교체 후:', newHtml);
-      newHtml = newHtml.replace(/<div[^>]*data-ai-diff-type="suggested"[^>]*>[\s\S]*?<\/div>/, '');
-      console.log('초록 블록 제거 후:', newHtml);
-
-      editor.commands.setContent(newHtml);
-      console.log('❌ Undo 적용 완료!');
-    } else {
-      console.log('❌ originalText가 비어있음!');
-    }
-
-    setOriginalText('');
-    setSuggestedText('');
-    setSelectionRange(null);
-    setIsAiOperating(false);
   };
 
   return (
@@ -658,7 +573,7 @@ export function EditorBubbleMenu() {
               dom.style.marginRight = 'auto';
             }
           }}
-          className={`rounded p-1 hover:bg-gray-100`}
+          className="rounded p-1 hover:bg-gray-100"
           title="표 왼쪽 정렬"
         >
           <img src={ICONS.align_left} alt="표 왼쪽 정렬" width={16} height={16} />
@@ -674,7 +589,7 @@ export function EditorBubbleMenu() {
               dom.style.marginRight = 'auto';
             }
           }}
-          className={`rounded p-1 hover:bg-gray-100`}
+          className="rounded p-1 hover:bg-gray-100"
           title="표 가운데 정렬"
         >
           <img src={ICONS.align_center} alt="표 가운데 정렬" width={16} height={16} />
@@ -690,7 +605,7 @@ export function EditorBubbleMenu() {
               dom.style.marginRight = '0';
             }
           }}
-          className={`rounded p-1 hover:bg-gray-100`}
+          className="rounded p-1 hover:bg-gray-100"
           title="표 오른쪽 정렬"
         >
           <img src={ICONS.align_right} alt="표 오른쪽 정렬" width={16} height={16} />

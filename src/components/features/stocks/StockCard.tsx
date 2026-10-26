@@ -4,7 +4,6 @@ import type { ReactNode } from 'react';
 import Link from 'next/link';
 import type { StockPrice } from '@/types/stocks';
 import { KR_STOCKS } from '@/types/stocks';
-import { useStocksTheme } from './StocksThemeContext';
 import { symbolToSlug } from '@/lib/stocks/stockSymbol';
 import {
   finite,
@@ -14,6 +13,7 @@ import {
   formatVolume,
   formatMarketCap,
 } from '@/lib/stocks/stockFormatting';
+import { useStocksTheme } from './StocksThemeContext';
 
 interface StockCardProps {
   stock?: StockPrice;
@@ -28,6 +28,11 @@ function getArrow(change: number | null | undefined): string {
   if (c > 0) return '▲';
   if (c < 0) return '▼';
   return '—';
+}
+
+// 통계 행 (컴포넌트 내부 정의 시 매 렌더마다 재생성되므로 모듈 스코프로 분리)
+function Row({ className, children }: { className: string; children: ReactNode }) {
+  return <div className={className}>{children}</div>;
 }
 
 export default function StockCard({ stock, isLoading, isError }: StockCardProps) {
@@ -73,10 +78,6 @@ export default function StockCard({ stock, isLoading, isError }: StockCardProps)
       ? 'hover:border-[3px] hover:border-sky-500'
       : 'hover:border-[3px] hover:border-violet-500';
 
-  const Row = ({ alt, children }: { alt: boolean; children: ReactNode }) => (
-    <div className={alt ? c.statRowAlt : c.statRow}>{children}</div>
-  );
-
   return (
     <Link
       href={`/stocks/${symbolToSlug(stock.symbol)}`}
@@ -101,28 +102,28 @@ export default function StockCard({ stock, isLoading, isError }: StockCardProps)
       </div>
 
       <div className={c.statsWrap}>
-        <Row alt={false}>
+        <Row className={c.statRow}>
           <span className={c.label}>거래량</span>
           <span className={c.value}>{formatVolume(stock.volume, stock.currency)}</span>
         </Row>
-        <Row alt={true}>
+        <Row className={c.statRowAlt}>
           <span className={c.label}>시총</span>
           <span className={c.value}>{formatMarketCap(stock.marketCap, stock.currency)}</span>
         </Row>
-        <Row alt={false}>
+        <Row className={c.statRow}>
           <span className={c.label}>고가</span>
           <span className={c.high}>{formatPriceSimple(stock.high, stock.currency)}</span>
         </Row>
-        <Row alt={true}>
+        <Row className={c.statRowAlt}>
           <span className={c.label}>저가</span>
           <span className={c.low}>{formatPriceSimple(stock.low, stock.currency)}</span>
         </Row>
-        <Row alt={false}>
+        <Row className={c.statRow}>
           <span className={c.label}>전일 종가</span>
           <span className={c.value}>{formatPriceSimple(stock.previousClose, stock.currency)}</span>
         </Row>
         {isKrx && (
-          <Row alt={true}>
+          <Row className={c.statRowAlt}>
             <span className={c.label}>세션</span>
             <span className={c.session}>{stock.marketState}</span>
           </Row>

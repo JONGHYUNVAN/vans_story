@@ -16,10 +16,8 @@ export default function MacroRelatedSection({ symbols }: MacroRelatedSectionProp
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (symbols.length === 0) {
-      setIsLoading(false);
-      return;
-    }
+    // symbols가 비어 있으면 아래에서 null을 렌더하므로 로딩 상태를 바꿀 필요가 없음
+    if (symbols.length === 0) return;
     fetch(API_URLS.STOCKS.MACRO)
       .then((r) => r.json())
       .then((json: StocksApiResponse<MacroData>) => {

@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
 import { useTranslation } from '@/lib/i18n';
 import { authService } from '@/components/features/auth/authService';
 import { showAlert } from '@/lib/alerts';
-import { useRouter } from 'next/navigation';
 
 export default function SignupForm() {
   const { t } = useTranslation('');

@@ -7,11 +7,10 @@
 import React from 'react';
 import { FileText } from 'lucide-react';
 import { PostFormInputs } from '@/components/features/post/form/PostFormInputs';
-import { PostFormInputsProps } from '@/types/post';
+import type { PostFormInputsProps } from '@/types/post';
 
-interface FormWindowContentProps extends PostFormInputsProps {
-  // PostFormInputs의 모든 props를 그대로 사용
-}
+// PostFormInputs의 모든 props를 그대로 사용
+type FormWindowContentProps = PostFormInputsProps;
 
 export function FormWindowContent(props: FormWindowContentProps) {
   return (
@@ -24,4 +23,6 @@ export function FormWindowContent(props: FormWindowContentProps) {
 }
 
 // 기본 아이콘
-export const FormWindowIcon = () => <FileText size={14} />;
+export function FormWindowIcon() {
+  return <FileText size={14} />;
+}

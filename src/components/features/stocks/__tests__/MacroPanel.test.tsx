@@ -57,18 +57,18 @@ function makeMockMacroData(): MacroData {
 describe('MacroPanel', () => {
   describe('로딩 상태', () => {
     it('isLoading=true일 때 스켈레톤 UI(animate-pulse)를 렌더링한다', () => {
-      const html = renderToStaticMarkup(<MacroPanel macro={null} isLoading={true} />);
+      const html = renderToStaticMarkup(<MacroPanel macro={null} isLoading />);
       expect(html).toContain('animate-pulse');
     });
 
     it('isLoading=true일 때 스켈레톤 아이템을 8개 렌더링한다', () => {
-      const html = renderToStaticMarkup(<MacroPanel macro={null} isLoading={true} />);
+      const html = renderToStaticMarkup(<MacroPanel macro={null} isLoading />);
       const matchCount = (html.match(/animate-pulse/g) || []).length;
       expect(matchCount).toBe(8);
     });
 
     it('isLoading=true일 때 지표 이름이 표시되지 않는다', () => {
-      const html = renderToStaticMarkup(<MacroPanel macro={null} isLoading={true} />);
+      const html = renderToStaticMarkup(<MacroPanel macro={null} isLoading />);
       expect(html).not.toContain('원/달러 환율');
     });
   });

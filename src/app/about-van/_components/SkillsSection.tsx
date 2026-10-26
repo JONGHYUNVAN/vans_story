@@ -88,7 +88,7 @@ export function SkillsSection() {
               <div className="space-y-3">
                 {category.skills.map((skill) => (
                   <div key={skill} className="flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-gray-400 dark:bg-gray-500"></div>
+                    <div className="h-2 w-2 rounded-full bg-gray-400 dark:bg-gray-500" />
                     <span className="text-gray-700 dark:text-gray-300">{skill}</span>
                   </div>
                 ))}

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { ScoreRecord } from '@/hooks/useGameScores';
+import type { ScoreRecord } from '@/hooks/useGameScores';
 
 interface ScorePanelProps {
   currentScore: number;

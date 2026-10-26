@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import type { NewsItem, StockNewsData, StocksApiResponse } from '@/types/stocks';
 import { KR_STOCKS, MACRO_SYMBOLS } from '@/types/stocks';
 
@@ -8,7 +9,7 @@ const NEWS_LIMIT_MAX = 20;
 const KR_SYMBOL_SET = new Set<string>(KR_STOCKS.map((s) => s.symbol as string));
 
 /** 심볼 → 구글 뉴스 검색 쿼리 목록 (여러 언어 동시 지원 가능) */
-const MACRO_QUERY_MAP: Record<string, Array<{ query: string; lang: 'ko' | 'en' }>> = {
+const MACRO_QUERY_MAP: Record<string, { query: string; lang: 'ko' | 'en' }[]> = {
   '^KS11': [{ query: '코스피 증시', lang: 'ko' }],
   '^KQ11': [{ query: '코스닥 증시', lang: 'ko' }],
   '^IXIC': [
@@ -119,7 +120,7 @@ function skipYahooRSS(symbol: string): boolean {
 }
 
 /** 심볼 → Google News 검색 쿼리 목록 */
-function buildGoogleQueries(symbol: string): Array<{ query: string; lang: 'ko' | 'en' }> {
+function buildGoogleQueries(symbol: string): { query: string; lang: 'ko' | 'en' }[] {
   // 1. 거시지표 매핑
   if (MACRO_QUERY_MAP[symbol]) return MACRO_QUERY_MAP[symbol];
   // 2. 국내 종목: 한글 이름 + "주가"

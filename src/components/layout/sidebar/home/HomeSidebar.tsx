@@ -41,7 +41,7 @@ export default function HomeSidebar() {
         <div className="border-b border-gray-200/50 p-4">
           <Link href="/" className="flex items-center gap-2 text-xl font-bold text-gray-800">
             <img src="/favicon.ico" alt="logo" className="h-6 w-6" />
-            <span>Van's Dev Blog</span>
+            <span>Van&apos;s Dev Blog</span>
           </Link>
         </div>
 
@@ -72,7 +72,7 @@ export default function HomeSidebar() {
                           } as React.CSSProperties
                         }
                       />
-                      <span className={`font-medium group-hover:text-gray-900`}>{item.name}</span>
+                      <span className="font-medium group-hover:text-gray-900">{item.name}</span>
                     </Link>
                   </li>
                 ))}

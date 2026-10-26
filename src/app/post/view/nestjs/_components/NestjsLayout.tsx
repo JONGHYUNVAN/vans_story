@@ -1,6 +1,5 @@
 import { SiNestjs } from 'react-icons/si';
-import { ReactNode } from 'react';
-import { useSidebarMargin } from '@/hooks/useSidebarMargin';
+import type { ReactNode } from 'react';
 
 interface NestjsLayoutProps {
   children: ReactNode;
@@ -10,7 +9,7 @@ interface NestjsLayoutProps {
 
 export default function NestjsLayout({ children, title }: NestjsLayoutProps) {
   return (
-    <div className={`transition-all duration-300`}>
+    <div className="transition-all duration-300">
       <div className="relative left-auto min-h-screen overflow-hidden bg-gradient-to-br from-[#3d0415] via-[#2a0110] to-[#1a000a]">
         {/* Nest.js 로고 패턴 */}
         <div

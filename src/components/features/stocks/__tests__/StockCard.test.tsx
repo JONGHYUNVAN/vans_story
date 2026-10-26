@@ -28,19 +28,19 @@ function makeMockStock(overrides: Partial<StockPrice> = {}): StockPrice {
 describe('StockCard', () => {
   describe('로딩 상태', () => {
     it('isLoading=true일 때 스켈레톤 UI(animate-pulse)를 렌더링한다', () => {
-      const html = renderToStaticMarkup(<StockCard isLoading={true} />);
+      const html = renderToStaticMarkup(<StockCard isLoading />);
       expect(html).toContain('animate-pulse');
     });
 
     it('isLoading=true일 때 종목명이 없다', () => {
-      const html = renderToStaticMarkup(<StockCard isLoading={true} />);
+      const html = renderToStaticMarkup(<StockCard isLoading />);
       expect(html).not.toContain('NVIDIA');
     });
   });
 
   describe('에러 상태', () => {
     it('isError=true일 때 에러 메시지를 렌더링한다', () => {
-      const html = renderToStaticMarkup(<StockCard isError={true} />);
+      const html = renderToStaticMarkup(<StockCard isError />);
       expect(html).toContain('데이터를 불러오지 못했습니다.');
     });
 

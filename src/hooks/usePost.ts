@@ -5,15 +5,14 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { useTranslation } from '@/lib/i18n';
-import { PostCreateData, PostEditData, BasePost, ViewMode } from '@/types/post';
-import { useSubCategories } from './useSubCategories';
-import { useImageUploadAndReplace } from './useImageUploadAndReplace';
+import type { PostCreateData, PostEditData, BasePost, ViewMode } from '@/types/post';
 import { API_URLS } from '@/constants/apiUrl';
 import { tokenStorage } from '@/lib/auth/token';
 import { ApiFetch } from '@/lib/api/apiFetch';
-import { getPostForEdit, saveTempPost, updatePost, loadTempPost } from '@/lib/posts/clientActions';
+import { getPostForEdit, saveTempPost } from '@/lib/posts/clientActions';
 import { resolveCategoryIds, lastPathSegment } from '@/lib/posts/categoryIds';
+import { useImageUploadAndReplace } from './useImageUploadAndReplace';
+import { useSubCategories } from './useSubCategories';
 
 export interface UsePostOptions {
   mode: 'create' | 'edit';
@@ -70,7 +69,6 @@ export function usePost({
   redirectPath = undefined,
 }: UsePostOptions): UsePostReturn {
   const router = useRouter();
-  const { t } = useTranslation('');
 
   // 기본 상태들
   const [formData, setFormData] = useState<Partial<BasePost>>({
@@ -105,8 +103,79 @@ export function usePost({
   // 이미지 업로드 훅
   const { uploadAndReplace } = useImageUploadAndReplace(localImages);
 
-  // 편집 모드일 때 데이터 로드
+  // 임시저장
+  const handleTempSave = async () => {
+    try {
+      if (mode === 'create') {
+        localStorage.setItem('temp_post', JSON.stringify(formData));
+      } else if (mode === 'edit' && postId) {
+        await saveTempPost(postId, formData as PostEditData);
+      }
+
+      setHasUnsavedChanges(false);
+      console.log('💾 임시저장 완료');
+    } catch (error) {
+      console.error('임시저장 실패:', error);
+    }
+  };
+
+  // 모드별 초기 데이터 로드 (로더는 이 이펙트에서만 쓰이므로 이펙트 내부에 선언)
   useEffect(() => {
+    // 포스트 데이터 로드 (편집 모드)
+    const loadPostData = async () => {
+      if (!postId) return;
+
+      setIsLoading(true);
+      try {
+        const post = await getPostForEdit(postId);
+        const convertedData = {
+          ...post,
+          id: post.id || '',
+          mainCategory: post.mainCategory,
+          subCategory: post.subCategory,
+        } as PostEditData;
+
+        // 응답에 subCategory가 없으면(구 백엔드 응답) 폼이 이미 자동 선택한 하위 카테고리를 유지한다.
+        // 통째로 덮어쓰면 subCategory가 비어 저장 시 "하위 카테고리를 선택해주세요"에 걸린다.
+        setFormData((prev) => ({
+          ...convertedData,
+          subCategory: convertedData.subCategory || prev.subCategory || '',
+        }));
+        originalDataRef.current = convertedData;
+
+        // 하위 카테고리 설정
+        if (convertedData.subCategory) {
+          const subCategory = subCategories.find((cat) => cat.value === convertedData.subCategory);
+          if (subCategory) {
+            setSelectedSubCategory(subCategory);
+          }
+        }
+      } catch (error) {
+        console.error('포스트 로드 실패:', error);
+        setErrors({ load: '포스트를 불러오는데 실패했습니다.' });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    // 임시저장 데이터 로드 (생성 모드)
+    const loadTempData = () => {
+      const savedPost = localStorage.getItem('temp_post');
+      if (savedPost) {
+        try {
+          const postData = JSON.parse(savedPost);
+          const convertedData = postData as PostCreateData;
+          setFormData((prev) => ({
+            ...prev,
+            ...convertedData,
+          }));
+          setHasUnsavedChanges(true);
+        } catch (error) {
+          console.error('임시저장 데이터 로드 실패:', error);
+        }
+      }
+    };
+
     if (mode === 'edit' && postId) {
       loadPostData();
     } else if (mode === 'create') {
@@ -125,61 +194,6 @@ export function usePost({
     }
   }, [formData, hasUnsavedChanges, autoSave, isSaving]);
 
-  // 포스트 데이터 로드 (편집 모드)
-  const loadPostData = async () => {
-    if (!postId) return;
-
-    setIsLoading(true);
-    try {
-      const post = await getPostForEdit(postId);
-      const convertedData = {
-        ...post,
-        id: post.id || '',
-        mainCategory: post.mainCategory,
-        subCategory: post.subCategory,
-      } as PostEditData;
-
-      // 응답에 subCategory가 없으면(구 백엔드 응답) 폼이 이미 자동 선택한 하위 카테고리를 유지한다.
-      // 통째로 덮어쓰면 subCategory가 비어 저장 시 "하위 카테고리를 선택해주세요"에 걸린다.
-      setFormData((prev) => ({
-        ...convertedData,
-        subCategory: convertedData.subCategory || prev.subCategory || '',
-      }));
-      originalDataRef.current = convertedData;
-
-      // 하위 카테고리 설정
-      if (convertedData.subCategory) {
-        const subCategory = subCategories.find((cat) => cat.value === convertedData.subCategory);
-        if (subCategory) {
-          setSelectedSubCategory(subCategory);
-        }
-      }
-    } catch (error) {
-      console.error('포스트 로드 실패:', error);
-      setErrors({ load: '포스트를 불러오는데 실패했습니다.' });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // 임시저장 데이터 로드 (생성 모드)
-  const loadTempData = () => {
-    const savedPost = localStorage.getItem('temp_post');
-    if (savedPost) {
-      try {
-        const postData = JSON.parse(savedPost);
-        const convertedData = postData as PostCreateData;
-        setFormData((prev) => ({
-          ...prev,
-          ...convertedData,
-        }));
-        setHasUnsavedChanges(true);
-      } catch (error) {
-        console.error('임시저장 데이터 로드 실패:', error);
-      }
-    }
-  };
-
   // 폼 데이터 업데이트
   const updateFormData = (field: keyof BasePost, value: any) => {
     setFormData((prev) => ({
@@ -191,15 +205,19 @@ export function usePost({
     // 메인 카테고리 변경시 하위 카테고리는 useSubCategories에서 자동으로 첫 번째로 설정됨
   };
 
-  // 선택된 하위 카테고리가 변경되면 formData에 반영
-  useEffect(() => {
+  // 선택된 하위 카테고리가 변경되면 formData에 반영 (렌더 중 상태 조정 패턴)
+  const [prevSelectedSubCategory, setPrevSelectedSubCategory] = useState<
+    typeof selectedSubCategory | null
+  >(null);
+  if (selectedSubCategory !== prevSelectedSubCategory) {
+    setPrevSelectedSubCategory(selectedSubCategory);
     if (selectedSubCategory) {
       setFormData((prev) => ({
         ...prev,
         subCategory: selectedSubCategory.value,
       }));
     }
-  }, [selectedSubCategory]);
+  }
 
   // 폼 검증
   const validateForm = (): boolean => {
@@ -234,22 +252,6 @@ export function usePost({
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  };
-
-  // 임시저장
-  const handleTempSave = async () => {
-    try {
-      if (mode === 'create') {
-        localStorage.setItem('temp_post', JSON.stringify(formData));
-      } else if (mode === 'edit' && postId) {
-        await saveTempPost(postId, formData as PostEditData);
-      }
-
-      setHasUnsavedChanges(false);
-      console.log('💾 임시저장 완료');
-    } catch (error) {
-      console.error('임시저장 실패:', error);
-    }
   };
 
   // 제출 처리

@@ -1,4 +1,3 @@
-import { API_URLS } from '@/constants/apiUrl';
 import NestjsLayout from '@/app/post/view/nestjs/_components/NestjsLayout';
 import { SidebarWrapper } from '@/app/post/view/_components/SidebarWrapper';
 import NestjsList from '@/app/post/view/nestjs/_components/NestjsList';

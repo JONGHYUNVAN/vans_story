@@ -1,22 +1,20 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-
 import { defineConfig } from 'vitest/config';
-import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 
 const dirname =
   typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
-// More info at: https://storybook.js.org/docs/writing-tests/test-addon
 export default defineConfig({
-  plugins: [
-    // The plugin will run tests for the stories defined in your Storybook config
-    // See options at: https://storybook.js.org/docs/writing-tests/test-addon#storybooktest
-    storybookTest({ configDir: path.join(dirname, '.storybook') }),
-  ],
+  resolve: {
+    alias: {
+      '@': path.resolve(dirname, './src'),
+    },
+  },
   test: {
-    name: 'storybook',
-    environment: 'jsdom',
-    setupFiles: ['.storybook/vitest.setup.ts'],
+    name: 'unit',
+    environment: 'node',
+    include: ['src/**/*.test.ts', 'src/**/*.spec.ts', 'src/**/*.test.tsx', 'src/**/*.spec.tsx'],
+    globals: false,
   },
 });

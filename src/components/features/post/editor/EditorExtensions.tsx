@@ -4,10 +4,8 @@ import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
 import TextAlign from '@tiptap/extension-text-align'
 import Underline from '@tiptap/extension-underline'
-import { TextStyle as TextStyleExtension } from '@tiptap/extension-text-style'
+import { TextStyle as TextStyleExtension, FontSize } from '@tiptap/extension-text-style'
 import Color from '@tiptap/extension-color'
-import CodeBlock from '@tiptap/extension-code-block'
-import FontSize from '@tiptap/extension-font-size'
 import FontFamily from '@tiptap/extension-font-family'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
 import Highlight from '@tiptap/extension-highlight'
@@ -19,9 +17,6 @@ import typescript from 'highlight.js/lib/languages/typescript'
 import xml from 'highlight.js/lib/languages/xml'
 import css from 'highlight.js/lib/languages/css'
 import kotlin from 'highlight.js/lib/languages/kotlin'
-import BulletList from '@tiptap/extension-bullet-list'
-import OrderedList from '@tiptap/extension-ordered-list'
-import ListItem from '@tiptap/extension-list-item'
 import sql from 'highlight.js/lib/languages/sql';
 import { Table, TableRow, TableCell, TableHeader } from '@tiptap/extension-table'
 import cpp from 'highlight.js/lib/languages/cpp'
@@ -111,11 +106,23 @@ export const EditorExtensions = [
   // 기본적인 편집 기능들을 포함하는 확장 모음
   StarterKit.configure({
     codeBlock: false,
-    bulletList: false,
-    orderedList: false,
     link: false,
     underline: false,
-    listItem: false,
+    // 리스트 확장 (StarterKit 내장 BulletList / OrderedList / ListItem 사용)
+    bulletList: {
+      keepMarks: true,
+      keepAttributes: false,
+      HTMLAttributes: {
+        class: 'list-disc ml-4',
+      },
+    },
+    orderedList: {
+      keepMarks: true,
+      keepAttributes: false,
+      HTMLAttributes: {
+        class: 'list-decimal pl-4',
+      },
+    },
   }),
   // 커스텀 이미지 확장
   CustomImage.configure({
@@ -159,22 +166,6 @@ export const EditorExtensions = [
   CodeBlockLowlight.configure({
     lowlight, // 하이라이트 설정
   }),
-  // 리스트 확장
-  BulletList.configure({
-    keepMarks: true,
-    keepAttributes: false,
-    HTMLAttributes: {
-      class: 'list-disc ml-4',
-    },
-  }),
-  OrderedList.configure({
-    keepMarks: true,
-    keepAttributes: false,
-    HTMLAttributes: {
-      class: 'list-decimal pl-4',
-    },
-  }),
-  ListItem,
   // Table 관련 확장 추가
   Table.configure({
     resizable: true,

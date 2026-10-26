@@ -1,25 +1,32 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { getGameById } from '@/constants/games';
 import { useGameScores } from '@/hooks/useGameScores';
 import { useSound } from '@/hooks/useSound';
 import { useBGM } from '@/hooks/useBGM';
 import GameLayout from '@/components/features/games/GameLayout';
 import ScorePanel from '@/components/features/games/ScorePanel';
-import SnakeGame from '@/components/features/games/snake/SnakeGame';
-import Game2048 from '@/components/features/games/puzzle2048/Game2048';
-import TypingGame from '@/components/features/games/typing/TypingGame';
-import MinesweeperGame from '@/components/features/games/minesweeper/MinesweeperGame';
-import TetrisGame from '@/components/features/games/tetris/TetrisGame';
-import FlappyGame from '@/components/features/games/flappy/FlappyGame';
-import BreakoutGame from '@/components/features/games/breakout/BreakoutGame';
-import MemoryGame from '@/components/features/games/memory/MemoryGame';
-import WhackaMoleGame from '@/components/features/games/whackamole/WhackaMoleGame';
-import WordleGame from '@/components/features/games/wordle/WordleGame';
-import SlidingPuzzleGame from '@/components/features/games/slidingpuzzle/SlidingPuzzleGame';
-import RPSGame from '@/components/features/games/rps/RPSGame';
-import ReactionGame from '@/components/features/games/reaction/ReactionGame';
+const SnakeGame = dynamic(() => import('@/components/features/games/snake/SnakeGame'));
+const Game2048 = dynamic(() => import('@/components/features/games/puzzle2048/Game2048'));
+const MinesweeperGame = dynamic(() => import('@/components/features/games/minesweeper/MinesweeperGame'));
+const TetrisGame = dynamic(() => import('@/components/features/games/tetris/TetrisGame'));
+const FlappyGame = dynamic(() => import('@/components/features/games/flappy/FlappyGame'));
+const BreakoutGame = dynamic(() => import('@/components/features/games/breakout/BreakoutGame'));
+const MemoryGame = dynamic(() => import('@/components/features/games/memory/MemoryGame'));
+const WhackaMoleGame = dynamic(() => import('@/components/features/games/whackamole/WhackaMoleGame'));
+const WordleGame = dynamic(() => import('@/components/features/games/wordle/WordleGame'));
+const SlidingPuzzleGame = dynamic(() => import('@/components/features/games/slidingpuzzle/SlidingPuzzleGame'));
+const RPSGame = dynamic(() => import('@/components/features/games/rps/RPSGame'));
+const ReactionGame = dynamic(() => import('@/components/features/games/reaction/ReactionGame'));
+
+// 게임은 각자 수천 줄이라 선택한 게임의 코드만 내려받도록 전부 dynamic import.
+// TypingGame은 Math.random() 기반 셔플을 사용하므로 SSR 비활성화
+const TypingGame = dynamic(
+  () => import('@/components/features/games/typing/TypingGame'),
+  { ssr: false }
+);
 
 export interface GameComponentProps {
   onGameEnd: (score: number, detail?: string) => void;
@@ -28,6 +35,7 @@ export interface GameComponentProps {
   onMove?: () => void;
   onCombo?: (level: number) => void;
   onKeyClick?: () => void;
+  onLongMode?: (active: boolean) => void;
 }
 
 const GAME_COMPONENTS: Record<string, React.ComponentType<GameComponentProps>> = {
@@ -52,6 +60,7 @@ interface GamePageClientProps {
 
 export default function GamePageClient({ gameId }: GamePageClientProps) {
   const [currentScore, setCurrentScore] = useState(0);
+  const [fullWidth, setFullWidth] = useState(false);
   const { bestScore, bestDetail, history, saveScore } = useGameScores(gameId);
   const {
     playScore, playGameOver,
@@ -135,6 +144,7 @@ export default function GamePageClient({ gameId }: GamePageClientProps) {
       currentScore={currentScore}
       isMuted={isMuted}
       onToggleMute={toggleMute}
+      fullWidth={fullWidth}
       scorePanel={
         <ScorePanel
           currentScore={currentScore}
@@ -151,6 +161,7 @@ export default function GamePageClient({ gameId }: GamePageClientProps) {
         onMove={['snake', '2048', 'tetris', 'slidingpuzzle'].includes(gameId) ? playMoveTick : undefined}
         onCombo={playCombo}
         onKeyClick={['typing', 'wordle'].includes(gameId) ? playKeyClick : undefined}
+        onLongMode={gameId === 'typing' ? setFullWidth : undefined}
       />
     </GameLayout>
   );

@@ -10,9 +10,10 @@ interface GameLayoutProps {
   currentScore: number;
   isMuted?: boolean;
   onToggleMute?: () => void;
+  fullWidth?: boolean;
 }
 
-export default function GameLayout({ gameId, children, scorePanel, isMuted, onToggleMute }: GameLayoutProps) {
+export default function GameLayout({ gameId, children, scorePanel, isMuted, onToggleMute, fullWidth }: GameLayoutProps) {
   const game = getGameById(gameId);
 
   return (
@@ -53,7 +54,7 @@ export default function GameLayout({ gameId, children, scorePanel, isMuted, onTo
         }}
       />
 
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className={['relative z-10 px-4 sm:px-6 lg:px-8', fullWidth ? 'w-full' : 'max-w-7xl mx-auto'].join(' ')}>
         {/* Top bar: back button + mute toggle */}
         <div className="mb-6 flex items-center justify-between">
           <Link

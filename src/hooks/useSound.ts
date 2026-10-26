@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 let sharedCtx: AudioContext | null = null;
 
@@ -41,10 +41,12 @@ function tone(
 }
 
 export function useSound() {
-  const [isMuted, setIsMuted] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return false;
-    return localStorage.getItem('vans_sound_muted') === 'true';
-  });
+  const [isMuted, setIsMuted] = useState<boolean>(false);
+
+  // 클라이언트 마운트 후 localStorage 값으로 동기화 (SSR hydration 불일치 방지)
+  useEffect(() => {
+    setIsMuted(localStorage.getItem('vans_sound_muted') === 'true');
+  }, []);
 
   const toggleMute = useCallback(() => {
     setIsMuted(prev => {

@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import { isValidYahooSymbol } from '@/lib/stocks/validateSymbol';
 import type { MarketState } from '@/types/stocks';
 
 const YAHOO_HEADERS = {
@@ -37,10 +38,16 @@ export async function GET(req: NextRequest) {
       { status: 400 },
     );
   }
+  if (!isValidYahooSymbol(symbol)) {
+    return NextResponse.json(
+      { success: false, error: '지원하지 않는 심볼 형식입니다.' },
+      { status: 400 },
+    );
+  }
 
   try {
     const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1m&range=1d`;
-    const res = await fetch(url, { headers: YAHOO_HEADERS, cache: 'no-store' });
+    const res = await fetch(url, { headers: YAHOO_HEADERS, next: { revalidate: 30 } });
 
     if (!res.ok) {
       return NextResponse.json(

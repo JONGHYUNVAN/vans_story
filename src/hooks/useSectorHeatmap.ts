@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import type { SectorHeatmapItem } from '@/types/stocks';
+import { isAnyMarketActive } from '@/lib/stocks/marketHours';
 
 interface UseSectorHeatmapReturn {
   data: SectorHeatmapItem[] | null;
@@ -36,7 +37,10 @@ export function useSectorHeatmap(): UseSectorHeatmapReturn {
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 60_000);
+    // 장 마감 시간대(KR·US 모두 CLOSED)에는 값이 바뀌지 않으므로 폴링하지 않는다.
+    const interval = setInterval(() => {
+      if (isAnyMarketActive()) fetchData();
+    }, 60_000);
     return () => clearInterval(interval);
   }, [fetchData]);
 

@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import { isValidYahooSymbol } from '@/lib/stocks/validateSymbol';
 import type { DartDisclosure, DartData, DartApiResponse, StocksApiResponse } from '@/types/stocks';
 import { KR_STOCKS } from '@/types/stocks';
 
@@ -20,6 +21,15 @@ export async function GET(
 ): Promise<NextResponse<StocksApiResponse<DartData>>> {
   const { searchParams } = new URL(request.url);
   const symbolParam = searchParams.get('symbol') ?? '';
+  if (symbolParam && !isValidYahooSymbol(symbolParam)) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: { message: '지원하지 않는 심볼 형식입니다.', code: 'INVALID_SYMBOL' },
+      },
+      { status: 400 },
+    );
+  }
 
   // symbol에서 종목코드 추출 (005930.KS → 005930)
   const stockCode = symbolParam.replace(/\.(KS|KQ)$/i, '');

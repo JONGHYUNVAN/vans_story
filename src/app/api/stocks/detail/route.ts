@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import { isValidYahooSymbol } from '@/lib/stocks/validateSymbol';
 import type {
   StockDetailData,
   ChartDataPoint,
@@ -122,7 +123,7 @@ async function fetchNaverIntegration(symbol: string): Promise<NaverIntegration |
   const code = krxCode(symbol);
   const url = `https://m.stock.naver.com/api/stock/${code}/integration`;
   try {
-    const res = await fetch(url, { headers: NAVER_HEADERS, cache: 'no-store' });
+    const res = await fetch(url, { headers: NAVER_HEADERS, next: { revalidate: 60 } });
     if (!res.ok) return null;
     return (await res.json()) as NaverIntegration;
   } catch {
@@ -149,7 +150,7 @@ async function fetchNaverResearchGoalPrices(
     researches.map(async (r) => {
       const url = `https://m.stock.naver.com/api/research/company/${r.id}`;
       try {
-        const res = await fetch(url, { headers: NAVER_HEADERS, cache: 'no-store' });
+        const res = await fetch(url, { headers: NAVER_HEADERS, next: { revalidate: 60 } });
         if (!res.ok) return { id: r.id, goalPrice: null, opinion: null };
         const json: NaverResearchDetail = await res.json();
         const rc = json.researchContent;
@@ -179,7 +180,7 @@ async function fetchNaverConsensusDetail(symbol: string): Promise<NaverConsensus
   ];
   for (const url of urls) {
     try {
-      const res = await fetch(url, { headers: NAVER_HEADERS, cache: 'no-store' });
+      const res = await fetch(url, { headers: NAVER_HEADERS, next: { revalidate: 60 } });
       if (res.ok) {
         const json = await res.json();
         if (json && typeof json === 'object') return json as NaverConsensusDetail;
@@ -200,7 +201,7 @@ async function fetchYahooConsensus(symbol: string): Promise<StockConsensus | nul
       `https://${host}/v11/finance/quoteSummary/${encodeURIComponent(symbol)}` +
       `?modules=financialData,recommendationTrend`;
     try {
-      const res = await fetch(url, { headers: YAHOO_HEADERS, cache: 'no-store' });
+      const res = await fetch(url, { headers: YAHOO_HEADERS, next: { revalidate: 60 } });
       if (!res.ok) continue;
       const json = await res.json();
       const result = json?.quoteSummary?.result?.[0];
@@ -404,7 +405,7 @@ async function fetchV8Detail(
     try {
       const r = await fetch(`https://${host}${path}`, {
         headers: YAHOO_HEADERS,
-        cache: 'no-store',
+        next: { revalidate: 60 },
       });
       if (r.ok) {
         res = r;
@@ -518,6 +519,15 @@ export async function GET(
     if (!symbol) {
       return NextResponse.json(
         { success: false, error: { message: '심볼이 필요합니다.', code: 'NO_SYMBOL' } },
+        { status: 400 },
+      );
+    }
+    if (!isValidYahooSymbol(symbol)) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: { message: '지원하지 않는 심볼 형식입니다.', code: 'INVALID_SYMBOL' },
+        },
         { status: 400 },
       );
     }

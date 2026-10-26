@@ -15,7 +15,7 @@ async function fetchMarketCaps(symbols: string[]): Promise<Map<string, number>> 
 
   const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(symbols.join(','))}`;
   try {
-    const res = await fetch(url, { headers: YAHOO_HEADERS, cache: 'no-store' });
+    const res = await fetch(url, { headers: YAHOO_HEADERS, next: { revalidate: 60 } });
     if (!res.ok) return map;
     const json = await res.json();
     const results = json?.quoteResponse?.result;
@@ -45,7 +45,7 @@ async function fetchHeatmapItem(
   const encoded = encodeURIComponent(stock.symbol);
   const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encoded}?interval=1d&range=1d`;
   try {
-    const res = await fetch(url, { headers: YAHOO_HEADERS, cache: 'no-store' });
+    const res = await fetch(url, { headers: YAHOO_HEADERS, next: { revalidate: 60 } });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
     const meta = json?.chart?.result?.[0]?.meta;

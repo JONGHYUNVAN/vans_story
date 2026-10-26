@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { headers } from 'next/headers';
 import { createErrorResponse, createSuccessResponse } from '@/lib/api/errorHandler';
+import { getBearerToken, unauthorizedResponse } from '@/lib/api/requireAuth';
 
 export interface ChatRequest {
   message: string;
@@ -11,14 +11,25 @@ export interface ChatRequest {
   reasoning_effort?: 'low' | 'medium' | 'high'; // 선택사항, 추론 깊이
 }
 
-// POST /api/ai/chat - 채팅 메시지 전송
+interface UpstreamChatRequest {
+  message: string;
+  model: string;
+  max_tokens: number;
+  temperature: number;
+  reasoning_effort?: ChatRequest['reasoning_effort'];
+}
+
+/**
+ * POST /api/ai/chat - 채팅 메시지 전송 BFF.
+ * AI 서비스는 X-API-Key만 검사하므로 로그인 여부는 여기서 거른다(안 그러면 누구나 OpenAI 비용을 발생시킨다).
+ */
 export async function POST(request: NextRequest) {
+  const token = getBearerToken(request);
+  if (!token) return unauthorizedResponse();
+
   try {
-    const headersList = await headers();
-    const token = headersList.get('Authorization');
     const body: ChatRequest = await request.json();
 
-    // 메시지 데이터 검증
     if (!body.message || body.message.trim() === '') {
       return createErrorResponse(400, '메시지 내용이 필요합니다.');
     }
@@ -27,18 +38,13 @@ export async function POST(request: NextRequest) {
     const timeoutMs = Number(process.env.AI_API_TIMEOUT_MS || 60000);
     const selectedModel = body.model || 'gpt-4.1-nano';
 
-    // 요청 본문 구성
-    const requestBody: any = {
+    const requestBody: UpstreamChatRequest = {
       message: body.message,
       model: selectedModel,
       max_tokens: body.max_tokens || 1000,
       temperature: body.temperature || 0.7,
+      ...(body.reasoning_effort && { reasoning_effort: body.reasoning_effort }),
     };
-
-    // reasoning_effort가 있으면 추가
-    if (body.reasoning_effort) {
-      requestBody.reasoning_effort = body.reasoning_effort;
-    }
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
@@ -48,7 +54,7 @@ export async function POST(request: NextRequest) {
       headers: {
         'Content-Type': 'application/json',
         'X-API-Key': process.env.AI_ROUTE_API_KEY || '',
-        ...(token && { Authorization: token }),
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(requestBody),
       signal: controller.signal,
@@ -85,7 +91,7 @@ export async function POST(request: NextRequest) {
 
     const data = await res.json();
 
-    // 3003번 포트 응답 형식을 우리 형식으로 매핑
+    // AI 서비스 응답 형식을 우리 형식으로 매핑
     const mappedResponse = {
       id: data.id || `chat-${Date.now()}`,
       message: data.response || data.message || '응답을 받지 못했습니다.',

@@ -60,6 +60,16 @@ export function getKrMarketState(): MarketState {
   return 'CLOSED';
 }
 
+/** KR 시장이 PRE/REGULAR/POST 중 하나인가 (폴링 여부 판단용) */
+export function isKrMarketActive(): boolean {
+  return getKrMarketState() !== 'CLOSED';
+}
+
+/** KR 또는 US 시장이 열려 있는가 (장 마감 시간대의 불필요한 폴링을 막는다) */
+export function isAnyMarketActive(): boolean {
+  return getKrMarketState() !== 'CLOSED' || getUsMarketState() !== 'CLOSED';
+}
+
 /** US 시장 4가지 상태 (ET 기준) */
 export function getUsMarketState(): MarketState {
   const { day, minutes } = getEstDayAndMinutes();

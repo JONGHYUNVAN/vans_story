@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { isKrMarketActive } from '@/lib/stocks/marketHours';
 
 interface KospiData {
   symbol: string;
@@ -39,7 +40,10 @@ export function KospiFuturesCard() {
     };
 
     fetchData();
-    const interval = setInterval(fetchData, 60_000);
+    // 국내 장이 닫혀 있으면 값이 바뀌지 않으므로 폴링하지 않는다.
+    const interval = setInterval(() => {
+      if (isKrMarketActive()) fetchData();
+    }, 60_000);
     return () => clearInterval(interval);
   }, []);
 

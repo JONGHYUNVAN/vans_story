@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import { isValidYahooSymbol } from '@/lib/stocks/validateSymbol';
 import type { ChartDataPoint, StocksApiResponse, YahooChartResponse } from '@/types/stocks';
 
 const YAHOO_HEADERS = {
@@ -40,6 +41,15 @@ export async function GET(
         { status: 400 },
       );
     }
+    if (!isValidYahooSymbol(symbol)) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: { message: '지원하지 않는 심볼 형식입니다.', code: 'INVALID_SYMBOL' },
+        },
+        { status: 400 },
+      );
+    }
 
     const config = RANGE_MAP[rangeParam] ?? RANGE_MAP['1D'];
     const path = `/v8/finance/chart/${encodeURIComponent(symbol)}?interval=${config.interval}&range=${config.range}`;
@@ -50,7 +60,7 @@ export async function GET(
       try {
         const r = await fetch(`https://${host}${path}`, {
           headers: YAHOO_HEADERS,
-          cache: 'no-store',
+          next: { revalidate: 60 },
         });
         if (r.ok) {
           res = r;

@@ -41,7 +41,7 @@ function normalizeFromV8Chart(
 
 async function fetchMacroV8Single(symbol: string): Promise<YahooChartResponse | null> {
   const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=5d`;
-  const res = await fetch(url, { headers: YAHOO_HEADERS, cache: 'no-store' });
+  const res = await fetch(url, { headers: YAHOO_HEADERS, next: { revalidate: 60 } });
   if (!res.ok) return null;
   return res.json();
 }

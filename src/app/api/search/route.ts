@@ -1,6 +1,5 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { headers } from 'next/headers';
 
 /**
  * 게시물 검색을 위한 API 라우트 핸들러 (BFF 프록시)
@@ -9,13 +8,9 @@ import { headers } from 'next/headers';
  */
 export async function GET(request: NextRequest) {
   try {
-    const [headersList, { searchParams }] = await Promise.all([
-      headers(),
-      Promise.resolve(new URL(request.url)),
-    ]);
-
+    const { searchParams } = new URL(request.url);
     const query = searchParams.get('query');
-    const token = headersList.get('Authorization');
+    const token = request.headers.get('authorization');
 
     if (!query) {
       return NextResponse.json({ message: '검색어가 필요합니다.' }, { status: 400 });
@@ -26,12 +21,13 @@ export async function GET(request: NextRequest) {
     const encodedQuery = encodeURIComponent(query);
     const fullUrl = `${searchApiUrl}/api/v1/search/posts/?query=${encodedQuery}&language=all&page=1&page_size=20&sort=relevance`;
 
+    // 인증된 응답이 익명 사용자에게 캐시되지 않도록 토큰이 있으면 캐시를 끈다(헤더는 캐시 키가 아니다).
     const response = await fetch(fullUrl, {
       headers: {
         'Content-Type': 'application/json',
         ...(token && { Authorization: token }),
       },
-      next: { revalidate: 60 }, // 1분 캐시
+      ...(token ? { cache: 'no-store' } : { next: { revalidate: 60 } }),
     });
 
     if (!response.ok) {

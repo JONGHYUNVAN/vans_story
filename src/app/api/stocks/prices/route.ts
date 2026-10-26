@@ -109,7 +109,7 @@ function normalizeFromV8Chart(symbol: string, chartRes: YahooChartResponse): Sto
 
 async function fetchV8ChartSingle(symbol: string): Promise<StockPrice | null> {
   const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=1d`;
-  const res = await fetch(url, { headers: YAHOO_HEADERS, cache: 'no-store' });
+  const res = await fetch(url, { headers: YAHOO_HEADERS, next: { revalidate: 30 } });
   if (!res.ok) return null;
   const json: YahooChartResponse = await res.json();
   return normalizeFromV8Chart(symbol, json);

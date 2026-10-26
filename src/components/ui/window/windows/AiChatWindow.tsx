@@ -6,7 +6,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Bot, Send, User, AlertCircle, Loader2, Trash2, Zap } from 'lucide-react';
-import { sendChatMessageDirect, type ChatRequest } from '@/lib/ai/clientActions';
+import { sendChatMessage, type ChatRequest } from '@/lib/ai/clientActions';
 import { useWindowManager } from '@/components/ui/window/WindowContext';
 
 interface ChatMessage {
@@ -136,7 +136,7 @@ export function AiChatWindowContent({ onInsertText, initialMessage }: AiChatWind
         temperature: 0.7,
       };
 
-      const response = await sendChatMessageDirect(chatRequest);
+      const response = await sendChatMessage(chatRequest);
 
       // 토큰 사용량 업데이트
       if (response.usage) {

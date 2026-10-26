@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import { isValidYahooSymbol } from '@/lib/stocks/validateSymbol';
 import type { NewsItem, StockNewsData, StocksApiResponse } from '@/types/stocks';
 import { KR_STOCKS, MACRO_SYMBOLS } from '@/types/stocks';
 
@@ -176,6 +177,15 @@ export async function GET(
         {
           success: false,
           error: { message: 'symbol 파라미터가 필요합니다.', code: 'MISSING_SYMBOL' },
+        },
+        { status: 400 },
+      );
+    }
+    if (!isValidYahooSymbol(symbol)) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: { message: '지원하지 않는 심볼 형식입니다.', code: 'INVALID_SYMBOL' },
         },
         { status: 400 },
       );

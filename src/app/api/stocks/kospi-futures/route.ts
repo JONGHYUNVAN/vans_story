@@ -10,7 +10,7 @@ const YAHOO_HEADERS = {
 async function fetchYahooMeta(symbol: string) {
   const encoded = encodeURIComponent(symbol);
   const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encoded}?interval=1d&range=1d`;
-  const res = await fetch(url, { headers: YAHOO_HEADERS, cache: 'no-store' });
+  const res = await fetch(url, { headers: YAHOO_HEADERS, next: { revalidate: 30 } });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const json = await res.json();
   const meta = json?.chart?.result?.[0]?.meta;

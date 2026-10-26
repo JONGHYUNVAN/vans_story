@@ -74,8 +74,8 @@ export class ApiFetch {
       headers,
     });
 
-    // 401 에러 발생 시 토큰 갱신 시도
-    if (response.status === 401) {
+    // 401이면 토큰 갱신 후 재시도. 애초에 토큰이 없던 요청은 갱신할 세션도 없으므로 401을 그대로 돌려준다.
+    if (response.status === 401 && token) {
       try {
         const newToken = await authService.refresh();
         // 갱신된 토큰으로 재시도

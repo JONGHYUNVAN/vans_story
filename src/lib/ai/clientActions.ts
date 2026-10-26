@@ -24,33 +24,14 @@ export interface ChatResponse {
 }
 
 /**
- * AI 채팅 메시지 전송 (인증 토큰 포함)
- * @param chatData 전송할 채팅 데이터
- * @returns Promise<ChatResponse>
+ * AI 채팅 메시지 전송. 로그인 토큰이 필요하다(BFF가 401로 거른다).
  */
 export async function sendChatMessage(chatData: ChatRequest): Promise<ChatResponse> {
   const response = await ApiFetch.postWithAuth('/api/ai/chat', chatData);
 
-  if (!response.ok) {
-    const error = await response.json().catch(() => null);
-    const errorMessage =
-      error?.error?.message || error?.error || error?.message || '채팅 메시지 전송에 실패했습니다.';
-    throw new Error(errorMessage);
+  if (response.status === 401) {
+    throw new Error('로그인 후 이용할 수 있습니다.');
   }
-
-  const responseData = await response.json();
-
-  // BFF 프록시에서 { success: true, data: {...} } 구조로 반환
-  return responseData.success && responseData.data ? responseData.data : responseData;
-}
-
-/**
- * AI 채팅 메시지 전송 (토큰 없이)
- * @param chatData 전송할 채팅 데이터
- * @returns Promise<ChatResponse>
- */
-export async function sendChatMessageDirect(chatData: ChatRequest): Promise<ChatResponse> {
-  const response = await ApiFetch.basicPost('/api/ai/chat', chatData);
 
   if (!response.ok) {
     const error = await response.json().catch(() => null);

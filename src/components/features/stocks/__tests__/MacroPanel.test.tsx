@@ -39,6 +39,17 @@ function makeMockMacroData(): MacroData {
         category: 'index',
       },
     ],
+    commodity: [
+      {
+        symbol: 'GC=F',
+        name: 'Gold',
+        displayName: '금',
+        price: 2650.1,
+        change: 0,
+        changePercent: 0,
+        category: 'commodity',
+      },
+    ],
     fetchedAt: new Date().toISOString(),
   };
 }
@@ -50,10 +61,10 @@ describe('MacroPanel', () => {
       expect(html).toContain('animate-pulse');
     });
 
-    it('isLoading=true일 때 스켈레톤 아이템을 7개 렌더링한다', () => {
+    it('isLoading=true일 때 스켈레톤 아이템을 8개 렌더링한다', () => {
       const html = renderToStaticMarkup(<MacroPanel macro={null} isLoading={true} />);
       const matchCount = (html.match(/animate-pulse/g) || []).length;
-      expect(matchCount).toBe(7);
+      expect(matchCount).toBe(8);
     });
 
     it('isLoading=true일 때 지표 이름이 표시되지 않는다', () => {
@@ -81,6 +92,12 @@ describe('MacroPanel', () => {
     it('index 지표의 displayName을 표시한다', () => {
       const html = renderToStaticMarkup(<MacroPanel macro={makeMockMacroData()} isLoading={false} />);
       expect(html).toContain('코스피');
+    });
+
+    it('commodity 지표의 displayName과 카테고리 라벨("원자재")을 표시한다', () => {
+      const html = renderToStaticMarkup(<MacroPanel macro={makeMockMacroData()} isLoading={false} />);
+      expect(html).toContain('금');
+      expect(html).toContain('원자재');
     });
 
     it('USDKRW=X 지표는 가격에 "원" 단위를 붙인다', () => {

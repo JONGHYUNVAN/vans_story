@@ -2,6 +2,7 @@
 
 import type { ReactNode } from 'react';
 import { POST_LAYOUT_ICON_OVERRIDES, POST_THEMES, type PostThemeKey } from '@/constants/postThemes';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 interface PostLayoutProps {
   /** 테마 객체에는 아이콘 함수가 있어 서버→클라이언트로 넘길 수 없으므로 키로 받아 조회한다 */
@@ -24,7 +25,12 @@ export default function PostLayout({
   const theme = POST_THEMES[themeKey];
   const { layout } = theme;
   const Icon = POST_LAYOUT_ICON_OVERRIDES[theme.key] ?? theme.icon;
-  const video = layout.video && !(isPreview && layout.video.hideInPreview) ? layout.video : null;
+  const reducedMotion = useReducedMotion();
+  // 미리보기(일부 테마)와 OS '동작 줄이기'에서는 영상을 내리지 않는다
+  const video =
+    layout.video && !(isPreview && layout.video.hideInPreview) && !reducedMotion
+      ? layout.video
+      : null;
   const heightClass = isPreview ? 'h-auto min-h-[300px]' : 'min-h-screen';
 
   return (
@@ -91,6 +97,7 @@ export default function PostLayout({
                   loop
                   muted
                   playsInline
+                  preload="metadata"
                   className={`h-full w-full object-cover ${video.opacityClass}`}
                 >
                   <source src={video.src} type="video/webm" />

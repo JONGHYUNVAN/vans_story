@@ -7,14 +7,10 @@ import { SiNestjs, SiSpring, SiMariadb, SiMongodb, SiNextdotjs, SiDocker } from 
 import { TbBinaryTree2, TbDatabase } from 'react-icons/tb';
 import { RiShieldKeyholeLine } from 'react-icons/ri';
 import type { MainCategoryOption, SubCategoryOption } from '@/types/post';
-import koMessages from '@/messages/ko.json';
-import enMessages from '@/messages/en.json';
+import { translations } from '@/lib/i18n';
 
-// 언어별 번역 데이터 (동적 require 대신 정적 import 후 언어 키로 선택)
-const MESSAGES_BY_LANGUAGE: Record<string, any> = {
-  ko: koMessages,
-  en: enMessages,
-};
+// 언어별 메시지(messages/<lang>/*.json 병합본). 예전의 ko.json/en.json 사본은 이것의 부분집합이라 삭제했다.
+const MESSAGES_BY_LANGUAGE: Record<string, any> = translations;
 
 // 카테고리 그룹 타입
 export type CategoryGroup = 'frontend' | 'backend' | 'database' | 'devops' | 'cs';

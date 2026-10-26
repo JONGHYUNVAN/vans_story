@@ -37,7 +37,8 @@ const mergeTranslations = (...translations: any[]) => {
 };
 
 // 지원하는 언어의 번역을 객체로 정의
-const translations = {
+/** 언어별 병합 메시지. 훅 밖(상수 모듈)에서도 쓸 수 있도록 export */
+export const translations = {
   ko: mergeTranslations(
     koCommon,
     koAuth,

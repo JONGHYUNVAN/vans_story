@@ -6,7 +6,12 @@
  * - 전체 화면을 커버하도록 설정
  */
 'use client';
+
+import { useReducedMotion } from '@/hooks/useReducedMotion';
+
 export default function BackgroundVideo() {
+  const reducedMotion = useReducedMotion();
+
   return (
     <div className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-[#FFD700]/70 via-[#DAA520]/60 to-[#B8860B]/60">
       {/* 좌우 장식적 요소 */}
@@ -18,15 +23,18 @@ export default function BackgroundVideo() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(218,165,32,0.3)_0%,transparent_50%)] opacity-20" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_70%,rgba(255,223,0,0.3)_0%,transparent_50%)] opacity-20" />
 
-      <video
-        autoPlay // 자동 재생
-        loop // 무한 반복
-        muted // 음소거
-        playsInline // 모바일에서 전체화면 없이 인라인 재생
-        className="relative z-0 h-auto w-[90vw] max-w-6xl rounded-2xl border-2 border-[#FFD700]/40 object-contain shadow-2xl shadow-[#B8860B]/40"
-      >
-        <source src="/Signup_background.webm" type="video/webm" />
-      </video>
+      {!reducedMotion && (
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          className="relative z-0 h-auto w-[90vw] max-w-6xl rounded-2xl border-2 border-[#FFD700]/40 object-contain shadow-2xl shadow-[#B8860B]/40"
+        >
+          <source src="/Signup_background.webm" type="video/webm" />
+        </video>
+      )}
     </div>
   );
 }
